@@ -1,6 +1,7 @@
 import React from 'react'
 import Home from "@/pages/Home"
-import Product from '../pages/Product'
+// import Product from '../pages/Product'
+import Product from "@/pages/Product"
 import Project from '../pages/Project'
 import Price from '../pages/Price'
 import News from '../pages/News'
