@@ -1,14 +1,15 @@
 import React from 'react'
 import Home from "@/pages/Home"
-import Product from '../pages/Product'
-import Project from '../pages/Project'
-import Price from '../pages/Price'
-import News from '../pages/News'
-import Recruitment from '../pages/Recruitment'
-import Contact from '../pages/Contact'
-import AboutUs from '../pages/AboutUs'
-import PageNotFound from '../pages/PageNotFound'
-import DefaultLayout from "../layouts/DefaultLayout"
+import Product from '@/pages/Product'
+import Project from '@/pages/Project'
+import Price from '@/pages/Price'
+import News from '@/pages/News'
+import Recruitment from '@/pages/Recruitment'
+import Contact from '@/pages/Contact'
+import AboutUs from '@/pages/AboutUs'
+import PageNotFound from '@/pages/PageNotFound'
+import DefaultLayout from "@/layouts/DefaultLayout"
+
 export const routes = [
     // {
     //     //Ví dụ về cách thêm route mới.
@@ -24,7 +25,7 @@ export const routes = [
 
     {
         path: "/",
-        element: <DefaultLayout />,
+        element: <DefaultLayout/>,
         children: [
             {
                 path: "/",
