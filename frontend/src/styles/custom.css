@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Container giống Bootstrap */
+.container-fluid {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Màu chủ đạo */
+:root {
+  --green-bg: #16A34A;
+  --dark-blue: #14532D;
+  --yellow-bg: #FFC107;
+  --gradient-banner: linear-gradient(90deg, #14532D 0%, #157F3D 100%);
+  --light-green-banner: #F0FDF4;
+}
