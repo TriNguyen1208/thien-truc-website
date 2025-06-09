@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Container giống Bootstrap */
 .container-fluid {
   width: 100%;
