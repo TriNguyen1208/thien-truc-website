@@ -6,6 +6,12 @@ import { fileURLToPath, URL } from 'url'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000', // API backend server
+        changeOrigin: true,
+      }
+    },
     host: '0.0.0.0', // expose ra bên ngoài container
     port: 5173       // hoặc port bạn muốn
   },
