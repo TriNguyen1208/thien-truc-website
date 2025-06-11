@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "vite",
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.80.6"
+  }
+}

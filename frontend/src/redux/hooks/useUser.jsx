@@ -12,7 +12,6 @@ const useUser = (id) => {
       setLoading(false);
     });
   }, [id]);
-
   return { user, loading };
 };
 
