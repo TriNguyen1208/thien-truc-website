@@ -5,7 +5,7 @@ import useNews from "@/redux/hooks/useNews"
 import useProducts from "@/redux/hooks/useProducts"
 import useProjects from "@/redux/hooks/useProjects"
 import useRecruitment from "@/redux/hooks/useRecruitment"
-
+import Card from "../../components/Card"
 //Ví dụ chill chill
 export default function Home(){
     const { getAll: getAllHome } = useHome();
@@ -33,16 +33,23 @@ export default function Home(){
     if (!home || !aboutus || !contact || !news || !product || !projects || !recruitment) {
         return <p>Dữ liệu chưa sẵn sàng hoặc có lỗi.</p>;
     }
+
     return (
         <>
-            <h1>Welcome to Home Page</h1>
-            <p>{home.home_page[0].banner_title}</p>
-            <p>{aboutus.about_us_page[0].banner_title}</p>
-            <p>{contact.contact_page[0].banner_title}</p>
-            <p>{news.news_page[0].banner_title}</p>
-            <p>{product.product[0].name}</p>
-            <p>{projects.projects_page[0].banner_title}</p>
-            <p>{recruitment.recruitment_page[0].banner_title}</p>
+        <div className="grid grid-cols-2 gap-[32px]">
+              {
+             aboutus.company_service.map((card)=>{
+                return (
+                    <div className="w-[560px]">
+                        <Card card={card} key={card.id} />
+                    </div>
+
+                )
+            }
+            )
+           } 
+        </div>
+              
         </>
     )
 }
