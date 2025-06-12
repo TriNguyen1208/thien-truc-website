@@ -5,14 +5,14 @@ import useNews from "@/redux/hooks/useNews"
 import useProducts from "@/redux/hooks/useProducts"
 import useProjects from "@/redux/hooks/useProjects"
 import useRecruitment from "@/redux/hooks/useRecruitment"
-
+import ItemProduct   from "../../components/ItemProduct"
 //Ví dụ chill chill
 export default function Home(){
     const { getAll: getAllHome } = useHome();
     const { getAll: getAllAboutUs } = useAboutUs();
     const { getAll: getAllContact } = useContact();
     const { getAll: getAllNews } = useNews(null);
-    const { getId: getIdProducts } = useProducts(2);
+    const { getId: getIdProducts } = useProducts(17);
     const { getAll: getAllProjects } = useProjects(null);
     const { getAll: getAllRecruitment } = useRecruitment();
 
@@ -33,16 +33,15 @@ export default function Home(){
     if (!home || !aboutus || !contact || !news || !product || !projects || !recruitment) {
         return <p>Dữ liệu chưa sẵn sàng hoặc có lỗi.</p>;
     }
+
     return (
         <>
-            <h1>Welcome to Home Page</h1>
-            <p>{home.home_page[0].banner_title}</p>
-            <p>{aboutus.about_us_page[0].banner_title}</p>
-            <p>{contact.contact_page[0].banner_title}</p>
-            <p>{news.news_page[0].banner_title}</p>
-            <p>{product.product[0].name}</p>
-            <p>{projects.projects_page[0].banner_title}</p>
-            <p>{recruitment.recruitment_page[0].banner_title}</p>
+          <div className="flex flex-row  gap-x-[16px]">
+            <ItemProduct product={product.product[0]} />
+            <ItemProduct product={product.product[0]} />
+            <ItemProduct product={product.product[0]} />
+            <ItemProduct product={product.product[0]} />
+          </div>
         </>
     )
 }
