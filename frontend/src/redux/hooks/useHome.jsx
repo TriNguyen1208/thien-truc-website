@@ -1,16 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import homeServices from "@/services/home.api.js";
 
-const useHome = () => {
-    // const queryClient = useQueryClient(); //Khi nao can thi nho import vao
-    const getAll = useQuery({
-            queryKey: ["home"],
-            queryFn: homeServices.getAll
-        });
-
-    return {
-        getAll
-    };
+function useGetAll(){
+    return useQuery({
+        queryKey: ["home"],
+        queryFn: homeServices.getAll,
+    })
 }
-
-export default useHome;
+export default {
+    getAll: useGetAll,
+  };

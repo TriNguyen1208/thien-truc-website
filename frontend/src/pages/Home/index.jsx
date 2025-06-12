@@ -8,25 +8,17 @@ import useRecruitment from "@/redux/hooks/useRecruitment"
 
 //Ví dụ chill chill
 export default function Home(){
-    const { getAll: getAllHome } = useHome();
-    const { getAll: getAllAboutUs } = useAboutUs();
-    const { getAll: getAllContact } = useContact();
-    const { getAll: getAllNews } = useNews(null);
-    const { getId: getIdProducts } = useProducts(2);
-    const { getAll: getAllProjects } = useProjects(null);
-    const { getAll: getAllRecruitment } = useRecruitment();
 
-    const { data: home, isLoading: isLoadingHome } = getAllHome;
-    const { data: aboutus, isLoading: isLoadingAboutUs } = getAllAboutUs;
-    const { data: contact, isLoading: isLoadingContact } = getAllContact;
-    const { data: news, isLoading: isLoadingNews } = getAllNews;
-    const { data: product, isLoading: isLoadingProduct } = getIdProducts;
-    const { data: projects, isLoading: isLoadingProjects } = getAllProjects;
-    const { data: recruitment, isLoading: isLoadingRecruitment } = getAllRecruitment;
+    const { data: home, isLoading: isLoadingHome } = useHome.getAll();
+    const { data: aboutus, isLoading: isLoadingAboutUs } = useAboutUs.getAll();
+    const { data: contact, isLoading: isLoadingContact } = useContact.getAll();
+    const { data: news, isLoading: isLoadingNews } = useNews.getAll();
+    const {data: product, isLoading: isLoadingProduct} = useProducts.getId(2);
+    const { data: projects, isLoading: isLoadingProjects } = useProjects.getAll();
+    const { data: recruitment, isLoading: isLoadingRecruitment } = useRecruitment.getAll();
 
     const isLoading = isLoadingHome || isLoadingAboutUs || isLoadingContact ||
                       isLoadingNews || isLoadingProduct || isLoadingProjects || isLoadingRecruitment;
-
     if (isLoading) {
         return <p>Loading...</p>;
     }
