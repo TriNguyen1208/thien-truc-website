@@ -17,16 +17,23 @@ const Banner = ({data}) =>{
     return (
         <div
             style={{ background: colorBackground, color: colorText }}
-            className={``}
+            className='flex flex-col pt-18 pb-15 px-4 items-center'
         >
-            <p>{title}</p>
-            <p>{description}</p>
-            {hasButton ? (
-                <WhiteButton content={contentButton} handleClick={handleButton}/>
-             ) : ( 
-                <SearchBar categories={categories} contentPlaceholder={contentPlaceholder}/>
-             )
-            }
+            <div className='flex flex-col gap-5 items-center'>
+                <h1 className='text-5xl font-semibold text-center'>{title}</h1>
+                <div className='max-w-3xl text-center'>
+                    <p className='font-normal leading-[28px]'>{description}</p> 
+                </div>
+                <div className='mt-3 px-20 w-full text-center'>
+                    {hasButton ? (
+                        <WhiteButton content={contentButton} handleClick={handleButton}/>
+                    ) : ( 
+                        <SearchBar categories={categories} contentPlaceholder={contentPlaceholder}/>
+                    )
+                    }
+                </div>
+            </div>
+            
         </div>
     )
 }

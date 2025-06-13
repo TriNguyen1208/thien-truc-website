@@ -43,7 +43,7 @@ const SearchBar = ({categories, contentPlaceholder}) => {
               categories.map((r) => (
                 <li
                   key={r}
-                  className="py-2 hover:bg-gray-100 cursor-pointer text-sm text-center"
+                  className="py-2 hover:bg-gray-100 cursor-pointer text-sm text-center text-bold text-gray-700"
                   onClick={(e) => {
                     e.stopPropagation();
                     setCategory(r);
@@ -62,7 +62,7 @@ const SearchBar = ({categories, contentPlaceholder}) => {
       <input
         type="text"
         placeholder={contentPlaceholder}
-        className="flex-1 px-4 py-2 text-sm outline-none"
+        className="flex-1 px-4 py-2 text-sm outline-none text-[#9CA3AF] focus:text-gray-700"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
