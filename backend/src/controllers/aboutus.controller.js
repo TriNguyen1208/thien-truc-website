@@ -1,7 +1,37 @@
 import aboutUsServices from "#@/services/aboutus.services.js";
 
-const getAll = async (req, res) => {
-    const about_us = await aboutUsServices.getAll();
-    res.status(200).json(about_us);
+const getAllTables = async (req, res) => {
+    const data = await aboutUsServices.getAllTables();
+    res.status(200).json(data);
 }
-export default { getAll };
+
+const getAboutUsPage = async (req, res) => {
+    const data = await aboutUsServices.getAboutUsPage();
+    res.status(200).json(data);
+}
+
+const company_services = {
+    getAll: async (req, res) => {
+        const data = await aboutUsServices.company_services.getAll();
+        res.status(200).json(data);
+    },
+    getById: async (req, res) => {
+        const id = req.params.id;
+        const data = await aboutUsServices.company_services.getById(id);
+        res.status(200).json(data);
+    }
+}
+
+const why_choose_us = {
+    getAll: async (req, res) => {
+        const data = await aboutUsServices.why_choose_us.getAll();
+        res.status(200).json(data);
+    },
+    getById: async (req, res) => {
+        const id = req.params.id;
+        const data = await aboutUsServices.why_choose_us.getById(id);
+        res.status(200).json(data);
+    }
+}
+
+export default { getAllTables, getAboutUsPage, company_services, why_choose_us };
