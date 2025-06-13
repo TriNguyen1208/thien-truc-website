@@ -3,5 +3,6 @@ import recruitmentController from '#@/controllers/recruitment.controller.js';
 
 const router = express.Router();
 
-router.get('/', recruitmentController.getAll);
+router.get('/', recruitmentController.getAllTables);
+router.get('/recruitment_page', recruitmentController.getRecruitmentPage);
 export default router;

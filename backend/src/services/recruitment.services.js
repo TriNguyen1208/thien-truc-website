@@ -1,12 +1,20 @@
 import pool from '#@/config/db.js'
-const getAll = async () => {
+
+const getAllTables = async (req, res) => {
+    const recruitment = await getRecruitmentPage();
+    return {
+        ...recruitment
+    };
+}
+
+const getRecruitmentPage = async (req, res) => {
     const recruitment_page = (await pool.query("SELECT * FROM recruitment.recruitment_page")).rows;
     if(!recruitment_page){
         throw new Error("Can't get recruitment_page");
     }
     return {
-        recruitment_page: recruitment_page,
+        recruitment_page
     };
-    
 }
-export default {getAll};
+
+export default { getAllTables, getRecruitmentPage };

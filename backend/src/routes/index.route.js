@@ -10,10 +10,10 @@ const registerRoutes = (app) => {
     app.use('/api/home', homeRouter);
     app.use('/api/recruitment', recruitmentRouter);
     app.use('/api/contact', contactRouter);
-    app.use('/api/aboutus', aboutUsRouter);
+    app.use('/api/about_us', aboutUsRouter);
     app.use('/api/news', newsRouter);
-    app.use('/api/projects', projectsRouter);
-    app.use('/api/products', productRouter);
+    app.use('/api/project', projectsRouter);
+    app.use('/api/product', productRouter);
 };
 
 export default registerRoutes;
