@@ -1,34 +1,66 @@
 import pool from '#@/config/db.js'
 
-const getAll = async () => {
+const getAllTables = async () => {
+    const news_page = await getNewsPage();
+    const _news = await news.getAll();
+    const _news_categories = await news_categories.getAll();
+    return {
+        ...news_page,
+        ..._news,
+        ..._news_categories
+    };
+}
+
+const getNewsPage = async () => {
     const news_page = (await pool.query("SELECT * FROM news.news_page")).rows;
-    const news = (await pool.query(
-        `SELECT news.*, cate.name
-         From news.news as news, news.news_category as cate
-         where news.category_id = cate.id`
-    )).rows
     if(!news_page){
         throw new Error("Can't get news_page");
     }
-    if(!news){
-        throw new Error("Can't get news");
-    }
     return {
-        news_page: news_page,
-        news: news
+        news_page
     };
 }
-const getId = async (id) => {
-    const news = (await pool.query(
-        `SELECT news.*, cate.name
-         From news.news as news, news.news_category as cate
-         where news.category_id = cate.id and news.id = $1`, [id]
-    )).rows
-    if(!news){
-        throw new Error("Can't get news");
+
+const news = {
+    getAll: async () => {
+        const news = (await pool.query("SELECT * FROM news.news")).rows;
+        if(!news){
+            throw new Error("Can't get news");
+        }
+        return {
+            news
+        };
+    },
+    getById: async (id) => {
+        const news = (await pool.query(`SELECT * FROM news.news WHERE id = ${id}`)).rows;
+        if(!news){
+            throw new Error("Can't get news");
+        }
+        return {
+            news
+        };
     }
-    return {
-        news: news
-    };
 }
-export default {getAll, getId};
+
+const news_categories = {
+    getAll: async () => {
+        const news_categories = (await pool.query("SELECT * FROM news.news_categories")).rows;
+        if(!news_categories){
+            throw new Error("Can't get news_categories");
+        }
+        return {
+            news_categories
+        };
+    },
+    getById: async (id) => {
+        const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = ${id}`)).rows;
+        if(!news_category){
+            throw new Error("Can't get news_categories");
+        }
+        return {
+            news_category
+        };
+    }
+}
+
+export default { getAllTables, getNewsPage, news, news_categories };
