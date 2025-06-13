@@ -33,18 +33,18 @@ const getCompanyInfo = async () => {
 
 const support_agents = {
     getAll: async () => {
-        const support_agents = (await pool.query("SELECT * FROM contact.support_agent")).rows;
+        const support_agents = (await pool.query("SELECT * FROM contact.support_agents")).rows;
         if (!support_agents){
-            throw new Error("Can't get support_agent");
+            throw new Error("Can't get support_agents");
         }
         return {
             support_agents
         };
     },
     getById: async (id) => {
-        const support_agent_with_id = (await pool.query(`SELECT * FROM contact.support_agent WHERE id = ${id}`)).rows;
+        const support_agent_with_id = (await pool.query(`SELECT * FROM contact.support_agents WHERE id = ${id}`)).rows;
         if (!support_agent_with_id){
-            throw new Error("Can't get support_agent");
+            throw new Error("Can't get support_agents");
         }
         return {
             support_agent_with_id

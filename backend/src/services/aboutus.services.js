@@ -23,18 +23,18 @@ const getAboutUsPage = async () => {
 
 const company_services = {
     getAll: async () => {
-        const company_services = (await pool.query("SELECT * FROM about_us.company_service")).rows;
+        const company_services = (await pool.query("SELECT * FROM about_us.company_services")).rows;
         if(!company_services){
-            throw new Error("Can't get company_service");
+            throw new Error("Can't get company_services");
         }
         return {
             company_services
         };   
     },
     getById: async (id) => {
-        const company_service = (await pool.query(`SELECT * FROM about_us.company_service WHERE id = ${id}`)).rows;
+        const company_service = (await pool.query(`SELECT * FROM about_us.company_services WHERE id = ${id}`)).rows;
         if(!company_service){
-            throw new Error("Can't get company_service");
+            throw new Error("Can't get company_services");
         }
         return {
             company_service
