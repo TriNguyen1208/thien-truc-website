@@ -26,19 +26,19 @@ const SearchBar = ({categories, contentPlaceholder}) => {
       {/* Dropdown */}
       <div className="relative">
         <button
-          className="rounded-tl-md rounded-bl-md h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center gap-1 bg-[#F9FAFB] cursor-pointer"
+          className="rounded-tl-md rounded-bl-md w-38 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
           onClick={(e) =>{
             e.stopPropagation();
             setDropdownOpen(!dropdownOpen)
           }} 
         >
-          {category}
+          <span>{category}</span>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         {dropdownOpen && (
-          <ul className="absolute z-10 left-0 py-2 mt-1 w-full bg-white rounded-md shadow-md">
+          <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md">
             {
               categories.map((r) => (
                 <li
