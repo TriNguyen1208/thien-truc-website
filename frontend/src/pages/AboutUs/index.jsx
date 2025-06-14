@@ -1,7 +1,12 @@
+import useAboutUs from '@/redux/hooks/useAboutUs'
 export default function AboutUs(){
+    const { data: aboutus, isLoading: isLoadingAboutUs } = useAboutUs.getAll();
+    if (isLoadingAboutUs) {
+        return <p>Loading...</p>;
+    }
     return (
         <>
-            <p>Đây là nội dung trang về chúng tôi.</p>
+            <p>{aboutus.about_us_page[0].banner_title}</p>
         </>
     )
 }

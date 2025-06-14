@@ -1,14 +1,14 @@
 const BASE_API = '/api';
 
-const HOME_BASE = `/${BASE_API}/home`;
-const PRODUCT_BASE = `/${BASE_API}/product`;
-const PROJECT_BASE = `/${BASE_API}/project`;
-const NEWS_BASE = `/${BASE_API}/news`;
-const RECRUITMENT_BASE = `/${BASE_API}/recruitment`;
-const CONTACT_BASE = `/${BASE_API}/contact`;
-const ABOUT_US_BASE = `/${BASE_API}/contact`;
+const HOME_BASE = `${BASE_API}/home`;
+const PRODUCT_BASE = `${BASE_API}/product`;
+const PROJECT_BASE = `${BASE_API}/project`;
+const NEWS_BASE = `${BASE_API}/news`;
+const RECRUITMENT_BASE = `${BASE_API}/recruitment`;
+const CONTACT_BASE = `${BASE_API}/contact`;
+const ABOUT_US_BASE = `${BASE_API}/about_us`;
 
-export const API_ROUTES = {
+const API_ROUTES = {
     schemaTable: (schema, table) => `${BASE_API}/${schema}/${table}`,
     home: {
         base: HOME_BASE,
@@ -55,3 +55,4 @@ export const API_ROUTES = {
         why_choose_us: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`
     }
 }
+export default API_ROUTES
