@@ -1,7 +1,9 @@
-export default function Product(){
-    return (
-        <>
-            <p>Đây là nội dung trang sản phẩm.</p>
-        </>
-    )
+import LabelProject from "../../components/LabelProject";
+import ViewMoreButton from "../../components/ViewMoreButton";
+export default function Product() {
+  return (
+    <>
+      <ViewMoreButton data="Tri"/>
+    </>
+  );
 }
