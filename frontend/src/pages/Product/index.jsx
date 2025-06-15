@@ -3,7 +3,7 @@ import ViewMoreButton from "../../components/ViewMoreButton";
 export default function Product() {
   return (
     <>
-      <ViewMoreButton data="Tri"/>
+      <div> Đây là trang sản phẩm</div>
     </>
   );
 }

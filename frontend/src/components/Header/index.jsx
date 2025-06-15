@@ -23,7 +23,7 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <img 
-              src="/logo.png" 
+              src="http://thientruc.vn/App_Themes/Thientruc/images/logo.png" 
               alt="ThienTruc Logo" 
               className="h-10 w-auto"
             />
@@ -86,62 +86,3 @@ const Header = () => {
 };
 
 export default Header;
-
-
-// import { NavLink } from "react-router-dom"
-// export default function Header(){
-//     return(
-//         <>
-//             <div>
-//                 <ul className="flex space-x-4 list-none">
-//                     <li>
-//                         <NavLink to = "/">
-//                             Trang chủ
-//                         </NavLink>
-//                     </li>
-//                      <li>
-//                         <NavLink to = "/san-pham">
-//                             Sản phẩm
-//                         </NavLink>
-//                     </li>
-//                      <li>
-//                         <NavLink to = "/bang-gia">
-//                             Bảng giá
-//                         </NavLink>
-//                     </li>
-//                      <li>
-//                         <NavLink to = "/tin-tuc">
-//                             Tin tức
-//                         </NavLink>
-//                     </li>
-//                      <li>
-//                         <NavLink to = "/tuyen-dung">
-//                             Tuyển dụng
-//                         </NavLink>
-//                     </li>
-//                      <li>
-//                         <NavLink to = "/lien-he">
-//                             Liên hệ
-//                         </NavLink>
-//                     </li>
-//                 </ul>
-//             </div>
-//         </>  
-//         // // <header className="bg-white">
-//     //   <div className="container mx-auto flex items-center justify-between px-4 py-2">
-//     //     <img src="../../assets/images/logo.png" alt="Thiên Trúc Logo" className="h-8" />
-//     //     <nav className="flex space-x-6">
-//     //       <a href="#" className="text-black">Trang Chủ</a>
-//     //       <a href="#" className="text-black">Sản Phẩm</a>
-//     //       <a href="#" className="text-black">Bảng Giá</a>
-//     //       <a href="#" className="text-black">Dự Án</a>
-//     //       <a href="#" className="text-black">Tin Tức</a>
-//     //       <a href="#" className="text-black">Tuyển Dụng</a>
-//     //       <a href="#" className="text-black">Liên Hệ</a>
-//     //       <a href="#" className="text-black">Về Chúng Tôi</a>
-//     //     </nav>
-//     //   </div>
-//     // </header>
-  
-//     )
-// }
