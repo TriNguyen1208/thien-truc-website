@@ -1,6 +1,9 @@
 import React from 'react'
 
 const WhiteButton = ({content, handleClick}) => {
+  if(content == null || handleClick == null){
+    return <></>
+  }
   return (
     <button 
         className='inline-block max-w-max py-4 px-8 bg-white rounded-[6px] font-bold text-[var(--dark-green)]

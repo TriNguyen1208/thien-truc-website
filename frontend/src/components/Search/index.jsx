@@ -3,6 +3,10 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 
 const SearchBar = ({categories, contentPlaceholder}) => {
+  if(categories == null || contentPlaceholder == null){
+    return <></>
+  }
+  
   const [category, setCategory] = useState(categories[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [query, setQuery] = useState("");

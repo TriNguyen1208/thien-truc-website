@@ -9,7 +9,8 @@ const Banner = ({data}) =>{
         colorBackground = "var(--gradient-banner)",
         colorText = "#ffffff",
         hasButton = false,
-        contentButton = "",
+        hasSearch = false,
+        contentButton = null,
         handleButton = null,
         categories = null,
         contentPlaceholder = null
@@ -29,10 +30,10 @@ const Banner = ({data}) =>{
                 <div className='mt-3 px-20 w-full text-center'>
                     {hasButton ? (
                         <WhiteButton content={contentButton} handleClick={handleButton}/>
-                    ) : ( 
+                    ) : <></>}
+                    {hasSearch ? ( 
                         <SearchBar categories={categories} contentPlaceholder={contentPlaceholder}/>
-                    )
-                    }
+                    ): <></>}
                 </div>
             </div>
 

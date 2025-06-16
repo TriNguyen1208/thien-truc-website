@@ -19,11 +19,12 @@ export default function Recruitment(){
         title: "jdhfdfjdshfkwer",
         description: "eitwrkjhdfdkljfshfjdx,vn,xcndfskfjd",
         hasButton: false,
+        hasSearch: true,
         //Khi cần button thì hasButton: true, comment categories với contentPlaceholder và gỡ comment contentButton, handleButton
         categories: categories,
         contentPlaceholder: "Tìm kiếm tin tức",
-        // contentButton: "Liên hệ tư vấn",
-        // handleButton: handleClick
+        contentButton: "Liên hệ tư vấn",
+        handleButton: handleClick
     };
     return (
         <div className="">
