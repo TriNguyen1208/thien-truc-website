@@ -31,7 +31,7 @@ const projects = {
             projects
         };
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const project = (await pool.query(`SELECT * FROM project.projects WHERE id = ${id}`)).rows;
         if(!project){
             throw new Error("Can't get projects");
@@ -52,7 +52,7 @@ const project_regions = {
             project_regions
         };
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = ${id}`)).rows;
         if(!project_region){
             throw new Error("Can't get project_regions");
@@ -63,4 +63,25 @@ const project_regions = {
     }
 }
 
-export default { getAllTables, getProjectPage, projects, project_regions };
+const project_contents = {
+    getAll: async () => {
+        const project_contents = (await pool.query("SELECT * FROM project.project_contents")).rows;
+        if (!project_contents){
+            throw new Error("Can't get project_contents");
+        }
+        return {
+            project_contents
+        };
+    },
+    getOne: async (id) => {
+        const project_content = (await pool.query(`SELECT * FROM project.project_contents WHERE id = ${id}`)).rows;
+        if (!project_content){
+            throw new Error("Can't get project_contents");
+        }
+        return {
+            project_content
+        };
+    }
+}
+
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents};

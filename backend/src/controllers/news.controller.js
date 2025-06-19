@@ -15,9 +15,9 @@ const news = {
         const data = await newsServices.news.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => {
+    getOne: async (req, res) => {
         const id = req.params.id;
-        const data = await newsServices.news.getById(id);
+        const data = await newsServices.news.getOne(id);
         res.status(200).json(data);
     }
 }
@@ -27,11 +27,23 @@ const news_categories = {
         const data = await newsServices.news_categories.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => {
+    getOne: async (req, res) => {
         const id = req.params.id;
-        const data = await newsServices.news_categories.getById(id);
+        const data = await newsServices.news_categories.getOne(id);
         res.status(200).json(data);
     }
 }
 
-export default { getAllTables, getNewsPage, news, news_categories };
+const news_contents = {
+    getAll: async (req, res) => {
+        const data = await newsServices.news_contents.getAll();
+        res.status(200).json(data);
+    },
+    getOne: async (req, res) => {
+        const id = req.params.id;
+        const data = await newsServices.news_contents.getOne(id);
+        res.status(200).json(data);
+    }
+}
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents };

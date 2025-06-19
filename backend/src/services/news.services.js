@@ -31,7 +31,7 @@ const news = {
             news
         };
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const news = (await pool.query(`SELECT * FROM news.news WHERE id = ${id}`)).rows;
         if(!news){
             throw new Error("Can't get news");
@@ -52,7 +52,7 @@ const news_categories = {
             news_categories
         };
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = ${id}`)).rows;
         if(!news_category){
             throw new Error("Can't get news_categories");
@@ -63,4 +63,25 @@ const news_categories = {
     }
 }
 
-export default { getAllTables, getNewsPage, news, news_categories };
+const news_contents = {
+    getAll: async () => {
+        const news_contents = (await pool.query("SELECT * FROM news.news_contents")).rows;
+        if(!news_contents){
+            throw new Error("Can't get news_contents");
+        }
+        return {
+            news_contents
+        };
+    },
+    getOne: async (id) => {
+        const news_content = (await pool.query(`SELECT * FROM news.news_contents WHERE id = ${id}`)).rows;
+        if(!news_content){
+            throw new Error("Can't get news_contents");
+        }
+        return {
+            news_content
+        };
+    }
+}
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents};

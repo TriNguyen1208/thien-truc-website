@@ -31,7 +31,7 @@ const company_services = {
             company_services
         };   
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const company_service = (await pool.query(`SELECT * FROM about_us.company_services WHERE id = ${id}`)).rows;
         if(!company_service){
             throw new Error("Can't get company_services");
@@ -52,7 +52,7 @@ const why_choose_us = {
             why_choose_us
         }; 
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const why_choose_us = (await pool.query(`SELECT * FROM about_us.why_choose_us WHERE id = ${id}`)).rows;
         if(!why_choose_us){
             throw new Error("Can't get why_choose_us");

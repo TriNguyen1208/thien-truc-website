@@ -33,7 +33,7 @@ const highlight_stats_about_us = {
         };
     },
 
-    getById: async (id) => {
+    getOne: async (id) => {
         const highlight_stat_with_id= (await pool.query(`
             SELECT * FROM home.highlight_stats_about_us WHERE id = ${id}
         `)).rows;

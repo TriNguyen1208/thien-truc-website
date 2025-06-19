@@ -20,9 +20,9 @@ const support_agents = {
         const data = await contactServices.support_agents.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => {
+    getOne: async (req, res) => {
         const id = req.params.id;
-        const data = await contactServices.support_agents.getById(id);
+        const data = await contactServices.support_agents.getOne(id);
         res.status(200).json(data);
     }
 }

@@ -15,9 +15,9 @@ const products = {
         const data = await productServices.products.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => {
+    getOne: async (req, res) => {
         const id = req.params.id
-        const data = await productServices.products.getById(id);
+        const data = await productServices.products.getOne(id);
         res.status(200).json(data);
     }
 }
@@ -27,9 +27,9 @@ const product_categories = {
         const data = await productServices.product_categories.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => {
+    getOne: async (req, res) => {
         const id = req.params.id
-        const data = await productServices.product_categories.getById(id);
+        const data = await productServices.product_categories.getOne(id);
         res.status(200).json(data);
     }
 }
@@ -44,10 +44,10 @@ const product_features = {
         const data = await productServices.product_features.getByProductId(product_id);
         res.status(200).json(data);
     },
-    getByProductAndFeatureId: async (req, res) => {
+    getOne: async (req, res) => {
         const product_id = req.params.product_id
         const feature_id = req.params.feature_id
-        const data = await productServices.product_features.getByProductAndFeatureId(product_id, feature_id);
+        const data = await productServices.product_features.getOne(product_id, feature_id);
         res.status(200).json(data);
     }
 }
@@ -62,10 +62,10 @@ const product_highlight_features = {
         const data = await productServices.product_highlight_features.getByProductId(product_id);
         res.status(200).json(data);
     },
-    getByProductAndFeatureId: async (req, res) => {
+    getOne: async (req, res) => {
         const product_id = req.params.product_id
         const feature_id = req.params.feature_id
-        const data = await productServices.product_highlight_features.getByProductAndFeatureId(product_id, feature_id);
+        const data = await productServices.product_highlight_features.getOne(product_id, feature_id);
         res.status(200).json(data);
     }
 }
@@ -80,9 +80,9 @@ const product_prices = {
         const data = await productServices.product_prices.getAll();
         res.status(200).json(data);
     },
-    getByProductId: async (req, res) => {
+    getOne: async (req, res) => {
         const product_id = req.params.product_id
-        const data = await productServices.product_prices.getByProductId(product_id);
+        const data = await productServices.product_prices.getOne(product_id);
         res.status(200).json(data);
     }
 }

@@ -15,9 +15,9 @@ const highlight_stats_about_us = {
         const data = await homeServices.highlight_stats_about_us.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => { 
+    getOne: async (req, res) => { 
         const id = req.params.id;
-        const data = await homeServices.highlight_stats_about_us.getById(id);
+        const data = await homeServices.highlight_stats_about_us.getOne(id);
         res.status(200).json(data);
     }
 }

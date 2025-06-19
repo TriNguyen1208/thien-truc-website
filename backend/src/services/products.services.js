@@ -39,7 +39,7 @@ const products = {
             products
         };
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const product = (await pool.query(`SELECT * FROM product.products WHERE id = ${id}`)).rows;
         if(!product){
             throw new Error("Can't get products");
@@ -60,7 +60,7 @@ const product_categories = {
             product_categories
         };
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const product_category = (await pool.query(`SELECT * FROM product.product_categories WHERE id = ${id}`)).rows;
         if(!product_category){
             throw new Error("Can't get product_categories");
@@ -90,7 +90,7 @@ const product_features = {
             product_features
         };
     },
-    getByProductAndFeatureId: async (product_id, feature_id) => {
+    getOne: async (product_id, feature_id) => {
         const product_feature = (await pool.query(`SELECT * FROM product.product_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows;
         if(!product_feature){
             throw new Error("Can't get product_features");
@@ -120,7 +120,7 @@ const product_highlight_features = {
             product_highlight_features
         };
     },
-    getByProductAndFeatureId: async (product_id, feature_id) => {
+    getOne: async (product_id, feature_id) => {
         const product_highlight_feature = (await pool.query(`SELECT * FROM product.product_highlight_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows;
         if(!product_highlight_feature){
             throw new Error("Can't get product_highlight_features");
@@ -151,7 +151,7 @@ const product_prices = {
             product_prices
         };
     },
-    getByProductId: async (product_id) => {
+    getOne: async (product_id) => {
         const product_price = (await pool.query(`SELECT * FROM product.product_prices WHERE product_id = ${product_id}`)).rows;
         if(!product_price){
             throw new Error("Can't get products");

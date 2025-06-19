@@ -41,7 +41,7 @@ const support_agents = {
             support_agents
         };
     },
-    getById: async (id) => {
+    getOne: async (id) => {
         const support_agent_with_id = (await pool.query(`SELECT * FROM contact.support_agents WHERE id = ${id}`)).rows;
         if (!support_agent_with_id){
             throw new Error("Can't get support_agents");

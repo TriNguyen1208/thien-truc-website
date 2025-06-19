@@ -15,9 +15,9 @@ const company_services = {
         const data = await aboutUsServices.company_services.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => {
+    getOne: async (req, res) => {
         const id = req.params.id;
-        const data = await aboutUsServices.company_services.getById(id);
+        const data = await aboutUsServices.company_services.getOne(id);
         res.status(200).json(data);
     }
 }
@@ -27,9 +27,9 @@ const why_choose_us = {
         const data = await aboutUsServices.why_choose_us.getAll();
         res.status(200).json(data);
     },
-    getById: async (req, res) => {
+    getOne: async (req, res) => {
         const id = req.params.id;
-        const data = await aboutUsServices.why_choose_us.getById(id);
+        const data = await aboutUsServices.why_choose_us.getOne(id);
         res.status(200).json(data);
     }
 }
