@@ -17,11 +17,11 @@ const getCompanyInfo = async () => {
 
 const support_agents = {
     getAll: async () => {
-        const res = await axios.get(API_ROUTES.contact.support_agents);
+        const res = await axios.get(API_ROUTES.contact.support_agents.getAll);
         return res.data;
     },
     getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.contact.support_agents(id));
+        const res = await axios.get(API_ROUTES.contact.support_agents.getOne(id));
         return res.data;
     }
 }

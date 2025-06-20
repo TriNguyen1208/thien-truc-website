@@ -13,22 +13,22 @@ const getAboutUsPage = async () => {
 
 const company_services = {
     getAll: async () => {
-        const res = await axios.get(API_ROUTES.about_us.company_services);
+        const res = await axios.get(API_ROUTES.about_us.company_services.getAll);
         return res.data;
     },
     getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.about_us.company_services(id));
+        const res = await axios.get(API_ROUTES.about_us.company_services.getOne(id));
         return res.data;
     }
 }
 
 const why_choose_us = {
     getAll: async () => {
-        const res = await axios.get(API_ROUTES.about_us.why_choose_us);
+        const res = await axios.get(API_ROUTES.about_us.why_choose_us.getAll);
         return res.data;
     },
     getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.about_us.why_choose_us(id));
+        const res = await axios.get(API_ROUTES.about_us.why_choose_us.getOne(id));
         return res.data;
     }
 }
