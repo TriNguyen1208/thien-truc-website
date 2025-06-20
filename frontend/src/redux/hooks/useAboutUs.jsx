@@ -3,10 +3,53 @@ import aboutUsServices from "@/services/aboutus.api.js";
 
 function useGetAll(){
     return useQuery({
-        queryKey: ["aboutus"],
+        queryKey: ["about_us"],
         queryFn: aboutUsServices.getAll,
     })
 }
+function useGetAboutUsPage(){
+    return useQuery({
+        queryKey: ["about_us_page"],
+        queryFn: aboutUsServices.getAboutUsPage,
+    })
+}
+const company_services = {
+    useGetAll: () => {
+        return useQuery({
+            queryKey: ["company_services"],
+            queryFn: aboutUsServices.company_services.getAll,
+        })
+    },
+    useGetOne: (id) => {
+        return useQuery({
+            queryKey: ["company_services", id],
+            queryFn: () => aboutUsServices.company_services.getOne(id),
+        })
+    } 
+}
+const why_choose_us = {
+    useGetAll: () => {
+        return useQuery({
+            queryKey: ["why_choose_us"],
+            queryFn: aboutUsServices.why_choose_us.getAll,
+        })
+    },
+    useGetOne: (id) => {
+        return useQuery({
+            queryKey: ["why_choose_us", id],
+            queryFn: () => aboutUsServices.why_choose_us.getOne(id),
+        })
+    } 
+}
 export default {
     getAll: useGetAll,
+    getAboutUsPage: useGetAboutUsPage,
+    company_services: {
+        getAll: company_services.useGetAll,
+        getOne: company_services.useGetOne,
+    },
+    why_choose_us: {
+        getAll: why_choose_us.useGetAll,
+        getOne: why_choose_us.useGetOne,
+    }
 };

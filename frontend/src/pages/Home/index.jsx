@@ -1,10 +1,10 @@
 import useHome from "@/redux/hooks/useHome"
-import useAboutUs from "@/redux/hooks/useAboutUs"
-import useContact from "@/redux/hooks/useContact"
-import useNews from "@/redux/hooks/useNews"
-import useProducts from "@/redux/hooks/useProducts"
-import useProjects from "@/redux/hooks/useProjects"
-import useRecruitment from "@/redux/hooks/useRecruitment"
+// import useAboutUs from "@/redux/hooks/useAboutUs"
+// import useContact from "@/redux/hooks/useContact"
+// import useNews from "@/redux/hooks/useNews"
+// import useProducts from "@/redux/hooks/useProducts"
+// import useProjects from "@/redux/hooks/useProjects"
+// import useRecruitment from "@/redux/hooks/useRecruitment"
 
 //Ví dụ chill chill
 export default function Home(){
@@ -37,4 +37,16 @@ export default function Home(){
     //         <p>{recruitment.recruitment_page[0].banner_title}</p>
     //     </>
     // )
+    const {data, isLoading} = useHome.highlight_stats_about_us.getOne(1);
+    if(isLoading){
+        return <>Is Loading...</>
+    }
+    if (!data) {
+        return <>No data available</>; // hoặc null
+      }
+    return(
+        <>
+            {data.highlight_stat_with_id[0].number_text}
+        </>
+    )
 }
