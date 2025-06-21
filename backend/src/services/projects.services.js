@@ -12,7 +12,7 @@ const getAllTables = async () => {
 }
 
 const getProjectPage = async () => {
-    const project_page = (await pool.query("SELECT * FROM project.project_page")).rows;
+    const project_page = (await pool.query("SELECT * FROM project.project_page")).rows[0];
     if(!project_page){
         throw new Error("Can't get project_page");
     }
@@ -32,7 +32,7 @@ const projects = {
         };
     },
     getOne: async (id) => {
-        const project = (await pool.query(`SELECT * FROM project.projects WHERE id = ${id}`)).rows;
+        const project = (await pool.query(`SELECT * FROM project.projects WHERE id = ${id}`)).rows[0];
         if(!project){
             throw new Error("Can't get projects");
         }
@@ -53,7 +53,7 @@ const project_regions = {
         };
     },
     getOne: async (id) => {
-        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = ${id}`)).rows;
+        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = ${id}`)).rows[0];
         if(!project_region){
             throw new Error("Can't get project_regions");
         }
@@ -74,7 +74,7 @@ const project_contents = {
         };
     },
     getOne: async (id) => {
-        const project_content = (await pool.query(`SELECT * FROM project.project_contents WHERE id = ${id}`)).rows;
+        const project_content = (await pool.query(`SELECT * FROM project.project_contents WHERE id = ${id}`)).rows[0];
         if (!project_content){
             throw new Error("Can't get project_contents");
         }

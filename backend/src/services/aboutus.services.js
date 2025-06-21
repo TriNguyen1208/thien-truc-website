@@ -12,7 +12,7 @@ const getAllTables = async () => {
 }
 
 const getAboutUsPage = async () => {
-    const about_us_page = (await pool.query("SELECT * FROM about_us.about_us_page")).rows;
+    const about_us_page = (await pool.query("SELECT * FROM about_us.about_us_page")).rows[0];
     if(!about_us_page){
         throw new Error("Can't get about_us_page");
     }
@@ -32,7 +32,7 @@ const company_services = {
         };   
     },
     getOne: async (id) => {
-        const company_service = (await pool.query(`SELECT * FROM about_us.company_services WHERE id = ${id}`)).rows;
+        const company_service = (await pool.query(`SELECT * FROM about_us.company_services WHERE id = ${id}`)).rows[0];
         if(!company_service){
             throw new Error("Can't get company_services");
         }
@@ -53,7 +53,7 @@ const why_choose_us = {
         }; 
     },
     getOne: async (id) => {
-        const why_choose_us = (await pool.query(`SELECT * FROM about_us.why_choose_us WHERE id = ${id}`)).rows;
+        const why_choose_us = (await pool.query(`SELECT * FROM about_us.why_choose_us WHERE id = ${id}`)).rows[0];
         if(!why_choose_us){
             throw new Error("Can't get why_choose_us");
         }

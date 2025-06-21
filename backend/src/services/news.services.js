@@ -12,7 +12,7 @@ const getAllTables = async () => {
 }
 
 const getNewsPage = async () => {
-    const news_page = (await pool.query("SELECT * FROM news.news_page")).rows;
+    const news_page = (await pool.query("SELECT * FROM news.news_page")).rows[0];
     if(!news_page){
         throw new Error("Can't get news_page");
     }
@@ -32,7 +32,7 @@ const news = {
         };
     },
     getOne: async (id) => {
-        const news = (await pool.query(`SELECT * FROM news.news WHERE id = ${id}`)).rows;
+        const news = (await pool.query(`SELECT * FROM news.news WHERE id = ${id}`)).rows[0];
         if(!news){
             throw new Error("Can't get news");
         }
@@ -53,7 +53,7 @@ const news_categories = {
         };
     },
     getOne: async (id) => {
-        const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = ${id}`)).rows;
+        const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = ${id}`)).rows[0];
         if(!news_category){
             throw new Error("Can't get news_categories");
         }
@@ -74,7 +74,7 @@ const news_contents = {
         };
     },
     getOne: async (id) => {
-        const news_content = (await pool.query(`SELECT * FROM news.news_contents WHERE id = ${id}`)).rows;
+        const news_content = (await pool.query(`SELECT * FROM news.news_contents WHERE id = ${id}`)).rows[0];
         if(!news_content){
             throw new Error("Can't get news_contents");
         }
