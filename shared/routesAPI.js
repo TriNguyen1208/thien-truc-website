@@ -31,10 +31,12 @@ const API_ROUTES = {
         },
         product_features: {
             getAll: `${PRODUCT_BASE}/product_features`,
+            getByProductId: (product_id) => `${PRODUCT_BASE}/product_features/${product_id}`,
             getOne: (product_id, feature_id) =>`${PRODUCT_BASE}/product_features/${product_id}/${feature_id}`,
         },
         product_highlight_features: {
             getAll: `${PRODUCT_BASE}/product_highlight_features`,
+            getByProductId: (product_id) => `${PRODUCT_BASE}/product_highlight_features/${product_id}`,
             getOne: (product_id, feature_id) => `${PRODUCT_BASE}/product_highlight_features/${product_id}/${feature_id}`,
         },
         product_prices: {
@@ -54,6 +56,10 @@ const API_ROUTES = {
             getAll: `${PROJECT_BASE}/project_regions`,
             getOne: (id) => `${PROJECT_BASE}/project_regions/${id}`,
         },
+        project_contents: {
+            getAll: `${PROJECT_BASE}/project_contents`,
+            getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
+        }
     },
     news: {
         base: NEWS_BASE,
