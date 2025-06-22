@@ -11,11 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@ant-design/icons": "^6.0.0",
-=======
     "@fontsource-variable/geist": "^5.2.6",
->>>>>>> origin/feature/greenButton-ItemProduct
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/vite": "^4.1.7",
