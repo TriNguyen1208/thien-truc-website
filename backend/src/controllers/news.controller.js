@@ -1,12 +1,49 @@
 import newsServices from "#@/services/news.services.js";
 
-const getAll = async (req, res) => {
-    const news = await newsServices.getAll();
-    res.status(200).json(news);
+const getAllTables = async (req, res) => {
+    const data = await newsServices.getAllTables();
+    res.status(200).json(data);
 }
-const getId = async (req, res) => {
-    const id = req.params.id;
-    const news = await newsServices.getId(id);
-    res.status(200).json(news);
+
+const getNewsPage = async (req, res) => {
+    const data = await newsServices.getNewsPage();
+    res.status(200).json(data);
 }
-export default { getAll, getId };
+
+const news = {
+    getAll: async (req, res) => {
+        const data = await newsServices.news.getAll();
+        res.status(200).json(data);
+    },
+    getOne: async (req, res) => {
+        const id = req.params.id;
+        const data = await newsServices.news.getOne(id);
+        res.status(200).json(data);
+    }
+}
+
+const news_categories = {
+    getAll: async (req, res) => {
+        const data = await newsServices.news_categories.getAll();
+        res.status(200).json(data);
+    },
+    getOne: async (req, res) => {
+        const id = req.params.id;
+        const data = await newsServices.news_categories.getOne(id);
+        res.status(200).json(data);
+    }
+}
+
+const news_contents = {
+    getAll: async (req, res) => {
+        const data = await newsServices.news_contents.getAll();
+        res.status(200).json(data);
+    },
+    getOne: async (req, res) => {
+        const id = req.params.id;
+        const data = await newsServices.news_contents.getOne(id);
+        res.status(200).json(data);
+    }
+}
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents };

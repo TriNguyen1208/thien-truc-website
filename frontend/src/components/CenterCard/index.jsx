@@ -6,12 +6,12 @@ export default function CenterCard(props) {
             <div className="mb-4">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
                     <IconComponent
-            style={{
-              width: '1rem',
-              height: '1rem',
-              color: '#15803D',
-              display: 'block'
-            }}
+                    style={{
+                      width: '1rem',
+                      height: '1rem',
+                      color: '#15803D',
+                      display: 'block'
+                    }}
 />
                 </div>
             </div>

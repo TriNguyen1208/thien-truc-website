@@ -1,7 +1,13 @@
 import recruitmentServices from "#@/services/recruitment.services.js";
 
-const getAll = async (req, res) => {
-    const recruitment = await recruitmentServices.getAll();
-    res.status(200).json(recruitment);
+const getAllTables = async (req, res) => {
+    const data = await recruitmentServices.getAllTables();
+    res.status(200).json(data);
 }
-export default { getAll };
+
+const getRecruitmentPage = async (req, res) => {
+    const data = await recruitmentServices.getRecruitmentPage();
+    res.status(200).json(data);
+}
+
+export default { getAllTables, getRecruitmentPage };
