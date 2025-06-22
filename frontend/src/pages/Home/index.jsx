@@ -5,6 +5,7 @@ import useNews from "@/redux/hooks/useNews"
 import useProducts from "@/redux/hooks/useProducts"
 import useProjects from "@/redux/hooks/useProjects"
 import useRecruitment from "@/redux/hooks/useRecruitment"
+import { useContext } from "react"
 
 //Ví dụ chill chill
 export default function Home(){
@@ -37,4 +38,16 @@ export default function Home(){
     //         <p>{recruitment.recruitment_page[0].banner_title}</p>
     //     </>
     // )
+    const {data, isLoading} = useRecruitment.getRecruitmentPage();
+    if(isLoading){
+        return <>Is Loading...</>
+    }
+    if (!data) {
+        return <>No data available</>; // hoặc null
+      }
+    return(
+        <>
+            {data.recruitment_page[0].culture_content}
+        </>
+    )
 }

@@ -7,6 +7,13 @@ function useGetAll(){
         queryFn: recruitmentServices.getAll,
     })
 }
+function useGetRecruitmentPage(){
+    return useQuery({
+        queryKey: ["recruitment_page"],
+        queryFn: recruitmentServices.getRecruitmentPage,
+    })
+}
 export default {
     getAll: useGetAll,
+    getRecruitmentPage: useGetRecruitmentPage
 };

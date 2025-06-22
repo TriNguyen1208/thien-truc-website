@@ -1,7 +1,11 @@
 import axios from "@/services/axiosInstance.js"
-
+import API_ROUTES from "../../../shared/routesAPI";
 const getAll = async () =>{
-    const res = await axios.get("/recruitment");
+    const res = await axios.get(API_ROUTES.recruitment.base);
     return res.data;
 }
-export default {getAll};
+const getRecruitmentPage = async () => {
+    const res = await axios.get(API_ROUTES.recruitment.recruitment_page);
+    return res.data;
+}
+export default {getAll, getRecruitmentPage};
