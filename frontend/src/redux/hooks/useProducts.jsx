@@ -4,7 +4,7 @@ import { use } from "react";
 
 function useGetAll(){
     return useQuery({
-        queryKey: ["products"],
+        queryKey: ["product"],
         queryFn: productsServices.getAll,
     })
 }
@@ -18,13 +18,13 @@ const products = {
     useGetAll: ()=>{
         return useQuery({
             queryKey: ["products"],
-            queryFn: productsServices.getAll,
+            queryFn: productsServices.products.getAll,
         })
     },
     useGetOne: (id)=>{
         return useQuery({
             queryKey: ["products", id],
-            queryFn: () => productsServices.getOne(id),
+            queryFn: () => productsServices.products.getOne(id),
         })
     }
 }
@@ -32,13 +32,13 @@ const product_categories = {
     useGetAll: ()=>{
         return useQuery({
             queryKey: ["product_categories"],
-            queryFn: productsServices.getAll,
+            queryFn: productsServices.product_categories.getAll,
         })
     },
     useGetOne: (id)=>{
         return useQuery({
             queryKey: ["product_categories", id],
-            queryFn: () => productsServices.getOne(id),
+            queryFn: () => productsServices.product_categories.getOne(id),
         })
     } 
 }
@@ -46,19 +46,19 @@ const product_features = {
     useGetAll: ()=>{    
         return useQuery({
             queryKey: ["product_features"],
-            queryFn: productsServices.getAll,
+            queryFn: productsServices.product_features.getAll,
         })
     },
     useGetByProductId: (product_id)=>{
         return useQuery({
             queryKey: ["product_features", product_id],
-            queryFn: () => productsServices.getByProductId(product_id),
+            queryFn: () => productsServices.product_features.getByProductId(product_id),
         })
     },
     useGetOne: (product_id, feature_id)=>{
         return useQuery({
             queryKey: ["product_features", product_id, feature_id],
-            queryFn: () => productsServices.getOne(product_id, feature_id),
+            queryFn: () => productsServices.product_features.getOne(product_id, feature_id),
         })
     }   
 }
@@ -66,19 +66,19 @@ const product_highlight_features = {
     useGetAll: ()=>{    
         return useQuery({
             queryKey: ["product_highlight_features"],
-            queryFn: productsServices.getAll,
+            queryFn: productsServices.product_highlight_features.getAll,
         })
     },
     useGetByProductId: (product_id)=>{
         return useQuery({
             queryKey: ["product_highlight_features", product_id],
-            queryFn: () => productsServices.getByProductId(product_id),
+            queryFn: () => productsServices.product_highlight_features.getByProductId(product_id),
         })
     },
     useGetOne: (product_id, feature_id)=>{
         return useQuery({
             queryKey: ["product_highlight_features", product_id, feature_id],
-            queryFn: () => productsServices.getOne(product_id, feature_id),
+            queryFn: () => productsServices.product_highlight_features.getOne(product_id, feature_id),
         })
     }   
 }
@@ -86,13 +86,13 @@ const product_prices = {
     useGetAll: ()=>{
         return useQuery({
             queryKey: ["product_prices"],
-            queryFn: productsServices.getAll,
+            queryFn: productsServices.product_prices.getAll,
         })
     },
     useGetOne: (id)=>{
         return useQuery({
             queryKey: ["product_prices", id],
-            queryFn: () => productsServices.getOne(id),
+            queryFn: () => productsServices.product_prices.getOne(id),
         })
     }
 }
