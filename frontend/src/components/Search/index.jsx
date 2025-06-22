@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react'
 import { SearchOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
@@ -81,3 +82,17 @@ const SearchBar = ({categories, contentPlaceholder}) => {
 };
 
 export default SearchBar;
+=======
+import React from 'react';
+
+const LabelProject = (props) => {
+  const {data, color }  = props
+  return (
+    <button className={`bg-${color}-500 text-black px-6 py-2 rounded-full`}>
+      {data}
+    </button>
+  );
+};
+
+export default LabelProject;
+>>>>>>> origin/feature/components/header-footer-labelProject-viewMoreButtom
