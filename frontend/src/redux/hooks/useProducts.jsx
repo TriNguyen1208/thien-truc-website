@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import productsServices from "@/services/products.api.js";
-import { use } from "react";
 
 function useGetAll(){
     return useQuery({
