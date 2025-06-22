@@ -5,8 +5,12 @@ import useNews from "@/redux/hooks/useNews"
 import useProducts from "@/redux/hooks/useProducts"
 import useProjects from "@/redux/hooks/useProjects"
 import useRecruitment from "@/redux/hooks/useRecruitment"
+<<<<<<< HEAD
 import { useContext } from "react"
 
+=======
+import Card from "../../components/Card"
+>>>>>>> origin/feature/card
 //Ví dụ chill chill
 export default function Home(){
 
@@ -42,12 +46,35 @@ export default function Home(){
     if(isLoading){
         return <>Is Loading...</>
     }
+<<<<<<< HEAD
     if (!data) {
         return <>No data available</>; // hoặc null
       }
     return(
         <>
             {data.recruitment_page[0].culture_content}
+=======
+    if (!home || !aboutus || !contact || !news || !product || !projects || !recruitment) {
+        return <p>Dữ liệu chưa sẵn sàng hoặc có lỗi.</p>;
+    }
+
+    return (
+        <>
+        <div className="grid grid-cols-2 gap-[32px]">
+              {
+             aboutus.company_service.map((card)=>{
+                return (
+                    <div className="w-[560px]">
+                        <Card card={card} key={card.id} />
+                    </div>
+
+                )
+            }
+            )
+           } 
+        </div>
+              
+>>>>>>> origin/feature/card
         </>
     )
 }
