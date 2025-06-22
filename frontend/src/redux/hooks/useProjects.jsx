@@ -7,14 +7,58 @@ function useGetAll(){
         queryFn: projectsServices.getAll,
     })
 }
-function useGetId(id){
+function useGetProjectPage(){
     return useQuery({
-        queryKey: ["projects", id],
-        queryFn: () => projectsServices.getId(id),
-        enabled: !!id //chi fetch khi co id
+        queryKey: ["project_page"],
+        queryFn: projectsServices.getProjectPage,
     })
+}
+const projects = {
+    useGetAll: () => {
+        return useQuery({
+            queryKey: ["projects_list"],
+            queryFn: projectsServices.projects.getAll,
+        })
+    },
+    useGetOne: (id) => {
+        return useQuery({
+            queryKey: ["project", id],
+            queryFn: () => projectsServices.projects.getOne(id),
+        })
+    }
+}
+const project_regions = {
+    useGetAll: () => {
+        return useQuery({
+            queryKey: ["project_regions"],
+            queryFn: projectsServices.project_regions.getAll,
+        })
+    },
+    useGetOne: (id) => {
+        return useQuery({
+            queryKey: ["project_region", id],
+            queryFn: () => projectsServices.project_regions.getOne(id),
+        })
+    }
+}
+const project_contents = {
+    useGetAll: () => {
+        return useQuery({
+            queryKey: ["project_contents"],
+            queryFn: projectsServices.project_contents.getAll,
+        })
+    },
+    useGetOne: (id) => {
+        return useQuery({
+            queryKey: ["project_content", id],
+            queryFn: () => projectsServices.project_contents.getOne(id),
+        })
+    }
 }
 export default {
     getAll: useGetAll,
-    getId: useGetId
-  };
+    getProjectPage: useGetProjectPage,
+    projects,
+    project_regions,
+    project_contents
+};
