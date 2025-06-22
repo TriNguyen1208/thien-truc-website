@@ -6,6 +6,7 @@ import useProducts from "@/redux/hooks/useProducts"
 import useProjects from "@/redux/hooks/useProjects"
 import useRecruitment from "@/redux/hooks/useRecruitment"
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useContext } from "react"
 
 =======
@@ -75,6 +76,22 @@ export default function Home(){
         </div>
               
 >>>>>>> origin/feature/card
+=======
+import PostCategory from "../../components/PostCategory"
+//Ví dụ chill chill
+export default function Home(){
+
+    const categories = [
+        'Tất cả',
+        'Miền Bắc',
+        'Miền Trung',
+        'Miền Nam',
+        'Miền Tây',
+    ]
+    return (
+        <>
+            <PostCategory categories= {categories} />
+>>>>>>> origin/feature/components/postCategory
         </>
     )
 }
