@@ -7,6 +7,7 @@ import useProjects from "@/redux/hooks/useProjects"
 import useRecruitment from "@/redux/hooks/useRecruitment"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useContext } from "react"
 
 =======
@@ -14,6 +15,18 @@ import Card from "../../components/Card"
 >>>>>>> origin/feature/card
 //Ví dụ chill chill
 export default function Home(){
+=======
+import ItemProduct   from "../../components/ItemProduct"
+//Ví dụ chill chill
+export default function Home(){
+    const { getAll: getAllHome } = useHome();
+    const { getAll: getAllAboutUs } = useAboutUs();
+    const { getAll: getAllContact } = useContact();
+    const { getAll: getAllNews } = useNews(null);
+    const { getId: getIdProducts } = useProducts(17);
+    const { getAll: getAllProjects } = useProjects(null);
+    const { getAll: getAllRecruitment } = useRecruitment();
+>>>>>>> origin/feature/greenButton-ItemProduct
 
     // const { data: home, isLoading: isLoadingHome } = useHome.getAll();
     // const { data: aboutus, isLoading: isLoadingAboutUs } = useAboutUs.getAll();
@@ -61,6 +74,7 @@ export default function Home(){
 
     return (
         <>
+<<<<<<< HEAD
         <div className="grid grid-cols-2 gap-[32px]">
               {
              aboutus.company_service.map((card)=>{
@@ -92,6 +106,14 @@ export default function Home(){
         <>
             <PostCategory categories= {categories} />
 >>>>>>> origin/feature/components/postCategory
+=======
+          <div className="flex flex-row  gap-x-[16px]">
+            <ItemProduct product={product.product[0]} />
+            <ItemProduct product={product.product[0]} />
+            <ItemProduct product={product.product[0]} />
+            <ItemProduct product={product.product[0]} />
+          </div>
+>>>>>>> origin/feature/greenButton-ItemProduct
         </>
     )
 }
