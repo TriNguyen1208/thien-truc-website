@@ -1,11 +1,45 @@
 import axios from "@/services/axiosInstance.js"
+import API_ROUTES from "../../../shared/routesAPI";
 
-const getAll = async () =>{
-    const res = await axios.get("/projects");
+const getAll = async () => {
+    const res = await axios.get(API_ROUTES.projects.getAll);
     return res.data;
 }
-const getId = async (id) => {
-    const res = await axios.get(`/projects/${id}`);
+
+const getProjectPage = async () => {
+    const res = await axios.get(API_ROUTES.projects.project_page);
     return res.data;
 }
-export default {getAll, getId};
+
+const projects = {
+    getAll: async () => {
+        const res = await axios.get(API_ROUTES.projects.projects.getAll);
+        return res.data;
+    },
+    getOne: async (id) => {
+        const res = await axios.get(API_ROUTES.projects.projects.getOne(id));
+        return res.data;
+    }
+}
+const project_regions = {
+    getAll: async () => {
+        const res = await axios.get(API_ROUTES.projects.project_regions.getAll);
+        return res.data;
+    },
+    getOne: async (id) => {
+        const res = await axios.get(API_ROUTES.projects.project_regions.getOne(id));
+        return res.data;
+    }
+}
+const project_contents = {
+    getAll: async () => {
+        const res = await axios.get(API_ROUTES.projects.project_contents.getAll);
+        return res.data;
+    },
+    getOne: async (id) => {
+        const res = await axios.get(API_ROUTES.projects.project_contents.getOne(id));
+        return res.data;
+    }
+}
+
+export default { getAll, getProjectPage, projects, project_regions, project_contents };
