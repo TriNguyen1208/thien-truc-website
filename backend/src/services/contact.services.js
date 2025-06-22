@@ -12,7 +12,7 @@ const getAllTables = async () => {
 }
 
 const getContactPage = async () => {
-    const contact_page = (await pool.query("SELECT * FROM contact.contact_page")).rows;
+    const contact_page = (await pool.query("SELECT * FROM contact.contact_page")).rows[0];
     if(!contact_page){
         throw new Error("Can't get contact_page");
     }
@@ -22,7 +22,7 @@ const getContactPage = async () => {
 }
 
 const getCompanyInfo = async () => {
-    const company_info = (await pool.query("SELECT * FROM contact.company_info")).rows;
+    const company_info = (await pool.query("SELECT * FROM contact.company_info")).rows[0];
     if(!company_info){
         throw new Error("Can't get company_info");
     }
@@ -42,7 +42,7 @@ const support_agents = {
         };
     },
     getOne: async (id) => {
-        const support_agent_with_id = (await pool.query(`SELECT * FROM contact.support_agents WHERE id = ${id}`)).rows;
+        const support_agent_with_id = (await pool.query(`SELECT * FROM contact.support_agents WHERE id = ${id}`)).rows[0];
         if (!support_agent_with_id){
             throw new Error("Can't get support_agents");
         }

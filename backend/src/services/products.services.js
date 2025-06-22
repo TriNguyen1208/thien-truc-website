@@ -20,7 +20,7 @@ const getAllTables = async () => {
 }
 
 const getProductPage = async () => {
-    const product_page = (await pool.query("SELECT * FROM product.product_page")).rows;
+    const product_page = (await pool.query("SELECT * FROM product.product_page")).rows[0];
     if(!product_page){
         throw new Error("Can't get product_page");
     }
@@ -40,7 +40,7 @@ const products = {
         };
     },
     getOne: async (id) => {
-        const product = (await pool.query(`SELECT * FROM product.products WHERE id = ${id}`)).rows;
+        const product = (await pool.query(`SELECT * FROM product.products WHERE id = ${id}`)).rows[0];
         if(!product){
             throw new Error("Can't get products");
         }
@@ -61,7 +61,7 @@ const product_categories = {
         };
     },
     getOne: async (id) => {
-        const product_category = (await pool.query(`SELECT * FROM product.product_categories WHERE id = ${id}`)).rows;
+        const product_category = (await pool.query(`SELECT * FROM product.product_categories WHERE id = ${id}`)).rows[0];
         if(!product_category){
             throw new Error("Can't get product_categories");
         }
@@ -91,7 +91,7 @@ const product_features = {
         };
     },
     getOne: async (product_id, feature_id) => {
-        const product_feature = (await pool.query(`SELECT * FROM product.product_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows;
+        const product_feature = (await pool.query(`SELECT * FROM product.product_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows[0];
         if(!product_feature){
             throw new Error("Can't get product_features");
         }
@@ -121,7 +121,7 @@ const product_highlight_features = {
         };
     },
     getOne: async (product_id, feature_id) => {
-        const product_highlight_feature = (await pool.query(`SELECT * FROM product.product_highlight_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows;
+        const product_highlight_feature = (await pool.query(`SELECT * FROM product.product_highlight_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows[0];
         if(!product_highlight_feature){
             throw new Error("Can't get product_highlight_features");
         }
@@ -132,7 +132,7 @@ const product_highlight_features = {
 }
 
 const getPricePage = async () => {
-    const price_page = (await pool.query("SELECT * FROM product.price_page")).rows;
+    const price_page = (await pool.query("SELECT * FROM product.price_page")).rows[0];
     if(!price_page){
         throw new Error("Can't get price_page");
     }
@@ -152,7 +152,7 @@ const product_prices = {
         };
     },
     getOne: async (product_id) => {
-        const product_price = (await pool.query(`SELECT * FROM product.product_prices WHERE product_id = ${product_id}`)).rows;
+        const product_price = (await pool.query(`SELECT * FROM product.product_prices WHERE product_id = ${product_id}`)).rows[0];
         if(!product_price){
             throw new Error("Can't get products");
         }

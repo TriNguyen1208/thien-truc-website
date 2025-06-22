@@ -11,7 +11,7 @@ const getAllTables = async () => {
 }
 
 const getHomePage = async() => {
-    const home_page = (await pool.query("SELECT * FROM home.home_page")).rows;
+    const home_page = (await pool.query("SELECT * FROM home.home_page")).rows[0];
 
     if(!home_page) {
         throw new Error("Can't get home_page");
@@ -23,7 +23,7 @@ const getHomePage = async() => {
 
 const highlight_stats_about_us = {
     getAll: async () => {
-        const highlight_stats_about_us= (await pool.query("SELECT * FROM home.highlight_stats_about_us")).rows;
+        const highlight_stats_about_us = (await pool.query("SELECT * FROM home.highlight_stats_about_us")).rows;
 
         if(!highlight_stats_about_us) {
             throw new Error("Can't get highlight_stats_about_us");
@@ -34,9 +34,9 @@ const highlight_stats_about_us = {
     },
 
     getOne: async (id) => {
-        const highlight_stat_with_id= (await pool.query(`
+        const highlight_stat_with_id = (await pool.query(`
             SELECT * FROM home.highlight_stats_about_us WHERE id = ${id}
-        `)).rows;
+        `)).rows[0];
 
         if(!highlight_stat_with_id) {
             throw new Error("Can't get highlight_stats_about_us");
