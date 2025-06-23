@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "install-all-windows": "concurrently \"cd frontend & npm install\" \"cd backend & npm install\"",
+    "install": "concurrently \"cd frontend & npm install\" \"cd backend & npm install\"",
     "start": "vite",
     "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
     "build": "vite build",
