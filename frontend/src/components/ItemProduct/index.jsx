@@ -26,11 +26,11 @@ function handleDisplayHighlights(product, numberOfHighlights)
                 </div>  
         )
 }
-function ItemProduct({product} ) {
-    console.log("ItemProduct", product);
+function ItemProduct({product , price} ) {
+  
     const numberOfHighlights = 3; // Số lượng highlight cần hiển thị
     return (
-        <div className="flex flex-col relative border border-[#E5E7EB] rounded-[8px] w-[324px] h-[620px] bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out">
+        <div className="flex flex-col relative border border-[#E5E7EB] rounded-[8px] w-full h-[620px] bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out">
             <div className = "w-[full] h-[322px] p-[8px] bg-[#F3F4F6] rounded-t-[6px]">
                 <img
                     src={product.img || "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"} 
@@ -42,12 +42,11 @@ function ItemProduct({product} ) {
                 <div >
                     <h2 className = "line-clamp-2  text-[20px] text-black "> 
                     {product.name}
-                 Đây là tên sản phẩm thử nghiệm cho độ dài của tên sản phẩm nha mọi người
-                  
                     </h2>
                 </div>
                 <div className="line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
-                   {typeof product.price === "number" ? product.price.toLocaleString("vi-VN") + " ₫" : ""}
+                    
+                   {typeof price === "number" ? price.toLocaleString("vi-VN") + " ₫" : ""}
                 </div>
                 
                 {handleDisplayHighlights(product, numberOfHighlights)}
