@@ -20,7 +20,7 @@ const Header = () => {
  
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container-fluid py-3" style={{ paddingRight: '70px' }}>
+      <div className="container-fluid py-3 !pr-[70px]">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
@@ -32,7 +32,7 @@ const Header = () => {
           </div>
  
           {/* Desktop Navigation - Moved left with margin-left adjustment */}
-          <nav className="hidden lg:flex items-center space-x-8  ml-16">
+          <nav className="hidden lg:flex items-center space-x-8 ml-16">
             {menuItems.map((item, index) => (
               <NavLink
                 key={index}
@@ -51,7 +51,7 @@ const Header = () => {
  
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-gray-700 hover:text-green-700 transition-colors"
+            className="lg:hidden p-2 text-gray-700 hover:text-green-700 transition-color cursor-pointer"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <MenuOutlined className="text-xl" />

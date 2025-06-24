@@ -2,14 +2,20 @@ import React, { useState } from 'react'
 import { SearchOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 
-const SearchBar = ({categories, contentPlaceholder}) => {
-  if(categories == null || contentPlaceholder == null){
-    return <></>
-  }
-  
+const SearchBar = ({data}) => {
+  const {
+    categories,
+    contentPlaceholder,
+    onSearch
+  } = data
   const [category, setCategory] = useState(categories[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const handleClick = () => {
+    if(onSearch){
+      onSearch(category, query);
+    }
+  };
   useEffect(() => {
     if (dropdownOpen) {
       const handleClick = () => {
@@ -25,6 +31,9 @@ const SearchBar = ({categories, contentPlaceholder}) => {
       };
     }
   }, [dropdownOpen]);
+  if(categories == null || contentPlaceholder == null){
+    return <></>
+  };
   return (
     <div className="flex bg-white rounded-md max-w-3xl h-12">
       {/* Dropdown */}
@@ -69,10 +78,18 @@ const SearchBar = ({categories, contentPlaceholder}) => {
         className="flex-1 px-4 py-2 text-sm outline-none text-[#9CA3AF] focus:text-gray-700"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleClick(); // Gọi hàm tìm kiếm khi nhấn Enter
+          }
+        }}
       />
 
       {/* Search button */}
-      <button className="bg-[#ffc107] hover:bg-[#EBBE1C] text-black px-6 py-2 font-medium text-sm flex items-center gap-2 rounded-r-md cursor-pointer">
+      <button 
+        className="bg-[#ffc107] hover:bg-[#EBBE1C] text-black px-6 py-2 font-medium text-sm flex items-center gap-2 rounded-r-md cursor-pointer"
+        onClick={handleClick}
+      >
         <SearchOutlined style={{ fontSize: '16px', position: 'relative', top: '1px' }} />
         <span>Tìm kiếm</span>
       </button>

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 
-export default function MenuProject(props) {
-  const { items, defaultActive } = props;
-  
-  const [activeItem, setActiveItem] = useState(defaultActive);
+export default function MenuProject({items}) {
+  const [activeItem, setActiveItem] = useState(items[0]);
 
   const handleItemClick = (item) => {
     setActiveItem(item);
