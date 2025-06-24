@@ -28,7 +28,8 @@ export default function Recruitment(){
     };
     return (
         <div className="">
-            <Banner data={data}/>
+            {/* <Banner data={data}/> */}
+            <div>Đây là trang tuyển dụng</div>
         </div>
     )
 }

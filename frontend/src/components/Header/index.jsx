@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { MenuOutlined } from '@ant-design/icons';
+import { Image } from 'antd';
+import logo from '../../assets/images/logo.png';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+ 
   const menuItems = [
     { label: 'Trang Chủ', to: '/' },
     { label: 'Sản Phẩm', to: '/san-pham' },
@@ -15,31 +17,30 @@ const Header = () => {
     { label: 'Liên Hệ', to: '/lien-he' },
     { label: 'Về Chúng Tôi', to: '/ve-chung-toi' }
   ];
-
+ 
   return (
-    <header className="bg-white shadow-sm">
-      <div className="w-full px-6 py-3">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="container-fluid py-3" style={{ paddingRight: '70px' }}>
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <img 
-              src="http://thientruc.vn/App_Themes/Thientruc/images/logo.png" 
-              alt="ThienTruc Logo" 
-              className="h-10 w-auto"
+            <Image
+              width={100}
+              src={logo}
+              alt="ThienTruc Logo"
             />
           </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+ 
+          {/* Desktop Navigation - Moved left with margin-left adjustment */}
+          <nav className="hidden lg:flex items-center space-x-8  ml-16">
             {menuItems.map((item, index) => (
               <NavLink
                 key={index}
                 to={item.to}
                 className={({ isActive }) =>
-                  `transition-colors duration-200 text-sm font-medium ${
-                    isActive
-                      ? 'text-green-700 font-semibold'
-                      : 'text-gray-700 hover:text-green-700'
+                  `transition-colors duration-200 text-sm font-medium ${isActive
+                    ? 'text-green-700 font-semibold'
+                    : 'text-gray-700 hover:text-green-700'
                   }`
                 }
               >
@@ -47,7 +48,7 @@ const Header = () => {
               </NavLink>
             ))}
           </nav>
-
+ 
           {/* Mobile Menu Button */}
           <button
             className="lg:hidden p-2 text-gray-700 hover:text-green-700 transition-colors"
@@ -56,7 +57,7 @@ const Header = () => {
             <MenuOutlined className="text-xl" />
           </button>
         </div>
-
+ 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="lg:hidden mt-4 pb-4 border-t border-gray-200">
@@ -66,10 +67,9 @@ const Header = () => {
                   key={index}
                   to={item.to}
                   className={({ isActive }) =>
-                    `transition-colors duration-200 text-sm font-medium py-2 ${
-                      isActive
-                        ? 'text-green-700 font-semibold'
-                        : 'text-gray-700 hover:text-green-700'
+                    `transition-colors duration-200 text-sm font-medium py-2 ${isActive
+                      ? 'text-green-700 font-semibold'
+                      : 'text-gray-700 hover:text-green-700'
                     }`
                   }
                   onClick={() => setIsMobileMenuOpen(false)}

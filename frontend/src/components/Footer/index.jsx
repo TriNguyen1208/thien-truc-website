@@ -1,4 +1,5 @@
 import React from 'react';
+import { BiLogoFacebook } from "react-icons/bi";
 import { 
   FacebookOutlined, 
   YoutubeOutlined, 
@@ -32,12 +33,14 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold mb-4">Liên Kết Nhanh</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm hover:text-green-200 transition-colors">Trang Chủ</a></li>
-              <li><a href="#" className="text-sm hover:text-green-200 transition-colors">Về Chúng Tôi</a></li>
-              <li><a href="#" className="text-sm hover:text-green-200 transition-colors">Sản Phẩm</a></li>
-              <li><a href="#" className="text-sm hover:text-green-200 transition-colors">Dự Án Tiêu Biểu</a></li>
-              <li><a href="#" className="text-sm hover:text-green-200 transition-colors">Tin Tức</a></li>
-              <li><a href="#" className="text-sm hover:text-green-200 transition-colors">Tuyển Dụng</a></li>
+              <li><a href="/" className="text-sm hover:text-green-200 transition-colors">Trang Chủ</a></li>
+              <li><a href="/san-pham" className="text-sm hover:text-green-200 transition-colors">Sản Phẩm</a></li>
+              <li><a href="/bang-gia" className="text-sm hover:text-green-200 transition-colors">Bảng Giá</a></li>
+              <li><a href="/du-an" className="text-sm hover:text-green-200 transition-colors">Dự Án Tiêu Biểu</a></li>
+              <li><a href="/tin-tuc" className="text-sm hover:text-green-200 transition-colors">Tin Tức</a></li>
+              <li><a href="/tuyen-dung" className="text-sm hover:text-green-200 transition-colors">Tuyển Dụng</a></li>
+              <li><a href="/lien-he" className="text-sm hover:text-green-200 transition-colors">Liên Hệ</a></li>
+              <li><a href="/ve-chung-toi" className="text-sm hover:text-green-200 transition-colors">Về Chúng Tôi</a></li>
             </ul>
           </div>
 
@@ -46,17 +49,17 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Liên Hệ Với Chúng Tôi</h3>
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
-                <EnvironmentOutlined className="text-blue-600 text-base mt-1 flex-shrink-0" />
+                <EnvironmentOutlined className="text-base flex-shrink-0 " style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
                 <p className="text-sm">
                   123 Đường Nguyễn Huệ Quận 1, TP Hồ Chí Minh, Việt Nam
                 </p>
               </div>
               <div className="flex items-center space-x-2">
-                <PhoneOutlined className="text-base flex-shrink-0" />
+                <PhoneOutlined className="text-base flex-shrink-0" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
                 <span className="text-sm">+84 28 1234 5678</span>
               </div>
               <div className="flex items-center space-x-2">
-                <MailOutlined className="text-base flex-shrink-0" />
+                <MailOutlined className="text-base flex-shrink-0" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
                 <span className="text-sm">info@thientruc.com</span>
               </div>
             </div>
@@ -79,10 +82,9 @@ const Footer = () => {
                 <span>Nghỉ</span>
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 bg-[#166534] px-4 py-3">
               <p className="text-xs text-green-200 mb-2">
-                Hỗ trợ giải tư vấn và hỗ trợ kỹ thuật các ngày trong tuần, 
-                kể cả thứ bảy gọi chúng tôi nhé 24/7 có chúng tôi.
+                Đối với dịch vụ chiếu sáng khẩn cấp ngoài giờ làm việc, vui lòng gọi đường dây của chúng tôi
               </p>
               <div className="text-yellow-300 font-semibold">
                 +84 28 9876 5432
