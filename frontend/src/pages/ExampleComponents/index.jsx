@@ -1,15 +1,15 @@
 import React from 'react'
-import Banner from "../Banner"
-import Card from "../Card"
-import CenterCard from "../CenterCard"
-import GreenButton from "../GreenButton"
-import ItemProduct from "../ItemProduct"
-import LabelProject from "../LabelProject"
-import MenuProject from "../MenuProject"
-import PostCategory from "../PostCategory"
-import ViewMoreButton from "../ViewMoreButton"
+import Banner from "../../components/Banner"
+import Card from "../../components/Card"
+import CenterCard from "../../components/CenterCard"
+import GreenButton from "../../components/GreenButton"
+import ItemProduct from "../../components/ItemProduct"
+import LabelProject from "../../components/LabelProject"
+import PostCategory from "../../components/PostCategory"
+import ViewMoreButton from "../../components/ViewMoreButton"
 import Search from 'antd/es/transfer/search'
-import WhiteButton from '../WhiteButton'
+import WhiteButton from '../../components/WhiteButton'
+import ItemPost from '../../components/ItemPost'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
@@ -83,6 +83,27 @@ const ExampleComponents = () => {
     //     <GreenButton content={content} width="300px" handleClick={handleClick}/>
     // )
 
+    //Example ItemPost
+    // const handleClick = () => {
+    //     console.log("hello world");
+    // }
+    // const data = {
+    //     type: "news", // 'project' hoặc 'news'
+    //     title: "fdsfdaf",
+    //     description: "gdkfdaf",
+    //     location: "qrewrwqr",
+    //     date: "eriqurpewur",
+    //     tag: "Công ty",
+    //     tagColor: '#ef4444',
+    //     image: 'https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg',
+    //     status: true,
+    //     handleClick: handleClick
+    // };
+    // return (
+    //     //Không truyền width mặc định là width full
+    //     <ItemPost data={data} width="437px"/>
+    // )
+
     //Example ItemProduct
     //Ở đây có thể navigate đến chi tiết dự án,...
     // const handleClickButton = () => {
@@ -133,12 +154,12 @@ const ExampleComponents = () => {
     // return <WhiteButton data={data}/>
 
     // Example ViewMoreButton
-    const handleClick = () => {
-        console.log("hello world")
-    }
-    return(
-        <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
-    )
+    // const handleClick = () => {
+    //     console.log("hello world")
+    // }
+    // return(
+    //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
+    // )
 
     
 }

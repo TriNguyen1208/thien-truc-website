@@ -7,7 +7,7 @@ import {
     MailOutlined
 } from '@ant-design/icons';
 
-const ItemPost = ({ data }) => {
+const ItemPost = ({ data, width = "100%"}) => {
     const {
         type, // 'project' hoặc 'news'
         title,
@@ -16,8 +16,9 @@ const ItemPost = ({ data }) => {
         date,
         tag,
         tagColor = '#ef4444',
-        image,
-        status
+        image = "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg",
+        status,
+        handleClick
     } = data;
 
     const renderTag = () => {
@@ -31,7 +32,7 @@ const ItemPost = ({ data }) => {
     };
 
     const renderImage = () => (
-        <div className="relative w-full h-48 bg-gray-200 rounded-t-lg overflow-hidden">
+        <div className="relative w-full h-60 bg-gray-200 rounded-t-lg overflow-hidden">
             {image ? (
                 <img
                     src={image}
@@ -107,7 +108,11 @@ const ItemPost = ({ data }) => {
     );
 
     return (
-        <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative">
+        <div 
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
+            style={{width}}
+            onClick={handleClick}
+        >
             {renderImage()}
             {renderContent()}
         </div>
