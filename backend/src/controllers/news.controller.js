@@ -46,4 +46,12 @@ const news_contents = {
     }
 }
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents };
+const getSearchSuggestions = async (req, res) => {
+    const query = req.query.query || '';
+    const filter = req.query.filter || '';
+
+    const data = await newsServices.getSearchSuggestions(query, filter);
+    res.status(200).json(data);
+}
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents,getSearchSuggestions };
