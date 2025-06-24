@@ -197,4 +197,25 @@ const news_contents = {
     }
 }
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents};
+const getSearchSuggestions = async (query, filter) => {
+    const cleanedQuery = query.trim().replaceAll(`'`, ``);
+    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+
+    const sql = `
+        SELECT N.title
+        FROM news.news N
+        JOIN news.news_categories C ON N.category_id = C.id
+        WHERE $2 = '' OR unaccent(C.name) ILIKE unaccent($2)
+        ORDER BY similarity(unaccent(N.title::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [cleanedQuery, cleanedFilter];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => row.title);
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+};
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions};

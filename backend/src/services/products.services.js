@@ -240,4 +240,27 @@ const product_prices = {
         return product_price;
     }
 }
-export default { getAllTables, getProductPage, products, product_categories, product_features, product_highlight_features, getPricePage, product_prices };
+
+const getSearchSuggestions = async (query, filter) => {
+    const cleanedQuery = query.trim().replaceAll(`'`, ``);
+    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+
+    const sql = `
+        SELECT P.name
+        FROM product.products P
+        JOIN product.product_categories C ON P.category_id = C.id
+        WHERE ($2 = '' OR unaccent(C.name) ILIKE unaccent($2))
+        ORDER BY similarity(unaccent(P.name::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [cleanedQuery, cleanedFilter];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => row.name);
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+};
+
+
+export default { getAllTables, getProductPage, products, product_categories, product_features, product_highlight_features, getPricePage, product_prices, getSearchSuggestions };

@@ -45,4 +45,12 @@ const project_contents = {
         res.status(200).json(data);
     }
 }
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents};
+
+const getSearchSuggestions = async (req, res) => {
+    const query = req.query.query || '';
+    const filter = req.query.filter || '';
+
+    const data = await projectsServices.getSearchSuggestions(query, filter);
+    res.status(200).json(data);
+}
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getSearchSuggestions};
