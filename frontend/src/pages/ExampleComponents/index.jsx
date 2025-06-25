@@ -13,22 +13,22 @@ import ItemPost from '../../components/ItemPost'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
-    // const handleButton = (category, query) => {
-    //     console.log(category, query);
-    // }
-    // const data = {
-    //     title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
-    //     description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
-    //     colorBackground: "var(--gradient-banner)",
-    //     colorText: "#ffffff",
-    //     hasSearch: true,
-    //     categories: [
-    //         "Công Ty",
-    //         "Điện Thoại"
-    //     ],
-    //     contentPlaceholder: "Nhập vào đây",
-    //     handleButton: handleButton 
-    // };
+    const handleButton = (category, query) => {
+        console.log(category, query);
+    }
+    const data = {
+        title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
+        description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
+        colorBackground: "var(--gradient-banner)",
+        colorText: "#ffffff",
+        hasSearch: true,
+        categories: [
+            "Tri la ai",
+            "Điện Thoại"
+        ],
+        contentPlaceholder: "Nhập vào đây",
+        handleButton: handleButton 
+    };
 
     //Cái này là của whiteButton
     // const handleButton = () => {
@@ -43,12 +43,12 @@ const ExampleComponents = () => {
     //     contentButton: "Hello",
     //     handleButton: handleButton 
     // };
-    // return (
-    //     <>
-    //         <Banner data={data}/>
-    //         <p>Đây là trang Home.</p>
-    //     </>
-    // )
+    return (
+        <>
+            <Banner data={data}/>
+            <p>Đây là trang Home.</p>
+        </>
+    )
 
     //Example Card
     // const card = {
