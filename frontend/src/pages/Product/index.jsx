@@ -112,7 +112,7 @@ export default function Product(){
             return [category.id,products]
         })
     )
-   const idSelected = 0
+   const idSelected = 5
    
     return (
 
@@ -121,7 +121,7 @@ export default function Product(){
         <Banner data = {banner2}/>
         <div className="container-fluid flex flex-col">
 
-               <div className='flex flex-grow justify-between py-[45px] '>
+            <div className='flex flex-grow justify-between py-[45px] '>
 
             {
                 contentCenterCards.map((card, index) => {
@@ -134,87 +134,50 @@ export default function Product(){
                 })
             }
             
-        </div> 
+            </div> 
         {
             
             
             product.product_categories.map((category, index)=>{
-                if(idSelected != 0)
-                {
-                    if(index === idSelected - 1 )
+               
+                    if(index === idSelected - 1  || idSelected === 0)
                      {
                         return( productByCategory.get(category.id).length > 0 ?
-                (<div key = {index} className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
-                    <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
-                            <div className='border-l-[5px] px-[16px] ml-[30px]'>
-                                <h1 className='text-[30px] leading-none'>
-                                    {category.name}
-                                </h1>
-                            </div>
-                    </div>
-                    <div className='grid grid-cols-4 py-[20px]  mx-[30px] gap-y-[20px]'>
-                          
-                        {
-                         Array.from({ length: Math.min(isClick.get(category.id) === false ? 4 : productByCategory.get(category.id).length 
-                            ,productByCategory.get(category.id).length ) }).map((_,i) => {
-                            
-                                return( 
-                                    <div key={i} className='w-[330px]'>
-                                    <ItemProduct  product = { productByCategory.get(category.id)[i]}
-                                     price = {product.product_prices[productByCategory.get(category.id)[i].id - 1] ? 
-                                     product.product_prices[productByCategory.get(category.id)[i].id - 1].price: 'Chưa có'} />
-                                    </div>
-                                )
-                             })
-                        }                         
-                    </div>
-                    <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
-                           <div onClick = {()=>handleViewAll(category.id,productByCategory.get(category.id).length)} className="h-fit w-fit">
-                             <ViewMoreButton  data = {isClick.get(category.id) ? 'Rút Gọn' :'Xem Tất Cả Sản Phẩm'}/>
-                           </div>
-                    </div>
-
-            </div>):(<div key ={index}></div>)
-                )
-                     }
-                }else
-                {
-
-                    return( productByCategory.get(category.id).length > 0 ?
-                    (<div key = {index} className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
-                        <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
-                                <div className='border-l-[5px] px-[16px] ml-[30px]'>
-                                    <h1 className='text-[30px] leading-none'>
-                                        {category.name}
-                                    </h1>
-                                </div>
-                        </div>
-                        <div className='grid grid-cols-4 py-[20px]  mx-[30px] gap-y-[20px]'>
-                              
-                            {
-                             Array.from({ length: Math.min(isClick.get(category.id) === false ? 4 : productByCategory.get(category.id).length 
-                                ,productByCategory.get(category.id).length ) }).map((_,i) => {
-                                
-                                    return( 
-                                        <div key={i} className='w-[330px]'>
-                                        <ItemProduct  product = { productByCategory.get(category.id)[i]}
-                                         price = {product.product_prices[productByCategory.get(category.id)[i].id - 1] ? 
-                                         product.product_prices[productByCategory.get(category.id)[i].id - 1].price: 'Chưa có'} />
+                            (<div key = {index} className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
+                                <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
+                                        <div className='border-l-[5px] px-[16px] ml-[30px]'>
+                                            <h1 className='text-[30px] leading-none'>
+                                                {category.name}
+                                            </h1>
                                         </div>
-                                    )
-                                 })
-                            }                         
-                        </div>
-                        <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
-                               <div onClick = {()=>handleViewAll(category.id,productByCategory.get(category.id).length)} className="h-fit w-fit">
-                                 <ViewMoreButton  data = {isClick.get(category.id) ? 'Rút Gọn' :'Xem Tất Cả Sản Phẩm'}/>
-                               </div>
-                        </div>
-    
-                </div>):(<div key ={index}></div>)
-                    )
-                }
-            })
+                                </div>
+                                <div className='grid grid-cols-4 py-[20px]  mx-[30px] gap-y-[20px]'>
+                                    
+                                    {
+                                    Array.from({ length: Math.min(isClick.get(category.id) === false ? 4 : productByCategory.get(category.id).length 
+                                        ,productByCategory.get(category.id).length ) }).map((_,i) => {
+                                        
+                                            return( 
+                                                <div key={i} className='w-[330px]'>
+                                                <ItemProduct  product = { productByCategory.get(category.id)[i]}
+                                                price = {product.product_prices[productByCategory.get(category.id)[i].id - 1] ? 
+                                                product.product_prices[productByCategory.get(category.id)[i].id - 1].price: 'Chưa có'} />
+                                                </div>
+                                            )
+                                        })
+                                    }                         
+                                </div>
+                                <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
+                                    <div onClick = {()=>handleViewAll(category.id,productByCategory.get(category.id).length)} className="h-fit w-fit">
+                                        <ViewMoreButton  data = {isClick.get(category.id) ? 'Rút Gọn' :'Xem Tất Cả Sản Phẩm'}/>
+                                    </div>
+                                </div>
+
+                            </div>):(<div key ={index}></div>)
+                            )
+                     }
+                    }
+            )
         }
        
         </div>
