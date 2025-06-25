@@ -27,17 +27,29 @@ function ProgressItem({ icon, label, value, percent }) {
   );
 }
 
-
+function Title({content})
+{
+    return(
+        <h1 className='  font-bold text-[30px] text-[#14532D] '>
+            {content}
+        </h1>
+    )
+}
 
 export default function AboutUs(){
     const { data: aboutus, isLoading: isLoadingAboutUs } = useAboutUs.getAll()
-    if (isLoadingAboutUs) {
+    const { data: aboutusPage, isLoading: isLoadingAboutUsPage } = useAboutUs.getAboutUsPage()
+    const { data: aboutusServices, isLoading: isLoadingAboutUsServices } = useAboutUs.company_services.getAll()
+    const { data: aboutusChoose, isLoading: isLoadingAboutUsChoose } = useAboutUs.why_choose_us.getAll()
+    
+    
+    if (isLoadingAboutUs || isLoadingAboutUsPage ||isLoadingAboutUsServices || isLoadingAboutUsChoose) {
         return <p>Loading...</p>;
     }
   
     const bannerMain = {
-        title : aboutus.about_us_page.banner_title,
-        description: aboutus.about_us_page.banner_description,
+        title : aboutusPage.banner_title,
+        description: aboutusPage.banner_description,
         colorBackground : "var(--gradient-banner)",
         colorText : "#ffffff",
         hasButton : true,
@@ -59,6 +71,35 @@ export default function AboutUs(){
         categories : null,
         contentPlaceholder : null
     }
+    const listProgress = [
+        {
+            icon: <CheckCircleOutlined/>,
+            label: 'Dự án hoàn thành',
+            value :'200+',
+            percent: 90
+        },
+        {
+            icon: <UsergroupAddOutlined/>,
+            label: 'Khách hàng hài lòng',
+            value: '98%',
+            percent: 76
+        },
+        {
+            icon: <LineChartOutlined/>,
+            label: 'Tăng trưởng hàng năm',
+            value: '35%',
+            percent: 85
+        },
+        {
+            icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="size-6">
+                            <path d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
+                            </svg>,
+            label: 'Đội ngũ kỹ thuật viên',
+            value: '20+',
+            percent: 95
+        }
+                                     
+    ]
     const iconTitleService = [
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
@@ -106,37 +147,31 @@ export default function AboutUs(){
         }
     ]
     return (
-
         <>
             <Banner data = {bannerMain}/>
             <div className='flex flex-grow px-[100px] py-[50px] gap-x-[50px] '>
                 <div className='w-[50%]'>
                     <div className='flex flex-col my-[20px]'>
-                        <h1 className='font-bold text-[30px] text-[#14532D]'>
-                            Câu Chuyện Của Chúng Tôi
-                        </h1>
+                       <Title content={'Câu Chuyện Của Chúng Tôi'}/>
                     </div>
                     <div className=''>
                        <span className='text-[15px] text-[#166534] leading-[20px] '>
-                         {aboutus.about_us_page.our_story_content}
+                         {aboutusPage.our_story_content}
                        </span>
                     </div>
                 </div>
                 <div className=' w-[50%] bg-[#F0FDF4] p-[30px] rounded-[8px] shadow-md hover:scale-[1.05] transition-all duration-300 ease-in-out'>
                     <div className='flex flex-col mb-[20px]'>
-                        <h1 className='font-bold text-[30px] text-[#14532D]'>
-                            Thành Tựu Của Chúng Tôi
-                        </h1>
+                        <Title content = {'Thành Tựu Của Chúng Tôi'}/>
                     </div>
                     <div>
-                        <ProgressItem icon = {<CheckCircleOutlined />}  label = 'Dự án hoàn thành' value = {'200+'} percent={90}/>
-                        <ProgressItem icon = {<UsergroupAddOutlined />} label = 'Khách hàng hài lòng' value = {'98%'} percent={76}/>
-                        <ProgressItem icon = {<LineChartOutlined />} label = 'Tăng trưởng hàng năm' value = {'35%'} percent={85}/>
-                        <ProgressItem icon = {
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="size-6">
-                            <path d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
-                            </svg>
-                        } label = 'Đội ngũ kỹ thuật viên' value = {'20+'} percent={95}/>
+                        {
+                            listProgress.map((pro,index) =>{
+                                return(
+                                    <ProgressItem key = {index} {...pro} />
+                                )
+                            })
+                        }
                     </div>
 
                 </div>
@@ -144,9 +179,7 @@ export default function AboutUs(){
             </div>
             <div className='flex flex-col bg-[#F0FDF4] px-[150px] pb-[100px] pt-[50px] ' >
                 <div className='flex  justify-center mb-[20px]'>
-                    <h1 className='w-fit font-bold  text-[30px] text-[#14532D]'>
-                        Nhiệm Vụ & Trách Nhiệm
-                    </h1>
+                    <Title content={'Nhiệm Vụ & Trách Nhiệm'}/>
                 </div>
                 <div className='flex justify-center mb-[80px] text-center'>
                     <span className='text-[15px] text-[#166534] leading-[20px] w-[60%] '>
@@ -155,7 +188,7 @@ export default function AboutUs(){
                 </div>
                 <div className='grid grid-cols-2 grid-row-2  gap-[30px] justify-center'> 
                         {
-                            aboutus.company_services.map((service, index) =>{
+                            aboutusServices.map((service, index) =>{
                                 return(
                                    <div key = {index} className='mx-auto w-[560px] h-[360px] '>
                                      <Card iconTitle = {iconTitleService[index]} card = {service}/>
@@ -167,9 +200,7 @@ export default function AboutUs(){
             </div>
              <div className='flex flex-col bg-[#ffffff] px-[150px] py-[50px] ' >
                 <div className='flex  justify-center mb-[20px]'>
-                    <h1 className='w-fit font-bold  text-[30px] text-[#14532D]'>
-                        Giá Trị Cốt Lõi
-                    </h1>
+                    <Title content={' Giá Trị Cốt Lõi'}/>
                 </div>
                 <div className='flex justify-center mb-[80px] text-center'>
                     <span className='text-[15px] text-[#166534] leading-[20px] w-[60%] '>
@@ -181,7 +212,7 @@ export default function AboutUs(){
                             listValues.map((value, index) =>{
                                 return(
                                    <div key = {index} className='w-[264px] h-[290px] text-[#14532D] '>
-                                     <CenterCard icon = {value.icon} title = {value.title} description = {value.des}/>
+                                     <CenterCard data={value}/>
                                    </div>
                                 )
                             })
@@ -189,10 +220,10 @@ export default function AboutUs(){
                 </div>
             </div>
             <div className='flex flex-col bg-[#157E3C] px-[150px] pb-[100px] pt-[50px] ' >
-                <div className='flex  justify-center mb-[20px]'>
-                    <h1 className='w-fit font-bold  text-[30px] text-[#ffffff]'>
-                        Tại Sao Chọn Thiên Trúc?
-                    </h1>
+                <div className='flex  justify-center mb-[20px] !text-white'>
+                        <h1 className=' font-bold text-[30px] text-white '>
+                            Tại Sao Chọn Thiên Trúc?
+                        </h1>
                 </div>
                 <div className='flex justify-center mb-[80px] text-center'>
                     <span className='text-[15px] text-[#ffffff] leading-[20px] w-[60%] '>
@@ -201,7 +232,7 @@ export default function AboutUs(){
                 </div>
                 <div className='flex flex-row  gap-[30px] justify-center'> 
                         {
-                            aboutus.why_choose_us.map((service, index) =>{
+                            aboutusChoose.map((service, index) =>{
                                 return(
                                    <div key = {index} className='mx-auto w-[363px] h-[320px] '>
                                      <Card  card = {service}/>

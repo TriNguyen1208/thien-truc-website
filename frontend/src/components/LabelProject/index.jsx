@@ -1,10 +1,14 @@
 import React from 'react';
 
-const LabelProject = (props) => {
-  const {data, color }  = props
+const LabelProject = ({data}) => {
+  const {content, color }  = data
+  console.log(content)
   return (
-    <button className={`bg-${color}-500 text-black px-6 py-2 rounded-full`}>
-      {data}
+    <button
+      className={`text-black px-6 py-3 rounded-full`}
+      style={{ background: color}}
+    >
+      {content}
     </button>
   );
 };
