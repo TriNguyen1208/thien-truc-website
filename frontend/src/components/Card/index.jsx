@@ -1,13 +1,15 @@
 
 
-function Card({card}){
+function Card({card, width="100%", height="100%", padding="25px"}){
     if (!card) {
         return <p>No card data available</p>;
     }
     const details = card.details.split('\n')
-
     return (
-        <div className="flex flex-col gap-[16px] rounded-[8px] p-[32px] w-full h-[360px] hover:shadow-lg transform hover:scale-105  transition-all duration-300 ease-in-out">
+        <div 
+            className={`flex flex-col gap-[16px] rounded-[8px] hover:shadow-lg transform hover:scale-105  transition-all duration-300 ease-in-out `}
+            style={{ width, height, padding }}
+        >
 
             <div className="flex flex-row gap-[16px] items-center ">
                 <div>ICON</div>
@@ -25,7 +27,6 @@ function Card({card}){
             </div>
             <div>
                     <ul className="flex flex-col gap-[12px]  ">
-                        
                         {
                             details.map((detail) =>{
                             return (

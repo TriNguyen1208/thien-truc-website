@@ -5,12 +5,14 @@ function useGetAll(){
     return useQuery({
         queryKey: ["about_us"],
         queryFn: aboutUsServices.getAll,
+        staleTime: 5 * 60 * 1000,
     })
 }
 function useGetAboutUsPage(){
     return useQuery({
         queryKey: ["about_us_page"],
         queryFn: aboutUsServices.getAboutUsPage,
+        staleTime: 5 * 60 * 1000,
     })
 }
 const company_services = {
@@ -18,12 +20,14 @@ const company_services = {
         return useQuery({
             queryKey: ["company_services"],
             queryFn: aboutUsServices.company_services.getAll,
+            staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["company_services", id],
+            queryKey: ["company_service", id],
             queryFn: () => aboutUsServices.company_services.getOne(id),
+            staleTime: 5 * 60 * 1000,
         })
     } 
 }
@@ -32,12 +36,15 @@ const why_choose_us = {
         return useQuery({
             queryKey: ["why_choose_us"],
             queryFn: aboutUsServices.why_choose_us.getAll,
+            staleTime: 5 * 60 * 1000,
+            
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["why_choose_us", id],
             queryFn: () => aboutUsServices.why_choose_us.getOne(id),
+            staleTime: 5 * 60 * 1000,
         })
     } 
 }

@@ -50,6 +50,14 @@ function ListPicture({urls, id}){
 }
 export default function ProductDetail({product , price}){
     
+    if(!product || !price )
+    {
+        return(
+            <div>
+                Không có sản phẩm !
+            </div>
+        )
+    }
     const goBack = ()=>{
         console.log('Tro ve')
     }
@@ -67,7 +75,6 @@ export default function ProductDetail({product , price}){
         {
             if(e.target.dataset.index)
             {
-
                 setSelectPicture(e.target.dataset.index)
             }
         }
@@ -108,9 +115,6 @@ export default function ProductDetail({product , price}){
     return (
         <>
             <div className="container-fluid pt-[30px]">
-                <div className="w-full h-[20px] my-[15x]">
-                    Link
-                </div>
                 <div onClick={goBack} className="flex flex-row w-full h-[20px] my-[15px] gap-[10px] leading-none items-center text-[#14532D] font-medium cursor-pointer">
                      <ArrowLeftOutlined />
                     <span>Quay lại danh sách sản phẩm</span>
@@ -126,9 +130,7 @@ export default function ProductDetail({product , price}){
                             </span>
                         </div>
                         <div className="border-[#E5E7EB] border-y-[1px] py-[15px] line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
-
-                              {`${price.price}` + " ₫"}
-                            
+                              {typeof price.price === 'number' ? `${price.price}` + " ₫": 'Chưa có giá' }
                         </div>
                          <div className="py-[10px]">
                             <span className="text-[16px]">

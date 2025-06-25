@@ -2,7 +2,7 @@ import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPI";
 
 const getAll = async () =>{
-    const res = await axios.get(API_ROUTES.home.base);
+    const res = await axios.get(API_ROUTES.news.base);
     return res.data;
 }
 
@@ -42,7 +42,15 @@ const new_contents = {
         return res.data;
     }
 }
+const getSearchSuggestions = async (query, filter) => {
+    const res = await axios.get(API_ROUTES.news.search_suggestions, {
+        params: {
+            query: query,
+            filter: filter
+        }
+    })
+    return res.data
+}
 
 
-
-export default {getAll, getNewsPage, news, new_categories, new_contents};
+export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions};
