@@ -246,11 +246,15 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT P.name, P.product_img
+        SELECT DISTINCT ON (P.name) P.name, P.product_img
         FROM product.products P
         JOIN product.product_categories C ON P.category_id = C.id
-        WHERE ($2 = '' OR unaccent(C.name) ILIKE unaccent($2))
-        ORDER BY similarity(unaccent(P.name::text), unaccent($1::text)) DESC
+        WHERE 
+            ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
+            similarity(unaccent(P.name::text), unaccent($1::text)) > 0
+        ORDER BY
+            P.name,
+            similarity(unaccent(P.name::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
     const values = [cleanedQuery, cleanedFilter];
