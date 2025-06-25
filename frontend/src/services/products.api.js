@@ -78,7 +78,15 @@ const getPricePage = async () => {
     const res = await axios.get(API_ROUTES.product.price_page);
     return res.data;
 }
-
+const getSearchSuggestions = async (query, filter) => {
+    const res = await axios.get(API_ROUTES.product.search_suggestions, {
+        params: {
+            query: query,
+            filter: filter
+        }
+    })
+    return res.data
+}
 export default {
     getAll,
     getProductPage,
@@ -87,5 +95,6 @@ export default {
     product_features,
     product_highlight_features,
     product_prices,
-    getPricePage
+    getPricePage,
+    getSearchSuggestions
 }

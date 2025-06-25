@@ -246,7 +246,7 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT P.name
+        SELECT P.name, P.product_img
         FROM product.products P
         JOIN product.product_categories C ON P.category_id = C.id
         WHERE ($2 = '' OR unaccent(C.name) ILIKE unaccent($2))
@@ -256,7 +256,10 @@ const getSearchSuggestions = async (query, filter) => {
     const values = [cleanedQuery, cleanedFilter];
     try {
         const result = await pool.query(sql, values);
-        return result.rows.map(row => row.name);
+        return result.rows.map(row => ({
+            name: row.name,
+            img: row.product_img
+        }));
     } catch (err) {
         throw new Error(`DB error: ${err.message}`);
     }

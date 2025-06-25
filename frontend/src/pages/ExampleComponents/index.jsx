@@ -10,25 +10,39 @@ import ViewMoreButton from "../../components/ViewMoreButton"
 import Search from 'antd/es/transfer/search'
 import WhiteButton from '../../components/WhiteButton'
 import ItemPost from '../../components/ItemPost'
+import useProducts from '../../redux/hooks/useProducts'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
-    // const handleButton = (category, query) => {
-    //     console.log(category, query);
-    // }
-    // const data = {
-    //     title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
-    //     description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
-    //     colorBackground: "var(--gradient-banner)",
-    //     colorText: "#ffffff",
-    //     hasSearch: true,
-    //     categories: [
-    //         "Công Ty",
-    //         "Điện Thoại"
-    //     ],
-    //     contentPlaceholder: "Nhập vào đây",
-    //     handleButton: handleButton 
-    // };
+    const handleButton = (category, query) => {
+        console.log(category, query);
+    }
+    const handleSearchSuggestion = (query, filter) => {
+        return useProducts.getSearchSuggestions(query, filter)
+    }
+    const data = {
+        title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
+        description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
+        colorBackground: "var(--gradient-banner)",
+        colorText: "#ffffff",
+        hasSearch: true,
+        categories: [
+            "Tất cả dự án",
+            "CABLE",
+            "PHẦN MỀM DIỆT VIRUS",
+            "MAINBOARD",
+            "CPU INTEL",
+            "RAM",
+            "HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA",
+            "POWER",
+            "KEYBOARD CÓ DÂY",
+            "MOUSE QUANG CÓ DÂY",
+            "CAMERA XOAY, CỐ ĐỊNH",
+        ],
+        contentPlaceholder: "Nhập vào đây",
+        handleButton: handleButton,
+        handleSearchSuggestion: handleSearchSuggestion
+    };
 
     //Cái này là của whiteButton
     // const handleButton = () => {
@@ -43,12 +57,12 @@ const ExampleComponents = () => {
     //     contentButton: "Hello",
     //     handleButton: handleButton 
     // };
-    // return (
-    //     <>
-    //         <Banner data={data}/>
-    //         <p>Đây là trang Home.</p>
-    //     </>
-    // )
+    return (
+        <>
+            <Banner data={data}/>
+            <p>Đây là trang Home.</p>
+        </>
+    )
 
     //Example Card
     // const card = {

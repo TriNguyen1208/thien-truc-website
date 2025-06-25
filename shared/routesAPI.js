@@ -44,8 +44,7 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
-
-        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
+        search_suggestions: `${PRODUCT_BASE}/search_suggestions`,
     },
     project: {
         base: PROJECT_BASE,
@@ -63,7 +62,7 @@ const API_ROUTES = {
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
         },
 
-        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
+        search_suggestions: `${PROJECT_BASE}/search_suggestions`,
     },
     news: {
         base: NEWS_BASE,
@@ -81,7 +80,7 @@ const API_ROUTES = {
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
 
-        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
+        search_suggestions: `${NEWS_BASE}/search_suggestions`,
     },
     recruitment: {
         base: RECRUITMENT_BASE,
