@@ -34,8 +34,8 @@ export default function AboutUs(){
     if (isLoadingAboutUs) {
         return <p>Loading...</p>;
     }
-    console.log(aboutus);
-    const banner1 = {
+  
+    const bannerMain = {
         title : aboutus.about_us_page.banner_title,
         description: aboutus.about_us_page.banner_description,
         colorBackground : "var(--gradient-banner)",
@@ -108,7 +108,7 @@ export default function AboutUs(){
     return (
 
         <>
-            <Banner data = {banner1}/>
+            <Banner data = {bannerMain}/>
             <div className='flex flex-grow px-[100px] py-[50px] gap-x-[50px] '>
                 <div className='w-[50%]'>
                     <div className='flex flex-col my-[20px]'>
