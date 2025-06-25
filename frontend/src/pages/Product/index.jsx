@@ -39,7 +39,7 @@ function Category({category, products,prices ,isClick ,handleViewAll})
                                 </div>
                                 <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
                                     <div onClick = {()=>handleViewAll(category.id,products.length)} className="h-fit w-fit">
-                                        <ViewMoreButton  data = {isClick ? 'Rút Gọn' :'Xem Tất Cả Sản Phẩm'}/>
+                                        <ViewMoreButton  content = {isClick ? 'Rút Gọn' :'Xem Tất Cả Sản Phẩm'}/>
                                     </div>
                                 </div>
 
@@ -54,6 +54,7 @@ export default function Product(){
     const { data: productPrices, isLoading: isLoadingPrices } = useProducts.product_prices.getAll() 
     const { data: products, isLoading: isLoadingProducts } = useProducts.products.getAll() 
     const [isClick, setIsClick] = useState(new Map())
+    const [idCategory, setIdCategory] = useState(0)
     useEffect(() => {
         if (productCategories) {      
             const initialClick = new Map(
@@ -63,7 +64,10 @@ export default function Product(){
             setIsClick(initialClick)
         }
     }, [productCategories]);
-
+    const handleSearchSuggestion = (query, filter) => {
+        return useProducts.getSearchSuggestions(query, filter)
+    }
+    
     const handleViewAll = (categoryId, fullLength) => {
         setIsClick(pre =>{
             
@@ -87,11 +91,16 @@ export default function Product(){
      if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
         return <p>Loading...</p>;
     }
-
+    
     const categories = productCategories.map((category) => {
          return (category.name)
         }) 
-       const banner1 = {
+    categories.unshift("Tất cả sản phẩm")
+    const handleSearch = (category, query) => {
+
+        setIdCategory(categories.indexOf(category))
+    }
+    const banner1 = {
         title : productPage.banner_title,
         description: productPage.banner_description,
         colorBackground : "var(--gradient-banner)",
@@ -99,13 +108,13 @@ export default function Product(){
         hasButton : false,
         hasSearch : true,
         contentButton : null,
-        handleButton : null,
+        handleButton : handleSearch,
         categories : categories,
         contentPlaceholder : 'Tìm kiếm sản phẩm...',
         handleSearchSuggestion: handleSearchSuggestion
     }
     
-     const banner2 = {
+    const banner2 = {
         title : 'Xem Bảng Giá Ngay',
         description: 'Xem chi tiết giá lắp đặt các thiết bị điện tử và giải pháp thi công tại Thiên Trúc',
         colorBackground : "#F0FDF4",
@@ -153,7 +162,7 @@ export default function Product(){
             return [category.id,pros]
         })
     )
-   const idSelected = 0
+   
    
     return (
         
@@ -165,9 +174,10 @@ export default function Product(){
             <div className='flex flex-grow justify-between py-[45px] '>
             {
                 contentCenterCards.map((card, index) => {
+                    
                     return(
                         <div key = {index} className='w-[340px] h-[162px]'>
-                        <CenterCard {...card}/>
+                        <CenterCard data={card}/>
                         </div>   
                     )
                 })
@@ -175,7 +185,7 @@ export default function Product(){
             </div> 
         { 
                 productCategories.map((category, index)=>{
-                    if(index === idSelected - 1  || idSelected === 0)
+                    if(index === idCategory - 1 || idCategory === 0)
                      {
                         const props = {
                             category : category,

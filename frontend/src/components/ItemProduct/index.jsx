@@ -28,11 +28,11 @@ function handleDisplayHighlights(product, numberOfHighlights)
             </div>  
     )
 }
-function ItemProduct({product, handleClick, width="324px", height="620px"}) {
+function ItemProduct({product, price, handleClick, width="324px", height="620px"}) {
     const numberOfHighlights = 3; // Số lượng highlight cần hiển thị
     return (
         <div 
-            className="flex flex-col border p-[8px] border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
+            className="flex flex-col relative border p-[8px] border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
             style={{width, height}}
         >
             <div className = "w-[full] h-[322px]  bg-[#F3F4F6] rounded-t-[6px]">

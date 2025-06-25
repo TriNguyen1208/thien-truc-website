@@ -1,5 +1,6 @@
 export default function CenterCard({data, width = "100%", height = "100%"}) {
     const { icon: IconComponent = null, title, description } = data;
+   
     return (
         <div 
             className="bg-green-50 rounded-lg p-6 max-w-sm mx-auto shadow-sm"
