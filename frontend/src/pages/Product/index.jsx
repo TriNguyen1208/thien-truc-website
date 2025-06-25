@@ -10,23 +10,61 @@ import ViewMoreButton from '@/components/ViewMoreButton'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
+function Category({category, products,prices ,isClick ,handleViewAll})
+{
+    return(
+        <div  className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
+                                <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
+                                        <div className='border-l-[5px] px-[16px] ml-[30px]'>
+                                            <h1 className='text-[30px] leading-none'>
+                                                {category.name}
+                                            </h1>
+                                        </div>
+                                </div>
+                                
+                                <div className='grid grid-cols-4 py-[20px] mx-[30px] gap-y-[20px]'>            
+                                    {
+                                    Array.from({ length: Math.min(isClick === false ? 4 : products.length 
+                                        ,products.length ) }).map((_,i) => {
+                                        
+                                            return( 
+                                                <div key={i} className='w-[330px]'>
+                                                    <ItemProduct  product = { products[i]}
+                                                    price = {prices[products[i].id - 1] ? 
+                                                             prices[products[i].id - 1]: 'Chưa có'} />                                    
+                                                </div>
+                                            )
+                                        })
+                                    }                         
+                                </div>
+                                <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
+                                    <div onClick = {()=>handleViewAll(category.id,products.length)} className="h-fit w-fit">
+                                        <ViewMoreButton  data = {isClick ? 'Rút Gọn' :'Xem Tất Cả Sản Phẩm'}/>
+                                    </div>
+                                </div>
+
+                            </div>
+    )
+}
+
 export default function Product(){
     
-    
-    const { data: product, isLoading: isLoadingProduct } = useProducts.getAll() 
+    const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
+    const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
+    const { data: productPrices, isLoading: isLoadingPrices } = useProducts.product_prices.getAll() 
+    const { data: products, isLoading: isLoadingProducts } = useProducts.products.getAll() 
     const [isClick, setIsClick] = useState(new Map())
     useEffect(() => {
-        if (product && product.product_categories) {      
+        if (productCategories) {      
             const initialClick = new Map(
-                product.product_categories.map(category => [category.id, false])
+                productCategories.map(category => [category.id, false])
             );
            
             setIsClick(initialClick)
         }
-    }, [product]);
+    }, [productCategories]);
 
     const handleViewAll = (categoryId, fullLength) => {
-      
         setIsClick(pre =>{
             
             if (fullLength > 4 && isClick.get(categoryId) === false ){
@@ -46,16 +84,16 @@ export default function Product(){
         })
         
     };   
-     if (isLoadingProduct) {
+     if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
         return <p>Loading...</p>;
     }
 
-    const categories = product.product_categories.map((category) => {
+    const categories = productCategories.map((category) => {
          return (category.name)
         }) 
        const banner1 = {
-        title : product.product_page.banner_title,
-        description: product.product_page.banner_description,
+        title : productPage.banner_title,
+        description: productPage.banner_description,
         colorBackground : "var(--gradient-banner)",
         colorText : "#ffffff",
         hasButton : false,
@@ -91,7 +129,7 @@ export default function Product(){
         },
         {
             icon: SafetyOutlined ,
-            title: "100̀% Chính Hãng",
+            title: '100% Chính Hãng',
             description: "Cam kết sản phẩm chính hãng."
         },
         {
@@ -105,24 +143,23 @@ export default function Product(){
     
  
     const productByCategory = new Map(
-            product.product_categories.map((category, indexC)=>{
-            const products = product.products.filter((pro,)=>{
+            productCategories.map((category)=>{
+            const pros = products.filter((pro,)=>{
                     return pro.category.id === category.id ? pro :null
             })
-            return [category.id,products]
+            return [category.id,pros]
         })
     )
-   const idSelected = 5
+   const idSelected = 0
    
     return (
-
+        
         <>
         <Banner data = {banner1}/>
         <Banner data = {banner2}/>
         <div className="container-fluid flex flex-col">
 
             <div className='flex flex-grow justify-between py-[45px] '>
-
             {
                 contentCenterCards.map((card, index) => {
                     return(
@@ -130,51 +167,24 @@ export default function Product(){
                         <CenterCard {...card}/>
                         </div>   
                     )
-                   
                 })
             }
-            
             </div> 
-        {
-            
-            
-            product.product_categories.map((category, index)=>{
-               
+        { 
+                productCategories.map((category, index)=>{
                     if(index === idSelected - 1  || idSelected === 0)
                      {
-                        return( productByCategory.get(category.id).length > 0 ?
-                            (<div key = {index} className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
-                                <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
-                                        <div className='border-l-[5px] px-[16px] ml-[30px]'>
-                                            <h1 className='text-[30px] leading-none'>
-                                                {category.name}
-                                            </h1>
-                                        </div>
-                                </div>
-                                <div className='grid grid-cols-4 py-[20px]  mx-[30px] gap-y-[20px]'>
-                                    
-                                    {
-                                    Array.from({ length: Math.min(isClick.get(category.id) === false ? 4 : productByCategory.get(category.id).length 
-                                        ,productByCategory.get(category.id).length ) }).map((_,i) => {
-                                        
-                                            return( 
-                                                <div key={i} className='w-[330px]'>
-                                                <ItemProduct  product = { productByCategory.get(category.id)[i]}
-                                                price = {product.product_prices[productByCategory.get(category.id)[i].id - 1] ? 
-                                                product.product_prices[productByCategory.get(category.id)[i].id - 1].price: 'Chưa có'} />
-                                                </div>
-                                            )
-                                        })
-                                    }                         
-                                </div>
-                                <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
-                                    <div onClick = {()=>handleViewAll(category.id,productByCategory.get(category.id).length)} className="h-fit w-fit">
-                                        <ViewMoreButton  data = {isClick.get(category.id) ? 'Rút Gọn' :'Xem Tất Cả Sản Phẩm'}/>
-                                    </div>
-                                </div>
-
-                            </div>):(<div key ={index}></div>)
-                            )
+                        const props = {
+                            category : category,
+                            products :productByCategory.get(category.id),
+                            prices : productPrices,
+                            isClick: isClick.get(category.id),
+                            handleViewAll: handleViewAll
+                        }
+                        return( productByCategory.get(category.id).length > 0 
+                        ?(<Category  key = {index} {...props}/>)
+                        :(<div key = {index}></div>)
+                        )
                      }
                     }
             )
@@ -182,7 +192,6 @@ export default function Product(){
        
         </div>
        
-          
         </>
     )
 }

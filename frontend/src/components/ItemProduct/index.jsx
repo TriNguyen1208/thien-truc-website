@@ -1,5 +1,8 @@
 import GreenButton from "../GreenButton";
-
+function moveToProduct(price)
+{
+    console.log(price)
+}
 function handleDisplayHighlights(product, numberOfHighlights) 
 {   
     
@@ -46,12 +49,12 @@ function ItemProduct({product , price} ) {
                 </div>
                 <div className="line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
                     
-                   {typeof price === "number" ? price.toLocaleString("vi-VN") + " ₫" : ""}
+                   {typeof price.price === "number" ? price.price.toLocaleString("vi-VN") + " ₫" : ""}
                 </div>
                 
                 {handleDisplayHighlights(product, numberOfHighlights)}
             </div>
-            <div className = "flex absolute bottom-[8px] justify-center w-full h-[]">
+            <div onClick={() => moveToProduct(price)}  className = "flex absolute bottom-[8px] justify-center w-[260px] h-[40px] left-1/2 -translate-x-1/2 ">
             <GreenButton content="Xem thêm" />
             </div>
         </div>
