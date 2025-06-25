@@ -10,6 +10,7 @@ import Contact from '@/pages/Contact'
 import AboutUs from '@/pages/AboutUs'
 import PageNotFound from '@/pages/PageNotFound'
 import DefaultLayout from "@/layouts/DefaultLayout"
+import ExampleComponents from '@/pages/ExampleComponents'
 export const routes = [
     {
         path: "/",
@@ -46,9 +47,11 @@ export const routes = [
             {
                 path: "/ve-chung-toi",
                 element: <AboutUs />
-            }
-
-
+            },
+            {
+                path: "/test-components",
+                element: <ExampleComponents/>
+            },
         ]
     },
     {

@@ -1,11 +1,11 @@
 import React from 'react'
 import WhiteButton from '@/components/WhiteButton'
 import SearchBar from '@/components/Search';
-// const Banner = ({data, colorBackground = 'var(--', colorText = "#ffffff", hasButton = null, contentButton, handleButton}) => {
+
 const Banner = ({data}) =>{
     const {
-        title,
-        description,
+        title = "Tiêu đề mặc định",
+        description = "Thông tin mặc định",
         colorBackground = "var(--gradient-banner)",
         colorText = "#ffffff",
         hasButton = false,
@@ -13,8 +13,9 @@ const Banner = ({data}) =>{
         contentButton = null,
         handleButton = null,
         categories = null,
-        contentPlaceholder = null
-    } = data
+        contentPlaceholder = null,
+        handleSearchSuggestion = null
+    } = data || {}
     return (
         <div
             style={{ background: colorBackground, color: colorText }}
@@ -27,16 +28,28 @@ const Banner = ({data}) =>{
                         <p className='font-normal leading-[28px] break-words'>{description}</p>
                     </div>
                 </div>
-                <div className='mt-3 px-20 w-full text-center'>
+                <div className='mt-3 px-10 w-full text-center'>
                     {hasButton ? (
-                        <WhiteButton content={contentButton} handleClick={handleButton}/>
+                        <WhiteButton
+                            data={{
+                                content: contentButton,
+                                handleClick: handleButton
+                            }}
+                        />
                     ) : <></>}
                     {hasSearch ? ( 
-                        <SearchBar categories={categories} contentPlaceholder={contentPlaceholder}/>
+                        // <SearchBar categories={categories} contentPlaceholder={contentPlaceholder} onSearch={handleButton}/>
+                        <SearchBar 
+                            data={{
+                                categories: categories,
+                                contentPlaceholder: contentPlaceholder,
+                                onSearch: handleButton,
+                                handleSearchSuggestion: handleSearchSuggestion
+                            }}
+                        />
                     ): <></>}
                 </div>
             </div>
-
         </div>
     )
 }

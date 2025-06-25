@@ -101,7 +101,8 @@ export default function Product(){
         contentButton : null,
         handleButton : null,
         categories : categories,
-        contentPlaceholder : 'Tìm kiếm sản phẩm...'
+        contentPlaceholder : 'Tìm kiếm sản phẩm...',
+        handleSearchSuggestion: handleSearchSuggestion
     }
     
      const banner2 = {
@@ -114,7 +115,9 @@ export default function Product(){
         contentButton : 'Tới Bảng Giá',
         handleButton : () => {},
         categories : null,
-        contentPlaceholder : null
+        contentPlaceholder : null,
+        handleSearchSuggestion: null
+
     }
     const contentCenterCards = [
         {   

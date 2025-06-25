@@ -188,4 +188,28 @@ const project_contents = {
     }
 }
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents};
+const getSearchSuggestions = async (query, filter) => {
+    const cleanedQuery = query.trim().replaceAll(`'`, ``);
+    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+
+    const sql = `
+        SELECT P.title, P.main_img
+        FROM project.projects P
+        JOIN project.project_regions R ON P.region_id = R.id
+        WHERE ($2 = '' OR unaccent(R.name) ILIKE unaccent($2))
+        ORDER BY similarity(unaccent(P.title::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [cleanedQuery, cleanedFilter];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => ({
+            title: row.title,
+            img: row.main_img
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+};
+
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getSearchSuggestions};
