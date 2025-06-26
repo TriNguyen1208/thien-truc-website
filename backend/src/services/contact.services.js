@@ -1,13 +1,13 @@
 import pool from '#@/config/db.js'
 
 const getAllTables = async () => {
-    const contact_page = await getContactPage();
-    const company_info = await getCompanyInfo();
-    const agents = await support_agents.getAll();
+    const _contact_page = await getContactPage();
+    const _company_info = await getCompanyInfo();
+    const _support_agents = await support_agents.getAll();
     return {
-        ...contact_page,
-        ...company_info,
-        ...agents
+        contact_page: _contact_page,
+        company_info: _company_info,
+        support_agents: _support_agents
     };
 }
 
@@ -16,9 +16,7 @@ const getContactPage = async () => {
     if(!contact_page){
         throw new Error("Can't get contact_page");
     }
-    return {
-        contact_page
-    };
+    return contact_page;
 }
 
 const getCompanyInfo = async () => {
@@ -26,9 +24,7 @@ const getCompanyInfo = async () => {
     if(!company_info){
         throw new Error("Can't get company_info");
     }
-    return {
-        company_info
-    };
+    return company_info;
 }
 
 const support_agents = {
@@ -37,18 +33,14 @@ const support_agents = {
         if (!support_agents){
             throw new Error("Can't get support_agents");
         }
-        return {
-            support_agents
-        };
+        return support_agents
     },
     getOne: async (id) => {
         const support_agent_with_id = (await pool.query(`SELECT * FROM contact.support_agents WHERE id = ${id}`)).rows[0];
         if (!support_agent_with_id){
             throw new Error("Can't get support_agents");
         }
-        return {
-            support_agent_with_id
-        };
+        return support_agent_with_id;
     }
 }
 

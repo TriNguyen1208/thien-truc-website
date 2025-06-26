@@ -44,6 +44,8 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
+
+        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
     },
     project: {
         base: PROJECT_BASE,
@@ -59,7 +61,9 @@ const API_ROUTES = {
         project_contents: {
             getAll: `${PROJECT_BASE}/project_contents`,
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
-        }
+        },
+
+        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
     },
     news: {
         base: NEWS_BASE,
@@ -72,10 +76,17 @@ const API_ROUTES = {
             getAll: `${NEWS_BASE}/news_categories`,
             getOne: (id) => `${NEWS_BASE}/news_categories/${id}`,
         },
+        news_contents: {
+            getAll: `${NEWS_BASE}/news_contents`,
+            getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
+        },
+
+        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
     },
     recruitment: {
         base: RECRUITMENT_BASE,
         recruitment_page: `${RECRUITMENT_BASE}/recruitment_page`,
+        send_request: `${RECRUITMENT_BASE}/send_request` // { name, email, title, ...}
     },
     contact: {
         base: CONTACT_BASE,

@@ -1,9 +1,9 @@
 import pool from '#@/config/db.js'
 
 const getAllTables = async (req, res) => {
-    const recruitment = await getRecruitmentPage();
+    const _recruitment_page = await getRecruitmentPage();
     return {
-        ...recruitment
+        recruitment_page: _recruitment_page
     };
 }
 
@@ -12,9 +12,7 @@ const getRecruitmentPage = async (req, res) => {
     if(!recruitment_page){
         throw new Error("Can't get recruitment_page");
     }
-    return {
-        recruitment_page
-    };
+    return recruitment_page;
 }
 
 export default { getAllTables, getRecruitmentPage };

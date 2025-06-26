@@ -1,12 +1,12 @@
 import pool from '#@/config/db.js'
 
 const getAllTables = async () => {
-    const home_page = await getHomePage();
-    const highlight_stats = await highlight_stats_about_us.getAll();
+    const _home_page = await getHomePage();
+    const _highlight_stats_about_us = await highlight_stats_about_us.getAll();
 
     return {
-        ...home_page,
-        ...highlight_stats
+        home_page: _home_page,
+        highlight_stats_about_us: _highlight_stats_about_us
     };
 }
 
@@ -16,9 +16,7 @@ const getHomePage = async() => {
     if(!home_page) {
         throw new Error("Can't get home_page");
     }
-    return { 
-        home_page
-    };
+    return home_page;
 }
 
 const highlight_stats_about_us = {
@@ -28,9 +26,7 @@ const highlight_stats_about_us = {
         if(!highlight_stats_about_us) {
             throw new Error("Can't get highlight_stats_about_us");
         }
-        return {
-            highlight_stats_about_us
-        };
+        return highlight_stats_about_us
     },
 
     getOne: async (id) => {
@@ -41,9 +37,7 @@ const highlight_stats_about_us = {
         if(!highlight_stat_with_id) {
             throw new Error("Can't get highlight_stats_about_us");
         }    
-        return {
-            highlight_stat_with_id
-        };
+        return highlight_stat_with_id;
     }
 }
 export default { getAllTables, getHomePage, highlight_stats_about_us };

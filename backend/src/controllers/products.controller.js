@@ -87,5 +87,12 @@ const product_prices = {
     }
 }
 
+const getSearchSuggestions = async (req, res) => {
+    const query = req.query.query || '';
+    const filter = req.query.filter || '';
 
-export default { getAllTables, getProductPage, products, product_categories, product_features, product_highlight_features, getPricePage, product_prices };
+    const data = await productServices.getSearchSuggestions(query, filter);
+    res.status(200).json(data);
+}
+
+export default { getAllTables, getProductPage, products, product_categories, product_features, product_highlight_features, getPricePage, product_prices, getSearchSuggestions };
