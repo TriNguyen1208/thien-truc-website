@@ -193,24 +193,25 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (P.title) P.title, P.main_img
+        SELECT DISTINCT ON (P.title) P.title as name, P.main_img
         FROM project.projects P
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE
             ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(P.title::text), unaccent($1::text)) > 0
+            ($1 = '' OR similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
         ORDER BY
             P.title, 
+            P.main_img,
             similarity(unaccent(P.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
     const values = [cleanedQuery, cleanedFilter];
     try {
         const result = await pool.query(sql, values);
-        return result.rows.map(row => ({
-            title: row.title,
-            img: row.main_img
-        }));
+        return result.rows.map(({ main_img, ...rest}) => ({
+            ...rest,
+            img: main_img
+        }))
     } catch (err) {
         throw new Error(`DB error: ${err.message}`);
     }
