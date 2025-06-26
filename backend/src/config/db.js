@@ -11,7 +11,8 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD,
     ssl: {
         rejectUnauthorized: false
-    }
+    },
+    options: '-c search_path="$user",extensions'
 });
 
 // Connect to Database

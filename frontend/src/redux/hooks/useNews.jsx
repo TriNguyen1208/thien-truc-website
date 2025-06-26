@@ -5,12 +5,14 @@ function useGetAll(){
     return useQuery({
         queryKey: ["news"],
         queryFn: newsServices.getAll,
+        staleTime: 5 * 60 * 1000,
     })
 }
 function useGetNewsPage(){
     return useQuery({
         queryKey: ["news_page"],
         queryFn: newsServices.getNewsPage,
+        staleTime: 5 * 60 * 1000,
     })
 }
 const news = {
@@ -18,12 +20,14 @@ const news = {
         return useQuery({
             queryKey: ["news_list"],
             queryFn: newsServices.news.getAll,
+            staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["news", id],
             queryFn: () => newsServices.news.getOne(id),
+            staleTime: 5 * 60 * 1000,
         })
     }
 }
@@ -33,12 +37,14 @@ const news_categories = {
         return useQuery({
             queryKey: ["news_categories"],
             queryFn: newsServices.new_categories.getAll,
+            staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["news_category", id],
             queryFn: () => newsServices.new_categories.getOne(id),
+            staleTime: 5 * 60 * 1000,
         })
     }
 }
@@ -48,20 +54,29 @@ const news_contents = {
         return useQuery({
             queryKey: ["news_contents"],
             queryFn: newsServices.new_contents.getAll,
+            staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["news_content", id],
             queryFn: () => newsServices.new_contents.getOne(id),
+            staleTime: 5 * 60 * 1000,
         })
     }
 }
-
+function useSearchSuggest(query, filter){
+    return useQuery({
+        queryKey: ['news-suggestions', query, filter],
+        queryFn: () => newsServices.getSearchSuggestions(query, filter),
+        staleTime: 5 * 60 * 1000,
+    })
+}
 export default {
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
     news,
     news_categories,
-    news_contents
+    news_contents,
+    getSearchSuggestions: useSearchSuggest,
 };

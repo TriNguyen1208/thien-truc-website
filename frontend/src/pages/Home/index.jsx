@@ -1,9 +1,7 @@
-import Loading from "../../components/Loading"
-export default function Home()
-{
-    return(
-    
-            <Loading/>
-      
+export default function Home(){
+    return (
+        <>
+            <p>Đây là trang Home.</p>
+        </>
     )
 }

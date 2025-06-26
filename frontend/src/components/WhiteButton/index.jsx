@@ -1,6 +1,10 @@
 import React from 'react'
 
-const WhiteButton = ({content, handleClick}) => {
+const WhiteButton = ({data}) => {
+  const {
+    content,
+    handleClick
+  } = data
   if(content == null || handleClick == null){
     return <></>
   }

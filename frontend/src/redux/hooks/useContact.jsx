@@ -5,18 +5,21 @@ function useGetAll(){
     return useQuery({
         queryKey: ["contact"],
         queryFn: contactServices.getAll,
+        staleTime: 5 * 60 * 1000,
     })
 }
 function useGetContactPage(){
     return useQuery({
         queryKey: ["contact_page"],
         queryFn: contactServices.getContactPage,
+        staleTime: 5 * 60 * 1000,
     })
 }
 function useGetCompanyInfo(){
     return useQuery({
         queryKey: ["company_info"],
         queryFn: contactServices.getCompanyInfo,
+        staleTime: 5 * 60 * 1000,
     })
 }
 const support_agents = {
@@ -24,12 +27,14 @@ const support_agents = {
         return useQuery({
             queryKey: ["support_agents"],
             queryFn: contactServices.support_agents.getAll,
+            staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["support_agents", id],
+            queryKey: ["support_agent", id],
             queryFn: () => contactServices.support_agents.getOne(id),
+            staleTime: 5 * 60 * 1000,
         })
     } 
 }
