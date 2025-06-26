@@ -10,7 +10,7 @@ import ViewMoreButton from '@/components/ViewMoreButton'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-function Category({category, products,prices ,isClick ,handleViewAll})
+function Category({category, products,prices, hightLightFeatures ,isClick ,handleViewAll})
 {
     return(
         <div  className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
@@ -26,12 +26,14 @@ function Category({category, products,prices ,isClick ,handleViewAll})
                                     {
                                     Array.from({ length: Math.min(isClick === false ? 4 : products.length 
                                         ,products.length ) }).map((_,i) => {
+                                  
                                         
                                             return( 
-                                                <div key={i} className='w-[330px]'>
+                                                <div key={i} className='w-[330px] h-[620px]'>
                                                     <ItemProduct  product = { products[i]}
-                                                    price = {prices[products[i].id - 1] ? 
-                                                             prices[products[i].id - 1]: 'Chưa có'} />                                    
+                                                    prices = {prices}
+                                                    highLightFeatures = {hightLightFeatures}
+                                                    />                                    
                                                 </div>
                                             )
                                         })
@@ -53,6 +55,7 @@ export default function Product(){
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
     const { data: productPrices, isLoading: isLoadingPrices } = useProducts.product_prices.getAll() 
     const { data: products, isLoading: isLoadingProducts } = useProducts.products.getAll() 
+    const { data: productsHlFeatures, isLoading: isLoadingProductsHlFeatures } = useProducts.product_highlight_features.getAll() 
     const [isClick, setIsClick] = useState(new Map())
     const [idCategory, setIdCategory] = useState(0)
     useEffect(() => {
@@ -88,7 +91,7 @@ export default function Product(){
         })
         
     };   
-     if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
+     if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts || isLoadingProductsHlFeatures) {
         return <p>Loading...</p>;
     }
     
@@ -191,9 +194,11 @@ export default function Product(){
                             category : category,
                             products :productByCategory.get(category.id),
                             prices : productPrices,
+                            hightLightFeatures: productsHlFeatures,
                             isClick: isClick.get(category.id),
                             handleViewAll: handleViewAll
                         }
+                        
                         return( productByCategory.get(category.id).length > 0 
                         ?(<Category  key = {index} {...props}/>)
                         :(<div key = {index}></div>)
