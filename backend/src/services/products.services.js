@@ -35,6 +35,7 @@ const products = {
                 prd.name as product_name,
                 prd.description,
                 prd.product_img,
+                prd.product_specifications,
                 prd.warranty_period,
 
                 prd_cate.id as category_id,
@@ -49,6 +50,7 @@ const products = {
                 name: row.product_name,
                 description: row.description,
                 product_img: row.product_img,
+                product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
                 warranty_period: row.warranty_period,
                 category: {
                     id: row.category_id,
@@ -64,6 +66,7 @@ const products = {
                 prd.name as product_name,
                 prd.description,
                 prd.product_img,
+                prd.product_specifications,
                 prd.warranty_period,
 
                 prd_cate.id as category_id,
@@ -79,6 +82,7 @@ const products = {
                 name: row.product_name,
                 description: row.description,
                 product_img: row.product_img,
+                product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
                 warranty_period: row.warranty_period,
                 category: {
                     id: row.category_id,
