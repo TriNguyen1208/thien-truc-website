@@ -193,7 +193,7 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (P.title) P.title as name, P.main_img
+        SELECT DISTINCT ON (P.title) P.title as query, P.main_img
         FROM project.projects P
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE

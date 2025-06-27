@@ -29,6 +29,9 @@ const news = {
             queryFn: () => newsServices.news.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
+    },
+    useGetAllByFilter: () => {
+
     }
 }
 
@@ -72,11 +75,30 @@ function useSearchSuggest(query, filter){
         staleTime: 5 * 60 * 1000,
     })
 }
+function useGetAllByFilter(sort_by, filter){
+    return useQuery({
+        queryKey: ['news-filter', sort_by, filter],
+        queryFn: () => {
+            return newsServices.getAllByFilter(6, sort_by, filter)
+        },
+        staleTime: 5 * 60 * 1000,
+    })
+}
 export default {
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
-    news,
-    news_categories,
-    news_contents,
+    news:{
+        getAll: news.useGetAll,
+        getOne: news.useGetOne,
+    },
+    news_categories:{
+        getAll: news_categories.useGetAll,
+        getOne: news_categories.useGetOne,
+    },
+    news_contents:{
+        getAll: news_contents.useGetAll,
+        getOne: news_contents.useGetOne,
+    },
     getSearchSuggestions: useSearchSuggest,
+    getAllByFilter: useGetAllByFilter
 };

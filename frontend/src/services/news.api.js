@@ -51,6 +51,8 @@ const getSearchSuggestions = async (query, filter) => {
     })
     return res.data
 }
-
-
-export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions};
+const getAllByFilter = async (limit = 6, sort_by = 'date_desc', filter) => {
+    const res = await axios.get(API_ROUTES.news.getAllByFilter(limit, sort_by, filter));
+    return res.data;
+}
+export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions, getAllByFilter};

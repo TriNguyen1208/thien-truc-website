@@ -246,7 +246,7 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (P.name) P.name, P.product_img
+        SELECT DISTINCT ON (P.name) P.name as query, P.product_img
         FROM product.products P
         JOIN product.product_categories C ON P.category_id = C.id
         WHERE 

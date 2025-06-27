@@ -19,7 +19,7 @@ const Banner = ({data}) =>{
     return (
         <div
             style={{ background: colorBackground, color: colorText }}
-            className='flex flex-col pt-18 pb-15 w-screen items-center'
+            className='flex flex-col pt-18 pb-15 w-full items-center'
         >
             <div className='flex flex-col gap-3 items-center'>
                 <div className='flex flex-col gap-5 w-full'>

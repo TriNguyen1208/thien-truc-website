@@ -202,7 +202,7 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (N.title) N.title as name, N.main_img
+        SELECT DISTINCT ON (N.title) N.title as query, N.main_img
         FROM news.news N
         JOIN news.news_categories C ON N.category_id = C.id
         WHERE 
@@ -252,6 +252,7 @@ const getAllByFilter = async ({limit, sortBy, filter}) => {
             order by ${orderBy}
             limit $2
         `
+    
     const { rows } = await pool.query(query, [filter, limit]);
     const news = rows.map(row => ({
         id: row.news_id,
