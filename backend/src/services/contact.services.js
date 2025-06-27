@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import sendMail from '#@/utils/mailer.js'
 
 const getAllTables = async () => {
     const _contact_page = await getContactPage();
@@ -75,6 +76,6 @@ const postContactMessage = async (applicationData) => {
         `
     })
 
-     return { success: true, message: "Ứng tuyển thành công" };
+    return { success: true, message: "Ứng tuyển thành công" };
 }
 export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage };
