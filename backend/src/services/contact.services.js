@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import sendMail from '#@/utils/mailer.js'
 
 const getAllTables = async () => {
     const _contact_page = await getContactPage();
