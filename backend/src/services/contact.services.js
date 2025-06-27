@@ -45,7 +45,7 @@ const support_agents = {
 }
 
 const postContactMessage = async (applicationData) => {
-    const { name, email, phone, title, content } = contratData;
+    const { name, email, phone, title, content } = applicationData;
     //Send mail to company
     await sendMail({
         to: process.env.RECEIVER_EMAIL,
