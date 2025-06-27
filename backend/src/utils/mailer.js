@@ -1,8 +1,8 @@
 import transporter from '#@/config/mailer.js';
 
-const sendMail = async ({ to, subject, text, html }) => {
+const sendMail = async ({ from, to, subject, text, html }) => {
   await transporter.sendMail({
-    from: `"Tuyển dụng" <${process.env.SMTP_USER}>`,
+    from: from || `"Thiên Trúc" <${process.env.SMTP_USER}>`,
     to,
     subject,
     text,
