@@ -8,4 +8,10 @@ const getRecruitmentPage = async () => {
     const res = await axios.get(API_ROUTES.recruitment.recruitment_page);
     return res.data;
 }
-export default {getAll, getRecruitmentPage};
+// TODO: Add 
+const postRecruitmentForm = async (formData) => {
+    const res = await axios.post(API_ROUTES.contact.send_request, formData);
+    return res.data;
+}
+
+export default {getAll, getRecruitmentPage, postRecruitmentForm};

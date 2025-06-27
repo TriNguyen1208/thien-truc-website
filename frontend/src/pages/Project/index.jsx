@@ -3,15 +3,17 @@ import ItemPost from "../../components/ItemPost";
 import PostCategory from "../../components/PostCategory";
 import project from "../../services/projects.api"
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import ViewMoreButton from "../../components/ViewMoreButton";
 export default function Project() {
     const handleButton = (category, query) => {
         console.log(category, query);
     }
+    const [showAll, setShowAll] = useState(false);
     const navigate = useNavigate();
     const [bannerData, setBannerData] = useState(null);
     const [regionData, setRegionData] = useState(null);
-    const [projectData, setProjectData] = useState(null);
+    var [projectData, setProjectData] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
             const dataAll = await project.getAll();
@@ -23,9 +25,14 @@ export default function Project() {
         }
         fetchData();
     }, [])
-    console.log(bannerData);
-    console.log(regionData);
-    console.log(projectData);
+    // console.log(bannerData);
+    // console.log(regionData);
+    // console.log(projectData);
+    if (projectData) {
+        // TODO: delete projectData
+        // projectData = [...projectData, ...projectData, ...projectData];
+        var visibleProject = showAll ? projectData : projectData.slice(0, 6)
+    }
     let categoriesData = null;
     if (regionData != null) {
         categoriesData = regionData.map(item => item.name);
@@ -50,11 +57,14 @@ export default function Project() {
     const handleClick2 = () => {
         console.log("hello world");
     }
-        //Cái này là của whiteButton
+    //Cái này là của whiteButton
     const handleBannerContact = () => {
         navigate("/lien-he")
     }
-    const  bannerContactData = {
+    const handleShowAll = () => {
+        setShowAll(!showAll)
+    }
+    const bannerContactData = {
         title: "Sẵn sàng bắt đầu dự án của bạn",
         description: "Liên hệ với chúng tôi để được tư vấn miễn phí và báo giá chi tiết",
         colorBackground: "var(--light-green-banner)",
@@ -83,7 +93,7 @@ export default function Project() {
                     </div>
                 </div>
                 <div className="flex flex-wrap justify-center">
-                    {(projectData || []).map((item, index) => {
+                    {(visibleProject || []).map((item, index) => {
                         item.complete_time = String(item.complete_time)
                         const dataProject = {
                             type: 'project',
@@ -97,14 +107,19 @@ export default function Project() {
                             handleClick: handleClick2
                         }
                         return (
-                            <div key = {index} className="mr-[30px] mb-[30px] w-[437px]">
-                                <ItemPost data={dataProject} />
-                            </div>
+                            <Link key={index} to={`/du-an/${item.id}`}>
+                                <div className="mr-[30px] mb-[30px] w-[437px]">
+                                    <ItemPost data={dataProject} />
+                                </div>
+                            </Link>
                         );
                     })}
                 </div>
+                <div className="text-center my-[50px]">
+                    <ViewMoreButton content={showAll ? "Thu gọn" : "Xem tất cả dự án"} handleClick={handleShowAll} />
+                </div>
             </div>
-            <Banner data={bannerContactData}/>
+            <Banner data={bannerContactData} />
         </>
     )
 }

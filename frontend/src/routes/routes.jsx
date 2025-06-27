@@ -11,6 +11,7 @@ import AboutUs from '@/pages/AboutUs'
 import PageNotFound from '@/pages/PageNotFound'
 import DefaultLayout from "@/layouts/DefaultLayout"
 import ExampleComponents from '@/pages/ExampleComponents'
+import ProjectDetail from '@/pages/ProjectDetail'
 export const routes = [
     {
         path: "/",
@@ -31,6 +32,10 @@ export const routes = [
             {
                 path: "/du-an",
                 element: <Project />
+            },
+             {
+                path: "/du-an/:id",
+                element: <ProjectDetail />
             },
              {
                 path: "/tin-tuc",

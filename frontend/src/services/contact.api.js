@@ -14,6 +14,11 @@ const getCompanyInfo = async () => {
     const res = await axios.get(API_ROUTES.contact.company_info);
     return res.data;
 }
+// TODO: add
+const postContactForm = async (formData) => {
+    const res = await axios.post(API_ROUTES.contact.contact_message, formData);
+    return res.data;
+}
 
 const support_agents = {
     getAll: async () => {
@@ -25,4 +30,4 @@ const support_agents = {
         return res.data;
     }
 }
-export default {getAll, getContactPage, getCompanyInfo, support_agents};
+export default {getAll, getContactPage, getCompanyInfo, postContactForm, support_agents};

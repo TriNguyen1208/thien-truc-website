@@ -53,6 +53,7 @@ const API_ROUTES = {
         projects: {
             getAll: `${PROJECT_BASE}/projects`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
+            getByRegion: (region) => `${PROJECT_BASE}/projects/region/${encodeURIComponent(region)}`,
         },
         project_regions: {
             getAll: `${PROJECT_BASE}/project_regions`,
@@ -86,6 +87,7 @@ const API_ROUTES = {
     recruitment: {
         base: RECRUITMENT_BASE,
         recruitment_page: `${RECRUITMENT_BASE}/recruitment_page`,
+        send_request: `${RECRUITMENT_BASE}/send_request` // { name, email, title, ...}
     },
     contact: {
         base: CONTACT_BASE,
@@ -95,6 +97,7 @@ const API_ROUTES = {
             getAll: `${CONTACT_BASE}/support_agents`,
             getOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
+        contact_message: `${CONTACT_BASE}/contact_messages`,
     },
     about_us: {
         base: ABOUT_US_BASE,
