@@ -225,4 +225,48 @@ const getSearchSuggestions = async (query, filter) => {
     }
 };
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions};
+const getAllByFilter = async ({limit, sortBy, filter}) => {
+    let orderBy = 'n.public_date DESC';
+    if (sortBy == 'popular')
+        orderBy = 'n.num_readers DESC';
+    
+    const query = `
+        select 
+            n.id as news_id,
+            n.category_id,
+            n.title,
+            n.public_date,
+            n.measure_time,
+            n.num_readers,
+            n.main_img,
+            n.main_content,
+
+            nc.id as category_id,
+            nc.name,
+            nc.rgb_color
+
+            from news.news n
+            join news.news_categories nc on nc.id = n.category_id
+            where ($1 = '' or nc.name ILIKE '%' || $1 || '%')
+            order by ${orderBy}
+            limit $2
+        `
+    const { rows } = await pool.query(query, [filter, limit]);
+    const news = rows.map(row => ({
+        id: row.news_id,
+        title: row.title,
+        public_date: row.public_date,
+        measure_time: row.measure_time,
+        num_readers: row.num_readers,
+        main_img: row.main_img,
+        main_content: row.main_content,
+        category: {
+            id: row.category_id,
+            name: row.name,
+            rgb_color: row.rgb_color
+        }
+    }));
+    return news;
+}
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, getAllByFilter};
