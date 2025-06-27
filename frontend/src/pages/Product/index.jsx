@@ -5,11 +5,11 @@ export default function Product(){
         if (isLoadingProduct) {
             return <p>Loading...</p>;
         }
-       
+    
     return (
         <>
         
-            <ProductDetail product={product.product_prices[0].product} price={product.product_prices[0]}/>
+            <ProductDetail product={product.products[0]}  allPrice={product.product_prices} allFeature={product.product_features} />
         </>
     )
 }

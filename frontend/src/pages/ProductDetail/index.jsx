@@ -48,9 +48,9 @@ function ListPicture({urls, id}){
                     )
      )
 }
-export default function ProductDetail({product , price}){
+export default function ProductDetail({product , allPrice, allFeature }){
     
-    if(!product || !price )
+    if(!product || !allPrice  || !allFeature)
     {
         return(
             <div>
@@ -106,12 +106,8 @@ export default function ProductDetail({product , price}){
         }
         
     ]
-    const listHigtLight =[
-        'Công suất: 45W',
-        'Công suất: 45W',
-        'Công suất: 45W',
-        'Công suất: 45W'
-    ]
+    const features = allFeature.filter((ft, index) =>ft.product_id == product.id)
+    const price = allPrice.filter(pr => product.id == pr.product.id)[0]
     return (
         <>
             <div className="container-fluid pt-[30px]">
@@ -147,7 +143,7 @@ export default function ProductDetail({product , price}){
                         <div>
                             <ul>
                                {
-                                 listHigtLight.map((hl)=>{
+                                 features.map((hl)=>{
                                     return(
                                         <li className='my-[10px]'>
                                             {hl}
