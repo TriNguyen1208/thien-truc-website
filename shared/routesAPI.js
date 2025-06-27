@@ -87,6 +87,7 @@ const API_ROUTES = {
     recruitment: {
         base: RECRUITMENT_BASE,
         recruitment_page: `${RECRUITMENT_BASE}/recruitment_page`,
+        submit_application:`${RECRUITMENT_BASE}/submit_application`,
     },
     contact: {
         base: CONTACT_BASE,
