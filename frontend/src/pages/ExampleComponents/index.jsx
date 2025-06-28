@@ -15,35 +15,35 @@ import useProjects from '../../redux/hooks/useProjects'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
-    // const handleButton = (category, query) => {
-    //     console.log(category, query);
-    // }
-    // const handleSearchSuggestion = (query, filter) => {
-    //     return useProducts.getSearchSuggestions(query, filter)
-    // }
-    // const data = {
-    //     title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
-    //     description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
-    //     colorBackground: "var(--gradient-banner)",
-    //     colorText: "#ffffff",
-    //     hasSearch: true,
-    //     categories: [
-    //         "Tất cả dự án",
-    //         "CABLE",
-    //         "PHẦN MỀM DIỆT VIRUS",
-    //         "MAINBOARD",
-    //         "CPU INTEL",
-    //         "RAM",
-    //         "HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA",
-    //         "POWER",
-    //         "KEYBOARD CÓ DÂY",
-    //         "MOUSE QUANG CÓ DÂY",
-    //         "CAMERA XOAY, CỐ ĐỊNH",
-    //     ],
-    //     contentPlaceholder: "Nhập vào đây",
-    //     handleButton: handleButton,
-    //     handleSearchSuggestion: handleSearchSuggestion
-    // };
+    // // const handleButton = (category, query) => {
+    // //     console.log(category, query);
+    // // }
+    // // const handleSearchSuggestion = (query, filter) => {
+    // //     return useProducts.getSearchSuggestions(query, filter)
+    // // }
+    // // const data = {
+    // //     title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
+    // //     description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
+    // //     colorBackground: "var(--gradient-banner)",
+    // //     colorText: "#ffffff",
+    // //     hasSearch: true,
+    // //     categories: [
+    // //         "Tất cả dự án",
+    // //         "CABLE",
+    // //         "PHẦN MỀM DIỆT VIRUS",
+    // //         "MAINBOARD",
+    // //         "CPU INTEL",
+    // //         "RAM",
+    // //         "HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA",
+    // //         "POWER",
+    // //         "KEYBOARD CÓ DÂY",
+    // //         "MOUSE QUANG CÓ DÂY",
+    // //         "CAMERA XOAY, CỐ ĐỊNH",
+    // //     ],
+    // //     contentPlaceholder: "Nhập vào đây",
+    // //     handleButton: handleButton,
+    // //     handleSearchSuggestion: handleSearchSuggestion
+    // // };
 
     //Cái này là của whiteButton
     // const handleButton = () => {
@@ -58,12 +58,12 @@ const ExampleComponents = () => {
     //     contentButton: "Hello",
     //     handleButton: handleButton 
     // };
-    // return (
-    //     <>
-    //         <Banner data={data}/>
-    //         <p>Đây là trang Home.</p>
-    //     </>
-    // )
+    // // return (
+    // //     <>
+    // //         <Banner data={data}/>
+    // //         <p>Đây là trang Home.</p>
+    // //     </>
+    // // )
 
     //Example Card
     // const card = {
@@ -176,12 +176,12 @@ const ExampleComponents = () => {
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
 
-    const {data, isLoading} = useProjects.projects.useGetList(undefined, 'Miền Bắc', 1);
+    const {data, isLoading} = useProducts.products.getList(undefined, 'CABLE', 1);
     if(isLoading){
         return <></>
     }
-    console.log(data)
+    console.log(data);
     return <>Hello</>
-}
+}   
 
 export default ExampleComponents
