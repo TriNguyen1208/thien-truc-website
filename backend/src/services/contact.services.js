@@ -76,6 +76,6 @@ const postContactMessage = async (applicationData) => {
         `
     })
 
-     return { success: true, message: "Ứng tuyển thành công" };
+    return { success: true, message: "Ứng tuyển thành công" };
 }
 export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage };
