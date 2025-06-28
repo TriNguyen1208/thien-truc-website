@@ -2,7 +2,7 @@ import pool from '#@/config/db.js'
 
 const getAllTables = async () => {
     const _product_page = await getProductPage();
-    const _products = await products.getAll();
+    const _products = await products.getList();
     const _product_features = await product_features.getAll();
     const _product_highlight_features = await product_highlight_features.getAll();
     const _product_categories = await product_categories.getAll();
@@ -24,11 +24,42 @@ const getProductPage = async () => {
     if(!product_page){
         throw new Error("Can't get product_page");
     }
-    return product_page;
+
+    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+    let totalCount = 0;
+
+    if (cleanedFilter === '') {
+        const result = await pool.query("SELECT COUNT(*) FROM product.products");
+        totalCount = parseInt(result.rows[0].count);
+    }
+    else {
+        const query = `
+            SELECT COUNT(*) AS total
+            FROM product.products p
+            JOIN product.product_categories pc on p.category_id = pc.id
+            WHERE unaccent(pc.name) ILIKE unaccent($1)
+        `;
+        const result = await pool.query(query, [cleanedFilter]);
+        totalCount = parseInt(result.rows[0].total);
+    }
+    return {
+        ...product_page,
+        totalCount
+    }
 }
 
 const products = {
-    getAll: async () => {
+    getList: async (query = '', filter = '', page = 1) => {
+        const cleanedQuery = query.trim().replaceAll(`'`, ``);
+        const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+        const pageSize = 12;
+        const offset = (page - 1) * pageSize;
+
+        const hasQuery = cleanedQuery !== '';
+        const hasFilter = cleanedFilter !== '';
+        const isPaged = page !== 1;
+
+        if (!hasQuery && !hasFilter && !isPaged) {
         const query = `
             select 
                 prd.id as product_id,
@@ -45,7 +76,7 @@ const products = {
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
         `
         const { rows } = await pool.query(query);
-        const products = rows.map(row => ({
+        const results = rows.map(row => ({
                 id: row.product_id,
                 name: row.product_name,
                 description: row.description,
@@ -57,7 +88,93 @@ const products = {
                     name: row.category_name
                 }
             }));
-        return products
+        return {
+            page: 1,
+            pageSize: results.length,
+            results
+        };
+    }
+    if (hasQuery) {
+        const query = `
+            select 
+                prd.id as product_id,
+                prd.name as product_name,
+                prd.description,
+                prd.product_img,
+                prd.warranty_period,
+
+                prd_cate.id as category_id,
+                prd_cate.name as category_name
+            from product.products p
+            join product.product_categories pc on p.category_id = pc.id
+            where 
+                ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
+                similarity(unaccent(p.name::text), unaccent($1::text)) > 0
+            ORDER BY
+                p.name,
+                similarity(unaccent(p.name::text), unaccent($1::text)) DESC
+            LIMIT $3 OFFSET $4
+        `;
+        const values = [cleanedQuery, cleanedFilter, pageSize, offset];
+        const { rows } = await pool.query(query, values);
+
+        const results = rows.map(row => ({
+                id: row.product_id,
+                name: row.product_name,
+                description: row.description,
+                product_img: row.product_img,
+                warranty_period: row.warranty_period,
+                category: {
+                    id: row.category_id,
+                    name: row.category_name
+                }
+            }));
+
+        return {
+            page,
+            pageSize,
+            results
+        };
+    } else {
+        const query = `
+            select 
+                prd.id as product_id,
+                prd.name as product_name,
+                prd.description,
+                prd.product_img,
+                prd.warranty_period,
+
+                prd_cate.id as category_id,
+                prd_cate.name as category_name
+            from product.products p
+            join product.product_categories pc on p.category_id = pc.id
+            where
+                ($1 = '' OR unaccent(pc.name) ILIKE unaccent($1))
+            ORDER BY
+                p.name
+            LIMIT $2 OFFSET $3
+        `;
+        const values = [cleanedFilter, pageSize, offset];
+        const { rows } = await pool.query(query, values);
+
+        const results = rows.map(row => ({
+                id: row.product_id,
+                name: row.product_name,
+                description: row.description,
+                product_img: row.product_img,
+                warranty_period: row.warranty_period,
+                category: {
+                    id: row.category_id,
+                    name: row.category_name
+                }
+            }));
+
+        return {
+            page,
+            pageSize,
+            results
+        };
+    }
     },
     getOne: async (id) => {
         const query = `

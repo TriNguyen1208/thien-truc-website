@@ -22,7 +22,7 @@ const API_ROUTES = {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
         products: {
-            getAll: `${PRODUCT_BASE}/products`,
+            getList: `${PRODUCT_BASE}/products`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
         },
         product_categories: {
