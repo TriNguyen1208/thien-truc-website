@@ -3,11 +3,11 @@ import UserCard from "../../components/UserCard";
 import Banner from "../../components/Banner";
 import { useNavigate } from 'react-router-dom';
 import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-  Facebook
+    Mail,
+    Phone,
+    MapPin,
+    Clock,
+    Facebook
 } from 'lucide-react';
 export default function Contact() {
     const navigate = useNavigate();
@@ -84,67 +84,85 @@ export default function Contact() {
                     </div>
                 </div>
             </div>
-            <div>
-                <div>
-                    <div>
-                        Lien he ve chung toi 
+            <div className="container-fluid flex py-[70px]">
+                <div className="w-1/2 text-[var(--dark-green)] font-[400]">
+                    <div className="text-[30px] font-[600] mb-[15px]">
+                        Lien he ve chung toi
                     </div>
-                    <div>
+                    <div className="mb-[20px]">
                         Bạn có dự án trong đầu hoặc muốn tìm hiểu thêm về dịch vụ của chúng tôi? Điền vào biểu mẫu hoặc liên hệ trực tiếp với chúng
-tôi qua thông tin bên dưới.
+                        tôi qua thông tin bên dưới.
                     </div>
-                    <div>
-                        <div>
-                             <Mail className="w-5 h-5 text-[var(--green-bg)]" />
-                        </div>
-                        <div>
-                            <div>
-                                Email 
+                    <div className="flex flex-col gap-[30px]">
+                        <div className="flex items-center">
+                            <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
+                                <Mail className="w-5 h-5 text-[var(--green-bg)]" />
                             </div>
                             <div>
-                                Lien he@gmail.com
+                                <div>
+                                    Email
+                                </div>
+                                <div>
+                                    Lien he@gmail.com
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <div>
-                             <Mail className="w-5 h-5 text-[var(--green-bg)]" />
-                        </div>
-                        <div>
-                            <div>
-                                Email 
+                        <div className="flex items-center">
+                            <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
+                                <Mail className="w-5 h-5 text-[var(--green-bg)]" />
                             </div>
                             <div>
-                                Lien he@gmail.com
+                                <div>
+                                    Email
+                                </div>
+                                <div>
+                                    Lien he@gmail.com
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <div>
-                             <Mail className="w-5 h-5 text-[var(--green-bg)]" />
-                        </div>
-                        <div>
-                            <div>
-                                Email 
+                        <div className="flex items-center">
+                            <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
+                                <Mail className="w-5 h-5 text-[var(--green-bg)]" />
                             </div>
                             <div>
-                                Lien he@gmail.com
+                                <div>
+                                    Email
+                                </div>
+                                <div>
+                                    Lien he@gmail.com
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div>
-                    Form 
+                    Form
+                </div>
+            </div>
+            <div className="container-fluid bg-[var(--light-green-banner)] py-[35px]">
+                <div className="text-[30px] font-[600] text-[var(--dark-green)] mb-[30px]">
+                    Vi tri cua chung toi
+                </div>
+                <div>
+                    <div className="h-[500px]">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1731.3900774364906!2d105.62670415968444!3d10.46181896279175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310a65a50ea1ee67%3A0x4617b76f410a907c!2zQ8O0bmcgVHkgVG5oaCBUaGnDqm4gVHLDumM!5e1!3m2!1svi!2s!4v1751040961139!5m2!1svi!2s"
+                            className="w-full h-full border-0"
+                            allowFullScreen
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        />
+                    </div>
                 </div>
             </div>
         </>
     )
 }
-    // <Mail className="w-5 h-5 text-gray-600" />
-    //         <Phone className="w-5 h-5 text-blue-500" />
-    //         <MapPin className="w-5 h-5 text-red-500" />
-    //         <Clock className="w-5 h-5 text-yellow-500" />
-    //         <Facebook className="w-5 h-5 text-blue-700" />
+// <Mail className="w-5 h-5 text-gray-600" />
+//         <Phone className="w-5 h-5 text-blue-500" />
+//         <MapPin className="w-5 h-5 text-red-500" />
+//         <Clock className="w-5 h-5 text-yellow-500" />
+//         <Facebook className="w-5 h-5 text-blue-700" />
 
 
 {/* <form class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm space-y-4">
