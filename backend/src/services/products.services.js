@@ -412,7 +412,6 @@ const getSearchSuggestions = async (query, filter) => {
         return result.rows.map(row => ({
             query: row.name,
             id: row.id,
-            id: row.id,
             img: row.product_img
         }));
     } catch (err) {
