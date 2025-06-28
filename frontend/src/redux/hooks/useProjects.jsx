@@ -16,10 +16,10 @@ function useGetProjectPage(){
     })
 }
 const projects = {
-    useGetAll: () => {
+    useGetList: (query = '', filter = '', page = 1) => {
         return useQuery({
             queryKey: ["projects_list"],
-            queryFn: projectsServices.projects.getAll,
+            queryFn: () => projectsServices.projects.getList(query, filter, page),
             staleTime: 5 * 60 * 1000,
         })
     },
