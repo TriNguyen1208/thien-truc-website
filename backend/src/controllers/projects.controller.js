@@ -11,8 +11,9 @@ const getProjectPage = async (req, res) => {
 }
 
 const projects = {
-    getAll: async (req, res) => {
-        const data = await projectsServices.projects.getAll();
+    getList: async (req, res) => {
+        const { query = '', filter = '', page = '1' } = req.query;
+        const data = await projectsServices.projects.getList(query, filter, parseInt(page));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
