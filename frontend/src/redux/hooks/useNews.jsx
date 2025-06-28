@@ -18,7 +18,7 @@ function useGetNewsPage(){
 const news = {
     useGetList: (query = '', filter = '', sort_by = '', page = 1) => {
         return useQuery({
-            queryKey: ["news_list"],
+            queryKey: ["news_list", query, filter, sort_by, page],
             queryFn: () => newsServices.news.getList(query, filter, sort_by, page),
             staleTime: 5 * 60 * 1000,
         })

@@ -60,19 +60,4 @@ const getSearchSuggestions = async (req, res) => {
     const data = await newsServices.getSearchSuggestions(query, filter);
     res.status(200).json(data);
 }
-
-const getAllByFilter = async (req, res) => {
-    try {
-        const {limit = 6, sort_by = 'date_desc', filter = ''} =  req.query;
-        const data = await newsServices.news_fitered.getAllByFilter({
-            limit: parseInt(limit),
-            sortBy: sort_by, 
-            filter: filter.replace(/[' '']/g, ' ')
-        });
-        res.status(200).json(data);
-    } catch (error) {
-        console.error('Error fetching filtered news:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
-export default { getAllTables, getNewsPage, news, news_categories, news_contents,getSearchSuggestions, getAllByFilter};
+export default { getAllTables, getNewsPage, news, news_categories, news_contents,getSearchSuggestions};

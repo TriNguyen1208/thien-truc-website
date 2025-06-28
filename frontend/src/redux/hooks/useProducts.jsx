@@ -18,7 +18,7 @@ function useGetProductPage(){
 const products = {
     useList: (query = '', filter = '', page = 1)=>{
         return useQuery({
-            queryKey: ["product-list"],
+            queryKey: ["product-list", query, filter, page],
             queryFn: () => productsServices.products.getList(query, filter, page),
             staleTime: 5 * 60 * 1000,
         })
