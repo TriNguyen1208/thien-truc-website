@@ -59,122 +59,122 @@ const products = {
         const hasFilter = cleanedFilter !== '';
         const isPaged = page !== 1;
 
-        if (!hasQuery && !hasFilter && !isPaged) {
-        const query = `
-            select 
-                prd.id as product_id,
-                prd.name as product_name,
-                prd.description,
-                prd.product_img,
-                prd.product_specifications,
-                prd.warranty_period,
+        if (!hasQuery && !hasFilter && !isPaged) { //getAll
+            const query = `
+                select 
+                    prd.id as product_id,
+                    prd.name as product_name,
+                    prd.description,
+                    prd.product_img,
+                    prd.product_specifications,
+                    prd.warranty_period,
 
-                prd_cate.id as category_id,
-                prd_cate.name as category_name
+                    prd_cate.id as category_id,
+                    prd_cate.name as category_name
 
-            from product.products prd
-            join product.product_categories prd_cate on prd.category_id = prd_cate.id
-        `
-        const { rows } = await pool.query(query);
-        const results = rows.map(row => ({
-                id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
-                warranty_period: row.warranty_period,
-                category: {
-                    id: row.category_id,
-                    name: row.category_name
-                }
-            }));
-        return {
-            page: 1,
-            pageSize: results.length,
-            results
-        };
-    }
-    if (hasQuery) {
-        const query = `
-            select 
-                prd.id as product_id,
-                prd.name as product_name,
-                prd.description,
-                prd.product_img,
-                prd.warranty_period,
+                from product.products prd
+                join product.product_categories prd_cate on prd.category_id = prd_cate.id
+            `
+            const { rows } = await pool.query(query);
+            const results = rows.map(row => ({
+                    id: row.product_id,
+                    name: row.product_name,
+                    description: row.description,
+                    product_img: row.product_img,
+                    product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
+                    warranty_period: row.warranty_period,
+                    category: {
+                        id: row.category_id,
+                        name: row.category_name
+                    }
+                }));
+            return {
+                page: 1,
+                pageSize: results.length,
+                results
+            };
+        }
+        if (hasQuery) { 
+            const query = `
+                select 
+                    prd.id as product_id,
+                    prd.name as product_name,
+                    prd.description,
+                    prd.product_img,
+                    prd.warranty_period,
 
-                prd_cate.id as category_id,
-                prd_cate.name as category_name
-            from product.products p
-            join product.product_categories pc on p.category_id = pc.id
-            where 
-                ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
-                similarity(unaccent(p.name::text), unaccent($1::text)) > 0
-            ORDER BY
-                p.name,
-                similarity(unaccent(p.name::text), unaccent($1::text)) DESC
-            LIMIT $3 OFFSET $4
-        `;
-        const values = [cleanedQuery, cleanedFilter, pageSize, offset];
-        const { rows } = await pool.query(query, values);
+                    prd_cate.id as category_id,
+                    prd_cate.name as category_name
+                from product.products p
+                join product.product_categories pc on p.category_id = pc.id
+                where 
+                    ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
+                    similarity(unaccent(p.name::text), unaccent($1::text)) > 0
+                ORDER BY
+                    p.name,
+                    similarity(unaccent(p.name::text), unaccent($1::text)) DESC
+                LIMIT $3 OFFSET $4
+            `;
+            const values = [cleanedQuery, cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(query, values);
 
-        const results = rows.map(row => ({
-                id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
-                category: {
-                    id: row.category_id,
-                    name: row.category_name
-                }
-            }));
+            const results = rows.map(row => ({
+                    id: row.product_id,
+                    name: row.product_name,
+                    description: row.description,
+                    product_img: row.product_img,
+                    warranty_period: row.warranty_period,
+                    category: {
+                        id: row.category_id,
+                        name: row.category_name
+                    }
+                }));
 
-        return {
-            page,
-            pageSize,
-            results
-        };
-    } else {
-        const query = `
-            select 
-                prd.id as product_id,
-                prd.name as product_name,
-                prd.description,
-                prd.product_img,
-                prd.warranty_period,
+            return {
+                page,
+                pageSize,
+                results
+            };
+        } else {
+            const query = `
+                select 
+                    prd.id as product_id,
+                    prd.name as product_name,
+                    prd.description,
+                    prd.product_img,
+                    prd.warranty_period,
 
-                prd_cate.id as category_id,
-                prd_cate.name as category_name
-            from product.products p
-            join product.product_categories pc on p.category_id = pc.id
-            where
-                ($1 = '' OR unaccent(pc.name) ILIKE unaccent($1))
-            ORDER BY
-                p.name
-            LIMIT $2 OFFSET $3
-        `;
-        const values = [cleanedFilter, pageSize, offset];
-        const { rows } = await pool.query(query, values);
+                    prd_cate.id as category_id,
+                    prd_cate.name as category_name
+                from product.products p
+                join product.product_categories pc on p.category_id = pc.id
+                where
+                    ($1 = '' OR unaccent(pc.name) ILIKE unaccent($1))
+                ORDER BY
+                    p.name
+                LIMIT $2 OFFSET $3
+            `;
+            const values = [cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(query, values);
 
-        const results = rows.map(row => ({
-                id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
-                category: {
-                    id: row.category_id,
-                    name: row.category_name
-                }
-            }));
+            const results = rows.map(row => ({
+                    id: row.product_id,
+                    name: row.product_name,
+                    description: row.description,
+                    product_img: row.product_img,
+                    warranty_period: row.warranty_period,
+                    category: {
+                        id: row.category_id,
+                        name: row.category_name
+                    }
+                }));
 
-        return {
-            page,
-            pageSize,
-            results
-        };
-    }
+            return {
+                page,
+                pageSize,
+                results
+            };
+        }
     },
     getOne: async (id) => {
         const query = `
