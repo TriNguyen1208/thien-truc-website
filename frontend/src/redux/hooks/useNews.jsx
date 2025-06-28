@@ -80,8 +80,18 @@ function useSearchSuggest(query, filter){
 export default {
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
-    news,
-    news_categories,
-    news_contents,
+    news:{
+        getAll: news.useGetAll,
+        getOne: news.useGetOne,
+    },
+    news_categories:{
+        getAll: news_categories.useGetAll,
+        getOne: news_categories.useGetOne,
+    },
+    news_contents:{
+        getAll: news_contents.useGetAll,
+        getOne: news_contents.useGetOne,
+    },
     getSearchSuggestions: useSearchSuggest,
+    // getAllByFilter: useGetAllByFilter
 };

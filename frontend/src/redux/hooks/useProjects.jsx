@@ -73,8 +73,17 @@ function useSearchSuggest(query, filter){
 export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
-    projects,
-    project_regions,
-    project_contents,
+    projects: {
+        getAll: projects.useGetAll,
+        getOne: projects.useGetOne,
+    },
+    project_regions: {
+        getAll: project_regions.useGetAll,
+        getOne: project_regions.useGetOne,
+    },
+    project_contents: {
+        getAll: project_contents.useGetAll,
+        getOne: project_contents.useGetOne,
+    },
     getSearchSuggestions: useSearchSuggest,
 };

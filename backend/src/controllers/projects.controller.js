@@ -6,7 +6,8 @@ const getAllTables = async (req, res) => {
 }
 
 const getProjectPage = async (req, res) => {
-    const data = await projectsServices.getProjectPage();
+    const {filter = ''} = req.query;
+    const data = await projectsServices.getProjectPage(filter);
     res.status(200).json(data);
 }
 

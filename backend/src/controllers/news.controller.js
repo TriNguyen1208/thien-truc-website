@@ -6,12 +6,14 @@ const getAllTables = async (req, res) => {
 }
 
 const getNewsPage = async (req, res) => {
-    const data = await newsServices.getNewsPage();
+    const {filter = ''} = req.query;
+    const data = await newsServices.getNewsPage(filter);
     res.status(200).json(data);
 }
 const news = {
-    getAll: async (req, res) => {
-        const data = await newsServices.news.getAll();
+    getList: async (req, res) => {
+        const {query = '', filter = '', sort_by = 'popular', page = 1} = req.query;
+        const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
