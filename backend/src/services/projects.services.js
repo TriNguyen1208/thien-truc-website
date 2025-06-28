@@ -315,14 +315,19 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
+<<<<<<< HEAD
         SELECT DISTINCT ON (P.title) P.title, P.id, P.main_img
+=======
+        SELECT DISTINCT ON (P.title) P.title, P.main_img
+>>>>>>> origin/feature/search-suggestions-api
         FROM project.projects P
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE
             ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(P.title::text), unaccent($1::text)) > 0
+            ($1 = '' OR similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
         ORDER BY
             P.title, 
+            P.main_img,
             similarity(unaccent(P.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
