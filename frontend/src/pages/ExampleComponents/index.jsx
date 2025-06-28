@@ -12,6 +12,7 @@ import WhiteButton from '../../components/WhiteButton'
 import ItemPost from '../../components/ItemPost'
 import useProducts from '../../redux/hooks/useProducts'
 import useNews from '../../redux/hooks/useNews'
+import Form from '../../components/Form'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
@@ -174,7 +175,7 @@ const ExampleComponents = () => {
     // return(
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
-
+    return <Form content="Gdfjadsff"/>
     
 }
 

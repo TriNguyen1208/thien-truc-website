@@ -1,15 +1,31 @@
 import React from 'react'
 import { useEffect } from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-const ListType = ({categories, handleClick}) => {
-    const [category, setCategory] = useState(categories[0]);
+const ListType = ({categories, handleClick, current}) => {
+    const [category, setCategory] = useState(current);
+    useEffect(() => {
+        setCategory(current);
+      }, [current]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    useEffect(()=>{
+    const wrapperRef = useRef(null);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        // Khi dropdown mở thì gắn event
+        document.addEventListener('mousedown', handleClickOutside);
         
-    }, [dropdownOpen])
+        // Cleanup khi unmount hoặc dropdown đóng
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [dropdownOpen]);
     return (
-        <div className="relative border border-gray-200 rounded-sm shadow-lg">
+        <div ref={wrapperRef} className="relative border border-gray-200 rounded-sm shadow-lg">
             <button
                 className="rounded-tl-md rounded-bl-md w-38 h-[40px] pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
                 onClick={(e) => {
@@ -42,6 +58,6 @@ const ListType = ({categories, handleClick}) => {
             )}
         </div>
     )
-    }
+}
 
 export default ListType

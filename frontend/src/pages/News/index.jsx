@@ -8,14 +8,18 @@ import ItemPost from "../../components/ItemPost";
 import GreenButton from "../../components/GreenButton";
 import ViewMoreButton from "../../components/ViewMoreButton";
 import { Spin } from 'antd'
+import {Link, useLocation} from 'react-router-dom'
 export default function News() {
   const types = ["date_desc", "popular"];
   const [type, setType] = useState(types[0]);
   const [category, setCategory] = useState("Chọn thể loại");
-
+  const location = useLocation();
+  // const [query, setQuery] = useState("");
   const handleButton = (category, query) => {
-    console.log(category, query);
+    setCategory(category);
+    // console.log(category, query); //category với query là chọn thể loại vơi cái đang nhập. enter hay nhan tim kiem gi cũng ra
   };
+  //Note: Nếu như chọn cái đã gợi ý thì vào thẳng trang chi tiết sản phẩm luôn. Nếu như nhập bàn phím thì trả về 1 list các news để render ra
 
   const handleSearchSuggestion = (query, filter) => {
     return useNews.getSearchSuggestions(query, filter);
@@ -65,6 +69,7 @@ export default function News() {
             <ListType
               categories={categories}
               handleClick={handleClickCategory}
+              current={category}
             />
           </div>
         </div>
@@ -88,7 +93,11 @@ export default function News() {
                       views: item.num_readers,
                   },
                 };
-                return <div><ItemPost data={data} /></div>
+                return (
+                  <Link to={`${location.pathname}/${item.id}`} key={item.id}>
+                    <ItemPost data={data} />
+                  </Link>
+                );
             }
             )
           )}
