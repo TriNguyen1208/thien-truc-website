@@ -177,11 +177,13 @@ const ExampleComponents = () => {
     // return(
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
-    const {mutate} = useNews.news.useUpdateNumReaders(1);
-    useEffect(() => {
-        mutate(); // ✅ Gọi 1 lần khi component mount
-    }, []);
+
+    const {data, isLoading} = useProducts.products.getList(undefined, 'CABLE', 1);
+    if(isLoading){
+        return <></>
+    }
+    console.log(data);
     return <>Hello</>
-}
+}   
 
 export default ExampleComponents
