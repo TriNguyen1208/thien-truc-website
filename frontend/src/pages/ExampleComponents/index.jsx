@@ -13,6 +13,8 @@ import ItemPost from '../../components/ItemPost'
 import useProducts from '../../redux/hooks/useProducts'
 import useNews from '../../redux/hooks/useNews'
 import Form from '../../components/Form'
+// import useNews from '../../redux/hooks/useNews'
+// import useProjects from '../../redux/hooks/useProjects'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
@@ -175,8 +177,13 @@ const ExampleComponents = () => {
     // return(
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
-    return <Form content="Gdfjadsff"/>
-    
-}
+
+    // const {data, isLoading} = useNews.news.getList(undefined, 'Công Ty', 'popular', 1);
+    // if(isLoading){
+    //     return <></>
+    // }
+    // console.log(data);
+    // return <>Hello</>
+}   
 
 export default ExampleComponents

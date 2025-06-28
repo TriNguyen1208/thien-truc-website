@@ -6,7 +6,8 @@ const SearchBar = ({ data }) => {
     categories,
     contentPlaceholder,
     onSearch,
-    handleSearchSuggestion
+    handleSearchSuggestion,
+    handleEnter
   } = data;
 
   const [category, setCategory] = useState(categories?.[0] || '');
@@ -113,10 +114,7 @@ const SearchBar = ({ data }) => {
           } else if (e.key === 'Enter') {
             if (showSuggestions && suggestions[highlightedIndex]) {
               const item = suggestions[highlightedIndex];
-              setQuery(item.query);
-              setShowSuggestions(false);
-              setDropdownOpen(false);
-              handleSearch(item.query);
+              handleEnter(item.id);
             } else {
               handleSearch(query); // fallback nếu không có gợi ý
             }
@@ -137,10 +135,7 @@ const SearchBar = ({ data }) => {
                   }`}
                   onMouseEnter={() => setHighlightedIndex(index)} // di chuột cũng highlight
                   onClick={() => {
-                    setQuery(item.query);
-                    setShowSuggestions(false);
-                    setDropdownOpen(false);
-                    handleSearch(item.query);
+                    handleEnter(item.id)
                   }}
                 >
                   <img src={item.img} alt="" className="w-5 h-5" />

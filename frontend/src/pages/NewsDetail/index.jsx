@@ -3,8 +3,14 @@ import useNews from "../../redux/hooks/useNews";
 import Loading from "@/components/Loading"
 import BackButton from "./components/BackButton";
 import LabelType from "./components/LabelType";
+import { useEffect } from "react";
 export default function NewsDetail(){
     const {id: news_id} = useParams();
+    const mutation = useNews.news.updateNumReaders(news_id);
+
+    useEffect(() => {
+        mutation.mutate();
+    }, []);
     const {data: news, isLoading: isLoadingNews} = useNews.news_contents.getOne(news_id);
     const navigate = useNavigate();
     if(isLoadingNews){

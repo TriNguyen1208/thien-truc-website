@@ -8,19 +8,45 @@ import ItemPost from "../../components/ItemPost";
 import GreenButton from "../../components/GreenButton";
 import ViewMoreButton from "../../components/ViewMoreButton";
 import { Spin } from 'antd'
-import {Link, useLocation} from 'react-router-dom'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
+/*
+import Paging from "../../components/Paging";
+import { useState } from "react";
+export default function Home() {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const handlePageChange = (page) => {
+        console.log('Trang hiện tại:', page);
+        setCurrentPage(page);
+    };
+
+    const data = {
+        numberPagination: 10, // = 10 item 
+    };
+
+    return (
+        <div>
+            <Paging data={data} onPageChange={handlePageChange} />
+            <p>Trang đang xem: {currentPage}</p>
+        </div>
+    );
+}
+*/
 export default function News() {
-  const types = ["date_desc", "popular"];
-  const [type, setType] = useState(types[0]);
+  const navigate = useNavigate();
+  const sortBys = ["date_desc", "popular"];
   const [category, setCategory] = useState("Chọn thể loại");
   const location = useLocation();
-  // const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [indexSort, setIndexSort] = useState(0);
   const handleButton = (category, query) => {
+    setQuery(query)
     setCategory(category);
-    // console.log(category, query); //category với query là chọn thể loại vơi cái đang nhập. enter hay nhan tim kiem gi cũng ra
   };
-  //Note: Nếu như chọn cái đã gợi ý thì vào thẳng trang chi tiết sản phẩm luôn. Nếu như nhập bàn phím thì trả về 1 list các news để render ra
-
+  const handleEnter = (id) => {
+    navigate(`/tin-tuc/${id}`);
+  }
   const handleSearchSuggestion = (query, filter) => {
     return useNews.getSearchSuggestions(query, filter);
   };
@@ -29,9 +55,11 @@ export default function News() {
   }
   const { data: newsPage, isLoading: isLoadingNewsPage } = useNews.getNewsPage();
   const { data: newsCategory, isLoading: isLoadingCategory } = useNews.news_categories.getAll();
-  const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.getAllByFilter(
-    type,
-    category === "Chọn thể loại" ? "" : category
+  const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.news.getList(
+    query,
+    category === "Chọn thể loại" ? undefined : category,
+    sortBys[indexSort],
+    currentPage
   );
   if (isLoadingNewsPage || isLoadingCategory) return <Loading />;
 
@@ -39,7 +67,7 @@ export default function News() {
     "Chọn thể loại",
     ...newsCategory.map((category) => category.name),
   ];
-
+  
   const data = {
     title: newsPage.banner_title,
     description: newsPage.banner_description,
@@ -50,6 +78,7 @@ export default function News() {
     contentPlaceholder: "Nhập vào đây",
     handleButton: handleButton,
     handleSearchSuggestion: handleSearchSuggestion,
+    handleEnter: handleEnter
   };
   return (
     <>
@@ -62,7 +91,8 @@ export default function News() {
           <div className="flex-shrink-0">
             <ItemByType
               types={["Mới nhất", "Phổ Biến"]}
-              handleClick={(index) => setType(types[index])}
+              handleClick={(index) => setIndexSort(index)}
+              current={indexSort}
             />
           </div>
           <div className="flex-1 flex justify-end">
@@ -80,7 +110,7 @@ export default function News() {
               <div className="p-10 w-[400px] h-[400px] rounded-sm" />
             </Spin>
           ) : (
-            dataFilter?.map((item, index) => {
+            dataFilter.results?.map((item, index) => {
                 const data = {
                   type: "news",
                   title: item.title,

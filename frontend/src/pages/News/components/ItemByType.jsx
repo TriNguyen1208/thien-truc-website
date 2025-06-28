@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
 
 function Item( {content} ) {
@@ -8,12 +9,15 @@ function Item( {content} ) {
     );
 }
  
-function ItemByType({ types, handleClick }) {
-    const [selected, setSelected] = useState('0');
+function ItemByType({ types, handleClick, current }) {
+    const [selected, setSelected] = useState(current);
+    useEffect(()=> {
+        setSelected(current);
+    }, [current])
     const handleParentClick = (e) => {
         const childClicked = e.target.closest('[data-index]');  
         if (childClicked) {
-            const index = childClicked.getAttribute('data-index');
+            const index = Number(childClicked.getAttribute('data-index'));
             setSelected(index);
             handleClick(index)
         }
@@ -26,10 +30,11 @@ function ItemByType({ types, handleClick }) {
        {       
             types.map((type, index) => {
                return ( 
-                <div key = {index} 
-                    data-index = {index} 
-                    className={`flex flex-row  px-[24px] py-[12px]  w-full h-[40px] rounded-sm cursor-pointer transition-all duration-300 ease-in-out 
-                    ${selected === `${index}` ? "bg-[#059669] text-white shadow-md" : "bg-white text-[#4B5563] hover:bg-[#F3F4F6]"}`} 
+                <div 
+                    key={index}
+                    data-index={index}
+                    className={`flex flex-row px-[24px] py-[12px] w-full h-[40px] rounded-sm cursor-pointer transition-all duration-300 ease-in-out 
+                    ${selected === index ? "bg-[#059669] text-white shadow-md" : "bg-white text-[#4B5563] hover:bg-[#F3F4F6]"}`}
                 >
                     <Item content={type} />
                 </div>

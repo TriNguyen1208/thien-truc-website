@@ -12,8 +12,8 @@ const getProductPage = async () => {
     return res.data;
 }
 const products = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.product.products.getAll);
+    getList: async (query = '', filter = '', page = 1) => {
+        const res = await axios.get(API_ROUTES.product.products.getList(query, filter, page));
         return res.data;
     },
     getOne: async (id) => {
@@ -79,12 +79,7 @@ const getPricePage = async () => {
     return res.data;
 }
 const getSearchSuggestions = async (query, filter) => {
-    const res = await axios.get(API_ROUTES.product.search_suggestions, {
-        params: {
-            query: query,
-            filter: filter
-        }
-    })
+    const res = await axios.get(API_ROUTES.product.search_suggestions(query, filter));
     return res.data
 }
 export default {
