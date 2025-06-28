@@ -66,7 +66,7 @@ const project_contents = {
 function useSearchSuggest(query, filter){
     return useQuery({
         queryKey: ['project-suggestions', query, filter],
-        queryFn: (query, filter) => projectsServices.getSearchSuggestions(query, filter),
+        queryFn: () => projectsServices.getSearchSuggestions(query, filter),
         staleTime: 5 * 60 * 1000,
     })
 }
