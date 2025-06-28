@@ -12,8 +12,8 @@ const getProjectPage = async () => {
 }
 
 const projects = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.project.projects.getAll);
+    getList: async (query = '', filter = '', page = 1) => {
+        const res = await axios.get(API_ROUTES.project.projects.getList(query, filter, page));
         return res.data;
     },
     getOne: async (id) => {
