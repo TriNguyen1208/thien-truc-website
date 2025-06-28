@@ -10,6 +10,7 @@ const getNewsPage = async (req, res) => {
     const data = await newsServices.getNewsPage(filter);
     res.status(200).json(data);
 }
+
 const news = {
     getList: async (req, res) => {
         const {query = '', filter = '', sort_by = 'popular', page = 1} = req.query;

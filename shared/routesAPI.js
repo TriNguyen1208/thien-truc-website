@@ -22,7 +22,7 @@ const API_ROUTES = {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
         products: {
-            getList: (query = '', filter = '', page = 1) => `${PRODUCT_BASE}/products?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
+            getList: (query, filter, page) => `${PRODUCT_BASE}/products?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
         },
         product_categories: {
@@ -44,7 +44,7 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
-        search_suggestions: `${PRODUCT_BASE}/search_suggestions`,
+        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
     },
     project: {
         base: PROJECT_BASE,
@@ -52,7 +52,6 @@ const API_ROUTES = {
         projects: {
             getList: (query, filter, page) => `${PROJECT_BASE}/projects?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
-            getByRegion: (region) => `${PROJECT_BASE}/projects/region/${encodeURIComponent(region)}`,
         },
         project_regions: {
             getAll: `${PROJECT_BASE}/project_regions`,
@@ -62,17 +61,14 @@ const API_ROUTES = {
             getAll: `${PROJECT_BASE}/project_contents`,
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
         },
-
-        search_suggestions: `${PROJECT_BASE}/search_suggestions`,
+        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
     },
     news: {
         base: NEWS_BASE,
         news_page: `${NEWS_BASE}/news_page`,
         news: {
-            getAll: `${NEWS_BASE}/news`,
+            getList: (query, filter, sort_by, page) => `${NEWS_BASE}/news?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&sort_by=${encodeURIComponent(sort_by)}&page=${page}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
-            getAllByFilter: (limit = 6, sort_by = 'date_desc', filter = '') => 
-                `${NEWS_BASE}/news_filtered?limit=${limit}&sort_by=${sort_by}&filter=${encodeURIComponent(filter)}`, 
             updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
         },
         news_categories: {
@@ -83,8 +79,7 @@ const API_ROUTES = {
             getAll: `${NEWS_BASE}/news_contents`,
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
-
-        search_suggestions: `${NEWS_BASE}/search_suggestions`,
+        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
     },
     recruitment: {
         base: RECRUITMENT_BASE,

@@ -11,13 +11,9 @@ import Search from 'antd/es/transfer/search'
 import WhiteButton from '../../components/WhiteButton'
 import ItemPost from '../../components/ItemPost'
 import useProducts from '../../redux/hooks/useProducts'
-<<<<<<< HEAD
 import Form from '../../components/Form'
 import useNews from '../../redux/hooks/useNews'
-import { useEffect } from 'react'
-=======
-import useProjects from '../../redux/hooks/useProjects'
->>>>>>> feature/paging/project/apis
+// import useProjects from '../../redux/hooks/useProjects'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
@@ -182,7 +178,7 @@ const ExampleComponents = () => {
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
 
-    const {data, isLoading} = useProducts.products.getList(undefined, 'CABLE', 1);
+    const {data, isLoading} = useNews.news.getList(undefined, 'Công Ty', 'popular', 1);
     if(isLoading){
         return <></>
     }

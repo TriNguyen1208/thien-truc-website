@@ -18,7 +18,7 @@ function useGetProjectPage(){
 const projects = {
     useGetList: (query = '', filter = '', page = 1) => {
         return useQuery({
-            queryKey: ["projects_list"],
+            queryKey: ["projects_list", query, filter, page],
             queryFn: () => projectsServices.projects.getList(query, filter, page),
             staleTime: 5 * 60 * 1000,
         })
@@ -74,7 +74,7 @@ export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
     projects: {
-        getAll: projects.useGetAll,
+        getList: projects.useGetList,
         getOne: projects.useGetOne,
     },
     project_regions: {

@@ -151,4 +151,4 @@ export default {
     },
     getPricePage: useGetPricePage,
     getSearchSuggestions: useSearchSuggest,
-  };
+};

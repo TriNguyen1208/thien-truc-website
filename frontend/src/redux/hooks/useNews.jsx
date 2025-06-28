@@ -16,10 +16,10 @@ function useGetNewsPage(){
     })
 }
 const news = {
-    useGetAll: () => {
+    useGetList: (query = '', filter = '', sort_by = '', page = 1) => {
         return useQuery({
             queryKey: ["news_list"],
-            queryFn: newsServices.news.getAll,
+            queryFn: () => newsServices.news.getList(query, filter, sort_by, page),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -81,8 +81,9 @@ export default {
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
     news:{
-        getAll: news.useGetAll,
+        getList: news.useGetList,
         getOne: news.useGetOne,
+        updateNumReaders: news.useUpdateNumReaders
     },
     news_categories:{
         getAll: news_categories.useGetAll,
@@ -93,5 +94,4 @@ export default {
         getOne: news_contents.useGetOne,
     },
     getSearchSuggestions: useSearchSuggest,
-    // getAllByFilter: useGetAllByFilter
 };
