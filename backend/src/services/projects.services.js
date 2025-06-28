@@ -55,9 +55,15 @@ const projects = {
         return projects
     },
     getByRegion: async (region) => {
-        const projects = (await pool.query(`SELECT * 
-                                            FROM project.projects p JOIN project.project_regions pr ON p.region_id = pr.id
-                                            WHERE pr.name = $1`, [region])).rows;
+         const query = `
+            SELECT  p.*,             -- lấy tất cả cột của project
+            pr.id AS region_id,
+            pr.name AS region_name
+            FROM project.projects p 
+            JOIN project.project_regions pr ON p.region_id = pr.id
+            WHERE unaccent(pr.name) = unaccent($1)
+        `;
+        const projects = (await pool.query(query, [region])).rows;
         if(!projects){
             throw new Error("Can't get projects by region");
         }
