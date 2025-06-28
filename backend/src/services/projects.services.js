@@ -208,7 +208,7 @@ const getSearchSuggestions = async (query, filter) => {
     try {
         const result = await pool.query(sql, values);
         return result.rows.map(row => ({
-            title: row.title,
+            query: row.title,
             img: row.main_img
         }));
     } catch (err) {

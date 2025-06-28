@@ -72,6 +72,7 @@ const API_ROUTES = {
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
             getAllByFilter: (limit = 6, sort_by = 'date_desc', filter = '') => 
                 `${NEWS_BASE}/news_filtered?limit=${limit}&sort_by=${sort_by}&filter=${encodeURIComponent(filter)}`, 
+            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
         },
         news_categories: {
             getAll: `${NEWS_BASE}/news_categories`,

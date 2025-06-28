@@ -12,6 +12,8 @@ import WhiteButton from '../../components/WhiteButton'
 import ItemPost from '../../components/ItemPost'
 import useProducts from '../../redux/hooks/useProducts'
 import Form from '../../components/Form'
+import useNews from '../../redux/hooks/useNews'
+import { useEffect } from 'react'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
@@ -175,8 +177,11 @@ const ExampleComponents = () => {
     // return(
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
-    return <Form content="Gdfjadsff"/>
-    
+    const {mutate} = useNews.news.useUpdateNumReaders(1);
+    useEffect(() => {
+        mutate(); // ✅ Gọi 1 lần khi component mount
+    }, []);
+    return <>Hello</>
 }
 
 export default ExampleComponents

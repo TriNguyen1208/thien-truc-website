@@ -89,6 +89,20 @@ const news = {
                 rgb_color: row.rgb_color
         }};
         return news;
+    },
+    updateNumReaders: async (id) => {
+        const query = `
+            update news.news
+            set num_readers = num_readers + 1
+            where id = $1 
+            returning id, num_readers
+        `
+        const row = (await pool.query(query, [id])).rows[0];
+        const res = {
+            id: row.id,
+            num_readers: row.num_readers,
+        }
+        return res;
     }
 }
 
@@ -217,7 +231,7 @@ const getSearchSuggestions = async (query, filter) => {
     try {
         const result = await pool.query(sql, values);
         return result.rows.map(row => ({
-            title: row.title,
+            query: row.title,
             img: row.main_img
         }));
     } catch (err) {

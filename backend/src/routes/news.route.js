@@ -14,5 +14,5 @@ router.get('/news_contents/:id', newsController.news_contents.getOne);
 
 router.get('/news_fitered', newsController.getAllByFilter);
 router.get('/search_suggestions', newsController.getSearchSuggestions);
-
+router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
 export default router;
