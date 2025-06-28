@@ -2,60 +2,41 @@ import Demo from "../../components/ItemPost";
 import UserCard from "../../components/UserCard";
 import Banner from "../../components/Banner";
 import { useNavigate } from 'react-router-dom';
+import useContact from "../../redux/hooks/useContact";
 import {
     Mail,
     Phone,
     MapPin,
     Clock,
-    Facebook
 } from 'lucide-react';
+import { FiFacebook } from "react-icons/fi"; // Fi = Feather Icons (outline)
+
 export default function Contact() {
+    const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
     const navigate = useNavigate();
-    const projectData = {
-        type: 'project',
-        title: 'Trung tâm thương mại Golden Plaza',
-        description: 'Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang. Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang.\t\t\tAbc Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang. Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang.\t\t\tAbcTrung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang. Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang.\t\t\tAbcTrung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang. Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang.\t\t\tAbcTrung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang. Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang.\t\t\tAbc ',
-        location: 'Hải Châu, Đà Nẵng',
-        date: '2024',
-        tag: 'Miền Bắc',
-        tagColor: '#10B981',
-        image: ""
-    };
-
-
-    const newsData = {
-        type: 'news',
-        title: 'Mở Rộng Chi Nhánh Mới Tại Đà Nẵng',
-        description: 'Công ty Thiên Trúc chính thức khai trương chi nhánh mới tại Đà Nẵng, mở rộng mạng lưới phục vụ khách hàng khu vực miền Trung với dịch vụ lắp đặt LED chuyên nghiệp.',
-        date: '2025-06-08T17:00:00.000Z',
-        tag: 'Công Ty',
-        tagColor: '#3B82F6',
-        status: {
-            duration: '4 phút đọc',
-            views: '858'
-        },
-        image: ""
-    };
     //Cái này là của whiteButton
     const handleButton = () => {
         navigate('/lien-he')
     }
+    if (isLoadingDataAll) {
+        return (
+            <div>Is loading</div>
+        )
+    }
+    const contactPageData = dataAll.contact_page;
+    const supportAgentsData = dataAll.support_agents;
+    const companyInfoData = dataAll.company_info;
+    const parts = companyInfoData.working_hours.split(".");
+    console.log(dataAll)
     const dataBanner = {
-        title: "Liên hệ với thiên trúc",
-        description: "Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ ngay với đội ngũ của chúng tôi để được tư vấn và giải đáp mọi thắc mắc",
+        title: contactPageData.banner_title,
+        description: contactPageData.banner_description,
         colorBackground: "var(--gradient-banner)",
         colorText: "#ffffff",
         hasButton: true,
         contentButton: "Liên hệ ngay",
         handleButton: handleButton
     };
-    const dataUserCard = {
-        image_avatar: "https://fifpro.org/media/fhmfhvkx/messi-world-cup.jpg?rxy=0.48356841796117644,0.31512414378031967&width=1600&height=1024&rnd=133210253587130000",
-        name: "Nguyễn Văn An",
-        role: "Chủ Tịch",
-        sdt: "0912 345 678",
-        url_facebook: "https://facebook.com",
-    }
     return (
         <>
             <Banner data={dataBanner} />
@@ -64,30 +45,26 @@ export default function Contact() {
                     Đội ngũ của chúng tôi
                 </div>
                 <div className="flex justify-center flex-wrap">
-                    <div className="w-[350px] mr-[20px] mb-[20px]">
-                        <UserCard data={dataUserCard} />
-                    </div>
-                    <div className="w-[350px] mr-[20px] mb-[20px]">
-                        <UserCard data={dataUserCard} />
-                    </div>
-                    <div className="w-[350px] mr-[20px] mb-[20px]">
-                        <UserCard data={dataUserCard} />
-                    </div>
-                    <div className="w-[350px] mr-[20px] mb-[20px]">
-                        <UserCard data={dataUserCard} />
-                    </div>
-                    <div className="w-[350px] mr-[20px] mb-[20px]">
-                        <UserCard data={dataUserCard} />
-                    </div>
-                    <div className="w-[350px] mr-[20px] mb-[20px]">
-                        <UserCard data={dataUserCard} />
-                    </div>
+                    {(supportAgentsData || []).map((item) => {
+                        const dataUserCard = {
+                            image_avatar: item.avatar_img,
+                            name: item.name,
+                            role: item.role,
+                            sdt: item.phone_numer,
+                            url_facebook: item.facebook_url,
+                        }
+                        return (
+                            <div key={item.id} className="w-[350px] mr-[20px] mb-[20px]">
+                                <UserCard data={dataUserCard} />
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
             <div className="container-fluid flex py-[70px]">
                 <div className="w-1/2 text-[var(--dark-green)] font-[400]">
                     <div className="text-[30px] font-[600] mb-[15px]">
-                        Lien he ve chung toi
+                        Liên hệ về chúng tôi
                     </div>
                     <div className="mb-[20px]">
                         Bạn có dự án trong đầu hoặc muốn tìm hiểu thêm về dịch vụ của chúng tôi? Điền vào biểu mẫu hoặc liên hệ trực tiếp với chúng
@@ -103,45 +80,83 @@ export default function Contact() {
                                     Email
                                 </div>
                                 <div>
-                                    Lien he@gmail.com
+                                    {companyInfoData.company_email}
                                 </div>
                             </div>
                         </div>
                         <div className="flex items-center">
                             <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
-                                <Mail className="w-5 h-5 text-[var(--green-bg)]" />
+                                <Phone className="w-5 h-5 text-[var(--green-bg)]" />
                             </div>
                             <div>
                                 <div>
-                                    Email
+                                    Điện thoại
                                 </div>
                                 <div>
-                                    Lien he@gmail.com
+                                    {companyInfoData.company_phone}
                                 </div>
                             </div>
                         </div>
+                        <a
+                            href={companyInfoData.googlemaps_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <div className="flex items-center">
+                                <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
+                                    <MapPin className="w-5 h-5 text-[var(--green-bg)]" />
+                                </div>
+                                <div>
+                                    <div>
+                                        Văn phòng
+                                    </div>
+                                    <div>
+                                        {companyInfoData.office_address}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                         <div className="flex items-center">
                             <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
-                                <Mail className="w-5 h-5 text-[var(--green-bg)]" />
+                                <Clock className="w-5 h-5 text-[var(--green-bg)]" />
                             </div>
                             <div>
                                 <div>
-                                    Email
+                                    Giờ làm việc
                                 </div>
                                 <div>
-                                    Lien he@gmail.com
+                                    {parts.map((item, index) => (
+                                        <div key={index}>{item}</div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
+                        <a
+                            href={companyInfoData.fanpage_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+
+                            <div className="flex items-center">
+                                <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
+                                    <FiFacebook className="w-6 h-6 text-[var(--green-bg)]" />
+                                </div>
+                                <div>
+                                    <div>
+                                        Fanpage công ty
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
                 <div>
                     Form
                 </div>
-            </div>
+            </div >
             <div className="container-fluid bg-[var(--light-green-banner)] py-[35px]">
                 <div className="text-[30px] font-[600] text-[var(--dark-green)] mb-[30px]">
-                    Vi tri cua chung toi
+                    Vị trí của chúng tôi
                 </div>
                 <div>
                     <div className="h-[500px]">
@@ -158,40 +173,3 @@ export default function Contact() {
         </>
     )
 }
-// <Mail className="w-5 h-5 text-gray-600" />
-//         <Phone className="w-5 h-5 text-blue-500" />
-//         <MapPin className="w-5 h-5 text-red-500" />
-//         <Clock className="w-5 h-5 text-yellow-500" />
-//         <Facebook className="w-5 h-5 text-blue-700" />
-
-
-{/* <form class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm space-y-4">
-    <h2 class="text-2xl font-bold text-center text-gray-800">Đăng ký</h2>
-
-    <div>
-      <label class="block text-gray-700 font-medium mb-1">Email</label>
-      <input
-        type="email"
-        class="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="nhapemail@gmail.com"
-        required
-      />
-    </div>
-
-    <div>
-      <label class="block text-gray-700 font-medium mb-1">Mật khẩu</label>
-      <input
-        type="password"
-        class="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="********"
-        required
-      />
-    </div>
-
-    <button
-      type="submit"
-      class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-    >
-      Đăng ký
-    </button>
-  </form> */}

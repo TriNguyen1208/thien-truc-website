@@ -51,12 +51,12 @@ const ItemPost = ({ data, width = "100%"}) => {
     const renderContent = () => (
         <>
         <div className="p-4 flex-1 relative">
-            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 break-words">
                 {title}
             </h3>
 
             {description && (
-                <p className="text-gray-600 text-sm mb-3 line-clamp-5">
+                <p className="text-gray-600 text-sm mb-3 line-clamp-5 break-words">
                     {description}
                 </p>
             )}

@@ -19,6 +19,10 @@ const projects = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.projects.getOne(id));
         return res.data;
+    },
+    getByRegion: async (region) => {
+        const res = await axios.get(API_ROUTES.project.projects.getByRegion(region));
+        return res.data;
     }
 }
 const project_regions = {

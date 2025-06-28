@@ -105,7 +105,7 @@ const project_regions = {
         return project_region
     }
 }
-
+//  href = {companyInfoData.googlemaps_url}
 const project_contents = {
     getAll: async () => {
         const query = `
