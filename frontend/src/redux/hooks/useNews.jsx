@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
 
 function useGetAll(){
@@ -28,6 +28,11 @@ const news = {
             queryKey: ["news", id],
             queryFn: () => newsServices.news.getOne(id),
             staleTime: 5 * 60 * 1000,
+        })
+    },
+    useUpdateNumReaders: (id) => {
+        return useMutation({
+            mutationFn: () => newsServices.news.updateNumReaders(id)
         })
     }
 }

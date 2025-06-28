@@ -89,6 +89,20 @@ const news = {
                 rgb_color: row.rgb_color
         }};
         return news;
+    },
+    updateNumReaders: async (id) => {
+        const query = `
+            update news.news
+            set num_readers = num_readers + 1
+            where id = $1 
+            returning id, num_readers
+        `
+        const row = (await pool.query(query, [id])).rows[0];
+        const res = {
+            id: row.id,
+            num_readers: row.num_readers,
+        }
+        return res;
     }
 }
 
@@ -224,5 +238,4 @@ const getSearchSuggestions = async (query, filter) => {
         throw new Error(`DB error: ${err.message}`);
     }
 };
-
 export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions};

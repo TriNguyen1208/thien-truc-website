@@ -11,38 +11,40 @@ import Search from 'antd/es/transfer/search'
 import WhiteButton from '../../components/WhiteButton'
 import ItemPost from '../../components/ItemPost'
 import useProducts from '../../redux/hooks/useProducts'
+import useNews from '../../redux/hooks/useNews'
+import { useEffect } from 'react'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
-    const handleButton = (category, query) => {
-        console.log(category, query);
-    }
-    const handleSearchSuggestion = (query, filter) => {
-        return useProducts.getSearchSuggestions(query, filter)
-    }
-    const data = {
-        title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
-        description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
-        colorBackground: "var(--gradient-banner)",
-        colorText: "#ffffff",
-        hasSearch: true,
-        categories: [
-            "Tất cả dự án",
-            "CABLE",
-            "PHẦN MỀM DIỆT VIRUS",
-            "MAINBOARD",
-            "CPU INTEL",
-            "RAM",
-            "HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA",
-            "POWER",
-            "KEYBOARD CÓ DÂY",
-            "MOUSE QUANG CÓ DÂY",
-            "CAMERA XOAY, CỐ ĐỊNH",
-        ],
-        contentPlaceholder: "Nhập vào đây",
-        handleButton: handleButton,
-        handleSearchSuggestion: handleSearchSuggestion
-    };
+    // const handleButton = (category, query) => {
+    //     console.log(category, query);
+    // }
+    // const handleSearchSuggestion = (query, filter) => {
+    //     return useProducts.getSearchSuggestions(query, filter)
+    // }
+    // const data = {
+    //     title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
+    //     description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
+    //     colorBackground: "var(--gradient-banner)",
+    //     colorText: "#ffffff",
+    //     hasSearch: true,
+    //     categories: [
+    //         "Tất cả dự án",
+    //         "CABLE",
+    //         "PHẦN MỀM DIỆT VIRUS",
+    //         "MAINBOARD",
+    //         "CPU INTEL",
+    //         "RAM",
+    //         "HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA",
+    //         "POWER",
+    //         "KEYBOARD CÓ DÂY",
+    //         "MOUSE QUANG CÓ DÂY",
+    //         "CAMERA XOAY, CỐ ĐỊNH",
+    //     ],
+    //     contentPlaceholder: "Nhập vào đây",
+    //     handleButton: handleButton,
+    //     handleSearchSuggestion: handleSearchSuggestion
+    // };
 
     //Cái này là của whiteButton
     // const handleButton = () => {
@@ -57,12 +59,12 @@ const ExampleComponents = () => {
     //     contentButton: "Hello",
     //     handleButton: handleButton 
     // };
-    return (
-        <>
-            <Banner data={data}/>
-            <p>Đây là trang Home.</p>
-        </>
-    )
+    // return (
+    //     <>
+    //         <Banner data={data}/>
+    //         <p>Đây là trang Home.</p>
+    //     </>
+    // )
 
     //Example Card
     // const card = {
@@ -174,8 +176,11 @@ const ExampleComponents = () => {
     // return(
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
-
-    
+    const {mutate} = useNews.news.useUpdateNumReaders(1);
+    useEffect(() => {
+        mutate(); // ✅ Gọi 1 lần khi component mount
+    }, []);
+    return <>Hello</>
 }
 
 export default ExampleComponents

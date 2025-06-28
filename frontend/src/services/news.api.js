@@ -19,6 +19,10 @@ const news = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news.getOne(id));
         return res.data;
+    },
+    updateNumReaders: async (id) => {
+        const res = await axios.patch(API_ROUTES.news.news.updateNumReaders(id));
+        return res.data;
     }
 }
 const new_categories = {

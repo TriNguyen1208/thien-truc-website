@@ -70,6 +70,7 @@ const API_ROUTES = {
         news: {
             getAll: `${NEWS_BASE}/news`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
+            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
         },
         news_categories: {
             getAll: `${NEWS_BASE}/news_categories`,
