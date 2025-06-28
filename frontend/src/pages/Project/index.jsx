@@ -32,8 +32,12 @@ export default function Project() {
     // TEST 
     console.log(dataAll);
     console.log(regionData);
+    console.log(projectData);
     // TODO: delete projectData, fix 0 - 6
     var visibleProject = showAll ? projectData : projectData.slice(0, 6)
+    console.log("=============")
+    console.log(typeof visibleProject, visibleProject)
+    console.log("=============")
     let categoriesData = projectRegionData.map(item => item.name);
     const categoriesDefault = ["Tất cả dự án"];
     categoriesData = [...categoriesDefault, ...categoriesData];

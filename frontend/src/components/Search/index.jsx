@@ -115,10 +115,10 @@ const SearchBar = ({ data }) => {
           } else if (e.key === 'Enter') {
             if (showSuggestions && suggestions[highlightedIndex]) {
               const item = suggestions[highlightedIndex];
-              setQuery(item.name);
+              setQuery(item.query);
               setShowSuggestions(false);
               setDropdownOpen(false);
-              handleSearch(item.name);
+              handleSearch(item.query);
             } else {
               handleSearch(query); // fallback nếu không có gợi ý
             }
@@ -133,20 +133,20 @@ const SearchBar = ({ data }) => {
             ) : suggestions.length > 0 ? (
               suggestions.map((item, index) => (
                 <li
-                  key={item.name}
+                  key={item.query}
                   className={`py-2 hover:bg-gray-100 cursor-pointer text-sm text-bold text-gray-700 text-left px-4 flex gap-3 items-center ${
                               index === highlightedIndex ? 'bg-gray-100' : ''
                   }`}
                   onMouseEnter={() => setHighlightedIndex(index)} // di chuột cũng highlight
                   onClick={() => {
-                    setQuery(item.name);
+                    setQuery(item.query);
                     setShowSuggestions(false);
                     setDropdownOpen(false);
-                    handleSearch(item.name);
+                    handleSearch(item.query);
                   }}
                 >
                   <img src={item.img} alt="" className="w-5 h-5" />
-                  {item.name}
+                  {item.query}
                 </li>
               ))
             ) : (

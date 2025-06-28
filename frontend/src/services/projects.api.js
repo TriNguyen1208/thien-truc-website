@@ -13,7 +13,7 @@ const getProjectPage = async () => {
 
 const projects = {
     getAll: async () => {
-        const res = await axios.get(API_ROUTES.project.projects.getAll);
+        const res = await axios.get(API_ROUTES.project.projects.getList);
         return res.data;
     },
     getOne: async (id) => {
@@ -27,7 +27,7 @@ const projects = {
 }
 const project_regions = {
     getAll: async () => {
-        const res = await axios.get(API_ROUTES.project.project_regions.getAll);
+        const res = await axios.get(API_ROUTES.project.project_regions.getList);
         return res.data;
     },
     getOne: async (id) => {

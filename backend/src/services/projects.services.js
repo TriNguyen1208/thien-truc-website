@@ -1,8 +1,8 @@
 import pool from '#@/config/db.js'
 
-const getAllTables = async () => {
+const getAllTables = async (filter = '') => {
     const _project_page = await getProjectPage();
-    const _projects = await projects.getAll();
+    const _projects = await projects.getList();
     const _project_regions = await project_regions.getAll();
     const _project_contents = await project_contents.getAll();
     return {
@@ -13,46 +13,188 @@ const getAllTables = async () => {
     };
 }
 
-const getProjectPage = async () => {
+const getProjectPage = async (filter = '') => {
     const project_page = (await pool.query("SELECT * FROM project.project_page")).rows[0];
     if(!project_page){
         throw new Error("Can't get project_page");
     }
-    return project_page
+
+    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+    let totalCount = 0;
+
+    if (cleanedFilter === '') {
+        const result = await pool.query(`SELECT COUNT(*) AS total FROM project.projects`);
+        totalCount = parseInt(result.rows[0].total);
+    }
+    else {
+        const countQuery = `
+            SELECT COUNT(*) AS total
+            FROM project.projects prj
+            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+            WHERE unaccent(prj_reg.name) ILIKE unaccent($1)
+        `;
+        const result = await pool.query(countQuery, [cleanedFilter]);
+        totalCount = parseInt(result.rows[0].total);
+    }
+    return {
+        ...project_page,
+        totalCount
+    };
 }
 
 const projects = {
-    getAll: async () => {
-        const query = `
-            select 
-                prj.id as prj_id,
-                prj.title,
-                prj.province,
-                prj.complete_time,
-                prj.main_img,
-                prj.main_content,
-
-                prj_reg.id as reg_id,
-                prj_reg.name,
-                prj_reg.rgb_color
-            from project.projects prj
-            join project.project_regions prj_reg on prj.region_id = prj_reg.id
-        `
-        const { rows } = await pool.query(query);
-        const projects = rows.map(row => ({
-            id: row.prj_id,
-            title: row.title,
-            province: row.province,
-            complete_time: row.complete_time,
-            main_img: row.main_img,
-            main_content: row.main_content,
-            region: {
-                id: row.reg_id,
-                name: row.name,
-                rgb_color: row.rgb_color
-            }
-        }));
-        return projects
+    getList: async (query = '', filter = '', page = 1) => {
+        const cleanedQuery = query.trim().replaceAll(`'`, ``);
+        const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+        const pageSize = 9;
+        const offset = (page - 1) * pageSize;
+    
+        const hasQuery = cleanedQuery !== '';
+        const hasFilter = cleanedFilter !== '';
+    
+        // ✅ 1. Có query (tức dùng search bar)
+        if (hasQuery) {
+            const sql = `
+                SELECT 
+                    prj.id AS prj_id,
+                    prj.title,
+                    prj.province,
+                    prj.complete_time,
+                    prj.main_img,
+                    prj.main_content,
+                    prj_reg.id AS reg_id,
+                    prj_reg.name,
+                    prj_reg.rgb_color
+                FROM project.projects prj
+                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+                WHERE
+                    ($2 = '' OR unaccent(prj_reg.name) ILIKE unaccent($2)) AND
+                    similarity(unaccent(prj.title::text), unaccent($1::text)) > 0.1
+                ORDER BY 
+                    similarity(unaccent(prj.title::text), unaccent($1::text)) DESC,
+                    prj.title
+                LIMIT $3 OFFSET $4
+            `;
+            const values = [cleanedQuery, cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(sql, values);
+    
+            const results = rows.map(row => ({
+                id: row.prj_id,
+                title: row.title,
+                province: row.province,
+                complete_time: row.complete_time,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                region: {
+                    id: row.reg_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            }));
+    
+            return {
+                page,
+                pageSize: rows.length,
+                results
+            };
+        }
+    
+        // ✅ 2. Không có query
+    
+        if (!hasFilter) {
+            // Trả về tối đa 9 trang (81 dự án)
+            const sql = `
+                SELECT 
+                    prj.id AS prj_id,
+                    prj.title,
+                    prj.province,
+                    prj.complete_time,
+                    prj.main_img,
+                    prj.main_content,
+                    prj_reg.id AS reg_id,
+                    prj_reg.name,
+                    prj_reg.rgb_color
+                FROM project.projects prj
+                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+                ORDER BY prj.title
+                LIMIT $1 OFFSET $2
+            `;
+            const values = [pageSize, offset]
+            const { rows } = await pool.query(sql, values);
+    
+            const results = rows.map(row => ({
+                id: row.prj_id,
+                title: row.title,
+                province: row.province,
+                complete_time: row.complete_time,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                region: {
+                    id: row.reg_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            }));
+    
+            return {
+                page: page,
+                pageSize: rows.length,
+                results
+            };
+        } else {
+            // Có filter, không có query → lọc theo region + phân trang
+            const sql = `
+                SELECT 
+                    prj.id AS prj_id,
+                    prj.title,
+                    prj.province,
+                    prj.complete_time,
+                    prj.main_img,
+                    prj.main_content,
+                    prj_reg.id AS reg_id,
+                    prj_reg.name,
+                    prj_reg.rgb_color
+                FROM project.projects prj
+                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+                    WHERE unaccent(prj_reg.name) ILIKE unaccent($1)
+                ORDER BY prj.title
+                LIMIT $2 OFFSET $3
+            `;
+            const values = [cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(sql, values);
+    
+            const results = rows.map(row => ({
+                id: row.prj_id,
+                title: row.title,
+                province: row.province,
+                complete_time: row.complete_time,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                region: {
+                    id: row.reg_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            }));
+    
+            return {
+                page,
+                pageSize: rows.length,
+                results
+            };
+        }
+    }
+    ,
+    getByRegion: async (region) => {
+        const projects = (await pool.query(`SELECT * 
+                                            FROM project.projects p JOIN project.project_regions pr ON p.region_id = pr.id
+                                            WHERE pr.name = $1`, [region])).rows;
+        if(!projects){
+            throw new Error("Can't get projects by region");
+        }
+        return {
+            projects
+        };
     },
     getByRegion: async (region) => {
          const query = `
@@ -210,7 +352,7 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (P.title) P.title, P.main_img
+        SELECT DISTINCT ON (P.title) P.title, P.id, P.main_img
         FROM project.projects P
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE

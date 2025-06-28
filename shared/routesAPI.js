@@ -32,7 +32,7 @@ const API_ROUTES = {
         product_features: {
             getAll: `${PRODUCT_BASE}/product_features`,
             getByProductId: (product_id) => `${PRODUCT_BASE}/product_features/${product_id}`,
-            getOne: (product_id, feature_id) =>`${PRODUCT_BASE}/product_features/${product_id}/${feature_id}`,
+            getOne: (product_id, feature_id) => `${PRODUCT_BASE}/product_features/${product_id}/${feature_id}`,
         },
         product_highlight_features: {
             getAll: `${PRODUCT_BASE}/product_highlight_features`,
@@ -50,7 +50,9 @@ const API_ROUTES = {
         base: PROJECT_BASE,
         project_page: `${PROJECT_BASE}/project_page`,
         projects: {
-            getAll: `${PROJECT_BASE}/projects`,
+            getList: (query = '', filter = '', page = 1) =>
+                `${PROJECT_BASE}/projects?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
+            // getList: `${PROJECT_BASE}/projects?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
             getByRegion: (region) => `${PROJECT_BASE}/projects/region/${encodeURIComponent(region)}`,
         },
