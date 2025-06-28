@@ -48,51 +48,13 @@ const projects = {
         const cleanedFilter = filter.trim().replaceAll(`'`, ``);
         const pageSize = 9;
         const offset = (page - 1) * pageSize;
-
+    
         const hasQuery = cleanedQuery !== '';
         const hasFilter = cleanedFilter !== '';
-        const isPaged = page !== 1;
-
-        if (!hasQuery && !hasFilter && !isPaged) {
-            const query = `
-                select 
-                    prj.id as prj_id,
-                    prj.title,
-                    prj.province,
-                    prj.complete_time,
-                    prj.main_img,
-                    prj.main_content,
-
-                    prj_reg.id as reg_id,
-                    prj_reg.name,
-                    prj_reg.rgb_color
-                from project.projects prj
-                join project.project_regions prj_reg on prj.region_id = prj_reg.id
-            `;
-            const { rows } = await pool.query(query);
-            const results = rows.map(row => ({
-                id: row.prj_id,
-                title: row.title,
-                province: row.province,
-                complete_time: row.complete_time,
-                main_img: row.main_img,
-                main_content: row.main_content,
-                region: {
-                    id: row.reg_id,
-                    name: row.name,
-                    rgb_color: row.rgb_color
-                }
-            }));
-
-            return {
-                page: 1,
-                pageSize: results.length,
-                results
-            };
-        } 
-        
+    
+        // ✅ 1. Có query (tức dùng search bar)
         if (hasQuery) {
-            const query = `
+            const sql = `
                 SELECT 
                     prj.id AS prj_id,
                     prj.title,
@@ -107,13 +69,15 @@ const projects = {
                 JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
                 WHERE
                     ($2 = '' OR unaccent(prj_reg.name) ILIKE unaccent($2)) AND
-                    similarity(unaccent(prj.title::text), unaccent($1::text)) > 0
-                ORDER BY prj.title, similarity(unaccent(prj.title::text), unaccent($1::text)) DESC
+                    similarity(unaccent(prj.title::text), unaccent($1::text)) > 0.1
+                ORDER BY 
+                    similarity(unaccent(prj.title::text), unaccent($1::text)) DESC,
+                    prj.title
                 LIMIT $3 OFFSET $4
             `;
-            const dataValues = [cleanedQuery, cleanedFilter, pageSize, offset];
-            const { rows } = await pool.query(query, dataValues);
-
+            const values = [cleanedQuery, cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(sql, values);
+    
             const results = rows.map(row => ({
                 id: row.prj_id,
                 title: row.title,
@@ -127,54 +91,110 @@ const projects = {
                     rgb_color: row.rgb_color
                 }
             }));
-
+    
             return {
                 page,
-                pageSize,
+                pageSize: rows.length,
                 results
             };
-     } else {
-        const query = `
-            SELECT 
-                prj.id AS prj_id,
-                prj.title,
-                prj.province,
-                prj.complete_time,
-                prj.main_img,
-                prj.main_content,
-                prj_reg.id AS reg_id,
-                prj_reg.name,
-                prj_reg.rgb_color
-            FROM project.projects prj
-            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
-            WHERE
-                ($1 = '' OR unaccent(prj_reg.name) ILIKE unaccent($1))
-            ORDER BY prj.title
-            LIMIT $2 OFFSET $3
+        }
+    
+        // ✅ 2. Không có query
+    
+        if (!hasFilter) {
+            // Trả về tối đa 9 trang (81 dự án)
+            const sql = `
+                SELECT 
+                    prj.id AS prj_id,
+                    prj.title,
+                    prj.province,
+                    prj.complete_time,
+                    prj.main_img,
+                    prj.main_content,
+                    prj_reg.id AS reg_id,
+                    prj_reg.name,
+                    prj_reg.rgb_color
+                FROM project.projects prj
+                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+                ORDER BY prj.title
+                LIMIT $1 OFFSET $2
             `;
-        const dataValues = [cleanedFilter, pageSize, offset];
-        const { rows } = await pool.query(query, dataValues);
-
-        const results = rows.map(row => ({
-            id: row.prj_id,
-            title: row.title,
-            province: row.province,
-            complete_time: row.complete_time,
-            main_img: row.main_img,
-            main_content: row.main_content,
-            region: {
-                id: row.reg_id,
-                name: row.name,
-                rgb_color: row.rgb_color
-            }
+            const values = [pageSize, offset]
+            const { rows } = await pool.query(sql, values);
+    
+            const results = rows.map(row => ({
+                id: row.prj_id,
+                title: row.title,
+                province: row.province,
+                complete_time: row.complete_time,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                region: {
+                    id: row.reg_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
             }));
-
+    
+            return {
+                page: page,
+                pageSize: rows.length,
+                results
+            };
+        } else {
+            // Có filter, không có query → lọc theo region + phân trang
+            const sql = `
+                SELECT 
+                    prj.id AS prj_id,
+                    prj.title,
+                    prj.province,
+                    prj.complete_time,
+                    prj.main_img,
+                    prj.main_content,
+                    prj_reg.id AS reg_id,
+                    prj_reg.name,
+                    prj_reg.rgb_color
+                FROM project.projects prj
+                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+                    WHERE unaccent(prj_reg.name) ILIKE unaccent($1)
+                ORDER BY prj.title
+                LIMIT $2 OFFSET $3
+            `;
+            const values = [cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(sql, values);
+    
+            const results = rows.map(row => ({
+                id: row.prj_id,
+                title: row.title,
+                province: row.province,
+                complete_time: row.complete_time,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                region: {
+                    id: row.reg_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            }));
+    
+            return {
+                page,
+                pageSize: rows.length,
+                results
+            };
+        }
+    }
+    ,
+    getByRegion: async (region) => {
+        const projects = (await pool.query(`SELECT * 
+                                            FROM project.projects p JOIN project.project_regions pr ON p.region_id = pr.id
+                                            WHERE pr.name = $1`, [region])).rows;
+        if(!projects){
+            throw new Error("Can't get projects by region");
+        }
         return {
-            page,
-            pageSize,
-            results
+            projects
         };
-     }
     },
     getOne: async (id) => {
         const query = `
@@ -320,9 +340,10 @@ const getSearchSuggestions = async (query, filter) => {
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE
             ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(P.title::text), unaccent($1::text)) > 0
+            ($1 = '' OR similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
         ORDER BY
             P.title, 
+            P.main_img,
             similarity(unaccent(P.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
@@ -330,7 +351,7 @@ const getSearchSuggestions = async (query, filter) => {
     try {
         const result = await pool.query(sql, values);
         return result.rows.map(row => ({
-            title: row.title,
+            query: row.title,
             id: row.id,
             img: row.main_img
         }));

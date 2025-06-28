@@ -6,6 +6,7 @@ const router = express.Router();
 router.get('/', projectsController.getAllTables);
 router.get('/project_page', projectsController.getProjectPage);
 router.get('/projects', projectsController.projects.getList);
+router.get('/projects/region/:name', projectsController.projects.getByRegion);
 router.get('/projects/:id', projectsController.projects.getOne);
 router.get('/project_regions', projectsController.project_regions.getAll);
 router.get('/project_regions/:id', projectsController.project_regions.getOne);

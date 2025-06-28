@@ -50,7 +50,7 @@ const API_ROUTES = {
         base: PROJECT_BASE,
         project_page: `${PROJECT_BASE}/project_page`,
         projects: {
-            getList: `${PROJECT_BASE}/projects`,
+            getList: `${PROJECT_BASE}/projects?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
         },
         project_regions: {
