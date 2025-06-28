@@ -5,12 +5,14 @@ function useGetAll(){
     return useQuery({
         queryKey: ["home"],
         queryFn: homeServices.getAll,
+        staleTime: 5 * 60 * 1000,
     })
 }
 function useGetHomePage(){
     return useQuery({
         queryKey: ["home_page"],
         queryFn: homeServices.getHomePage,
+        staleTime: 5 * 60 * 1000,
     })
 }
 const highlight_stats_about_us = {
@@ -18,12 +20,14 @@ const highlight_stats_about_us = {
         return useQuery({
             queryKey: ["highlight_stats_about_us"],
             queryFn: homeServices.highlight_stats_about_us.getAll,
+            staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["highlight_stats_about_us", id],
             queryFn: () => homeServices.highlight_stats_about_us.getOne(id),
+            staleTime: 5 * 60 * 1000,
         })
     } 
 }

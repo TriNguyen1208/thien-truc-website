@@ -13,7 +13,8 @@ const Banner = ({data}) =>{
         contentButton = null,
         handleButton = null,
         categories = null,
-        contentPlaceholder = null
+        contentPlaceholder = null,
+        handleSearchSuggestion = null
     } = data || {}
     return (
         <div
@@ -42,7 +43,8 @@ const Banner = ({data}) =>{
                             data={{
                                 categories: categories,
                                 contentPlaceholder: contentPlaceholder,
-                                onSearch: handleButton
+                                onSearch: handleButton,
+                                handleSearchSuggestion: handleSearchSuggestion
                             }}
                         />
                     ): <></>}

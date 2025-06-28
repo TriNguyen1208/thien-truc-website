@@ -5,50 +5,57 @@ import project from "../../services/projects.api"
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import ViewMoreButton from "../../components/ViewMoreButton";
+import useProjects from "../../redux/hooks/useProjects"
 export default function Project() {
     const handleButton = (category, query) => {
         console.log(category, query);
     }
+    const handleSearchSuggestion = (query, filter) => {
+        return useProjects.getSearchSuggestions(query, filter)
+    }
+    const { data: projectPageData, isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
+    const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.useGetAll();
+
+
     const [showAll, setShowAll] = useState(false);
     const navigate = useNavigate();
     const [bannerData, setBannerData] = useState(null);
-    const [regionData, setRegionData] = useState(null);
     var [projectData, setProjectData] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
             const dataAll = await project.getAll();
             console.log(dataAll);
             setBannerData(dataAll.project_page);
-            setRegionData(dataAll.project_regions);
             setProjectData(dataAll.projects);
 
         }
         fetchData();
     }, [])
-    // console.log(bannerData);
-    // console.log(regionData);
-    // console.log(projectData);
     if (projectData) {
         // TODO: delete projectData
-        // projectData = [...projectData, ...projectData, ...projectData];
         var visibleProject = showAll ? projectData : projectData.slice(0, 6)
     }
-    let categoriesData = null;
-    if (regionData != null) {
-        categoriesData = regionData.map(item => item.name);
-        const categoriesDefault = ["Tất cả dự án"];
-        categoriesData = [...categoriesDefault, ...categoriesData];
-        console.log(categoriesData);
+    if (isLoadingProjectPage || isLoadingProjectRegion) {
+        return (
+            <>
+                Dang loading
+            </>
+        )
     }
+    let categoriesData = projectRegionData.map(item => item.name);
+    const categoriesDefault = ["Tất cả dự án"];
+    categoriesData = [...categoriesDefault, ...categoriesData];
+    console.log(categoriesData);
     const data = {
-        title: bannerData?.banner_title ?? "",
-        description: bannerData?.banner_description ?? "",
+        title: projectPageData.banner_title,
+        description: projectPageData.banner_description,
         colorBackground: "var(--gradient-banner)",
         colorText: "#ffffff",
         hasSearch: true,
-        categories: categoriesData || ["Tất cả dự án"],
+        categories: categoriesData || categoriesDefault,
         contentPlaceholder: "Nhập vào đây",
-        handleButton: handleButton
+        handleButton: handleButton,
+        handleSearchSuggestion: handleSearchSuggestion
     };
 
     const handleClick1 = (category) => {
@@ -79,6 +86,7 @@ export default function Project() {
     //         <p>Đây là trang Home.</p>
     //     </>
     // )
+
     return (
         <>
             <Banner data={data} />

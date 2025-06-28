@@ -4,6 +4,7 @@ import ItemProduct from "../../components/ItemProduct";
 import { Carousel } from 'antd';
 import GreenButton from "../../components/GreenButton";
 import { Link } from "react-router-dom";
+import homeQueries from "@/redux/hooks/useHome";
 const slideData = [
     {
         id: 1,
@@ -28,12 +29,7 @@ const slideData = [
 ];
 
 export default function Home() {
-    const data = {
-        title: "Thi Công & Lắp Ráp Công Trình Điện Tử Chuyên Nghiệp Toàn Quốc",
-        description: "Công Ty Thiên Trúc cung cấp dịch vụ lắp ráp, thi công các thiết bị điện tử như màn hình LED, camera giám sát, bảng hiển thị... cho các công trình dân dụng và công nghiệp. Chúng tôi cam kết mang đến giải pháp kỹ thuật chất lượng, thi công đúng tiến độ và dịch vụ hậu mãi chuyên nghiệp.",
-        colorBackground: "var(--gradient-banner)",
-        colorText: "#ffffff",
-    }
+    const numberItemProduct = 4;
 
     const handleClickButton = () => {
         console.log("Hello world")
@@ -47,7 +43,6 @@ export default function Home() {
         "Công Ty",
         "Điện Thoại"
     ];
-    //Trả index của category từ con về cha để cha xử lý
     const handleClick = () => {
         console.log("123")
     };
@@ -55,12 +50,26 @@ export default function Home() {
     //     //Không truyền width thì mặc định là full
     //     <GreenButton content={content} width="300px" handleClick={handleClick}/>
     // )
+    const { data: allData, isLoading: loadingAll } = homeQueries.getAll();
+    if (loadingAll) {
+        return <p>Dang tai du lieu</p>
+    }
+    const homePageData = allData.home_page;
+    const highlightStatsAboutUsData = allData.highlight_stats_about_us;
+    console.log(homePageData);
+    console.log(highlightStatsAboutUsData);
+    const dataBanner = {
+        title: homePageData.banner_title,
+        description: homePageData.banner_description,
+        colorBackground: "var(--gradient-banner)",
+        colorText: "#ffffff",
+    }
     return (
         <>
-            <Banner data={data} />
+            <Banner data={dataBanner} />
             <div className="bg-[var(--light-green-banner)] text-center p-[45px]">
                 <div className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
-                    Du an Tieu Bieu
+                    Dự án tiêu biểu
                 </div>
                 <div className="mb-[30px]">
                     <PostCategory categories={categories} handleClick={handleClick} />
@@ -95,75 +104,62 @@ export default function Home() {
             <div className="container-fluid py-[70px]">
                 <div className="text-center">
                     <div className="text-[35px] font-[600] text-[var(--dark-green)] mb-[20px]">
-                        San pham noi bat
+                        Sản phẩm nổi bật
                     </div>
+                    {/* TODO: XU LI NAY */}
                     <div className="text-[20px] inline-block max-w-[900px] mb-[30px]">
                         Khám phá các giải pháp chiếu sáng LED cao cấp của chúng tôi, được thiết kế để đạt hiệu quả, độ bền và hiệu suất vượt trội.
                     </div>
                 </div>
                 <div>
-                    <div className="flex">
-                        <div>
+                    <div className="flex justify-between">
+                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
                             <ItemProduct product={product} handleClick={handleClickButton} />
                         </div>
-                        <div>
+                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
                             <ItemProduct product={product} handleClick={handleClickButton} />
                         </div>
-                        <div>
+                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
                             <ItemProduct product={product} handleClick={handleClickButton} />
                         </div>
-                        <div>
+                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
                             <ItemProduct product={product} handleClick={handleClickButton} />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="container-fluid flex mb-[100px]">
-                <div className="w-[85%]">
+            <div className="container-fluid flex mb-[100px]  items-center mt-[50px]">
+                <div className="w-[50%]">
                     <div className="text-[40px] font-[600] text-[var(--dark-green)] mb-[20px]">
-                        Cong ty thien truc
+                        Công ty thiên trúc
                     </div>
                     <div className="text-[20px] mb-[20px]">
-                        Được thành lập vào năm 2005, Công ty Thiên Trúc đã khẳng định vị thế là nhà cung cấp
-                        hàng đầu về giải pháp chiếu sáng LED trên khắp Việt Nam. Với hơn 15 năm kinh nghiệm,
-                        chúng tôi đã hoàn thành thành công hơn 500 dự án trên toàn quốc. Đội ngũ kỹ sư và kỹ thuật viên chiếu sáng được chứng nhận của chúng tôi cam kết cung cấp các giải pháp chiếu sáng tiết kiệm năng lượng, sáng tạo và chất lượng cao cho khách hàng thương mại, dân dụng và công nghiệp.
+                        {homePageData.aboutus_content}
                     </div>
                     <div className="flex flex-wrap">
-                        <div className="mr-[20px] mb-[20px]">
-                            <div className="text-[25px] text-[var(--green-bg)] font-[600]">
-                                15+
-                            </div>
-                            <div className="text-[20px]">
-                                Nam kinh nghiem
-                            </div>
-                        </div>
-                        <div className="mr-[20px] mb-[20px]">
-                            <div className="text-[25px] text-[var(--green-bg)] font-[600]">
-                                15+
-                            </div>
-                            <div className="text-[20px]">
-                                Nam kinh nghiem
-                            </div>
-                        </div>
-                        <div className="mr-[20px] mb-[20px]">
-                            <div className="text-[25px] text-[var(--green-bg)] font-[600]">
-                                15+
-                            </div>
-                            <div className="text-[20px]">
-                                Nam kinh nghiem
-                            </div>
-                        </div>
+                        {(highlightStatsAboutUsData || []).map((item) => {
+                            return (
+                                <div key = {item.id} className="mr-[20px] mb-[20px]">
+                                    <div className="text-[25px] text-[var(--green-bg)] font-[600]">
+                                        {item.number_text}
+                                    </div>
+                                    <div className="text-[20px]">
+                                        {item.label}
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </div>
                     <div>
-                        <Link to = "/ve-chung-toi">
+                        <Link to="/ve-chung-toi">
                             <GreenButton content={"Tìm hiểu về chúng tôi"} width="200px" />
                         </Link>
                     </div>
                 </div>
-                <div className="ml-[30px]">
+                <div className="ml-[30px] w-[50%]">
                     <div className="aspect-[16/9] w-full rounded-[20px]"
                         style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 12px 58px 5px' }}>
-                        <img src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"
+                        <img src= {homePageData.aboutus_img}
                             className="w-full h-full rounded-[20px] object-cover"
                         />
                     </div>
