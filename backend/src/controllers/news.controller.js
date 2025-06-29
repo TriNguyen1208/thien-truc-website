@@ -6,8 +6,7 @@ const getAllTables = async (req, res) => {
 }
 
 const getNewsPage = async (req, res) => {
-    const {filter = ''} = req.query;
-    const data = await newsServices.getNewsPage(filter);
+    const data = await newsServices.getNewsPage();
     res.status(200).json(data);
 }
 

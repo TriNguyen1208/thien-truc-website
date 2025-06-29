@@ -18,33 +18,53 @@ const getAllTables = async () => {
         product_prices: _product_prices
     };
 }
+const getNumPage = async (query, filter) => {
+    let totalCount = 0;
+    const hasQuery = query !== '';
+    const hasFilter = filter !== '';
+    // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
+    if (hasQuery) {
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM product.products prd
+            JOIN product.product_categories pc ON prd.category_id = pc.id
+            WHERE 
+                ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
+                similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1
+        `;
+        const values = [query, filter];
+        const result = await pool.query(sql, values);
+        totalCount = parseInt(result.rows[0].total);
+        return totalCount;
+    }
 
-const getProductPage = async (filter = '') => {
+    // ✅ 2. Không có query
+    if (!hasFilter) {
+        // Trả về tối đa 9 trang, sắp xếp theo sortBy
+        const result = await pool.query("SELECT COUNT(*) FROM product.products");
+        totalCount = parseInt(result.rows[0].count);
+        return totalCount;
+    } else {
+        // Có filter (theo category), phân trang theo sortBy
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM product.products prd
+            JOIN product.product_categories pc ON prd.category_id = pc.id
+            WHERE 
+                ($1 = '' OR unaccent(pc.name) ILIKE unaccent($1))
+        `;
+        const results = await pool.query(sql, [filter]);
+        totalCount = parseInt(results.rows[0].total);
+        return totalCount;
+    }
+}
+const getProductPage = async () => {
     const product_page = (await pool.query("SELECT * FROM product.product_page")).rows[0];
     if(!product_page){
         throw new Error("Can't get product_page");
     }
-
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
-    let totalCount = 0;
-
-    if (cleanedFilter === '') {
-        const result = await pool.query("SELECT COUNT(*) FROM product.products");
-        totalCount = parseInt(result.rows[0].count);
-    }
-    else {
-        const query = `
-            SELECT COUNT(*) AS total
-            FROM product.products p
-            JOIN product.product_categories pc on p.category_id = pc.id
-            WHERE unaccent(pc.name) ILIKE unaccent($1)
-        `;
-        const result = await pool.query(query, [cleanedFilter]);
-        totalCount = parseInt(result.rows[0].total);
-    }
     return {
         ...product_page,
-        totalCount
     }
 }
 
@@ -57,7 +77,7 @@ const products = {
         
             const hasQuery = cleanedQuery !== '';
             const hasFilter = cleanedFilter !== '';
-        
+            const totalCount = await getNumPage(cleanedQuery, cleanedFilter)
             // CASE 1: Có query (searchBar)
             if (hasQuery) {
                 const sql = `
@@ -82,7 +102,6 @@ const products = {
                 `;
                 const values = [cleanedQuery, cleanedFilter, pageSize, offset];
                 const { rows } = await pool.query(sql, values);
-        
                 const results = rows.map(row => ({
                     id: row.product_id,
                     name: row.product_name,
@@ -98,6 +117,7 @@ const products = {
                 }));
         
                 return {
+                    totalCount,
                     page,
                     pageSize: rows.length,
                     results
@@ -157,6 +177,7 @@ const products = {
                 }
             
                 return {
+                    totalCount,
                     page: page,
                     pageSize: rows.length,
                     results: groupedResults
@@ -197,6 +218,7 @@ const products = {
                 }));
         
                 return {
+                    totalCount,
                     page: page,
                     pageSize: rows.length,
                     results: results
