@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
 
 function useGetAll(){
@@ -16,10 +16,10 @@ function useGetNewsPage(){
     })
 }
 const news = {
-    useGetAll: () => {
+    useGetList: (query = '', filter = '', sort_by = '', page = 1) => {
         return useQuery({
-            queryKey: ["news_list"],
-            queryFn: newsServices.news.getAll,
+            queryKey: ["news_list", query, filter, sort_by, page],
+            queryFn: () => newsServices.news.getList(query, filter, sort_by, page),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -28,6 +28,19 @@ const news = {
             queryKey: ["news", id],
             queryFn: () => newsServices.news.getOne(id),
             staleTime: 5 * 60 * 1000,
+        })
+    },
+    useUpdateNumReaders: (id) => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: () => newsServices.news.updateNumReaders(id),
+            onSuccess: () => {
+            // ✅ Invalidate tất cả danh sách đã từng được query
+            queryClient.invalidateQueries({
+                queryKey: ["news_list"], // match theo prefix
+                exact: false,            // cho phép match tất cả ["news_list", ...]
+            });
+        }
         })
     }
 }
@@ -75,8 +88,18 @@ function useSearchSuggest(query, filter){
 export default {
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
-    news,
-    news_categories,
-    news_contents,
+    news:{
+        getList: news.useGetList,
+        getOne: news.useGetOne,
+        updateNumReaders: news.useUpdateNumReaders
+    },
+    news_categories:{
+        getAll: news_categories.useGetAll,
+        getOne: news_categories.useGetOne,
+    },
+    news_contents:{
+        getAll: news_contents.useGetAll,
+        getOne: news_contents.useGetOne,
+    },
     getSearchSuggestions: useSearchSuggest,
 };

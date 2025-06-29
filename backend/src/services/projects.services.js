@@ -12,33 +12,52 @@ const getAllTables = async (filter = '') => {
         project_regions: _project_regions
     };
 }
+const getNumPage = async (query, filter) => {
+    let totalCount = 0;
+    const hasQuery = query !== '';
+    const hasFilter = filter !== '';
+    // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
+    if (hasQuery) {
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM project.projects prj
+            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+            WHERE
+                ($2 = '' OR unaccent(prj_reg.name) ILIKE unaccent($2)) AND
+                similarity(unaccent(prj.title::text), unaccent($1::text)) > 0.1
+        `;
+        const values = [query, filter];
+        const result = await pool.query(sql, values);
+        totalCount = parseInt(result.rows[0].total);
+        return totalCount;
+    }
 
-const getProjectPage = async (filter = '') => {
+    // ✅ 2. Không có query
+    if (!hasFilter) {
+        // Trả về tối đa 9 trang, sắp xếp theo sortBy
+        const result = await pool.query(`SELECT COUNT(*) AS total FROM project.projects`);
+        totalCount = parseInt(result.rows[0].total);
+        return totalCount;
+    } else {
+        // Có filter (theo category), phân trang theo sortBy
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM project.projects prj
+            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+                WHERE unaccent(prj_reg.name) ILIKE unaccent($1)
+        `;
+        const results = await pool.query(sql, [filter]);
+        totalCount = parseInt(results.rows[0].total);
+        return totalCount;
+    }
+}
+const getProjectPage = async () => {
     const project_page = (await pool.query("SELECT * FROM project.project_page")).rows[0];
     if(!project_page){
         throw new Error("Can't get project_page");
     }
-
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
-    let totalCount = 0;
-
-    if (cleanedFilter === '') {
-        const result = await pool.query(`SELECT COUNT(*) AS total FROM project.projects`);
-        totalCount = parseInt(result.rows[0].total);
-    }
-    else {
-        const countQuery = `
-            SELECT COUNT(*) AS total
-            FROM project.projects prj
-            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
-            WHERE unaccent(prj_reg.name) ILIKE unaccent($1)
-        `;
-        const result = await pool.query(countQuery, [cleanedFilter]);
-        totalCount = parseInt(result.rows[0].total);
-    }
     return {
         ...project_page,
-        totalCount
     };
 }
 
@@ -48,7 +67,7 @@ const projects = {
         const cleanedFilter = filter.trim().replaceAll(`'`, ``);
         const pageSize = 9;
         const offset = (page - 1) * pageSize;
-    
+        const totalCount = await getNumPage(cleanedQuery, cleanedFilter);
         const hasQuery = cleanedQuery !== '';
         const hasFilter = cleanedFilter !== '';
     
@@ -93,6 +112,7 @@ const projects = {
             }));
     
             return {
+                totalCount,
                 page,
                 pageSize: rows.length,
                 results
@@ -137,6 +157,7 @@ const projects = {
             }));
     
             return {
+                totalCount,
                 page: page,
                 pageSize: rows.length,
                 results
@@ -178,23 +199,12 @@ const projects = {
             }));
     
             return {
+                totalCount,  
                 page,
                 pageSize: rows.length,
                 results
             };
         }
-    }
-    ,
-    getByRegion: async (region) => {
-        const projects = (await pool.query(`SELECT * 
-                                            FROM project.projects p JOIN project.project_regions pr ON p.region_id = pr.id
-                                            WHERE pr.name = $1`, [region])).rows;
-        if(!projects){
-            throw new Error("Can't get projects by region");
-        }
-        return {
-            projects
-        };
     },
     getOne: async (id) => {
         const query = `
@@ -335,15 +345,13 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (P.title) P.title, P.id, P.main_img
+        SELECT P.title, P.id, P.main_img
         FROM project.projects P
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE
             ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
             ($1 = '' OR similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
         ORDER BY
-            P.title, 
-            P.main_img,
             similarity(unaccent(P.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;

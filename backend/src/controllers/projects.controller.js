@@ -6,8 +6,7 @@ const getAllTables = async (req, res) => {
 }
 
 const getProjectPage = async (req, res) => {
-    const {filter = ''} = req.query;
-    const data = await projectsServices.getProjectPage(filter);
+    const data = await projectsServices.getProjectPage();
     res.status(200).json(data);
 }
 
@@ -15,11 +14,6 @@ const projects = {
     getList: async (req, res) => {
         const { query = '', filter = '', page = '1' } = req.query;
         const data = await projectsServices.projects.getList(query, filter, parseInt(page));
-        res.status(200).json(data);
-    },
-    getByRegion: async (req, res) => {
-        const region = req.params.name;
-        const data = await projectsServices.projects.getByRegion(region);
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
