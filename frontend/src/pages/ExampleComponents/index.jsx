@@ -11,38 +11,38 @@ import Search from 'antd/es/transfer/search'
 import WhiteButton from '../../components/WhiteButton'
 import ItemPost from '../../components/ItemPost'
 import useProducts from '../../redux/hooks/useProducts'
+import useNews from '../../redux/hooks/useNews'
+import Form from '../../components/Form'
+// import useNews from '../../redux/hooks/useNews'
+// import useProjects from '../../redux/hooks/useProjects'
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
-    const handleButton = (category, query) => {
-        console.log(category, query);
-    }
-    const handleSearchSuggestion = (query, filter) => {
-        return useProducts.getSearchSuggestions(query, filter)
-    }
-    const data = {
-        title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
-        description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
-        colorBackground: "var(--gradient-banner)",
-        colorText: "#ffffff",
-        hasSearch: true,
-        categories: [
-            "Tất cả dự án",
-            "CABLE",
-            "PHẦN MỀM DIỆT VIRUS",
-            "MAINBOARD",
-            "CPU INTEL",
-            "RAM",
-            "HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA",
-            "POWER",
-            "KEYBOARD CÓ DÂY",
-            "MOUSE QUANG CÓ DÂY",
-            "CAMERA XOAY, CỐ ĐỊNH",
-        ],
-        contentPlaceholder: "Nhập vào đây",
-        handleButton: handleButton,
-        handleSearchSuggestion: handleSearchSuggestion
-    };
+    // const handleButton = (category, query) => {
+    //     console.log(category, query);
+    // }
+    // const handleSearchSuggestion = (query, filter) => {
+    //     return useNews.getSearchSuggestions(query, filter)
+    // }
+    // const data = {
+    //     title: "Gdhfdjkfsdkfhfggggggggggggggsdkf",
+    //     description: "dỉyqewiruerhdskjfdfđsfsfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffkfdaf",
+    //     colorBackground: "var(--gradient-banner)",
+    //     colorText: "#ffffff",
+    //     hasSearch: true,
+    //     categories: [
+    //         "Thể loại",
+    //         "Công Ty",
+    //         "Dự Án",
+    //         "Sự kiện",
+    //         "Tuyển Dụng",
+    //         "Thành Tựu",
+    //         "Sản phẩm"
+    //     ],
+    //     contentPlaceholder: "Nhập vào đây",
+    //     handleButton: handleButton,
+    //     handleSearchSuggestion: handleSearchSuggestion
+    // };
 
     //Cái này là của whiteButton
     // const handleButton = () => {
@@ -57,12 +57,12 @@ const ExampleComponents = () => {
     //     contentButton: "Hello",
     //     handleButton: handleButton 
     // };
-    return (
-        <>
-            <Banner data={data}/>
-            <p>Đây là trang Home.</p>
-        </>
-    )
+    // return (
+    //     <>
+    //         <Banner data={data}/>
+    //         <p>Đây là trang Home.</p>
+    //     </>
+    // )
 
     //Example Card
     // const card = {
@@ -98,25 +98,28 @@ const ExampleComponents = () => {
     // )
 
     //Example ItemPost
-    // const handleClick = () => {
-    //     console.log("hello world");
-    // }
-    // const data = {
-    //     type: "news", // 'project' hoặc 'news'
-    //     title: "fdsfdaf",
-    //     description: "gdkfdaf",
-    //     location: "qrewrwqr",
-    //     date: "eriqurpewur",
-    //     tag: "Công ty",
-    //     tagColor: '#ef4444',
-    //     image: 'https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg',
-    //     status: true,
-    //     handleClick: handleClick
-    // };
-    // return (
-    //     //Không truyền width mặc định là width full
-    //     <ItemPost data={data} width="437px"/>
-    // )
+    const handleClick = () => {
+        console.log("hello world");
+    }
+    const data = {
+        type: "news", // 'project' hoặc 'news'
+        title: "fdsfdaf",
+        description: "gdkfdaf",
+        location: "qrewrwqr",
+        date: "eriqurpewur",
+        tag: "Công ty",
+        tagColor: '#ef4444',
+        image: 'https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg',
+        status: {
+            duration: "4 phút đọc",
+            views: 856,
+        },
+        handleClick: handleClick
+    };
+    return (
+        //Không truyền width mặc định là width full
+        <ItemPost data={data} width="437px"/>
+    )
 
     //Example ItemProduct
     //Ở đây có thể navigate đến chi tiết dự án,...
@@ -175,7 +178,12 @@ const ExampleComponents = () => {
     //     <ViewMoreButton content="Hellogfhfffffffffffff" handleClick={handleClick}/>
     // )
 
-    
-}
+    // const {data, isLoading} = useNews.news.getList(undefined, 'Công Ty', 'popular', 1);
+    // if(isLoading){
+    //     return <></>
+    // }
+    // console.log(data);
+    // return <>Hello</>
+}   
 
 export default ExampleComponents

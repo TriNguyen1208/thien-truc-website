@@ -30,6 +30,7 @@ const products = {
             staleTime: 5 * 60 * 1000,
         })
     }
+    //ADD GET
 }
 const product_categories = {
     useGetAll: ()=>{

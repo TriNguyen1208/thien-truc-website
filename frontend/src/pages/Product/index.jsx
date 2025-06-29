@@ -5,14 +5,47 @@ import { TruckOutlined } from '@ant-design/icons';
 import { UserOutlined } from '@ant-design/icons';
 import { CreditCardOutlined } from '@ant-design/icons';
 import { SafetyOutlined } from '@ant-design/icons';
+import {ArrowLeftOutlined} from '@ant-design/icons'
 import ItemProduct from '@/components/ItemProduct'
 import ViewMoreButton from '@/components/ViewMoreButton'
 import { useState } from 'react';
 import { useEffect } from 'react';
-
+function GoBackListProduct({goBack ,id}){
+    return( id != 0 ?
+        <div onClick={goBack} className='flex flex-row text-[#16A34A] my-[10px] text-[15px] gap-[10px] cursor-pointer hover:text-[#0B4A24] transition-all duration-300 ease-in-out '>
+           <ArrowLeftOutlined /> <p className=''>Quay Lại</p>
+        </div> : <div></div>
+    )
+}
+function DisplayProduct({categories, idCategorySlected})
+{
+    return(idCategorySlected === 0?
+      (   productCategories.map((category, index)=>{
+                    if(index === idCategory - 1 || idCategory === 0)
+                     {
+                        const props = {
+                            category : category,
+                            products :productByCategory.get(category.id),
+                            prices : productPrices,
+                            hightLightFeatures: productsHlFeatures,
+                            isClick: isClick.get(category.id),
+                            handleViewAll: handleViewAll
+                        }
+                        
+                        return( productByCategory.get(category.id).length > 0 
+                        ?(<Category  key = {index} {...props}/>)
+                        :(<div key = {index}></div>)
+                        )
+                     }
+                    }
+            )
+        ):(<></>)
+    )
+}
 function Category({category, products,prices, hightLightFeatures ,isClick ,handleViewAll})
 {
     return(
+
         <div  className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
                                 <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
                                         <div className='border-l-[5px] px-[16px] ml-[30px]'>
@@ -58,6 +91,7 @@ export default function Product(){
     const { data: productsHlFeatures, isLoading: isLoadingProductsHlFeatures } = useProducts.product_highlight_features.getAll() 
     const [isClick, setIsClick] = useState(new Map())
     const [idCategory, setIdCategory] = useState(0)
+    
     useEffect(() => {
         if (productCategories) {      
             const initialClick = new Map(
@@ -94,7 +128,9 @@ export default function Product(){
      if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts || isLoadingProductsHlFeatures) {
         return <p>Loading...</p>;
     }
-    
+    const goBack = ()=>{
+        console.log('qualai')
+    }
     const categories = productCategories.map((category) => {
          return (category.name)
         }) 
@@ -173,7 +209,6 @@ export default function Product(){
         <Banner data = {banner1}/>
         <Banner data = {banner2}/>
         <div className="container-fluid flex flex-col">
-
             <div className='flex flex-grow justify-between py-[45px] '>
             {
                 contentCenterCards.map((card, index) => {
@@ -186,27 +221,9 @@ export default function Product(){
                 })
             }
             </div> 
-        { 
-                productCategories.map((category, index)=>{
-                    if(index === idCategory - 1 || idCategory === 0)
-                     {
-                        const props = {
-                            category : category,
-                            products :productByCategory.get(category.id),
-                            prices : productPrices,
-                            hightLightFeatures: productsHlFeatures,
-                            isClick: isClick.get(category.id),
-                            handleViewAll: handleViewAll
-                        }
-                        
-                        return( productByCategory.get(category.id).length > 0 
-                        ?(<Category  key = {index} {...props}/>)
-                        :(<div key = {index}></div>)
-                        )
-                     }
-                    }
-            )
-        }
+           
+         <GoBackListProduct goBack={goBack} id = {idCategory}/>   
+        
        
         </div>
        
