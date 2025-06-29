@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
 
 function useGetAll(){
@@ -31,8 +31,16 @@ const news = {
         })
     },
     useUpdateNumReaders: (id) => {
+        const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: () => newsServices.news.updateNumReaders(id)
+            mutationFn: () => newsServices.news.updateNumReaders(id),
+            onSuccess: () => {
+            // ✅ Invalidate tất cả danh sách đã từng được query
+            queryClient.invalidateQueries({
+                queryKey: ["news_list"], // match theo prefix
+                exact: false,            // cho phép match tất cả ["news_list", ...]
+            });
+        }
         })
     }
 }
