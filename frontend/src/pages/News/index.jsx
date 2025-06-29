@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Banner from "../../components/Banner";
 import useNews from "../../redux/hooks/useNews";
 import Loading from "@/components/Loading";
@@ -8,41 +8,23 @@ import ItemPost from "../../components/ItemPost";
 import GreenButton from "../../components/GreenButton";
 import ViewMoreButton from "../../components/ViewMoreButton";
 import { Spin } from 'antd'
-import {Link, useLocation, useNavigate} from 'react-router-dom'
-/*
+import {Link, useLocation, useNavigate, useSearchParams} from 'react-router-dom'
 import Paging from "../../components/Paging";
-import { useState } from "react";
-export default function Home() {
-    const [currentPage, setCurrentPage] = useState(1);
 
-    const handlePageChange = (page) => {
-        console.log('Trang hiện tại:', page);
-        setCurrentPage(page);
-    };
-
-    const data = {
-        numberPagination: 10, // = 10 item 
-    };
-
-    return (
-        <div>
-            <Paging data={data} onPageChange={handlePageChange} />
-            <p>Trang đang xem: {currentPage}</p>
-        </div>
-    );
-}
-*/
 export default function News() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const sortBys = ["date_desc", "popular"];
   const [category, setCategory] = useState("Chọn thể loại");
-  const location = useLocation();
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [indexSort, setIndexSort] = useState(0);
   const handleButton = (category, query) => {
     setQuery(query)
     setCategory(category);
+    setCurrentPage(1)
   };
   const handleEnter = (id) => {
     navigate(`/tin-tuc/${id}`);
@@ -52,7 +34,12 @@ export default function News() {
   };
   const handleClickCategory = (category) => {
     setCategory(category)
+    setCurrentPage(1)
   }
+  const handlePageChange = (page) => {
+    console.log('Trang hiện tại:', page);
+    setCurrentPage(page);
+  };
   const { data: newsPage, isLoading: isLoadingNewsPage } = useNews.getNewsPage();
   const { data: newsCategory, isLoading: isLoadingCategory } = useNews.news_categories.getAll();
   const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.news.getList(
@@ -67,7 +54,6 @@ export default function News() {
     "Chọn thể loại",
     ...newsCategory.map((category) => category.name),
   ];
-  
   const data = {
     title: newsPage.banner_title,
     description: newsPage.banner_description,
@@ -133,9 +119,7 @@ export default function News() {
           )}
         </div>
         <div className="flex flex-row justify-center mb-20">
-            <div className="w-[150px]">
-              <ViewMoreButton content='Xem thêm' handleClick={() => console.log("hello wolrd")}/>
-            </div>
+          { isLoadingDataFilter ? <></> : <Paging data={{numberPagination: Math.ceil(dataFilter.totalCount / 9)}} onPageChange={handlePageChange} currentPage={currentPage}/>}
         </div>
       </div>
     </>
