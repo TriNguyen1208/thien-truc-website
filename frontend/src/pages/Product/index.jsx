@@ -10,6 +10,7 @@ import ItemProduct from '@/components/ItemProduct'
 import ViewMoreButton from '@/components/ViewMoreButton'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import Loading from '@/components/Loading'
 function GoBackListProduct({goBack ,id}){
     return( id != 0 ?
         <div onClick={goBack} className='flex flex-row text-[#16A34A] my-[10px] text-[15px] gap-[10px] cursor-pointer hover:text-[#0B4A24] transition-all duration-300 ease-in-out '>
@@ -17,27 +18,33 @@ function GoBackListProduct({goBack ,id}){
         </div> : <div></div>
     )
 }
-function DisplayProduct({categories, idCategorySlected})
+function DisplayProduct({categories, idCategorySelected})
 {
-    return(idCategorySlected === 0?
-      (   productCategories.map((category, index)=>{
-                    if(index === idCategory - 1 || idCategory === 0)
-                     {
-                        const props = {
-                            category : category,
-                            products :productByCategory.get(category.id),
-                            prices : productPrices,
-                            hightLightFeatures: productsHlFeatures,
-                            isClick: isClick.get(category.id),
-                            handleViewAll: handleViewAll
-                        }
-                        
-                        return( productByCategory.get(category.id).length > 0 
-                        ?(<Category  key = {index} {...props}/>)
-                        :(<div key = {index}></div>)
-                        )
-                     }
-                    }
+    
+    return(idCategorySelected === 0?
+      (   categories.map((category, index)=>{             
+         
+        const {data: product , isLoading : isLoadingProduct} =  useProducts.products.getList()
+        if(isLoadingProduct)
+        {
+            return(< Loading/>)
+        }
+        console.log(product)
+            const props = {
+                category : category,
+                product: product,
+                prices: null,
+                highLightFeatures: null,
+                isClick: null,
+                handleViewAll: null
+            }
+            
+            return( index != 0  
+            ?(<Category key ={index} {...props} />)
+            :(<></>)
+            )
+                     
+        }
             )
         ):(<></>)
     )
@@ -84,16 +91,13 @@ function Category({category, products,prices, hightLightFeatures ,isClick ,handl
 
 export default function Product(){
     
+    const [idCategory, setIdCategory] = useState(0)
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
-    const { data: productPrices, isLoading: isLoadingPrices } = useProducts.product_prices.getAll() 
-    const { data: products, isLoading: isLoadingProducts } = useProducts.products.getAll() 
-    const { data: productsHlFeatures, isLoading: isLoadingProductsHlFeatures } = useProducts.product_highlight_features.getAll() 
+  
     const [isClick, setIsClick] = useState(new Map())
-    const [idCategory, setIdCategory] = useState(0)
-    
     useEffect(() => {
-        if (productCategories) {      
+        if (Array.isArray(productCategories)) {      
             const initialClick = new Map(
                 productCategories.map(category => [category.id, false])
             );
@@ -101,6 +105,12 @@ export default function Product(){
             setIsClick(initialClick)
         }
     }, [productCategories]);
+    if(isLoadingPage || isLoadingCategories)
+    {
+        return (<Loading/>)
+    }
+       
+ 
     const handleSearchSuggestion = (query, filter) => {
         return useProducts.getSearchSuggestions(query, filter)
     }
@@ -125,9 +135,7 @@ export default function Product(){
         })
         
     };   
-     if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts || isLoadingProductsHlFeatures) {
-        return <p>Loading...</p>;
-    }
+   
     const goBack = ()=>{
         console.log('qualai')
     }
@@ -193,15 +201,7 @@ export default function Product(){
   
     
  
-    const productByCategory = new Map(
-            productCategories.map((category)=>{
-            const pros = products.filter((pro,)=>{
-                    return pro.category.id === category.id ? pro :null
-            })
-            return [category.id,pros]
-        })
-    )
-   
+
    
     return (
         
@@ -223,8 +223,8 @@ export default function Product(){
             </div> 
            
          <GoBackListProduct goBack={goBack} id = {idCategory}/>   
+        <DisplayProduct categories={categories} idCategorySelected={0} />
         
-       
         </div>
        
         </>

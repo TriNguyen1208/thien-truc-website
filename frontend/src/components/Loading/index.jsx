@@ -7,7 +7,7 @@ const contentStyle = {
 };
 const content = <div style={contentStyle} />;
 const Loading = () => (
-  <div gap="middle" vertical className='flex h-[100vh] !items-center'>
+  <div gap="middle"  className='flex h-[100vh] !items-center'>
     <div gap=" middle" className=' scale-400 mx-auto '>
   
     

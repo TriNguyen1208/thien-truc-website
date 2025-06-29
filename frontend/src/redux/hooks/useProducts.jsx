@@ -16,10 +16,10 @@ function useGetProductPage(){
     })
 }
 const products = {
-    useGetAll: ()=>{
+    useGetList: (query, filter , page)=>{
         return useQuery({
             queryKey: ["product-list"],
-            queryFn: productsServices.products.getAll,
+            queryFn: productsServices.products.getList(query, filter , page),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -30,7 +30,7 @@ const products = {
             staleTime: 5 * 60 * 1000,
         })
     }
-    //ADD GET
+   
 }
 const product_categories = {
     useGetAll: ()=>{
@@ -129,7 +129,7 @@ export default {
     getAll: useGetAll,
     getProductPage: useGetProductPage,
     products: {
-        getAll: products.useGetAll,
+        getList: products.useGetList,
         getOne: products.useGetOne
     },
     product_categories: {
