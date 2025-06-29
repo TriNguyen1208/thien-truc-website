@@ -16,10 +16,10 @@ function useGetProductPage(){
     })
 }
 const products = {
-    useGetList: (query, filter , page)=>{
+    useGetList: (query = '', filter = '' , page = 1)=>{
         return useQuery({
             queryKey: ["product-list"],
-            queryFn: productsServices.products.getList(query, filter , page),
+            queryFn: ()=> productsServices.products.getList(query, filter , page),
             staleTime: 5 * 60 * 1000,
         })
     },

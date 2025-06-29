@@ -20,33 +20,22 @@ function GoBackListProduct({goBack ,id}){
 }
 function DisplayProduct({categories, idCategorySelected})
 {
+    const {data: dataAll , isLoading : isLoadingProduct} =  useProducts.products.getList('','' , 1)
+    if(isLoadingProduct)
+        {
+            return(
+                < Loading/>
+        )
+        }
+ 
     
     return(idCategorySelected === 0?
-      (   categories.map((category, index)=>{             
-         
-        const {data: product , isLoading : isLoadingProduct} =  useProducts.products.getList()
-        if(isLoadingProduct)
-        {
-            return(< Loading/>)
-        }
-        console.log(product)
-            const props = {
-                category : category,
-                product: product,
-                prices: null,
-                highLightFeatures: null,
-                isClick: null,
-                handleViewAll: null
-            }
-            
-            return( index != 0  
-            ?(<Category key ={index} {...props} />)
-            :(<></>)
-            )
-                     
-        }
-            )
-        ):(<></>)
+      (
+        Object.entries(dataAll.results).map((object,index)=>{
+            console.log(object[1])
+        })
+        
+      ):(<></>)
     )
 }
 function Category({category, products,prices, hightLightFeatures ,isClick ,handleViewAll})
@@ -94,7 +83,7 @@ export default function Product(){
     const [idCategory, setIdCategory] = useState(0)
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
-  
+    
     const [isClick, setIsClick] = useState(new Map())
     useEffect(() => {
         if (Array.isArray(productCategories)) {      
@@ -105,9 +94,11 @@ export default function Product(){
             setIsClick(initialClick)
         }
     }, [productCategories]);
-    if(isLoadingPage || isLoadingCategories)
+    if(isLoadingPage || isLoadingCategories )
     {
-        return (<Loading/>)
+        return (<div key = {1}>
+            <Loading/>
+        </div>)
     }
        
  
@@ -142,7 +133,7 @@ export default function Product(){
     const categories = productCategories.map((category) => {
          return (category.name)
         }) 
-    categories.unshift("Tất cả sản phẩm")
+   // categories.unshift("Tất cả sản phẩm")
     const handleSearch = (category, query) => {
 
         setIdCategory(categories.indexOf(category))

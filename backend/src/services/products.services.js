@@ -200,7 +200,7 @@ const products = {
                         prd.warranty_period,
                         prd.product_specifications,
 
-                        pp.price AS price
+                        pp.price AS price,
                         pc.id AS category_id,
                         pc.name AS category_name
                     FROM product.products prd
