@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', productController.getAllTables);
 router.get('/product_page', productController.getProductPage);
-router.get('/products', productController.products.getAll);
+router.get('/products', productController.products.getList);
 router.get('/products/:id', productController.products.getOne);
 router.get('/product_categories', productController.product_categories.getAll);
 router.get('/product_categories/:id', productController.product_categories.getOne);

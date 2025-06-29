@@ -12,8 +12,8 @@ const getProjectPage = async () => {
 }
 
 const projects = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.project.projects.getAll);
+    getList: async (query = '', filter = '', page = 1) => {
+        const res = await axios.get(API_ROUTES.project.projects.getList(query, filter, page));
         return res.data;
     },
     getOne: async (id) => {
@@ -42,12 +42,7 @@ const project_contents = {
     }
 }
 const getSearchSuggestions = async (query, filter) => {
-    const res = await axios.get(API_ROUTES.project.search_suggestions, {
-        params: {
-            query: query,
-            filter: filter
-        }
-    })
+    const res = await axios.get(API_ROUTES.project.search_suggestions(query, filter));
     return res.data
 }
 export default { getAll, getProjectPage, projects, project_regions, project_contents, getSearchSuggestions };

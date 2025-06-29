@@ -10,4 +10,14 @@ const getRecruitmentPage = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getRecruitmentPage };
+const postSubmitApplication = async (req, res) => {
+  try {
+    await recruitmentServices.submitApplication(req.body);
+    res.status(200).json({ success: true, message: "Ứng tuyển thành công" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Gửi đơn ứng tuyển thất bại", error: error.message });
+  }
+};
+
+export default { getAllTables, getRecruitmentPage, postSubmitApplication };
