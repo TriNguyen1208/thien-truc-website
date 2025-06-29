@@ -39,7 +39,6 @@ const getNewsPage = async (filter = '') => {
         ...news_page,
         totalCount
     }
-    return news_page;
 }
 
 const news = {
@@ -75,7 +74,7 @@ const news = {
                     ($2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2))
                     AND similarity(unaccent(n.title), unaccent($1)) > 0.1
                 ORDER BY 
-                    similarity(unaccent(n.title), unaccent($1)) DESC,
+                    similarity(unaccent(n.title), unaccent($1)) DESC
                 LIMIT $3 OFFSET $4
             `;
             const values = [cleanedQuery, cleanedFilter, pageSize, offset];

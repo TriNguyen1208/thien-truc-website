@@ -50,6 +50,4 @@ const getSearchSuggestions = async (query, filter) => {
     const res = await axios.get(API_ROUTES.news.search_suggestions(query, filter))
     return res.data;
 }
-
-
 export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions};
