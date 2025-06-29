@@ -14,7 +14,8 @@ const Banner = ({data}) =>{
         handleButton = null,
         categories = null,
         contentPlaceholder = null,
-        handleSearchSuggestion = null
+        handleSearchSuggestion = null,
+        handleEnter = null
     } = data || {}
     return (
         <div
@@ -44,7 +45,8 @@ const Banner = ({data}) =>{
                                 categories: categories,
                                 contentPlaceholder: contentPlaceholder,
                                 onSearch: handleButton,
-                                handleSearchSuggestion: handleSearchSuggestion
+                                handleSearchSuggestion: handleSearchSuggestion,
+                                handleEnter: handleEnter
                             }}
                         />
                     ): <></>}

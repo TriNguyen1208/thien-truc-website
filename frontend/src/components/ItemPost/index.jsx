@@ -12,13 +12,12 @@ const ItemPost = ({ data, width = "100%"}) => {
         type, // 'project' hoặc 'news'
         title,
         description,
-        location,
-        date,
+        location, //project
+        date, //project và news
         tag,
         tagColor = '#ef4444',
         image = "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg",
         status,
-        handleClick
     } = data;
 
     const renderTag = () => {
@@ -111,7 +110,6 @@ const ItemPost = ({ data, width = "100%"}) => {
         <div 
             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
             style={{width}}
-            onClick={handleClick}
         >
             {renderImage()}
             {renderContent()}

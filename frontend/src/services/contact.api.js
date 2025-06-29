@@ -30,4 +30,4 @@ const support_agents = {
         return res.data;
     }
 }
-export default {getAll, getContactPage, getCompanyInfo, postContactForm, support_agents};
+export default {getAll, getContactPage, getCompanyInfo, postContactForm,support_agents};

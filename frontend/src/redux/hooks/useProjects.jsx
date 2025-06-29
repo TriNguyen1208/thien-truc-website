@@ -16,10 +16,10 @@ function useGetProjectPage(){
     })
 }
 const projects = {
-    useGetAll: () => {
+    useGetList: (query = '', filter = '', page = 1) => {
         return useQuery({
-            queryKey: ["projects_list"],
-            queryFn: projectsServices.projects.getAll,
+            queryKey: ["projects_list", query, filter, page],
+            queryFn: () => projectsServices.projects.getList(query, filter, page),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -80,8 +80,17 @@ function useSearchSuggest(query, filter){
 export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
-    projects,
-    project_regions,
-    project_contents,
+    projects: {
+        getList: projects.useGetList,
+        getOne: projects.useGetOne,
+    },
+    project_regions: {
+        getAll: project_regions.useGetAll,
+        getOne: project_regions.useGetOne,
+    },
+    project_contents: {
+        getAll: project_contents.useGetAll,
+        getOne: project_contents.useGetOne,
+    },
     getSearchSuggestions: useSearchSuggest,
 };

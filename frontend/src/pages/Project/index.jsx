@@ -15,9 +15,21 @@ export default function Project() {
     // TEST 
     const {data: dataAll, isLoading: isDataAll} = useProjects.getAll();
     const { data: projectPageData, isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
-    const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.useGetAll();
-    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.useGetAll();
-    const { data: regionData, isLoading: isLoadingRegion } = useProjects.projects.useGetByRegion('Miền Bắc');
+    const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.projects.getList(
+        undefined,
+        undefined,
+        1,
+    );
+    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(
+        undefined,
+        undefined,
+        1,
+    );
+    const { data: regionData, isLoading: isLoadingRegion } = useProjects.projects.getList(
+        undefined,
+        'Miền Bắc',
+        1
+    );
  
     const [showAll, setShowAll] = useState(false);
     const navigate = useNavigate();
