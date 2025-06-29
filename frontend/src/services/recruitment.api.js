@@ -8,8 +8,8 @@ const getRecruitmentPage = async () => {
     const res = await axios.get(API_ROUTES.recruitment.recruitment_page);
     return res.data;
 }
-const postFormRecruitment = async (formData) => {
-    const res = await axios.post(API_ROUTES.recruitment.base, formData)
+const postRecruitmentForm = async (formData) => {
+    const res = await axios.post(API_ROUTES.recruitment.submit_application, formData);
     return res.data;
 }
-export default {getAll, getRecruitmentPage, postFormRecruitment};
+export default {getAll, getRecruitmentPage, postRecruitmentForm};

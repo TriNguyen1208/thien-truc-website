@@ -27,4 +27,13 @@ const support_agents = {
     }
 }
 
-export default { getAllTables, getContactPage, getCompanyInfo, support_agents };
+const postContactMessage = async (req, res) => {
+    try {
+        await contactServices.postContactMessage(req.body);
+        res.status(200).json({ success: true, message: "Tin nhắn đã được gửi thành công" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Gửi tin nhắn thất bại", error: error.message });
+    }
+}
+export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage};

@@ -7,6 +7,7 @@ import { MailOutlined, PhoneOutlined, EnvironmentOutlined } from "@ant-design/ic
 import useContact from "@/redux/hooks/useContact"
 import { useRef, useState } from "react";
 import recruitmentApi from "../../services/recruitment.api";
+import Form from "../../components/Form";
 export default function Recruitment(){
     //Call API
     const {data, isLoading} = useRecruitment.getRecruitmentPage();
@@ -39,21 +40,6 @@ export default function Recruitment(){
         hasButton: true,
         contentButton: "Ứng tuyển ngay",
         handleButton: handleButtonBanner 
-    }
-    
-    const handleChangeDataForm = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-      };
-    const handleClickSendMessage = async (e) => {
-        e.preventDefault();
-        console.log(formData);
-        // const res = await recruitmentApi.postFormRecruitment(formData);
-        // if(res.data.message == "Completely"){
-        //     setFormData({name: "", email: "", title: "", message: ""});
-        // }else{
-        //     console.log("Send form failed")
-        // }
     }
     return (
         <>
@@ -90,89 +76,12 @@ export default function Recruitment(){
                             <img src={data.culture_img_4} alt="" />
                         </div>
                     </div>
+                </div>
+                <div className="w-screen mt-10">
                     <Banner data={content_banner_bottom}/>
-                    <div ref={recruitmentRef}>
-                        <div className="flex flex-col gap-10 items-center">
-                            <h2 className="text-[#020817] text-3xl font-bold">Liên hệ đội ngũ tuyển dụng</h2>
-                            <div className="flex flex-col w-[731px] bg-green-50 px-8 py-8 gap-5">
-                                <p className="text-[#4B5563] text-center">
-                                    Bạn có câu hỏi về quy trình tuyển dụng hoặc vị trí cụ thể? Hãy liên hệ với đội ngũ tuyển dụng
-                                    của chúng tôi.
-                                </p>
-                                <form action="" className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
-                                    <div className="flex flex-row gap-10 justify-between">
-                                        <div className="flex flex-col gap-3 w-[340px]">
-                                            <label htmlFor="" className="text-sm font-medium text-[#374151]">Họ và tên</label>
-                                            <input 
-                                                type="text" 
-                                                placeholder="Nhập họ và tên của bạn" 
-                                                className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500 focus:text-gray-700"
-                                                name="name"
-                                                onChange={handleChangeDataForm}
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-3 w-[340px]">
-                                            <label htmlFor="" className="text-sm font-medium text-[#374151]">Email</label>
-                                            <input 
-                                                name="email"
-                                                onChange={handleChangeDataForm}
-                                                type="text" 
-                                                placeholder="Nhập địa chỉ email của bạn" 
-                                                className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500 focus:text-gray-700"/>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col gap-3">
-                                        <label htmlFor="" className="text-sm font-medium text-[#374151]">Tiêu đề</label>
-                                        <input 
-                                            name="title"
-                                            onChange={handleChangeDataForm}
-                                            type="text" 
-                                            placeholder="Nhập tiêu đề" 
-                                            className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500 focus:text-gray-700"/>
-                                    </div>
-                                    <div className="flex flex-col gap-3">
-                                        <label htmlFor="" className="text-sm font-medium text-[#374151]">Nội dung</label>
-                                        <textarea 
-                                            name="content"
-                                            onChange={handleChangeDataForm}
-                                            rows={6} 
-                                            type="text" 
-                                            placeholder="Nhập nội dung tin nhắn của bạn" 
-                                            className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500 focus:text-gray-700"/>
-
-                                    </div>
-                                    <GreenButton content="Gửi tin nhắn" handleClick={handleClickSendMessage}/>
-                                </form>
-                                <div className="p-6 border-t-1 border-gray-200">
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                                        {/* Email */}
-                                        <div className="flex flex-col items-center space-y-2">
-                                            <MailOutlined style={{ fontSize: '24px', color: '#22C55E' }} />
-                                            <div className="font-semibold">Email</div>
-                                            <div className="text-[#4B5563]">{contact.company_email}</div>
-                                        </div>
-
-                                        {/* Điện thoại */}
-                                        <div className="flex flex-col items-center space-y-2">
-                                            <PhoneOutlined style={{ fontSize: '24px', color: '#22C55E' }} />
-                                            <div className="font-semibold">Điện thoại</div>
-                                            <div className="text-[#4B5563]">{contact.company_phone}</div>
-                                        </div>
-
-                                        {/* Địa chỉ */}
-                                        <div className="flex flex-col items-center space-y-2">
-                                            <EnvironmentOutlined style={{ fontSize: '24px', color: '#22C55E' }} />
-                                            <div className="font-semibold">Địa chỉ</div>
-                                            <div className="text-[#4B5563] text-sm">
-                                                {contact.office_address}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                </div>
+                <div ref={recruitmentRef} className="mt-10">
+                    <Form data={{title: "Liên hệ với đội ngũ tuyển dụng", type: "tuyen-dung"}}/>
                 </div>
             </div>
         </>

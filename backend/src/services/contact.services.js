@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import sendMail from '#@/utils/mailer.js'
 
 const getAllTables = async () => {
     const _contact_page = await getContactPage();
@@ -24,6 +25,7 @@ const getCompanyInfo = async () => {
     if(!company_info){
         throw new Error("Can't get company_info");
     }
+    company_info.googlemaps = JSON.parse(company_info.googlemaps || "{}");
     return company_info;
 }
 
@@ -44,4 +46,37 @@ const support_agents = {
     }
 }
 
-export default { getAllTables, getContactPage, getCompanyInfo, support_agents };
+const postContactMessage = async (applicationData) => {
+    const { name, email, phone, title, content } = applicationData;
+    //Send mail to company
+    await sendMail({
+        to: process.env.RECEIVER_EMAIL,
+        subject: `Liên hệ từ ${name}`,
+        html: `
+        <h2>Thông tin liên hệ:</h2>
+        <ul>
+            <li><strong>Họ tên:</strong> ${name}</li>
+            <li><strong>Email:</strong> ${email}</li>
+            <li><strong>Điện thoại:</strong> ${phone}</li>
+            <li><strong>Chủ đề:</strong> ${title || 'Không ghi rõ'}</li>
+            <li><strong>Nội dung:</strong><br>${content}</li>
+        </ul>
+        <hr>
+        <small>Hệ thống gửi tự động từ website.</small>
+    `
+    })
+    //Send mail to applicant
+    await sendMail({
+        to: applicationData.email,
+        subject: "Xác nhận nhận đơn liên hệ",
+        html: `
+            <h2>Cảm ơn bạn đã liên hệ!</h2>
+            <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
+            <hr>
+            <small>Trân trọng, Bộ phận Nhân sự</small>
+        `
+    })
+
+    return { success: true, message: "Ứng tuyển thành công" };
+}
+export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage };

@@ -2,7 +2,7 @@ import pool from '#@/config/db.js'
 
 const getAllTables = async () => {
     const _news_page = await getNewsPage();
-    const _news = await news.getAll();
+    const _news = await news.getList();
     const _news_categories = await news_categories.getAll();
     const _news_contents = await news_contents.getAll();
     return {
@@ -12,49 +12,205 @@ const getAllTables = async () => {
         news_categories: _news_categories
     };
 }
+const getNumPage = async (query, filter) => {
+    let totalCount = 0;
+    const hasQuery = query !== '';
+    const hasFilter = filter !== '';
+    // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
+    if (hasQuery) {
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM news.news n
+            JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+            WHERE 
+                ($2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2))
+                AND similarity(unaccent(n.title), unaccent($1)) > 0.1
+        `;
+        const values = [query, filter];
+        const result = await pool.query(sql, values);
+        totalCount = parseInt(result.rows[0].total);
+        return totalCount;
+    }
+
+    // ✅ 2. Không có query
+    if (!hasFilter) {
+        // Trả về tối đa 9 trang, sắp xếp theo sortBy
+        const result = await pool.query("SELECT COUNT(*) FROM news.news");
+        totalCount = parseInt(result.rows[0].count);
+        return totalCount;
+    } else {
+        // Có filter (theo category), phân trang theo sortBy
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM news.news n
+            JOIN news.news_categories nc on n.category_id = nc.id
+            WHERE unaccent(nc.name) ILIKE unaccent($1)
+        `;
+        const results = await pool.query(sql, [filter]);
+        totalCount = parseInt(results.rows[0].total);
+        return totalCount;
+    }
+}
 
 const getNewsPage = async () => {
     const news_page = (await pool.query("SELECT * FROM news.news_page")).rows[0];
     if(!news_page){
         throw new Error("Can't get news_page");
     }
-    return news_page;
+    return {
+        ...news_page,
+    }
 }
 
 const news = {
-    getAll: async () => {
-        const query = `
-            select 
-                n.id as news_id,
-                n.title,
-                n.public_date,
-                n.measure_time,
-                n.num_readers,
-                n.main_img,
-                n.main_content,
+    getList: async (query = '', filter = '', sort_by = 'date_desc', page = 1) => {
+        let orderBy = 'n.public_date DESC';
+        if (sort_by == 'popular')
+            orderBy = 'n.num_readers DESC';
+        const cleanedQuery = query.trim().replaceAll(`'`, ``);
+        const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+        const pageSize = 9;
+        const offset = (page - 1) * pageSize;
 
-                n_cate.id as category_id,
-                n_cate.name,
-                n_cate.rgb_color
-            from news.news n
-            join news.news_categories n_cate on n_cate.id = n.category_id
-        `
-        const { rows } = await pool.query(query);
-        const news = rows.map(row => ({
-            id: row.news_id,
-            title: row.title,
-            public_date: row.public_date,
-            measure_time: row.measure_time,
-            num_readers: row.num_readers,
-            main_img: row.main_img,
-            main_content: row.main_content,
-            category: {
-            id: row.category_id,
-            name: row.name,
-            rgb_color: row.rgb_color
-              }
+        const hasQuery = cleanedQuery !== '';
+        const hasFilter = cleanedFilter !== '';
+        const totalCount = await getNumPage(cleanedQuery, cleanedFilter);
+        // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
+        if (hasQuery) {
+            const sql = `
+                SELECT 
+                    n.id AS news_id,
+                    n.title,
+                    n.public_date,
+                    n.measure_time,
+                    n.num_readers,
+                    n.main_img,
+                    n.main_content,
+
+                    n_cate.id AS category_id,
+                    n_cate.name,
+                    n_cate.rgb_color
+                FROM news.news n
+                JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+                WHERE 
+                    ($2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2))
+                    AND similarity(unaccent(n.title::text), unaccent($1::text)) > 0.1
+                ORDER BY 
+                    similarity(unaccent(n.title), unaccent($1)) DESC
+                LIMIT $3 OFFSET $4
+            `;
+            const values = [cleanedQuery, cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(sql, values);
+            const results = rows.map(row => ({
+                id: row.news_id,
+                title: row.title,
+                public_date: row.public_date,
+                measure_time: row.measure_time,
+                num_readers: row.num_readers,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                category: {
+                    id: row.category_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
             }));
-        return news;
+            return {
+                totalCount: totalCount,
+                page: page,
+                pageSize: rows.length,
+                results
+            };
+        }
+
+        // ✅ 2. Không có query
+        if (!hasFilter) {
+            // Trả về tối đa 9 trang, sắp xếp theo sortBy
+            const sql = `
+                SELECT 
+                    n.id AS news_id,
+                    n.title,
+                    n.public_date,
+                    n.measure_time,
+                    n.num_readers,
+                    n.main_img,
+                    n.main_content,
+
+                    n_cate.id AS category_id,
+                    n_cate.name,
+                    n_cate.rgb_color
+                FROM news.news n
+                JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+                ORDER BY ${orderBy}
+                LIMIT $1 OFFSET $2
+            `;
+            const values = [pageSize, offset]
+            const { rows } = await pool.query(sql, values);
+
+            const results = rows.map(row => ({
+                id: row.news_id,
+                title: row.title,
+                public_date: row.public_date,
+                measure_time: row.measure_time,
+                num_readers: row.num_readers,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                category: {
+                    id: row.category_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            }));
+            return {
+                totalCount: totalCount,
+                page: page,
+                pageSize: rows.length,
+                results
+            };
+        } else {
+            // Có filter (theo category), phân trang theo sortBy
+            const sql = `
+                SELECT 
+                    n.id AS news_id,
+                    n.title,
+                    n.public_date,
+                    n.measure_time,
+                    n.num_readers,
+                    n.main_img,
+                    n.main_content,
+
+                    n_cate.id AS category_id,
+                    n_cate.name,
+                    n_cate.rgb_color
+                FROM news.news n
+                JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+                WHERE unaccent(n_cate.name) ILIKE unaccent($1)
+                ORDER BY ${orderBy}
+                LIMIT $2 OFFSET $3
+            `;
+            const values = [cleanedFilter, pageSize, offset];
+            const { rows } = await pool.query(sql, values);
+            const results = rows.map(row => ({
+                id: row.news_id,
+                title: row.title,
+                public_date: row.public_date,
+                measure_time: row.measure_time,
+                num_readers: row.num_readers,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                category: {
+                    id: row.category_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            }));
+            return {
+                totalCount: totalCount,
+                page: page,
+                pageSize: rows.length,
+                results
+            };
+        }
     },
     getOne: async (id) => {
         const query = `
@@ -89,6 +245,20 @@ const news = {
                 rgb_color: row.rgb_color
         }};
         return news;
+    },
+    updateNumReaders: async (id) => {
+        const query = `
+            update news.news
+            set num_readers = num_readers + 1
+            where id = $1 
+            returning id, num_readers
+        `
+        const row = (await pool.query(query, [id])).rows[0];
+        const res = {
+            id: row.id,
+            num_readers: row.num_readers,
+        }
+        return res;
     }
 }
 
@@ -202,14 +372,13 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (N.title) N.title, N.main_img
+        SELECT N.title, N.id, N.main_img
         FROM news.news N
         JOIN news.news_categories C ON N.category_id = C.id
         WHERE 
             ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(N.title::text), unaccent($1::text)) > 0
+            ($1 = '' OR similarity(unaccent(N.title::text), unaccent($1::text)) > 0)
         ORDER BY
-            N.title,
             similarity(unaccent(N.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
@@ -217,12 +386,12 @@ const getSearchSuggestions = async (query, filter) => {
     try {
         const result = await pool.query(sql, values);
         return result.rows.map(row => ({
-            title: row.title,
+            query: row.title,
+            id: row.id,
             img: row.main_img
         }));
     } catch (err) {
         throw new Error(`DB error: ${err.message}`);
     }
 };
-
 export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions};

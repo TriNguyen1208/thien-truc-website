@@ -1,8 +1,5 @@
+import useProducts from '@/redux/hooks/useProducts'
+import ItemProduct from '../../components/ItemProduct'
 export default function Product(){
-    return (
-        <>
-        
-            <p>Đây là nội dung trang sản phẩm.</p>
-        </>
-    )
+    return <>Hello</>
 }
