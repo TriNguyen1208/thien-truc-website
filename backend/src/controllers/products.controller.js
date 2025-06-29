@@ -6,8 +6,7 @@ const getAllTables = async (req, res) => {
 }
 
 const getProductPage = async (req, res) => {
-    const {filter = ''} = req.query;
-    const data = await productServices.getProductPage(filter);
+    const data = await productServices.getProductPage();
     res.status(200).json(data);
 }
 
