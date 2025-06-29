@@ -26,10 +26,9 @@ function handleDisplayHighlights(product, highLightFeature)
             </div>  
     )
 }
-function ItemProduct({product,prices, highLightFeatures, handleClick , width = "w-full", height = "h-full"}) {
+function ItemProduct({product, highLightFeatures, handleClick , width = "w-full", height = "h-full"}) {
     const highLightFeature = highLightFeatures.filter((hl, index) =>hl.product_id == product.id)
-    const price = prices.filter(pr => product.id == pr.product.id)[0]
-   
+
     return (
         <div 
             className="flex flex-col w-full h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
@@ -49,7 +48,7 @@ function ItemProduct({product,prices, highLightFeatures, handleClick , width = "
                     </h2>
                 </div>
                 <div className="line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
-                   {typeof price.price === "number" ? price.price.toLocaleString("vi-VN") + " ₫" : "Chưa có giá"}
+                   {typeof product.price === "number" ? product.price.toLocaleString("vi-VN") + " ₫" : "Chưa có giá"}
                 </div>
                 
                 {handleDisplayHighlights(product, highLightFeature)}
