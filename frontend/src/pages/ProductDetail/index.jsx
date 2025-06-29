@@ -15,13 +15,13 @@ function ListPicture({urls, id}){
                             {
                                 urls.map((url, index) =>{
                                     return( id != index ? 
-                                        <div data-index = {index} className='h-[170px] w-[170px] overflow-hidden p-[10px]  border-[#E5E7EB] border-[1px] rounded-[8px] cursor-pointer '>
+                                        <div key={index} data-index = {index} className='h-[170px] w-[170px] overflow-hidden p-[10px]  border-[#E5E7EB] border-[1px] rounded-[8px] cursor-pointer '>
                                             <img data-index = {index}
                                             src={url} 
                                             alt={''}
                                             className="w-full h-full object-cover "/>
                                         </div>
-                                        :(<></>)
+                                        :(null)
                                         
                                     )
                                 })
@@ -48,9 +48,9 @@ function ListPicture({urls, id}){
                     )
      )
 }
-export default function ProductDetail({product , allPrice, allFeature }){
+export default function ProductDetail({product , allFeature }){
     
-    if(!product || !allPrice  || !allFeature)
+    if(!product   || !allFeature)
     {
         return(
             <div>
@@ -79,35 +79,9 @@ export default function ProductDetail({product , allPrice, allFeature }){
             }
         }
     }
-    const listSpec = [
-        {
-            atribute: 'Nhà sáng tạo',
-            des: 'Thiên trúc'
-        },
-        {
-            atribute: 'Kích thước',
-            des: 'Thiên trúc'
-        },
-        {
-            atribute: 'Nhà sáng tạo',
-            des: 'Thiên trúc'
-        },
-        {
-            atribute: 'Nhà sáng tạo',
-            des: 'Thiên trúc'
-        },
-        {
-            atribute: 'Nhà sáng tạo',
-            des: 'Thiên trúc'
-        },
-        {
-            atribute: 'Nhà sáng tạo',
-            des: 'Thiên trúc'
-        }
-        
-    ]
+   
     const features = allFeature.filter((ft, index) =>ft.product_id == product.id)
-    const price = allPrice.filter(pr => product.id == pr.product.id)[0]
+  
     return (
         <>
             <div className="container-fluid pt-[30px]">
@@ -126,7 +100,7 @@ export default function ProductDetail({product , allPrice, allFeature }){
                             </span>
                         </div>
                         <div className="border-[#E5E7EB] border-y-[1px] py-[15px] line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
-                              {typeof price.price === 'number' ? `${price.price}` + " ₫": 'Chưa có giá' }
+                              {typeof product.price === 'number' ? product.price.toLocaleString('vi-VN') + " ₫": 'Chưa có giá' }
                         </div>
                          <div className="py-[10px]">
                             <span className="text-[16px]">
@@ -163,11 +137,12 @@ export default function ProductDetail({product , allPrice, allFeature }){
                         <div className="overflow-hidden">
                             <ul>
                                 {
-                                    listSpec.map((spec,index)=>{
+                                    Object.entries(product.product_specifications).map((spec,index)=>{
+                                        
                                         return(
-                                            <li className={` flex flex-row h-[40px]  items-center p-[10px] my-[5px] ${index %2 == 0? 'bg-[#F9FAFB]': '' }` }>
-                                                    <div className="w-[33%]">{spec.atribute}</div>
-                                                    <div className="w-[67%]">{spec.des}</div>
+                                            <li key={index} className={` flex flex-row h-[40px]  items-center p-[10px] my-[5px] ${index %2 == 0? 'bg-[#F9FAFB]': '' }` }>
+                                                    <div className="w-[33%]">{spec[0]}</div>
+                                                    <div className="w-[67%]">{spec[1]}</div>
                                             </li>
                                         )
                                     })
