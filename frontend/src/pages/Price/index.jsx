@@ -1,113 +1,111 @@
-// src/components/ProductDetailModal.jsx
-import React from 'react'
-import { useEffect } from 'react'
-
-export default function ProductDetailModal({ product, onClose }) {
-  useEffect(() => {
-    if (product) {
-      document.body.classList.add('overflow-hidden')
-    }
-    return () => {
-      document.body.classList.remove('overflow-hidden')
-    }
-  }, [product])
-  if (!product) return null
-  
-  return (
-    <div
-      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[1px] bg-opacity-40 flex items-center justify-center"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-xl shadow-2xl p-8 max-w-6xl w-full flex flex-col md:flex-row gap-6 border border-gray-200"
-        onClick={(e) => e.stopPropagation()} // ngăn click bên trong đóng modal
-      >
-        {/* Bên trái */}
-        <div className="flex-1">
-          <h2 className="text-3xl font-bold mb-3">{product.name}</h2>
-          <p className="text-red-600 font-bold text-[30px] mb-4">
-            Giá: {product.price.toLocaleString('vi-VN')} VND
-          </p>
-          <p className="text-gray-700 mb-4 border-t border-b border-gray-300 py-4">{product.descriptionLong || product.description}</p>
-          <ul className="text-sm text-gray-600 space-y-2 mt-4">
-            <li>🚚 Hỗ trợ vận chuyển toàn quốc</li>
-            <li>🛡️ Bảo hành chính hãng {product.warranty}</li>
-          </ul>
-        </div>
-
-        {/* Bên phải */}
-        <div className="flex-1 border border-gray-200 px-6 py-6 rounded-lg">
-          <div className="flex items-center mb-4">
-            <div className="w-[4px] h-6 bg-green-800 mr-2" />
-            <h3 className="text-green-800 font-bold text-lg">Mô tả</h3>
-          </div>
-          <table className="w-full text-sm text-gray-700">
-            <tbody>
-              {product.details &&
-                Object.entries(product.details).map(([key, value], idx) => (
-                  <tr key={key} className="idx odd:bg-gray-50 even:bg-white">
-                    <td className="py-2 font-medium w-1/3">{key}</td>
-                    <td className="py-2">{value}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // src/pages/Price/index.jsx  
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Banner from '@/components/Banner'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Button } from 'antd'
 import ProductDetailModal from '../../components/ProductDetailModal'
 import { motion, AnimatePresence } from 'framer-motion';
 import useProducts from "@/redux/hooks/useproducts";
+import Loading from '@/components/Loading'
 import '@/styles/custom.css'
 
-const bannerData = {
-  title: 'BẢNG GIÁ SẢN PHẨM',
-  description: 'Giá cả minh bạch, dịch vụ chất lượng cao, cam kết uy tín',
-  hasButton: false,
-  hasSearch: false,
-  colorBackground: 'var(--gradient-banner)',
-  colorText: '#ffffff',
-  categories: null,
-  contentButton: null,
-  contentPlaceholder: null,
-}
-
 export default function PricePage() {
-  const [selectedProduct, setSelectedProduct] = useState(null)
-  const [search, setSearch] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('Tất cả')
-  const [openCategories, setOpenCategories] = useState({})
+  
+        const [querySearch, setQuerySearch] = useState("");
+        const [filterSearch, setFilterSearch] = useState("Tất cả");
+        const [selectedProduct, setSelectedProduct] = useState(null)
+        const [search, setSearch] = useState('')
+        const [selectedCategory, setSelectedCategory] = useState('Tất cả')
+        const [openCategories, setOpenCategories] = useState({})
+        const { data: pricePage, isLoading: isLoadingPage } = useProducts.getPricePage()
+        const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
+        const { data: productPrices = [], isLoading: isLoadingPrices } = useProducts.product_prices.getAll();
+        const { data: products = [], isLoading: isLoadingProducts } = useProducts.products.getList();
+        console.log("productPrices", productPrices)
 
-  const toggleCategory = (category) => {
-    setOpenCategories((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }))
-  }
+        if (isLoadingPage || isLoadingCategories || isLoadingPrices ) {
+          return <Loading />
+        }
 
-  const filteredData = mockData
-    .filter(
-      (cat) =>
-        selectedCategory === 'Tất cả' || cat.category === selectedCategory
-    )
-    .map((cat) => ({
-      ...cat,
-      products: cat.products.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      ),
-    }))
+        const handleButton = (category, query) => {
+          setQuery(query);
+          setCategory(category);
+        };
+        const handleEnter = (id) => {
+          navigate(`/tin-tuc/${id}`);
+        };
+        const handleSearchSuggestion = (query, filter) => {
+          return useProducts.getSearchSuggestions(query, filter);
+        };
+
+        const categories = productCategories.map((category) => {
+            return (category.name)
+        }) 
+
+        categories.unshift("Tất cả sản phẩm")
+        const handleSearch = (category, query) => {
+            setIdCategory(categories.indexOf(category))
+            setQuerySearch(query)
+            setTimeout(() => {
+            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }, 0);
+        }
+        
+        const groupedData = productPrices.reduce((acc, item) => {
+          const category = item.product.category.name;
+          if (!acc[category]) {
+            acc[category] = [];
+          }
+          acc[category].push({
+            id: item.product.id,
+            name: item.product.name,
+            price: item.price,
+            warranty: item.product.warranty_period,
+            description: item.product.description,
+            image: item.product.product_img
+          });
+          return acc;
+        }, {});
+        
+      const filteredData = Object.entries(groupedData)
+          .filter(([cat]) =>
+            selectedCategory === "Tất cả" || cat === selectedCategory
+          )
+          .map(([cat, products]) => ({
+            category: cat,
+            products: products.filter((p) =>
+              p.name.toLowerCase().includes(search.toLowerCase())
+            ),
+          }));
+        
+        const flatProducts = Array.isArray(products.results)
+            ? products.results
+            : Object.values(products.results || {}).flat();
+
+        const toggleCategory = (category) => {
+          setOpenCategories((prev) => ({
+            ...prev,
+            [category]: !prev[category],
+          }))
+        }
+
+        const bannerHead = {
+            title: pricePage?.banner_title,
+            description: pricePage?.banner_description,
+            hasButton: false,
+            hasSearch: true,
+            colorBackground: 'var(--gradient-banner)',
+            colorText: '#ffffff',
+            categories : categories,
+            contentButton: null,
+            contentPlaceholder : 'Tìm kiếm sản phẩm...',
+            handleButton : handleSearch,
+            handleSearchSuggestion: handleSearchSuggestion
+        }
 
   return (
   <>
-    <Banner data={bannerData} />
+    <Banner data={bannerHead} />
 
     <div className="bg-[#F0FDF4] py-20 px-6 md:px-[80px] shadow-md rounded-xl">
      
@@ -225,7 +223,7 @@ export default function PricePage() {
         </div>
       </div>
     </div>
-   {selectedProduct && (<ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)}/>)}
+   {selectedProduct && (<ProductDetailModal product={flatProducts.find(p => p.id === selectedProduct.id) || selectedProduct} onClose={() => setSelectedProduct(null)}/>)}
   </>
 )
 }

@@ -12,7 +12,6 @@ export default function ProductDetailModal({ product, onClose }) {
     }
   }, [product])
   if (!product) return null
-  
   return (
     <div
       className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[1px] bg-opacity-40 flex items-center justify-center"
@@ -28,7 +27,7 @@ export default function ProductDetailModal({ product, onClose }) {
           <p className="text-red-600 font-bold text-[30px] mb-4">
             Giá: {product.price.toLocaleString('vi-VN')} VND
           </p>
-          <p className="text-gray-700 mb-4 border-t border-b border-gray-300 py-4">{product.descriptionLong || product.description}</p>
+          <p className="text-gray-700 mb-4 border-t border-b border-gray-300 py-4">{product.description}</p>
           <ul className="text-sm text-gray-600 space-y-2 mt-4">
             <li>🚚 Hỗ trợ vận chuyển toàn quốc</li>
             <li>🛡️ Bảo hành chính hãng {product.warranty}</li>
@@ -43,8 +42,8 @@ export default function ProductDetailModal({ product, onClose }) {
           </div>
           <table className="w-full text-sm text-gray-700">
             <tbody>
-              {product.details &&
-                Object.entries(product.details).map(([key, value], idx) => (
+              {product.product_specifications &&
+                Object.entries(product.product_specifications).map(([key, value], idx) => (
                   <tr key={key} className="idx odd:bg-gray-50 even:bg-white">
                     <td className="py-2 font-medium w-1/3">{key}</td>
                     <td className="py-2">{value}</td>
