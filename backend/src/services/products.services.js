@@ -68,11 +68,14 @@ const products = {
                         prd.product_img,
                         prd.warranty_period,
                         prd.product_specifications,
+
+                        pp.price AS price,
                         pc.id AS category_id,
                         pc.name AS category_name
                     FROM product.products prd
                     JOIN product.product_categories pc ON prd.category_id = pc.id
-                    WHERE 
+                    JOIN product.product_prices pp ON prd.id = pp.product_id
+                    WHERE
                         ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
                         similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1
                     ORDER BY
@@ -88,6 +91,7 @@ const products = {
                     name: row.product_name,
                     description: row.description,
                     product_img: row.product_img,
+                    price: row.price,
                     product_specifications: JSON.parse(row.product_specifications || '{}'),
                     warranty_period: row.warranty_period,
                     product_specifications: JSON.parse(row.product_specifications || '{}'),
@@ -115,11 +119,13 @@ const products = {
                         prd.product_img,
                         prd.product_specifications,
                         prd.warranty_period,
-            
+                        
+                        pp.price AS price,
                         pc.id AS category_id,
                         pc.name AS category_name
                     FROM product.products prd
                     JOIN product.product_categories pc ON prd.category_id = pc.id
+                    JOIN product.product_prices pp ON prd.id = pp.product_id
                     WHERE prd.id IN (
                         SELECT id FROM (
                             SELECT 
@@ -147,6 +153,7 @@ const products = {
                         name: row.product_name,
                         description: row.description,
                         product_img: row.product_img,
+                        price: row.price,
                         product_specifications: JSON.parse(row.product_specifications || '{}'),
                         warranty_period: row.warranty_period,
                         category: {
@@ -171,10 +178,13 @@ const products = {
                         prd.product_img,
                         prd.warranty_period,
                         prd.product_specifications,
+
+                        pp.price AS price
                         pc.id AS category_id,
                         pc.name AS category_name
                     FROM product.products prd
                     JOIN product.product_categories pc ON prd.category_id = pc.id
+                    JOIN product.product_prices pp ON prd.id = pp.product_id
                     WHERE 
                         ($1 = '' OR unaccent(pc.name) ILIKE unaccent($1))
                     ORDER BY prd.name
@@ -188,6 +198,7 @@ const products = {
                     name: row.product_name,
                     description: row.description,
                     product_img: row.product_img,
+                    price: row.price,
                     product_specifications: JSON.parse(row.product_specifications || '{}'),
                     warranty_period: row.warranty_period,
                     category: {
@@ -213,11 +224,13 @@ const products = {
                 prd.product_specifications,
                 prd.warranty_period,
 
+                pp.price as price,
                 prd_cate.id as category_id,
                 prd_cate.name as category_name
 
             from product.products prd
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
+            join product.product_prices pp on prd.id = pp.product_id
             where prd.id = ${id}
         `
         const row = (await pool.query(query)).rows[0];
@@ -226,6 +239,7 @@ const products = {
                 name: row.product_name,
                 description: row.description,
                 product_img: row.product_img,
+                price: row.price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
                 warranty_period: row.warranty_period,
                 category: {
