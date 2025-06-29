@@ -349,15 +349,13 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (N.title) N.title, N.id, N.main_img
+        SELECT N.title, N.id, N.main_img
         FROM news.news N
         JOIN news.news_categories C ON N.category_id = C.id
         WHERE 
             ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
             ($1 = '' OR similarity(unaccent(N.title::text), unaccent($1::text)) > 0)
         ORDER BY
-            N.title,
-            N.main_img,
             similarity(unaccent(N.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
