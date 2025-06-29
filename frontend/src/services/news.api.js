@@ -12,12 +12,16 @@ const getNewsPage = async() => {
 }
 
 const news = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.news.news.getAll);
+    getList: async (query = '', filter = '', sort_by = '', page = 1) => {
+        const res = await axios.get(API_ROUTES.news.news.getList(query, filter, sort_by, page));
         return res.data;
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news.getOne(id));
+        return res.data;
+    },
+    updateNumReaders: async (id) => {
+        const res = await axios.patch(API_ROUTES.news.news.updateNumReaders(id));
         return res.data;
     }
 }
@@ -43,14 +47,7 @@ const new_contents = {
     }
 }
 const getSearchSuggestions = async (query, filter) => {
-    const res = await axios.get(API_ROUTES.news.search_suggestions, {
-        params: {
-            query: query,
-            filter: filter
-        }
-    })
-    return res.data
+    const res = await axios.get(API_ROUTES.news.search_suggestions(query, filter))
+    return res.data;
 }
-
-
 export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions};
