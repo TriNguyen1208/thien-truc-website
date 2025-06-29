@@ -251,19 +251,18 @@ const getSearchSuggestions = async (query, filter) => {
         JOIN product.product_categories C ON P.category_id = C.id
         WHERE 
             ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
-            ($1 = '' OR similarity(unaccent(P.name::text), unaccent($1::text)) > 0)
+            similarity(unaccent(P.name::text), unaccent($1::text)) > 0
         ORDER BY
             P.name,
-            P.product_img,
             similarity(unaccent(P.name::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
     const values = [cleanedQuery, cleanedFilter];
     try {
         const result = await pool.query(sql, values);
-        return result.rows.map(({product_img, ...rest}) => ({
-            ...rest,
-            img: product_img
+        return result.rows.map(row => ({
+            name: row.name,
+            img: row.product_img
         }));
     } catch (err) {
         throw new Error(`DB error: ${err.message}`);

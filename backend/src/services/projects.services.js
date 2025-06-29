@@ -196,23 +196,6 @@ const projects = {
             projects
         };
     },
-    getByRegion: async (region) => {
-         const query = `
-            SELECT  p.*,             -- lấy tất cả cột của project
-            pr.id AS region_id,
-            pr.name AS region_name
-            FROM project.projects p 
-            JOIN project.project_regions pr ON p.region_id = pr.id
-            WHERE unaccent(pr.name) = unaccent($1)
-        `;
-        const projects = (await pool.query(query, [region])).rows;
-        if(!projects){
-            throw new Error("Can't get projects by region");
-        }
-        return {
-            projects
-        };
-    },
     getOne: async (id) => {
         const query = `
             select 
@@ -357,20 +340,19 @@ const getSearchSuggestions = async (query, filter) => {
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE
             ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            ($1 = '' OR similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
+            similarity(unaccent(P.title::text), unaccent($1::text)) > 0
         ORDER BY
             P.title, 
-            P.main_img,
             similarity(unaccent(P.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
     const values = [cleanedQuery, cleanedFilter];
     try {
         const result = await pool.query(sql, values);
-        return result.rows.map(({ main_img, ...rest}) => ({
-            ...rest,
-            img: main_img
-        }))
+        return result.rows.map(row => ({
+            name: row.title,
+            img: row.main_img
+        }));
     } catch (err) {
         throw new Error(`DB error: ${err.message}`);
     }

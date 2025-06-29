@@ -207,20 +207,19 @@ const getSearchSuggestions = async (query, filter) => {
         JOIN news.news_categories C ON N.category_id = C.id
         WHERE 
             ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
-            ($1 = '' OR similarity(unaccent(N.title::text), unaccent($1::text)) > 0)
+            similarity(unaccent(N.title::text), unaccent($1::text)) > 0
         ORDER BY
             N.title,
-            N.main_img,
             similarity(unaccent(N.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;
     const values = [cleanedQuery, cleanedFilter];
     try {
         const result = await pool.query(sql, values);
-        return result.rows.map(({ main_img, ...rest}) => ({
-            ...rest,
-            img: main_img
-        }))
+        return result.rows.map(row => ({
+            title: row.title,
+            img: row.main_img
+        }));
     } catch (err) {
         throw new Error(`DB error: ${err.message}`);
     }
