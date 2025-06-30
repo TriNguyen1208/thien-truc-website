@@ -32,7 +32,7 @@ const API_ROUTES = {
         product_features: {
             getAll: `${PRODUCT_BASE}/product_features`,
             getByProductId: (product_id) => `${PRODUCT_BASE}/product_features/${product_id}`,
-            getOne: (product_id, feature_id) =>`${PRODUCT_BASE}/product_features/${product_id}/${feature_id}`,
+            getOne: (product_id, feature_id) => `${PRODUCT_BASE}/product_features/${product_id}/${feature_id}`,
         },
         product_highlight_features: {
             getAll: `${PRODUCT_BASE}/product_highlight_features`,

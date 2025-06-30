@@ -1,20 +1,16 @@
-import React from 'react'
-import Banner from "../../components/Banner"
-import Card from "../../components/Card"
-import CenterCard from "../../components/CenterCard"
-import GreenButton from "../../components/GreenButton"
-import ItemProduct from "../../components/ItemProduct"
-import LabelProject from "../../components/LabelProject"
-import PostCategory from "../../components/PostCategory"
-import ViewMoreButton from "../../components/ViewMoreButton"
-import Search from 'antd/es/transfer/search'
-import WhiteButton from '../../components/WhiteButton'
-import ItemPost from '../../components/ItemPost'
-import useProducts from '../../redux/hooks/useProducts'
-import useNews from '../../redux/hooks/useNews'
-import Form from '../../components/Form'
-// import useNews from '../../redux/hooks/useNews'
-// import useProjects from '../../redux/hooks/useProjects'
+// import React from 'react'
+// import Banner from "../../components/Banner"
+// import Card from "../../components/Card"
+// import CenterCard from "../../components/CenterCard"
+// import GreenButton from "../../components/GreenButton"
+// import ItemProduct from "../../components/ItemProduct"
+// import LabelProject from "../../components/LabelProject"
+// import PostCategory from "../../components/PostCategory"
+// import ViewMoreButton from "../../components/ViewMoreButton"
+// import Search from 'antd/es/transfer/search'
+// import WhiteButton from '../../components/WhiteButton'
+// import ItemPost from '../../components/ItemPost'
+// import useProducts from "../../redux/hooks/useProducts"
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar
@@ -98,28 +94,28 @@ const ExampleComponents = () => {
     // )
 
     //Example ItemPost
-    const handleClick = () => {
-        console.log("hello world");
-    }
-    const data = {
-        type: "news", // 'project' hoặc 'news'
-        title: "fdsfdaf",
-        description: "gdkfdaf",
-        location: "qrewrwqr",
-        date: "eriqurpewur",
-        tag: "Công ty",
-        tagColor: '#ef4444',
-        image: 'https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg',
-        status: {
-            duration: "4 phút đọc",
-            views: 856,
-        },
-        handleClick: handleClick
-    };
-    return (
-        //Không truyền width mặc định là width full
-        <ItemPost data={data} width="437px"/>
-    )
+    // const handleClick = () => {
+    //     console.log("hello world");
+    // }
+    // const data = {
+    //     type: "news", // 'project' hoặc 'news'
+    //     title: "fdsfdaf",
+    //     description: "gdkfdaf",
+    //     location: "qrewrwqr",
+    //     date: "eriqurpewur",
+    //     tag: "Công ty",
+    //     tagColor: '#ef4444',
+    //     image: 'https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg',
+    //     status: {
+    //         duration: "4 phút đọc",
+    //         views: 856,
+    //     },
+    //     handleClick: handleClick
+    // };
+    // return (
+    //     //Không truyền width mặc định là width full
+    //     <ItemPost data={data} width="437px"/>
+    // )
 
     //Example ItemProduct
     //Ở đây có thể navigate đến chi tiết dự án,...
@@ -183,7 +179,7 @@ const ExampleComponents = () => {
     //     return <></>
     // }
     // console.log(data);
-    // return <>Hello</>
+    return <>Hello</>
 }   
 
 export default ExampleComponents

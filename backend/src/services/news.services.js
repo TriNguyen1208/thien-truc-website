@@ -377,7 +377,7 @@ const getSearchSuggestions = async (query, filter) => {
         JOIN news.news_categories C ON N.category_id = C.id
         WHERE 
             ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
-            ($1 = '' OR similarity(unaccent(N.title::text), unaccent($1::text)) > 0)
+            similarity(unaccent(N.title::text), unaccent($1::text)) > 0
         ORDER BY
             similarity(unaccent(N.title::text), unaccent($1::text)) DESC
         LIMIT 5

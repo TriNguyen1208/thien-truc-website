@@ -29,6 +29,13 @@ const projects = {
             queryFn: () => projectsServices.projects.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
+    },
+    useGetByRegion: (region) => {
+        return useQuery({
+            queryKey: ["project", region],
+            queryFn: () => projectsServices.projects.getByRegion(region),
+            staleTime: 5 * 60 * 1000,
+        })
     }
 }
 const project_regions = {

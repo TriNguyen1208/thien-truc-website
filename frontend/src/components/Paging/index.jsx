@@ -2,13 +2,12 @@ import { Pagination} from 'antd';
 
 export default function Paging({data, onPageChange, currentPage }) {
     const {numberPagination} = data || {};
-    console.log(numberPagination);
     const handleChange = (page) => {
         if (onPageChange) onPageChange(page); 
     }
     return (
         <>
-            <style jsx>{`
+            <style>{`
           .custom-pagination .ant-pagination-item-active {
             background-color: #52c41a !important;
             border-color: #52c41a !important;

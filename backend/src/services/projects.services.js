@@ -257,7 +257,7 @@ const project_regions = {
         return project_region
     }
 }
-
+//  href = {companyInfoData.googlemaps_url}
 const project_contents = {
     getAll: async () => {
         const query = `
@@ -350,7 +350,7 @@ const getSearchSuggestions = async (query, filter) => {
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE
             ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            ($1 = '' OR similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
+            similarity(unaccent(P.title::text), unaccent($1::text)) > 0
         ORDER BY
             similarity(unaccent(P.title::text), unaccent($1::text)) DESC
         LIMIT 5
