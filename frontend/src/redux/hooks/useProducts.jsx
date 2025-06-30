@@ -16,10 +16,10 @@ function useGetProductPage(){
     })
 }
 const products = {
-    useList: (query = '', filter = '', page = 1)=>{
+    useGetList: (query = '', filter = '' , page = 1)=>{
         return useQuery({
             queryKey: ["product-list", query, filter, page],
-            queryFn: () => productsServices.products.getList(query, filter, page),
+            queryFn: ()=> productsServices.products.getList(query, filter , page),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -30,6 +30,7 @@ const products = {
             staleTime: 5 * 60 * 1000,
         })
     }
+   
 }
 const product_categories = {
     useGetAll: ()=>{
@@ -128,7 +129,7 @@ export default {
     getAll: useGetAll,
     getProductPage: useGetProductPage,
     products: {
-        getList: products.useList,
+        getList: products.useGetList,
         getOne: products.useGetOne
     },
     product_categories: {
@@ -151,4 +152,4 @@ export default {
     },
     getPricePage: useGetPricePage,
     getSearchSuggestions: useSearchSuggest,
-};
+  };
