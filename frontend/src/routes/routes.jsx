@@ -13,6 +13,7 @@ import DefaultLayout from "@/layouts/DefaultLayout"
 import ExampleComponents from '@/pages/ExampleComponents'
 import ProjectDetail from '@/pages/ProjectDetail'
 import NewsDetail from '../pages/NewsDetail'
+import ProductDetail from '../pages/ProductDetail'
 export const routes = [
     {
         path: "/",
@@ -28,7 +29,7 @@ export const routes = [
             },
             {
                 path: "/san-pham/:id",
-                element: <Product />
+                element: <ProductDetail />
             },
              {
                 path: "/bang-gia",

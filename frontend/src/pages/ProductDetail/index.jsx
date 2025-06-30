@@ -1,5 +1,8 @@
 import {ArrowLeftOutlined} from '@ant-design/icons'
 import  {useState} from 'react'
+import { useParams, useNavigate } from 'react-router-dom';
+import useProducts from '@/redux/hooks/useProducts'
+import Loading from '@/components/Loading'
 function ListPicture({urls, id}){
 
     return( urls.length != 0?
@@ -48,18 +51,24 @@ function ListPicture({urls, id}){
                     )
      )
 }
-export default function ProductDetail({product , allFeature }){
-    
-    if(!product   || !allFeature)
+export default function ProductDetail(){
+    const{id} = useParams();
+    const [selectPicture, setSelectPicture] = useState(0);
+    const navigate = useNavigate();
+    if(id ==='')
     {
-        return(
-            <div>
-                Không có sản phẩm !
-            </div>
-        )
+        return(<>Không có sản phẩm</>)
     }
+
+    const {data : product, isLoading : isLoadingProduct} = useProducts.products.getOne(id)
+    if(isLoadingProduct)
+    {
+        return(<Loading/>)
+    }
+    
+    
     const goBack = ()=>{
-        console.log('Tro ve')
+        navigate('/san-pham')
     }
     
     const listPicture = [
@@ -69,7 +78,6 @@ export default function ProductDetail({product , allFeature }){
         "https://www.ldg.com.vn/media/uploads/uploads/27130501-gai-xinh-che-mat-anh-avatar-dep-cho-con-gai-1.jpg",
         "https://tse4.mm.bing.net/th?id=OIP.Vuy4J9rJfgqqwk_heaKCygHaE8&pid=Api&P=0&h=180",
     ]
-    const [selectPicture, setSelectPicture] = useState(0);
     const pickPicture = (e)=>{
         if(e)
         {
@@ -80,7 +88,7 @@ export default function ProductDetail({product , allFeature }){
         }
     }
    
-    const features = allFeature.filter((ft, index) =>ft.product_id == product.id)
+    
   
     return (
         <>
@@ -117,7 +125,7 @@ export default function ProductDetail({product , allFeature }){
                         <div>
                             <ul>
                                {
-                                 features.map((hl)=>{
+                                 (product.product_feature || []).map((hl)=>{
                                     return(
                                         <li className='my-[10px]'>
                                             {hl}

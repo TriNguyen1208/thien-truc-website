@@ -12,54 +12,47 @@ import ViewMoreButton from '@/components/ViewMoreButton'
 import { useState } from 'react';
 import Loading from '@/components/Loading'
 import Paging from '@/components/Paging'
-function GoBackListProduct({goBack ,id ,query}){
-    return( id != 0 || query != '' ?
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+function GoBackListProduct({goBack ,categorySelected ,query}){
+    return( (categorySelected != 'Chọn thể loại' && categorySelected != '') || query != '' ?
         <div onClick={goBack} className='flex flex-row text-[#16A34A] my-[10px] text-[15px] gap-[10px] cursor-pointer hover:text-[#0B4A24] transition-all duration-300 ease-in-out '>
            <ArrowLeftOutlined /> <p className=''>Quay Lại</p>
         </div> : <div></div>
     )
 }
-function DisplayByCategories({data,categories, handleViewMore}){
+function DisplayByCategories({data, page, handleViewMore, handleViewProduct, handlePageChange}){
  
     return(
         Object.entries(data).map((objectCategory,index)=>{
            
                 const props = {
                     category: objectCategory[0],
+                    page: page,
                     products: objectCategory[1],
-                    idCategory: categories.indexOf(objectCategory[0]) ,
                     highLightFeatures: [],
-                    handleViewMore: handleViewMore
-
+                    handleViewMore: handleViewMore,
+                    handleViewProduct: handleViewProduct,
+                    handlePageChange: handlePageChange
                 }
-                return(<Category {...props}/>)
+                return(<div key={index}>
+                    <Category {...props}/>
+                </div>)
             })
     )
 }
 
-function DisplayProduct({categories, idCategorySelected,query, handleViewMore })
-{   let filter
-   
-    if(idCategorySelected === 0)
-    {
-        filter = ''
-    }else{
-        filter = categories[idCategorySelected] 
-    }
-    const {data: dataAll , isLoading : isLoadingProduct} =  useProducts.products.getList(query, filter , 1)
-    if(isLoadingProduct)
-    {
-        return(<Loading/>)
-    }
+function DisplayProduct({dataAll,page, categorySelected,query, handleViewMore,handleViewProduct ,handlePageChange})
+{   
+    
    
     return(!Array.isArray(dataAll.results) ?
-      (<DisplayByCategories data={dataAll.results} categories={categories} handleViewMore ={handleViewMore}/>):
+      (<DisplayByCategories data={dataAll.results} handleViewMore ={handleViewMore} handleViewProduct ={handleViewProduct} handlePageChange ={handlePageChange}/>):
       query == '' ?
-      (<Category category={filter} allCategories={false} products={dataAll.results} highLightFeatures ={[]} />) :
-      (<ListProduct products={dataAll.results} highLightFeatures={[]} /> )
+      (<Category category={categorySelected} page ={page} allCategories={false} products={dataAll.results} highLightFeatures ={[]} handleViewProduct = {handleViewProduct} handlePageChange = {handlePageChange}/>) :
+      (<ListProduct products={dataAll.results} highLightFeatures={[]} handleViewProduct={handleViewProduct} /> )
     )
 }
-function ListProduct({products, highLightFeatures})
+function ListProduct({products, highLightFeatures ,handleViewProduct})
 {
     return(
         <div className='grid grid-cols-4 py-[20px] mx-[30px] gap-y-[20px]'>            
@@ -69,6 +62,7 @@ function ListProduct({products, highLightFeatures})
                                                 <div key={i} className='w-[330px] h-[620px]'>
                                                     <ItemProduct  product = { products[i]}
                                                     highLightFeatures = {highLightFeatures}
+                                                    handleClick = {()=>handleViewProduct(product, highLightFeatures)}
                                                     />                                    
                                                 </div>
                                                  
@@ -80,8 +74,9 @@ function ListProduct({products, highLightFeatures})
         </div>
     )
 }
-function Category({category,allCategories = true, idCategory = 0, products, highLightFeatures,handleViewMore = null  })
+function Category({category,page ,allCategories = true, products, highLightFeatures,handleViewMore = null, handleViewProduct,handlePageChange })
 {
+    
     return(
 
         <div  className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
@@ -92,13 +87,15 @@ function Category({category,allCategories = true, idCategory = 0, products, high
                                             </h1>
                                         </div>
                                 </div>
-                                <ListProduct products={products} highLightFeatures={highLightFeatures}/>
+                                <ListProduct products={products} highLightFeatures={highLightFeatures} handleViewProduct = {handleViewProduct}/>
                                 
                                 <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
                                     <div  className="h-fit w-fit">     
                                         { 
-                                           allCategories ?<ViewMoreButton  content = {'Xem Tất Cả Sản Phẩm'} handleClick = {()=>handleViewMore(idCategory)}/>  
-                                         :<Paging data = {1} onPageChange = {null} />          
+                                           allCategories ?<ViewMoreButton  content = {'Xem Tất Cả Sản Phẩm'} handleClick = {()=>handleViewMore(category)}/>  
+                                         :<Paging data={{
+                                                numberPagination: Math.ceil(products.length / 12),
+                                            }} onPageChange = {()=>handlePageChange(page)} currentPage = {page}  />          
                                         }
                                                               
                                     </div>
@@ -110,49 +107,70 @@ function Category({category,allCategories = true, idCategory = 0, products, high
 }
 
 export default function Product(){
-    
-    const [idCategory, setIdCategory] = useState(0)
-    const [querySearch, setQuerySearch] = useState('')
     const scrollTargetRef = useRef(null)
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const filter = searchParams.get('filter') || ""; 
+    const page = parseInt(searchParams.get('page')) || 1;
+    const query = searchParams.get('query') || "";
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
-    
-    
-    if(isLoadingPage || isLoadingCategories )
+    const {data: dataAll , isLoading : isLoadingProduct} =  useProducts.products.getList(query, filter =='Chọn thể loại' ?"":filter , page)
+  
+   
+   
+
+    if(isLoadingPage || isLoadingCategories || isLoadingProduct)
     {
-        return (<div key = {1}>
+        return (<div >
             <Loading/>
         </div>)
     }
-       
- 
+   
+
     const handleSearchSuggestion = (query, filter) => {
         return useProducts.getSearchSuggestions(query, filter)
     }
     
-   const handleViewMore = (idCategory)=>{
-        setIdCategory(idCategory)
+   const handleViewMore = (category)=>{
+         const newParams = new URLSearchParams();
+        newParams.set("filter", category);
+        newParams.set("page", "1");
+        setSearchParams(newParams);
         setTimeout(() => {
         scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 0);
    }
-   
+   const handleViewProduct = (product, highLightFeatures)=>{
+    const path = location.pathname;
+    
+    navigate(`${path}/${product.id}`)
+   }
     const goBack = ()=>{
-        setQuerySearch('')
-        setIdCategory(0)
-         setTimeout(() => {
+        const newParams = new URLSearchParams();
+        setSearchParams(newParams);
+        setTimeout(() => {
         scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 0);
-        
     }
+    const handlePageChange = (page)=>{
+        const newParams = new URLSearchParams();
+      
+        newParams.set("page",  `${page}`);
+        setSearchParams(newParams);
+    }   
      const categories = productCategories.map((category) => {
          return (category.name)
         }) 
-    categories.unshift("Tất cả sản phẩm")
+    categories.unshift("Chọn thể loại")
     const handleSearch = (category, query) => {
-        setIdCategory(categories.indexOf(category))
-        setQuerySearch(query)
-         setTimeout(() => {
+         const newParams = new URLSearchParams();
+        newParams.set("query", query);
+        newParams.set("filter", category);
+        newParams.set("page", "1");
+        setSearchParams(newParams);
+        setTimeout(() => {
         scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 0);
     }
@@ -178,7 +196,7 @@ export default function Product(){
         hasButton : true,
         hasSearch : false,
         contentButton : 'Tới Bảng Giá',
-        handleButton : () => {},
+        handleButton : () => {navigate('/bang-gia')},
         categories : null,
         contentPlaceholder : null,
         handleSearchSuggestion: null
@@ -231,9 +249,9 @@ export default function Product(){
             </div> 
         <div ref={scrollTargetRef}  ></div>     
         <div className='my-[40px]'>
-             <GoBackListProduct goBack={goBack} id = {idCategory} query={querySearch}/>   
+             <GoBackListProduct goBack={goBack} categorySelected = {filter} query={query}/>   
         </div>
-        <DisplayProduct categories={categories} idCategorySelected={idCategory} query={querySearch} handleViewMore = {handleViewMore}/>
+        <DisplayProduct dataAll={dataAll} page = {page} categorySelected={filter} query={query} handleViewMore = {handleViewMore} handleViewProduct={handleViewProduct} handlePageChange ={handlePageChange}/>
         
         </div>
        
