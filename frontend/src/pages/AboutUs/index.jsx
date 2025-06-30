@@ -7,6 +7,7 @@ import {WifiOutlined} from '@ant-design/icons'
 import {DollarOutlined} from '@ant-design/icons'
 import Card from '../../components/Card'    
 import CenterCard from '../../components/CenterCard'
+import {useNavigate} from 'react-router-dom'
 function ProgressItem({ icon, label, value, percent }) {
   return (
     <div className="mb-[30px] text-[16px]">
@@ -41,7 +42,7 @@ export default function AboutUs(){
     const { data: aboutusPage, isLoading: isLoadingAboutUsPage } = useAboutUs.getAboutUsPage()
     const { data: aboutusServices, isLoading: isLoadingAboutUsServices } = useAboutUs.company_services.getAll()
     const { data: aboutusChoose, isLoading: isLoadingAboutUsChoose } = useAboutUs.why_choose_us.getAll()
-    
+    const navigate = useNavigate()
     
     if (isLoadingAboutUs || isLoadingAboutUsPage ||isLoadingAboutUsServices || isLoadingAboutUsChoose) {
         return <p>Loading...</p>;
@@ -67,7 +68,7 @@ export default function AboutUs(){
         hasButton : true,
         hasSearch : false,
         contentButton : 'Liên Hệ Ngay',
-        handleButton : ()=>{ console.log('Hi')},
+        handleButton : ()=>{ navigate('/lien-he',  { state: { scrollTo: "myComponent" } })},
         categories : null,
         contentPlaceholder : null
     }
