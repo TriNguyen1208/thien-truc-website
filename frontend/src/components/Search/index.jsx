@@ -71,7 +71,8 @@ const SearchBar = ({ data }) => {
           </svg>
         </button>
         {dropdownOpen && (
-          <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md">
+        <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {categories.map((r) => (
               <li
                 key={r}
