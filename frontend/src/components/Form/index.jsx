@@ -158,11 +158,6 @@ const Form = ({ data }) => {
                         </div>
                     </div>
                 </div>
-
-            </div>
-            <div className="grid grid-cols-2 gap-5">
-                <div className="bg-blue-300 p-4">A</div>
-                <div className="bg-yellow-300 p-4">B</div>
             </div>
         </div>
 
