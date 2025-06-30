@@ -11,64 +11,6 @@ import '@/styles/custom.css'
 import { useNavigate } from 'react-router-dom'
 import GreenButton from '@/components/GreenButton'
 
-const ListType = ({categories, handleClick, current}) => {
-    const [category, setCategory] = useState(current);
-    useEffect(() => {
-        setCategory(current);
-      }, [current]);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const wrapperRef = useRef(null);
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-                setDropdownOpen(false);
-            }
-        };
-
-        // Khi dropdown mở thì gắn event
-        document.addEventListener('mousedown', handleClickOutside);
-        
-        // Cleanup khi unmount hoặc dropdown đóng
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [dropdownOpen]);
-    return (
-        <div ref={wrapperRef} className="relative border border-gray-200 rounded-sm shadow-lg">
-            <button
-                className="rounded-tl-md rounded-bl-md w-38 h-[40px] pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setDropdownOpen(!dropdownOpen);
-                }}
-            >
-            <span>{category}</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-            </svg>
-            </button>
-            {dropdownOpen && (
-            <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md">
-                {categories.map((r) => (
-                    <li
-                        key={r}
-                        className="py-2 px-3 hover:bg-gray-100 cursor-pointer text-sm text-center text-bold text-gray-700"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setCategory(r);
-                            handleClick(r)
-                            setDropdownOpen(false);
-                        }}
-                    >
-                        {r}
-                    </li>
-                ))}
-            </ul>
-            )}
-        </div>
-    )
-}
-
 export default function PricePage() {
   
 
@@ -95,10 +37,7 @@ export default function PricePage() {
         const handleSearchSuggestion = (query, filter) => {
             return useProducts.getSearchSuggestions(query, filter);
         };
-        const handleClickCategory = (category) => {
-            setCategory(category)
-        }
-        
+    
         if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
           return <Loading />
         }
@@ -163,31 +102,25 @@ export default function PricePage() {
           }))
         }
 
-        const bannerHead = {
+          const bannerHead = {
             title: pricePage?.banner_title,
             description: pricePage?.banner_description,
+            colorBackground: "var(--gradient-banner)",
+            colorText: "#ffffff",
             hasSearch: true,
-            colorBackground: 'var(--gradient-banner)',
-            colorText: '#ffffff',
-            categories : categories,
-            contentPlaceholder : 'Nhập vào đây...',
-            handleButton : handleButton,
+            categories: categories,
+            contentPlaceholder: "Nhập vào đây",
+            handleButton: handleButton,
             handleSearchSuggestion: handleSearchSuggestion,
-            handleEnter: handleEnter,
-        }
-
+            handleEnter: handleEnter
+          };
   return (
   <>
-    <Banner data={bannerHead} />
-     <div className="flex-1 flex justify-end">
-            <ListType
-              categories={categories}
-              handleClick={handleClickCategory}
-              current={category}
-            />
-          </div>
+    <div className="w-screen">
+        <Banner data={bannerHead} />
+      </div>
+    <div className="container-fluid flex flex-col gap-10 pt-10">
     <div className="bg-[#F0FDF4] py-20 px-6 md:px-[80px] shadow-md rounded-xl">
-     
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto rounded-xl shadow-2xl overflow-hidden">
         <div className="text-center font-bold text-3xl py-7 bg-white">
           BẢNG GIÁ SẢN PHẨM
@@ -303,6 +236,7 @@ export default function PricePage() {
       </div>
     </div>
    {selectedProduct && (<ProductDetailModal product={flatProducts.find(p => p.id === selectedProduct.id) || selectedProduct} onClose={() => setSelectedProduct(null)}/>)}
+  </div>
   </>
 )
 }
