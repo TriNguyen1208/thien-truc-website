@@ -1,8 +1,9 @@
 import UserCard from "@/components/UserCard";
 import Banner from "@/components/Banner";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import useContact from "@/redux/hooks/useContact";
 import Form from "@/components/Form";
+import{useRef, useEffect} from 'react'
 import {
     Mail,
     Phone,
@@ -12,6 +13,16 @@ import {
 import Loading from "@/components/Loading";
 import { FiFacebook } from "react-icons/fi"; // Fi = Feather Icons (outline)
 export default function Contact() {
+    //Liên kết với banner của trang 'về chúng tôi'
+    const location = useLocation();
+    const myComponentRef = useRef(null);
+
+    useEffect(() => {
+        if (location.state?.scrollTo === "myComponent") {
+        myComponentRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+  }, [location]);
+  //
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
     const navigate = useNavigate();
     //Cái này là của whiteButton
@@ -63,7 +74,7 @@ export default function Contact() {
                     })}
                 </div>
             </div>
-            <div className="container-fluid flex py-[70px] ">
+            <div  ref={myComponentRef} className="container-fluid flex py-[70px] ">
                 <div className="w-1/2 text-[var(--dark-green)] font-[400] ">
                     <div className="text-[30px] font-[600] mb-[15px]">
                         Liên hệ về chúng tôi
