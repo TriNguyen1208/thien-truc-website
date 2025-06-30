@@ -64,7 +64,7 @@ const Form = ({ data }) => {
     return (
         <div ref={recruitmentRef}>
             <div className="flex flex-col gap-10 items-center">
-                <div className="flex flex-col w-[731px] bg-green-50 px-8 py-8 gap-5">
+                <div className="flex flex-col w-full bg-green-50 px-8 py-8 gap-5">
                     <h2 className="text-(--dark-green) text-3xl font-bold">{title}</h2>
                     <form action="" className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
                         <div className="flex flex-row gap-10 justify-between">

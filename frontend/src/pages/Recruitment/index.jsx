@@ -80,7 +80,7 @@ export default function Recruitment(){
                 <div className="w-screen mt-10">
                     <Banner data={content_banner_bottom}/>
                 </div>
-                <div ref={recruitmentRef} className="mt-10">
+                <div ref={recruitmentRef} className="mt-10 w-[731px] m-auto">
                     <Form data={{title: "Liên hệ với đội ngũ tuyển dụng", type: "tuyen-dung"}}/>
                 </div>
             </div>

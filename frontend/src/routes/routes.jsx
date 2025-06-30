@@ -25,6 +25,10 @@ export const routes = [
                 path: "/san-pham",
                 element: <Product />
             },
+            {
+                path: "/san-pham/:id",
+                element: <Product />
+            },
              {
                 path: "/bang-gia",
                 element: <Price />

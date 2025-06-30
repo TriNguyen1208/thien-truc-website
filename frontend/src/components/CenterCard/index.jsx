@@ -28,7 +28,7 @@ export default function CenterCard({data, width = "100%", height = "100%"}) {
             </h3>
 
             {/* Description */}
-            <p className="text-sm text-gray-600 leading-relaxed break-words">
+            <p className="text-sm text-gray-600 leading-relaxed break-words text-center">
                 {description || "Chúng tôi cam kết mang đến những sản phẩm và dịch vụ chất lượng cao, đáp ứng và vượt trên mong đợi của khách hàng."}
             </p>
         </div>
