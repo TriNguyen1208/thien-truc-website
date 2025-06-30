@@ -9,40 +9,7 @@ import {
 } from '@ant-design/icons';
 import contactAPI from '@/services/contact.api';
 import recruitmentAPI from '@/services/recruitment.api';
-import { Result, Button } from 'antd';
-
-function PopupMessage({ status, onClose }) {
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700 bg-opacity-60">
-            <div className="bg-white rounded-lg shadow-lg relative p-8 w-full max-w-[600px]">
-                <Result
-                    status={status}
-                    title={
-                        status === "success"
-                            ? "Cảm ơn bạn đã liên hệ!"
-                            : "Gửi không thành công"
-                    }
-                    subTitle={
-                        status === "success"
-                            ? "Chúng tôi đã nhận được thông tin và sẽ phản hồi bạn trong thời gian sớm nhất."
-                            : "Đã xảy ra lỗi trong quá trình gửi. Vui lòng thử lại sau."
-                    }
-                    extra={[
-                        <Button type="primary" key="btn" onClick={onClose}>
-                            {status === "success" ? "Gửi thêm" : "Thử lại"}
-                        </Button>,
-                    ]}
-                />
-                <button
-                    onClick={onClose}
-                    className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl"
-                >
-                    ✕
-                </button>
-            </div>
-        </div>
-    );
-}
+import { Result, Button, Modal } from 'antd';
 
 const Form = ({ data }) => {
     const [status, setStatus] = useState(null);
@@ -112,9 +79,31 @@ const Form = ({ data }) => {
 
     return (
         <div ref={recruitmentRef}>
-            {(status === 'success' || status === 'error') && (
-                <PopupMessage status={status} onClose={() => setStatus(null)} />
-            )}
+            <Modal
+                open={status === 'success' || status === 'error'}
+                onCancel={() => setStatus(null)}
+                footer={null}
+                centered
+            >
+                <Result
+                    status={status}
+                    title={
+                        status === 'success'
+                            ? 'Cảm ơn bạn đã liên hệ!'
+                            : 'Gửi không thành công'
+                    }
+                    subTitle={
+                        status === 'success'
+                            ? 'Chúng tôi đã nhận được thông tin và sẽ phản hồi bạn trong thời gian sớm nhất.'
+                            : 'Đã xảy ra lỗi trong quá trình gửi. Vui lòng thử lại sau.'
+                    }
+                    extra={[
+                        <Button type="primary" key="btn" onClick={() => setStatus(null)}>
+                            {status === 'success' ? 'Gửi thêm' : 'Thử lại'}
+                        </Button>,
+                    ]}
+                />
+            </Modal>
 
 
             <div className="flex flex-col gap-10 items-center">
@@ -225,9 +214,9 @@ const Form = ({ data }) => {
                                 <div className="text-[#4B5563] text-sm">
                                     {/* {contact.office_address} */}
                                     {contact.office_address.map((item, index) => (
-                                        <div key = {index}>{item.address} </div>
+                                        <div key={index}>{item.address} </div>
                                     ))}
-                                    
+
                                 </div>
                             </div>
                         </div>
