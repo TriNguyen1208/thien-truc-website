@@ -1,5 +1,5 @@
 // src/pages/Price/index.jsx  
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Banner from '@/components/Banner'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Button } from 'antd'
@@ -8,21 +8,97 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useProducts from "@/redux/hooks/useproducts";
 import Loading from '@/components/Loading'
 import '@/styles/custom.css'
+import { useNavigate } from 'react-router-dom'
+import GreenButton from '@/components/GreenButton'
+
+const ListType = ({categories, handleClick, current}) => {
+    const [category, setCategory] = useState(current);
+    useEffect(() => {
+        setCategory(current);
+      }, [current]);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const wrapperRef = useRef(null);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        // Khi dropdown mở thì gắn event
+        document.addEventListener('mousedown', handleClickOutside);
+        
+        // Cleanup khi unmount hoặc dropdown đóng
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [dropdownOpen]);
+    return (
+        <div ref={wrapperRef} className="relative border border-gray-200 rounded-sm shadow-lg">
+            <button
+                className="rounded-tl-md rounded-bl-md w-38 h-[40px] pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setDropdownOpen(!dropdownOpen);
+                }}
+            >
+            <span>{category}</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            </button>
+            {dropdownOpen && (
+            <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md">
+                {categories.map((r) => (
+                    <li
+                        key={r}
+                        className="py-2 px-3 hover:bg-gray-100 cursor-pointer text-sm text-center text-bold text-gray-700"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setCategory(r);
+                            handleClick(r)
+                            setDropdownOpen(false);
+                        }}
+                    >
+                        {r}
+                    </li>
+                ))}
+            </ul>
+            )}
+        </div>
+    )
+}
 
 export default function PricePage() {
   
-        const [querySearch, setQuerySearch] = useState("");
-        const [filterSearch, setFilterSearch] = useState("Tất cả");
+
+        const navigate = useNavigate();
         const [selectedProduct, setSelectedProduct] = useState(null)
         const [openCategories, setOpenCategories] = useState({});
-        const [search, setSearch] = useState('')
+        const [category, setCategory] = useState("Tât cả sản phẩm");
+        const [query, setQuery] = useState("");
+        const [search, setSearch] = useState('');
         const [selectedCategory, setSelectedCategory] = useState('Tất cả')  
         const { data: pricePage, isLoading: isLoadingPage } = useProducts.getPricePage()
         const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
         const { data: productPrices = [], isLoading: isLoadingPrices } = useProducts.product_prices.getAll();
         const { data: products = [], isLoading: isLoadingProducts } = useProducts.products.getList();
         console.log("productPrices", productPrices)
-
+        
+        const handleButton = (category, query) => {
+          setQuery(query)
+          setCategory(category);
+        };
+        const handleEnter = (id) => {
+            navigate(`/san-pham/${id}`);
+          }
+        const handleSearchSuggestion = (query, filter) => {
+            return useProducts.getSearchSuggestions(query, filter);
+        };
+        const handleClickCategory = (category) => {
+            setCategory(category)
+        }
+        
         if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
           return <Loading />
         }
@@ -42,29 +118,12 @@ export default function PricePage() {
               return prev;
             });
           }
-                  const handleButton = (category, query) => {
-          setQuery(query);
-          setCategory(category);
-        };
-        const handleEnter = (id) => {
-          navigate(`/tin-tuc/${id}`);
-        };
-        const handleSearchSuggestion = (query, filter) => {
-          return useProducts.getSearchSuggestions(query, filter);
-        };
 
-        const categories = productCategories.map((category) => {
-            return (category.name)
-        }) 
-
-        categories.unshift("Tất cả sản phẩm")
-        const handleSearch = (category, query) => {
-            setIdCategory(categories.indexOf(category))
-            setQuerySearch(query)
-            setTimeout(() => {
-            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
-          }, 0);
-        }
+       const categories = [
+          "Tất cả sản phầm",
+          ...productCategories.map((category) => category.name),
+        ];
+        
         
         const groupedData = productPrices.reduce((acc, item) => {
           const category = item.product.category.name;
@@ -107,21 +166,26 @@ export default function PricePage() {
         const bannerHead = {
             title: pricePage?.banner_title,
             description: pricePage?.banner_description,
-            hasButton: false,
             hasSearch: true,
             colorBackground: 'var(--gradient-banner)',
             colorText: '#ffffff',
             categories : categories,
-            contentButton: null,
             contentPlaceholder : 'Nhập vào đây...',
-            handleButton : handleSearch,
-            handleSearchSuggestion: handleSearchSuggestion
+            handleButton : handleButton,
+            handleSearchSuggestion: handleSearchSuggestion,
+            handleEnter: handleEnter,
         }
 
   return (
   <>
     <Banner data={bannerHead} />
-
+     <div className="flex-1 flex justify-end">
+            <ListType
+              categories={categories}
+              handleClick={handleClickCategory}
+              current={category}
+            />
+          </div>
     <div className="bg-[#F0FDF4] py-20 px-6 md:px-[80px] shadow-md rounded-xl">
      
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto rounded-xl shadow-2xl overflow-hidden">
@@ -229,12 +293,12 @@ export default function PricePage() {
         <p className="text-gray-700 mb-5">
           Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.
         </p>
-        <div className="pt-3">
-        <a href="/lien-he">
-          <button className="bg-white text-[#008080] px-6 py-3 rounded-md shadow-md hover:bg-[#00c37e] hover:text-white transition-all duration-300">
-            Liên Hệ Ngay →
-          </button>
-        </a>
+          <div className="mx-auto px-150 ">
+          <GreenButton
+            content="Liên Hệ Ngay →"
+            width="90%"
+            handleClick={() => navigate('/lien-he')}
+          />
         </div>
       </div>
     </div>
