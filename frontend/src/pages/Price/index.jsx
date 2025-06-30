@@ -14,20 +14,35 @@ export default function PricePage() {
         const [querySearch, setQuerySearch] = useState("");
         const [filterSearch, setFilterSearch] = useState("Tất cả");
         const [selectedProduct, setSelectedProduct] = useState(null)
+        const [openCategories, setOpenCategories] = useState({});
         const [search, setSearch] = useState('')
-        const [selectedCategory, setSelectedCategory] = useState('Tất cả')
-        const [openCategories, setOpenCategories] = useState({})
+        const [selectedCategory, setSelectedCategory] = useState('Tất cả')  
         const { data: pricePage, isLoading: isLoadingPage } = useProducts.getPricePage()
         const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
         const { data: productPrices = [], isLoading: isLoadingPrices } = useProducts.product_prices.getAll();
         const { data: products = [], isLoading: isLoadingProducts } = useProducts.products.getList();
         console.log("productPrices", productPrices)
 
-        if (isLoadingPage || isLoadingCategories || isLoadingPrices ) {
+        if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
           return <Loading />
         }
-
-        const handleButton = (category, query) => {
+      
+        if (
+            Object.keys(openCategories).length === 0 &&
+            productCategories?.length > 0
+          ) {
+            setOpenCategories((prev) => {
+              if (Object.keys(prev).length === 0) {
+                const initial = productCategories.reduce((acc, cur) => {
+                  acc[cur.name] = true;
+                  return acc;
+                }, {});
+                return initial;
+              }
+              return prev;
+            });
+          }
+                  const handleButton = (category, query) => {
           setQuery(query);
           setCategory(category);
         };
@@ -98,7 +113,7 @@ export default function PricePage() {
             colorText: '#ffffff',
             categories : categories,
             contentButton: null,
-            contentPlaceholder : 'Tìm kiếm sản phẩm...',
+            contentPlaceholder : 'Nhập vào đây...',
             handleButton : handleSearch,
             handleSearchSuggestion: handleSearchSuggestion
         }
