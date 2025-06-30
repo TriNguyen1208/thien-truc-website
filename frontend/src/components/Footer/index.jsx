@@ -57,18 +57,22 @@ const Footer = () => {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold mb-4">Liên Hệ Với Chúng Tôi</h3>
           <div className="space-y-3">
-            <div className="flex items-start space-x-2">
+            <div className="flex items-center  space-x-2">
               <EnvironmentOutlined className="text-base flex-shrink-0 text-[var(--yellow-bg)]" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
-              <a
-                href={`https://maps.app.goo.gl/KwHzrxJ4kNRh1wt97`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline no-underline text-sm hover:"
-              >
+              <div>
                 {companyInfoData.office_address.map((item, index) => (
-                  <div key={index}>{item}</div>
+                  <a
+                    key={index}
+                    href={item.googlemaps_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline no-underline text-sm hover:"
+                  >
+                    <div >{item.address} </div>
+                  </a>
                 ))}
-              </a>
+                
+              </div>
             </div>
             <div className="flex items-center space-x-2">
               <PhoneOutlined

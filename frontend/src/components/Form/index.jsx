@@ -223,7 +223,11 @@ const Form = ({ data }) => {
                                 <EnvironmentOutlined style={{ fontSize: '24px', color: '#22C55E' }} />
                                 <div className="font-semibold">Địa chỉ</div>
                                 <div className="text-[#4B5563] text-sm">
-                                    {contact.office_address}
+                                    {/* {contact.office_address} */}
+                                    {contact.office_address.map((item, index) => (
+                                        <div key = {index}>{item.address} </div>
+                                    ))}
+                                    
                                 </div>
                             </div>
                         </div>

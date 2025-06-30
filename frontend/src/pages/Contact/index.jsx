@@ -101,11 +101,7 @@ export default function Contact() {
                                 </div>
                             </div>
                         </div>
-                        <a
-                            href={companyInfoData.googlemaps.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                        <div>
                             <div className="flex items-center">
                                 <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
                                     <MapPin className="w-5 h-5 text-[var(--green-bg)]" />
@@ -116,12 +112,21 @@ export default function Contact() {
                                     </div>
                                     <div>
                                         {companyInfoData.office_address.map((item, index) => (
-                                            <div key={index}>{item}</div>
+                                            <a
+                                                key={index}
+                                                href={item.googlemaps_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:underline no-underline text-sm hover:"
+                                            >
+                                                <div >{item.address} </div>
+                                            </a>
                                         ))}
+                                        
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                         <div className="flex items-center">
                             <div className="mr-[20px] w-[50px] h-[50px] bg-[#F0FDF4] rounded-full flex items-center justify-center">
                                 <Clock className="w-5 h-5 text-[var(--green-bg)]" />
@@ -157,7 +162,7 @@ export default function Contact() {
                     </div>
                 </div>
                 <div className="ml-[50px]">
-                    <Form data = {dataForm}/>
+                    <Form data={dataForm} />
                 </div>
             </div >
             <div className="container-fluid bg-[var(--light-green-banner)] py-[35px]">
@@ -167,7 +172,7 @@ export default function Contact() {
                 <div>
                     <div className="h-[500px]">
                         <iframe
-                            src={companyInfoData.googlemaps.embed_url}
+                            src={companyInfoData.googlemaps_embed_url}
                             className="w-full h-full border-0"
                             allowFullScreen
                             loading="lazy"
