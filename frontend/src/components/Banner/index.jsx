@@ -24,7 +24,7 @@ const Banner = ({data}) =>{
         >
             <div className='flex flex-col gap-3 items-center'>
                 <div className='flex flex-col gap-5 w-full'>
-                    <div className='flex flex-col gap-3 w-3xl mx-auto text-center'>
+                    <div className='flex flex-col gap-3 w-4xl mx-auto text-center'>
                         <h1 className='text-5xl font-semibold break-words leading-15'>{title}</h1>
                         <p className='font-normal leading-[28px] break-words'>{description}</p>
                     </div>

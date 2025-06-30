@@ -1,8 +1,9 @@
-import Banner from "../../components/Banner";
-import PostCategory from "../../components/PostCategory";
-import ItemProduct from "../../components/ItemProduct";
+import Banner from "@/components/Banner";
+import PostCategory from "@/components/PostCategory";
+import ItemProduct from "@/components/ItemProduct";
 import { Carousel } from 'antd';
-import GreenButton from "../../components/GreenButton";
+import GreenButton from "@/components/GreenButton";
+import Loading from "@/components/Loading";
 import { Link } from "react-router-dom";
 import homeQueries from "@/redux/hooks/useHome";
 const slideData = [
@@ -52,12 +53,12 @@ export default function Home() {
     // )
     const { data: allData, isLoading: loadingAll } = homeQueries.getAll();
     if (loadingAll) {
-        return <p>Dang tai du lieu</p>
+        return (
+            <Loading />
+        )
     }
     const homePageData = allData.home_page;
     const highlightStatsAboutUsData = allData.highlight_stats_about_us;
-    console.log(homePageData);
-    console.log(highlightStatsAboutUsData);
     const dataBanner = {
         title: homePageData.banner_title,
         description: homePageData.banner_description,

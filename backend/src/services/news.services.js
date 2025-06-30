@@ -12,32 +12,53 @@ const getAllTables = async () => {
         news_categories: _news_categories
     };
 }
-
-const getNewsPage = async (filter = '') => {
-    const news_page = (await pool.query("SELECT * FROM news.news_page")).rows[0];
-    if(!news_page){
-        throw new Error("Can't get news_page");
-    }
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+const getNumPage = async (query, filter) => {
     let totalCount = 0;
+    const hasQuery = query !== '';
+    const hasFilter = filter !== '';
+    // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
+    if (hasQuery) {
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM news.news n
+            JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+            WHERE 
+                ($2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2))
+                AND similarity(unaccent(n.title), unaccent($1)) > 0.1
+        `;
+        const values = [query, filter];
+        const result = await pool.query(sql, values);
+        totalCount = parseInt(result.rows[0].total);
+        return totalCount;
+    }
 
-    if (cleanedFilter === '') {
+    // ✅ 2. Không có query
+    if (!hasFilter) {
+        // Trả về tối đa 9 trang, sắp xếp theo sortBy
         const result = await pool.query("SELECT COUNT(*) FROM news.news");
         totalCount = parseInt(result.rows[0].count);
-    }
-    else {
-        const query = `
+        return totalCount;
+    } else {
+        // Có filter (theo category), phân trang theo sortBy
+        const sql = `
             SELECT COUNT(*) AS total
             FROM news.news n
             JOIN news.news_categories nc on n.category_id = nc.id
             WHERE unaccent(nc.name) ILIKE unaccent($1)
         `;
-        const result = await pool.query(query, [cleanedFilter]);
-        totalCount = parseInt(result.rows[0].total);
+        const results = await pool.query(sql, [filter]);
+        totalCount = parseInt(results.rows[0].total);
+        return totalCount;
+    }
+}
+
+const getNewsPage = async () => {
+    const news_page = (await pool.query("SELECT * FROM news.news_page")).rows[0];
+    if(!news_page){
+        throw new Error("Can't get news_page");
     }
     return {
         ...news_page,
-        totalCount
     }
 }
 
@@ -53,6 +74,7 @@ const news = {
 
         const hasQuery = cleanedQuery !== '';
         const hasFilter = cleanedFilter !== '';
+        const totalCount = await getNumPage(cleanedQuery, cleanedFilter);
         // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
         if (hasQuery) {
             const sql = `
@@ -72,14 +94,13 @@ const news = {
                 JOIN news.news_categories n_cate ON n.category_id = n_cate.id
                 WHERE 
                     ($2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2))
-                    AND similarity(unaccent(n.title), unaccent($1)) > 0.1
+                    AND similarity(unaccent(n.title::text), unaccent($1::text)) > 0.1
                 ORDER BY 
                     similarity(unaccent(n.title), unaccent($1)) DESC
                 LIMIT $3 OFFSET $4
             `;
             const values = [cleanedQuery, cleanedFilter, pageSize, offset];
             const { rows } = await pool.query(sql, values);
-
             const results = rows.map(row => ({
                 id: row.news_id,
                 title: row.title,
@@ -95,6 +116,7 @@ const news = {
                 }
             }));
             return {
+                totalCount: totalCount,
                 page: page,
                 pageSize: rows.length,
                 results
@@ -140,6 +162,7 @@ const news = {
                 }
             }));
             return {
+                totalCount: totalCount,
                 page: page,
                 pageSize: rows.length,
                 results
@@ -167,7 +190,6 @@ const news = {
             `;
             const values = [cleanedFilter, pageSize, offset];
             const { rows } = await pool.query(sql, values);
-
             const results = rows.map(row => ({
                 id: row.news_id,
                 title: row.title,
@@ -183,6 +205,7 @@ const news = {
                 }
             }));
             return {
+                totalCount: totalCount,
                 page: page,
                 pageSize: rows.length,
                 results
@@ -349,14 +372,13 @@ const getSearchSuggestions = async (query, filter) => {
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
 
     const sql = `
-        SELECT DISTINCT ON (N.title) N.title, N.id, N.main_img
+        SELECT N.title, N.id, N.main_img
         FROM news.news N
         JOIN news.news_categories C ON N.category_id = C.id
         WHERE 
             ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
             similarity(unaccent(N.title::text), unaccent($1::text)) > 0
         ORDER BY
-            N.title,
             similarity(unaccent(N.title::text), unaccent($1::text)) DESC
         LIMIT 5
     `;

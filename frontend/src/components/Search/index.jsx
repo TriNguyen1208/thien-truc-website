@@ -47,11 +47,11 @@ const SearchBar = ({ data }) => {
 
   //Xử lý khi click, enter và nhấn nút tìm kiếm
   const handleSearch = (query) => {
-    if (onSearch){
+    if (onSearch) {
       onSearch(category, query);
     }
   };
-  
+
   if (!categories || !contentPlaceholder) return null;
 
   return (
@@ -91,48 +91,47 @@ const SearchBar = ({ data }) => {
 
       {/* Input tìm kiếm */}
       <div className={`relative flex-1 px-4 py-4 text-sm border ${isFocused ? "border-gray-500" : ""}`}>
-      <input
-        type="text"
-        placeholder={contentPlaceholder || "Nhập từ khóa tìm kiếm..."}
-        className="w-full text-gray-700 focus:outline-none focus:text-gray-700"
-        value={query}
-        onFocus={() => {
-          setIsFocused(true);
-          setShowSuggestions(true);
-        }}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setShowSuggestions(true);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            setHighlightedIndex((prev) => Math.min(prev + 1, suggestions.length - 1));
-          } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            setHighlightedIndex((prev) => Math.max(prev - 1, 0));
-          } else if (e.key === 'Enter') {
-            if (showSuggestions && suggestions[highlightedIndex]) {
-              const item = suggestions[highlightedIndex];
-              handleEnter(item.id);
-            } else {
-              handleSearch(query); // fallback nếu không có gợi ý
+        <input
+          type="text"
+          placeholder={contentPlaceholder || "Nhập từ khóa tìm kiếm..."}
+          className="w-full text-gray-700 focus:outline-none focus:text-gray-700"
+          value={query}
+          onFocus={() => {
+            setIsFocused(true);
+            setShowSuggestions(true);
+          }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setShowSuggestions(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              setHighlightedIndex((prev) => Math.min(prev + 1, suggestions.length - 1));
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              setHighlightedIndex((prev) => Math.max(prev - 1, 0));
+            } else if (e.key === 'Enter') {
+              if (showSuggestions && suggestions[highlightedIndex]) {
+                const item = suggestions[highlightedIndex];
+                handleEnter(item.id);
+              } else {
+                handleSearch(query); // fallback nếu không có gợi ý
+              }
             }
-          }
-        }}
-      />
+          }}
+        />
 
         {showSuggestions && debouncedQuery && (
           <ul className="absolute z-10 left-0 py-2 mt-3 w-full bg-white shadow-md max-h-64 overflow-y-auto">
             {isLoading ? (
-              <li className="py-2 px-4 text-sm text-gray-500">Đang tải...</li>
+              // <li className="py-2 px-4 text-sm text-gray-500">Đang tải...</li>
+              <li key='loading' className="py-2 px-4 text-sm text-gray-500">Đang tải...</li>
+
             ) : suggestions.length > 0 ? (
               suggestions.map((item, index) => (
-                <li
-                  key={item.query}
-                  className={`py-2 hover:bg-gray-100 cursor-pointer text-sm text-bold text-gray-700 text-left px-4 flex gap-3 items-center ${
-                              index === highlightedIndex ? 'bg-gray-100' : ''
-                  }`}
+                <li key={index} className={`py-2 hover:bg-gray-100 cursor-pointer text-sm text-bold text-gray-700 text-left px-4 flex gap-3 items-center ${index === highlightedIndex ? 'bg-gray-100' : ''
+                    }`}
                   onMouseEnter={() => setHighlightedIndex(index)} // di chuột cũng highlight
                   onClick={() => {
                     handleEnter(item.id)

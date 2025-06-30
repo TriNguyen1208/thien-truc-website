@@ -25,6 +25,7 @@ const getCompanyInfo = async () => {
     if(!company_info){
         throw new Error("Can't get company_info");
     }
+    company_info.googlemaps = JSON.parse(company_info.googlemaps || "{}");
     return company_info;
 }
 

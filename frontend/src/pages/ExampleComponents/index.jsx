@@ -1,16 +1,16 @@
-import React from 'react'
-import Banner from "../../components/Banner"
-import Card from "../../components/Card"
-import CenterCard from "../../components/CenterCard"
-import GreenButton from "../../components/GreenButton"
-import ItemProduct from "../../components/ItemProduct"
-import LabelProject from "../../components/LabelProject"
-import PostCategory from "../../components/PostCategory"
-import ViewMoreButton from "../../components/ViewMoreButton"
-import Search from 'antd/es/transfer/search'
-import WhiteButton from '../../components/WhiteButton'
-import ItemPost from '../../components/ItemPost'
-import useProducts from "../../redux/hooks/useProducts"
+// import React from 'react'
+// import Banner from "../../components/Banner"
+// import Card from "../../components/Card"
+// import CenterCard from "../../components/CenterCard"
+// import GreenButton from "../../components/GreenButton"
+// import ItemProduct from "../../components/ItemProduct"
+// import LabelProject from "../../components/LabelProject"
+// import PostCategory from "../../components/PostCategory"
+// import ViewMoreButton from "../../components/ViewMoreButton"
+// import Search from 'antd/es/transfer/search'
+// import WhiteButton from '../../components/WhiteButton'
+// import ItemPost from '../../components/ItemPost'
+// import useProducts from "../../redux/hooks/useProducts"
 const ExampleComponents = () => {
     // Example Banner
     //Cái này là của thanh search bar

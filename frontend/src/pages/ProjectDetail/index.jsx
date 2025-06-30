@@ -1,31 +1,22 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
-import {
-    EnvironmentOutlined,
-    CalendarOutlined,
-    ArrowLeftOutlined,
-} from '@ant-design/icons';
-import Banner from "../../components/Banner";
-import useProjects from "../../redux/hooks/useProjects";
+import { EnvironmentOutlined, CalendarOutlined, ArrowLeftOutlined} from '@ant-design/icons';
+import Banner from "@/components/Banner";
+import useProjects from "@/redux/hooks/useProjects";
+import Loading from "@/components/Loading";
 {/* <ArrowLeftOutlined /> */ }
 export default function ProjectDetail() {
+    // Khai bao hooks
     const { id } = useParams();
-    const { data: dataAll, isLoading: isLoadingDataAll } = useProjects.getAll();
-    const { data: projectContentData, isLoading: isLoadingProjectContent } = useProjects.project_contents.useGetOne(id);
     const navigate = useNavigate();
-    // TODO: TESt HTML
-    // const htmlContent = "<b>Xin chào</b>, <i>React!</i>";
-
-    //Cái này là của whiteButton
+    const { data: projectContentData, isLoading: isLoadingProjectContent } = useProjects.project_contents.getOne(id);
     const handleButton = () => {
         navigate('/lien-he')
     }
-    if (isLoadingDataAll || isLoadingProjectContent) {
+    if (isLoadingProjectContent) {
         return (
-            <p>is loading</p>
+            <Loading />
         )
     }
-    console.log(dataAll);
-    console.log(projectContentData);
     const data = {
         title: "Quan tâm đến dự án này",
         description: "Liên hệ với chúng tôi để được tư vấn chi tiết về tương tự dự án",
@@ -71,7 +62,7 @@ export default function ProjectDetail() {
                                 <div className="mr-[5px]">
                                     <CalendarOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
                                 </div>
-                                <div className="mr-[10px]">Hoan thanh {projectContentData.project.complete_time}</div>
+                                <div className="mr-[10px]">Hoàn thành {projectContentData.project.complete_time}</div>
                             </div>
                         </div>
                     </div>

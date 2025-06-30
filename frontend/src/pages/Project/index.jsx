@@ -1,59 +1,98 @@
 import Banner from "@/components/Banner";
-import ItemPost from "../../components/ItemPost";
-import PostCategory from "../../components/PostCategory";
-import { useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
-import ViewMoreButton from "../../components/ViewMoreButton";
-import useProjects from "../../redux/hooks/useProjects"
+import ItemPost from "@/components/ItemPost";
+import PostCategory from "@/components/PostCategory";
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import useProjects from "@/redux/hooks/useProjects";
+import { useState, useEffect } from 'react';
+import Paging from "@/components/Paging";
+import Loading from "@/components/Loading";
 export default function Project() {
-    const handleButton = (category, query) => {
-        console.log(category, query);
-    }
-    const handleSearchSuggestion = (query, filter) => {
-        return useProjects.getSearchSuggestions(query, filter)
-    }
-    // TEST 
-    const {data: dataAll, isLoading: isDataAll} = useProjects.getAll();
-    const { data: projectPageData, isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
-    const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.projects.getList(
-        undefined,
-        undefined,
-        1,
-    );
-    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(
-        undefined,
-        undefined,
-        1,
-    );
-    const { data: regionData, isLoading: isLoadingRegion } = useProjects.projects.getList(
-        undefined,
-        'Miền Bắc',
-        1
-    );
- 
-    const [showAll, setShowAll] = useState(false);
+
+    // Khai bao cac hooks
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-   
-    if (isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject ) {
+
+    useEffect(() => {
+        const pageParam = Number(searchParams.get("page")) || 1;
+        setCurrentPage(pageParam);
+    }, [searchParams]);
+
+    // Lay params
+    const filter = searchParams.get('filter') || undefined;
+    const query = searchParams.get('query') || undefined;
+    const page = Number(searchParams.get('page')) || 1;
+
+    // fetch data 
+    const { data: projectPageData, isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
+    const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.getAll();
+    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter, page);
+
+
+    if (isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject) {
         return (
-            <>
-                Dang loading
-            </>
+            <Loading />
         )
     }
-    // TEST 
-    console.log(dataAll);
-    console.log(regionData);
-    console.log(projectData);
-    // TODO: delete projectData, fix 0 - 6
-    var visibleProject = showAll ? projectData : projectData.slice(0, 6)
-    console.log("=============")
-    console.log(typeof visibleProject, visibleProject)
-    console.log("=============")
+
+    // Khai bao bien 
     let categoriesData = projectRegionData.map(item => item.name);
     const categoriesDefault = ["Tất cả dự án"];
     categoriesData = [...categoriesDefault, ...categoriesData];
-    const data = {
+    const totalProjects = Number(projectData.totalCount);
+    const pageSizes = 9;
+    const numberPages = Math.ceil(totalProjects / pageSizes);
+    const idSelected = filter ? categoriesData.findIndex((name) => name === filter) : 0;
+    const dataPagination = {
+        numberPagination: numberPages,
+    };
+
+    // Dinh nghia cac ham bat su kien 
+    const handleSearchSuggestion = (query, filter) => {
+        return useProjects.getSearchSuggestions(query, filter)
+    }
+    const handleEnter = (id) => {
+        navigate(`/du-an/${id}`);
+    }
+    const handleSearchSubmit = (filter, query) => {
+        const params = new URLSearchParams();
+        if (query) params.set("query", query);
+        if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
+        const queryString = params.toString();
+        navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+
+    }
+
+    const handlePageChange = (page) => {
+         const params = new URLSearchParams();
+        if (query) params.set("query", query);
+        if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
+        if (page >= 2) params.set('page', page)
+
+        const queryString = params.toString();
+        navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+        // setCurrentPage(Number(page));
+        // const params = new URLSearchParams();
+        // if (page >= 2) params.set("page", page);
+        // const queryString = params.toString();
+        // navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+    };
+    const handleClickPostCategory = (idCategory) => {
+        const nameRegion = categoriesData[idCategory];
+        const region = projectRegionData.find(item => item.name === nameRegion);
+        if (region && region.name != categoriesDefault) {
+            navigate(`/du-an?filter=${region.name}`);
+        }
+        else {
+            navigate(`/du-an`);
+        }
+    }
+
+   const handleButton = () => {
+        navigate('/lien-he');
+    }
+
+    const dataBanner = {
         title: projectPageData.banner_title,
         description: projectPageData.banner_description,
         colorBackground: "var(--gradient-banner)",
@@ -61,23 +100,12 @@ export default function Project() {
         hasSearch: true,
         categories: categoriesData || categoriesDefault,
         contentPlaceholder: "Nhập vào đây",
-        handleButton: handleButton,
-        handleSearchSuggestion: handleSearchSuggestion
+        handleButton: handleSearchSubmit,
+        handleSearchSuggestion: handleSearchSuggestion,
+        handleEnter: handleEnter
     };
 
-    const handleClick1 = (category) => {
-        console.log(category)
-    }
-    const handleClick2 = () => {
-        console.log("hello world");
-    }
-    //Cái này là của whiteButton
-    const handleBannerContact = () => {
-        navigate("/lien-he")
-    }
-    const handleShowAll = () => {
-        setShowAll(!showAll)
-    }
+
     const bannerContactData = {
         title: "Sẵn sàng bắt đầu dự án của bạn",
         description: "Liên hệ với chúng tôi để được tư vấn miễn phí và báo giá chi tiết",
@@ -85,98 +113,56 @@ export default function Project() {
         colorText: "#000000",
         hasButton: true,
         contentButton: "Liên hệ tư vấn",
-        handleButton: handleBannerContact
+        handleButton: handleButton 
     };
+
+
+
+
+
 
     return (
         <>
-            <Banner data={data} />
+            <Banner data={dataBanner} />
             <div className="container-fluid">
                 <div className="my-[40px] text-center">
                     <h1 className='text-4xl mb-[30px] font-bold'>Công trình tiêu biểu</h1>
                     <div className="mb-[30px]">
-                        <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClick1} />
+                        <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idSelected={idSelected} />
                     </div>
                     <div className="inline-block w-1/2 font-[300]">
                         {projectPageData.banner_description}
                     </div>
                 </div>
                 <div className="flex flex-wrap gap-[30px]">
-                    {(visibleProject || []).map((item, index) => {
-                        item.complete_time = String(item.complete_time)
+                    {(projectData.results || []).map((item, index) => {
+                        const complete_time = String(item.complete_time)
                         const dataProject = {
                             type: 'project',
                             title: item?.title ?? "",
                             description: item?.main_content ?? "",
                             location: item?.province ?? "",
-                            date: item?.complete_time ?? "",
+                            date: complete_time,
                             tag: item?.region.name ?? "",
                             tagColor: item?.region.rgb_color ?? "",
                             image: item?.main_img ?? "",
-                            handleClick: handleClick2
                         }
                         return (
                             <Link key={index} to={`/du-an/${item.id}`}
-                                style = {{width: 'calc(100% / 3 - 20px)'}}
+                                style={{ width: 'calc(100% / 3 - 20px)' }}
                             >
                                 <div className=" mb-[30px]"
-                                    style = {{width: '100%'}}
-                                    >
+                                    style={{ width: '100%' }}
+                                >
                                     <ItemPost data={dataProject} />
                                 </div>
                             </Link>
-                            
+
                         );
                     })}
-                    {/* ===== TEST =======  */}
-                    {/* {visibleProject && visibleProject.length > 0 && (
-                        (() => {
-                            const item = visibleProject[0]; // test phần tử đầu tiên
-
-                            item.complete_time = String(item.complete_time);
-                            const dataProject = {
-                                type: 'project',
-                                title: item?.title ?? "",
-                                description: item?.main_content ?? "",
-                                location: item?.province ?? "",
-                                date: item?.complete_time ?? "",
-                                tag: item?.region?.name ?? "",
-                                tagColor: item?.region?.rgb_color ?? "",
-                                image: item?.main_img ?? "",
-                                handleClick: handleClick2
-                            };
-
-                            return (
-                                <>
-                                
-                                <Link key={item.id} to={`/du-an/${item.id}`} style={{ width: 'calc((100% / 3) - 30px)' }}>
-                                    <div className="mb-[30px]" style={{ width: '100%' }}>
-                                        <ItemPost data={dataProject} />
-                                    </div>
-                                </Link>
-                                <Link key={item.id} to={`/du-an/${item.id}`} style={{ width: 'calc((100% / 3) - 30px)' }}>
-                                    <div className="mb-[30px]" style={{ width: '100%' }}>
-                                        <ItemPost data={dataProject} />
-                                    </div>
-                                </Link>
-                                <Link key={item.id} to={`/du-an/${item.id}`} style={{ width: 'calc((100% / 3) - 30px)' }}>
-                                    <div className="mb-[30px]" style={{ width: '100%' }}>
-                                        <ItemPost data={dataProject} />
-                                    </div>
-                                </Link>
-                                <Link key={item.id} to={`/du-an/${item.id}`} style={{ width: 'calc((100% / 3) - 30px)' }}>
-                                    <div className="mb-[30px]" style={{ width: '100%' }}>
-                                        <ItemPost data={dataProject} />
-                                    </div>
-                                </Link>
-                                </>
-                            );
-                        })()
-                    )} */}
-                    {/* ===== END TEST =======  */}
                 </div>
-                <div className="text-center my-[50px]">
-                    <ViewMoreButton content={showAll ? "Thu gọn" : "Xem tất cả dự án"} handleClick={handleShowAll} />
+                <div className="mb-[30px]">
+                    <Paging data={dataPagination} onPageChange={handlePageChange} currentPage={currentPage} />
                 </div>
             </div>
             <Banner data={bannerContactData} />

@@ -16,7 +16,7 @@ const getCompanyInfo = async () => {
 }
 // TODO: add
 const postContactForm = async (formData) => {
-    const res = await axios.post(API_ROUTES.contact.contact_message, formData);
+    const res = await axios.post(API_ROUTES.contact.contact_messages, formData);
     return res.data;
 }
 

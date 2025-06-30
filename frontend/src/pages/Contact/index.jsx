@@ -1,16 +1,16 @@
-import Demo from "../../components/ItemPost";
-import UserCard from "../../components/UserCard";
-import Banner from "../../components/Banner";
+import UserCard from "@/components/UserCard";
+import Banner from "@/components/Banner";
 import { useNavigate } from 'react-router-dom';
-import useContact from "../../redux/hooks/useContact";
+import useContact from "@/redux/hooks/useContact";
+import Form from "@/components/Form";
 import {
     Mail,
     Phone,
     MapPin,
     Clock,
 } from 'lucide-react';
+import Loading from "@/components/Loading";
 import { FiFacebook } from "react-icons/fi"; // Fi = Feather Icons (outline)
-
 export default function Contact() {
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
     const navigate = useNavigate();
@@ -20,14 +20,12 @@ export default function Contact() {
     }
     if (isLoadingDataAll) {
         return (
-            <div>Is loading</div>
+            <Loading />
         )
     }
     const contactPageData = dataAll.contact_page;
     const supportAgentsData = dataAll.support_agents;
     const companyInfoData = dataAll.company_info;
-    const parts = companyInfoData.working_hours.split(".");
-    console.log(dataAll)
     const dataBanner = {
         title: contactPageData.banner_title,
         description: contactPageData.banner_description,
@@ -37,6 +35,10 @@ export default function Contact() {
         contentButton: "Liên hệ ngay",
         handleButton: handleButton
     };
+    const dataForm = {
+        title: "Gửi tin nhắn cho chúng tôi",
+        type: 'lien-he'
+    }
     return (
         <>
             <Banner data={dataBanner} />
@@ -61,8 +63,8 @@ export default function Contact() {
                     })}
                 </div>
             </div>
-            <div className="container-fluid flex py-[70px]">
-                <div className="w-1/2 text-[var(--dark-green)] font-[400]">
+            <div className="container-fluid flex py-[70px] ">
+                <div className="w-1/2 text-[var(--dark-green)] font-[400] ">
                     <div className="text-[30px] font-[600] mb-[15px]">
                         Liên hệ về chúng tôi
                     </div>
@@ -93,12 +95,14 @@ export default function Contact() {
                                     Điện thoại
                                 </div>
                                 <div>
-                                    {companyInfoData.company_phone}
+                                    {companyInfoData.company_phone.map((item, index) => (
+                                        <div key={index}>{item}</div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
                         <a
-                            href={companyInfoData.googlemaps_url}
+                            href={companyInfoData.googlemaps.url}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -111,7 +115,9 @@ export default function Contact() {
                                         Văn phòng
                                     </div>
                                     <div>
-                                        {companyInfoData.office_address}
+                                        {companyInfoData.office_address.map((item, index) => (
+                                            <div key={index}>{item}</div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +131,7 @@ export default function Contact() {
                                     Giờ làm việc
                                 </div>
                                 <div>
-                                    {parts.map((item, index) => (
+                                    {companyInfoData.working_hours.map((item, index) => (
                                         <div key={index}>{item}</div>
                                     ))}
                                 </div>
@@ -150,8 +156,8 @@ export default function Contact() {
                         </a>
                     </div>
                 </div>
-                <div>
-                    Form
+                <div className="ml-[50px]">
+                    <Form data = {dataForm}/>
                 </div>
             </div >
             <div className="container-fluid bg-[var(--light-green-banner)] py-[35px]">
@@ -161,7 +167,7 @@ export default function Contact() {
                 <div>
                     <div className="h-[500px]">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1731.3900774364906!2d105.62670415968444!3d10.46181896279175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310a65a50ea1ee67%3A0x4617b76f410a907c!2zQ8O0bmcgVHkgVG5oaCBUaGnDqm4gVHLDumM!5e1!3m2!1svi!2s!4v1751040961139!5m2!1svi!2s"
+                            src={companyInfoData.googlemaps.embed_url}
                             className="w-full h-full border-0"
                             allowFullScreen
                             loading="lazy"
