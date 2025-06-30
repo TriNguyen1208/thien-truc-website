@@ -1,5 +1,6 @@
 import pool from '#@/config/db.js'
 import sendMail from '#@/utils/mailer.js'
+import { LiaEmber } from 'react-icons/lia';
 
 const getAllTables = async () => {
     const _contact_page = await getContactPage();
@@ -25,7 +26,9 @@ const getCompanyInfo = async () => {
     if(!company_info){
         throw new Error("Can't get company_info");
     }
-    company_info.googlemaps = JSON.parse(company_info.googlemaps || "{}");
+    company_info.office_address = company_info.office_address.map(element => {
+        return JSON.parse(element || '{}');
+    });
     return company_info;
 }
 
