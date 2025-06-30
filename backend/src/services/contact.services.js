@@ -1,6 +1,5 @@
 import pool from '#@/config/db.js'
 import sendMail from '#@/utils/mailer.js'
-import { LiaEmber } from 'react-icons/lia';
 
 const getAllTables = async () => {
     const _contact_page = await getContactPage();
