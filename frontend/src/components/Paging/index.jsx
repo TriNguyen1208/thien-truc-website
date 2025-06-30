@@ -1,6 +1,6 @@
 import { Pagination} from 'antd';
 
-export default function Paging({data, onPageChange }) {
+export default function Paging({data, onPageChange, currentPage }) {
     const {numberPagination} = data || {};
     console.log(numberPagination);
     const handleChange = (page) => {
@@ -26,7 +26,7 @@ export default function Paging({data, onPageChange }) {
 
             <Pagination 
                 className="custom-pagination p-10"
-                defaultCurrent={1}
+                current={currentPage}
                 align = 'center'
                 pageSize={1}
                 total = {numberPagination} 
