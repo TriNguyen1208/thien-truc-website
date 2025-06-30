@@ -53,12 +53,12 @@ const ExampleComponents = () => {
     //     contentButton: "Hello",
     //     handleButton: handleButton 
     // };
-    // return (
-    //     <>
-    //         <Banner data={data}/>
-    //         <p>Đây là trang Home.</p>
-    //     </>
-    // )
+    // // return (
+    // //     <>
+    // //         <Banner data={data}/>
+    // //         <p>Đây là trang Home.</p>
+    // //     </>
+    // // )
 
     //Example Card
     // const card = {
