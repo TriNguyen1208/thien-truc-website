@@ -37,6 +37,7 @@ const SearchBar = ({ data }) => {
 
   // Cập nhật displaySuggestion khi debounceQuery hoặc suggestions thay đổi
   useEffect(() => {
+    setHighlightedIndex(0);
     if (!query.trim()) {
       setDisplaySuggestion([]);
       return;
@@ -67,6 +68,7 @@ const SearchBar = ({ data }) => {
     if (onSearch) {
       onSearch(category, query);
     }
+    setShowSuggestions(false);
   };
 
   if (!categories || !contentPlaceholder) return null;
