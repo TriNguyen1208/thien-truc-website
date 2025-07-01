@@ -3,16 +3,12 @@ import pool from '#@/config/db.js'
 const getAllTables = async () => {
     const _product_page = await getProductPage();
     const _products = await products.getList();
-    const _product_features = await product_features.getAll();
-    const _product_highlight_features = await product_highlight_features.getAll();
     const _product_categories = await product_categories.getAll();
     const _price_page = await getPricePage();
     const _product_prices = await product_prices.getAll();
     return {
         product_page: _product_page,
         products: _products,
-        product_features: _product_features,
-        product_highlight_features: _product_highlight_features,
         product_categories: _product_categories,
         price_page: _price_page,
         product_prices: _product_prices
@@ -88,7 +84,9 @@ const products = {
                         prd.product_img,
                         prd.warranty_period,
                         prd.product_specifications,
-
+                        prd.product_features,
+                        prd.highlight_features,
+                        
                         pp.price AS price,
                         pc.id AS category_id,
                         pc.name AS category_name
@@ -113,7 +111,8 @@ const products = {
                     price: row.price,
                     product_specifications: JSON.parse(row.product_specifications || '{}'),
                     warranty_period: row.warranty_period,
-                    product_specifications: JSON.parse(row.product_specifications || '{}'),
+                    product_features: row.product_features || [],
+                    highlight_features: row.highlight_features || [],
                     category: {
                         id: row.category_id,
                         name: row.category_name
@@ -139,6 +138,8 @@ const products = {
                         prd.product_img,
                         prd.product_specifications,
                         prd.warranty_period,
+                        prd.product_features,
+                        prd.highlight_features,
                         
                         pp.price AS price,
                         pc.id AS category_id,
@@ -176,6 +177,9 @@ const products = {
                         price: row.price,
                         product_specifications: JSON.parse(row.product_specifications || '{}'),
                         warranty_period: row.warranty_period,
+                        product_features: row.product_features || [],
+                        highlight_features: row.highlight_features || [],
+                        
                         category: {
                             id: row.category_id,
                             name: row.category_name
@@ -199,6 +203,8 @@ const products = {
                         prd.product_img,
                         prd.warranty_period,
                         prd.product_specifications,
+                        prd.product_features,
+                        prd.highlight_features,
 
                         pp.price AS price,
                         pc.id AS category_id,
@@ -222,6 +228,9 @@ const products = {
                     price: row.price,
                     product_specifications: JSON.parse(row.product_specifications || '{}'),
                     warranty_period: row.warranty_period,
+                    product_features: row.product_features || [],
+                    highlight_features: row.highlight_features || [],
+
                     category: {
                         id: row.category_id,
                         name: row.category_name
@@ -245,6 +254,8 @@ const products = {
                 prd.product_img,
                 prd.product_specifications,
                 prd.warranty_period,
+                prd.product_features,
+                prd.highlight_features,
 
                 pp.price as price,
                 prd_cate.id as category_id,
@@ -264,6 +275,9 @@ const products = {
                 price: row.price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
                 warranty_period: row.warranty_period,
+                product_features: row.product_features || [],
+                highlight_features: row.highlight_features || [],
+
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -290,53 +304,6 @@ const product_categories = {
     }
 }
 
-const product_features = {
-    getAll: async () => {
-        const product_features = (await pool.query("SELECT * FROM product.product_features")).rows;
-        if(!product_features){
-            throw new Error("Can't get product_features");
-        }
-        return product_features
-    },
-    getByProductId: async (product_id) => {
-        const product_features = (await pool.query(`SELECT * FROM product.product_features WHERE product_id = ${product_id}`)).rows;
-        if(!product_features){
-            throw new Error("Can't get product_features");
-        }
-        return product_features
-    },
-    getOne: async (product_id, feature_id) => {
-        const product_feature = (await pool.query(`SELECT * FROM product.product_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows[0];
-        if(!product_feature){
-            throw new Error("Can't get product_features");
-        }
-        return product_feature
-    }
-}
-
-const product_highlight_features = {
-    getAll: async () => {
-        const product_highlight_features = (await pool.query("SELECT * FROM product.product_highlight_features")).rows;
-        if(!product_highlight_features){
-            throw new Error("Can't get product_highlight_features");
-        }
-        return product_highlight_features
-    },
-    getByProductId: async (product_id) => {
-        const product_highlight_features = (await pool.query(`SELECT * FROM product.product_highlight_features WHERE product_id = ${product_id}`)).rows;
-        if(!product_highlight_features){
-            throw new Error("Can't get product_highlight_features");
-        }
-        return product_highlight_features
-    },
-    getOne: async (product_id, feature_id) => {
-        const product_highlight_feature = (await pool.query(`SELECT * FROM product.product_highlight_features WHERE product_id = ${product_id} AND feature_id = ${feature_id}`)).rows[0];
-        if(!product_highlight_feature){
-            throw new Error("Can't get product_highlight_features");
-        }
-        return product_highlight_feature
-    }
-}
 
 const getPricePage = async () => {
     const price_page = (await pool.query("SELECT * FROM product.price_page")).rows[0];
@@ -359,6 +326,8 @@ const product_prices = {
                 prd.description,
                 prd.product_img,
                 prd.warranty_period,
+                prd.product_features,
+                prd.highlight_features,
 
                 prd_cate.id as category_id,
                 prd_cate.name as category_name
@@ -377,6 +346,8 @@ const product_prices = {
                 description: row.description,
                 product_img: row.product_img,
                 warranty_period: row.warranty_period,
+                product_features: row.product_features || [],
+                highlight_features: row.highlight_features || [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -397,6 +368,8 @@ const product_prices = {
                 prd.description,
                 prd.product_img,
                 prd.warranty_period,
+                prd.product_features,
+                prd.highlight_features,
 
                 prd_cate.id as category_id,
                 prd_cate.name as category_name
@@ -416,6 +389,9 @@ const product_prices = {
                 description: row.description,
                 product_img: row.product_img,
                 warranty_period: row.warranty_period,
+                product_features: row.product_features || [],
+                highlight_features: row.highlight_features || [],
+            
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -454,4 +430,4 @@ const getSearchSuggestions = async (query, filter) => {
 };
 
 
-export default { getAllTables, getProductPage, products, product_categories, product_features, product_highlight_features, getPricePage, product_prices, getSearchSuggestions };
+export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getSearchSuggestions };
