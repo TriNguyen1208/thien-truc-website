@@ -21,13 +21,21 @@ const getContactPage = async () => {
 }
 
 const getCompanyInfo = async () => {
-    const company_info = (await pool.query("SELECT * FROM contact.company_info")).rows[0];
+    let company_info = (await pool.query("SELECT * FROM contact.company_info")).rows[0];
     if(!company_info){
         throw new Error("Can't get company_info");
     }
-    company_info.office_address = company_info.office_address.map(element => {
-        return JSON.parse(element || '{}');
-    });
+
+    let { main_office_id, office_address, googlemaps_embed_url, ...rest } = company_info;
+    office_address = office_address.map(element => JSON.parse(element || '{}'));
+    const main_office = office_address[main_office_id - 1] || '{}';
+    company_info = {
+        ...rest,
+        office_address : office_address,
+        main_office : main_office,
+        googlemaps_embed_url : googlemaps_embed_url
+    }
+
     return company_info;
 }
 
