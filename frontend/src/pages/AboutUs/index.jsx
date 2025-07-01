@@ -8,6 +8,7 @@ import {DollarOutlined} from '@ant-design/icons'
 import Card from '../../components/Card'    
 import CenterCard from '../../components/CenterCard'
 import {useNavigate} from 'react-router-dom'
+import Loading from '@/components/Loading'
 function ProgressItem({ icon, label, value, percent }) {
   return (
     <div className="mb-[30px] text-[16px]">
@@ -45,7 +46,7 @@ export default function AboutUs(){
     const navigate = useNavigate()
     
     if (isLoadingAboutUs || isLoadingAboutUsPage ||isLoadingAboutUsServices || isLoadingAboutUsChoose) {
-        return <p>Loading...</p>;
+        return (<Loading/>);
     }
   
     const bannerMain = {
@@ -55,7 +56,7 @@ export default function AboutUs(){
         colorText : "#ffffff",
         hasButton : true,
         hasSearch : false,
-        contentButton : 'Trụ sở chính',
+        contentButton : `Trụ sở chính `,
         handleButton : ()=>{ console.log('Hi')},
         categories : null,
         contentPlaceholder : null
@@ -68,7 +69,7 @@ export default function AboutUs(){
         hasButton : true,
         hasSearch : false,
         contentButton : 'Liên Hệ Ngay',
-        handleButton : ()=>{ navigate('/lien-he',  { state: { scrollTo: "myComponent" } })},
+        handleButton : ()=>{ navigate('/lien-he',  { state: { scrollTo: "componentForm" } })},
         categories : null,
         contentPlaceholder : null
     }
