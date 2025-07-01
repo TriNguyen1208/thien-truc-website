@@ -99,7 +99,7 @@ export default function ProductDetail(){
                 </div>
                 <div className="grid grid-cols-2 grid-rows-2 gap-[30px]">
                     <div onClick = {pickPicture}>
-                    <ListPicture urls = {listPicture} id = {selectPicture}/>
+                    <ListPicture urls = {product.product_img || listPicture} id = {selectPicture}/>
                    </div>
                     <div className="flex flex-col h-[845px]">
                         <div className="pb-[10px] ">
@@ -125,7 +125,7 @@ export default function ProductDetail(){
                         <div>
                             <ul>
                                {
-                                 (product.product_feature || []).map((hl)=>{
+                                 (product.product_features || []).map((hl)=>{
                                     return(
                                         <li className='my-[10px]'>
                                             {hl}

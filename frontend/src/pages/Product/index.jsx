@@ -1,18 +1,15 @@
 import useProducts from '@/redux/hooks/useProducts'
-import{useRef} from 'react'
 import Banner from '@/components/Banner'
-import CenterCard from '../../components/CenterCard'
-import { TruckOutlined } from '@ant-design/icons';
-import { UserOutlined } from '@ant-design/icons';
-import { CreditCardOutlined } from '@ant-design/icons';
-import { SafetyOutlined } from '@ant-design/icons';
-import {ArrowLeftOutlined} from '@ant-design/icons'
+import CenterCard from '@/components/CenterCard'
 import ItemProduct from '@/components/ItemProduct'
 import ViewMoreButton from '@/components/ViewMoreButton'
-import { useState } from 'react';
 import Loading from '@/components/Loading'
 import Paging from '@/components/Paging'
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import{useRef} from 'react'
+import { TruckOutlined,UserOutlined, CreditCardOutlined, SafetyOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
+//Start extra components
 function GoBackListProduct({goBack ,categorySelected ,query}){
     return( (categorySelected != 'Chọn thể loại' && categorySelected != '') || query != '' ?
         <div onClick={goBack} className='flex flex-row text-[#16A34A] my-[10px] text-[15px] gap-[10px] cursor-pointer hover:text-[#0B4A24] transition-all duration-300 ease-in-out '>
@@ -20,16 +17,14 @@ function GoBackListProduct({goBack ,categorySelected ,query}){
         </div> : <div></div>
     )
 }
-function DisplayByCategories({data, page, handleViewMore, handleViewProduct, handlePageChange}){
+function DisplayByCategories({data, handleViewMore, handleViewProduct, handlePageChange}){
  
     return(
         Object.entries(data).map((objectCategory,index)=>{
            
                 const props = {
                     category: objectCategory[0],
-                    page: page,
                     products: objectCategory[1],
-                    highLightFeatures: [],
                     handleViewMore: handleViewMore,
                     handleViewProduct: handleViewProduct,
                     handlePageChange: handlePageChange
@@ -41,18 +36,52 @@ function DisplayByCategories({data, page, handleViewMore, handleViewProduct, han
     )
 }
 
-function DisplayProduct({dataAll,page, categorySelected,query, handleViewMore,handleViewProduct ,handlePageChange})
+function DisplayProduct({dataAll, categorySelected,query, handleViewMore,handleViewProduct ,handlePageChange})
 {   
+    if(!Array.isArray(dataAll.results))
+    {
+        const props = {
+            data:dataAll.results,
+            handleViewMore :handleViewMore ,
+            handleViewProduct :handleViewProduct ,
+            handlePageChange :handlePageChange
+        }
+        return(<DisplayByCategories {...props}/>)
+    }else if (query == '')
+    {
+        if(dataAll.results.length == 0)  
+            return(<div className='py-[20px]'>
+                        <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
+                    </div>)
+        const props = {
+            category: categorySelected, 
+            allCategories: false, 
+            products: dataAll.results,  
+            handleViewProduct: handleViewProduct, 
+            handlePageChange: handlePageChange,
+            
+        }
+        return( <Category {...props} paging={<Paging data={{ numberPagination: Math.ceil(dataAll.results.length / 12),}} onPageChange = {()=>handlePageChange(dataAll.page)} currentPage = {dataAll.page}  />}/> )
+           
+       
+    }else
+    {
+        if(dataAll.results.length == 0) 
+             return(<div className='py-[20px]'>
+                        <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
+                    </div>)
+        const props = {
+            products: dataAll.results ,
+            handleViewProduct: handleViewProduct
+        }
+        return  (<div className='flex flex-col my-[20px]'>
+            <ListProduct {...props} /> 
+            <Paging data={{ numberPagination: Math.ceil(dataAll.results.length / 12),}} onPageChange = {()=>handlePageChange(dataAll.page)} currentPage = {dataAll.page}  />
+        </div>)
+    }
     
-   
-    return(!Array.isArray(dataAll.results) ?
-      (<DisplayByCategories data={dataAll.results} handleViewMore ={handleViewMore} handleViewProduct ={handleViewProduct} handlePageChange ={handlePageChange}/>):
-      query == '' ?
-      (<Category category={categorySelected} page ={page} allCategories={false} products={dataAll.results} highLightFeatures ={[]} handleViewProduct = {handleViewProduct} handlePageChange = {handlePageChange}/>) :
-      (<ListProduct products={dataAll.results} highLightFeatures={[]} handleViewProduct={handleViewProduct} /> )
-    )
 }
-function ListProduct({products, highLightFeatures ,handleViewProduct})
+function ListProduct({products ,handleViewProduct})
 {
     return(
         <div className='grid grid-cols-4 py-[20px] mx-[30px] gap-y-[20px]'>            
@@ -61,8 +90,7 @@ function ListProduct({products, highLightFeatures ,handleViewProduct})
                                              return( 
                                                 <div key={i} className='w-[330px] h-[620px]'>
                                                     <ItemProduct  product = { products[i]}
-                                                    highLightFeatures = {highLightFeatures}
-                                                    handleClick = {()=>handleViewProduct(product, highLightFeatures)}
+                                                    handleClick = {()=>handleViewProduct(product)}
                                                     />                                    
                                                 </div>
                                                  
@@ -74,7 +102,7 @@ function ListProduct({products, highLightFeatures ,handleViewProduct})
         </div>
     )
 }
-function Category({category,page ,allCategories = true, products, highLightFeatures,handleViewMore = null, handleViewProduct,handlePageChange })
+function Category({category ,allCategories = true, products,handleViewMore = null, handleViewProduct,paging = <></> })
 {
     
     return(
@@ -87,15 +115,12 @@ function Category({category,page ,allCategories = true, products, highLightFeatu
                                             </h1>
                                         </div>
                                 </div>
-                                <ListProduct products={products} highLightFeatures={highLightFeatures} handleViewProduct = {handleViewProduct}/>
+                                <ListProduct products={products} handleViewProduct = {handleViewProduct}/>
                                 
                                 <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
                                     <div  className="h-fit w-fit">     
                                         { 
-                                           allCategories ?<ViewMoreButton  content = {'Xem Tất Cả Sản Phẩm'} handleClick = {()=>handleViewMore(category)}/>  
-                                         :<Paging data={{
-                                                numberPagination: Math.ceil(products.length / 12),
-                                            }} onPageChange = {()=>handlePageChange(page)} currentPage = {page}  />          
+                                           allCategories ?<ViewMoreButton  content = {'Xem Tất Cả Sản Phẩm'} handleClick = {()=>handleViewMore(category)}/> : paging          
                                         }
                                                               
                                     </div>
@@ -105,7 +130,7 @@ function Category({category,page ,allCategories = true, products, highLightFeatu
                             </div>
     )
 }
-
+//End extra components
 export default function Product(){
     const scrollTargetRef = useRef(null)
     const navigate = useNavigate();
@@ -128,12 +153,12 @@ export default function Product(){
         </div>)
     }
    
-
+    
     const handleSearchSuggestion = (query, filter) => {
         return useProducts.getSearchSuggestions(query, filter)
     }
     
-   const handleViewMore = (category)=>{
+    const handleViewMore = (category)=>{
          const newParams = new URLSearchParams();
         newParams.set("filter", category);
         newParams.set("page", "1");
@@ -142,7 +167,7 @@ export default function Product(){
         scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 0);
    }
-   const handleViewProduct = (product, highLightFeatures)=>{
+   const handleViewProduct = (product)=>{
     const path = location.pathname;
     
     navigate(`${path}/${product.id}`)
@@ -174,7 +199,7 @@ export default function Product(){
         scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 0);
     }
-    const banner1 = {
+    const bannerMain = {
         title : productPage.banner_title,
         description: productPage.banner_description,
         colorBackground : "var(--gradient-banner)",
@@ -188,7 +213,7 @@ export default function Product(){
         handleSearchSuggestion: handleSearchSuggestion
     }
     
-    const banner2 = {
+    const bannerViewPrices = {
         title : 'Xem Bảng Giá Ngay',
         description: 'Xem chi tiết giá lắp đặt các thiết bị điện tử và giải pháp thi công tại Thiên Trúc',
         colorBackground : "#F0FDF4",
@@ -228,17 +253,23 @@ export default function Product(){
   
     
  
-
+    const propsDisplayProduct = {
+        dataAll: dataAll,  
+        categorySelected: filter, 
+        query: query, 
+        handleViewMore : handleViewMore, 
+        handleViewProduct: handleViewProduct, 
+        handlePageChange : handlePageChange
+    }
     return (
         
         <>
-        <Banner data = {banner1}/>
-        <Banner data = {banner2}/>
+        <Banner data = {bannerMain}/>
+        <Banner data = {bannerViewPrices}/>
         <div className="container-fluid flex flex-col ">
             <div className='flex flex-grow justify-between py-[45px]  '>
             {
                 contentCenterCards.map((card, index) => {
-                    
                     return(
                         <div key = {index} className='w-[340px] h-[162px]'>
                         <CenterCard data={card}/>
@@ -251,7 +282,8 @@ export default function Product(){
         <div className='my-[40px]'>
              <GoBackListProduct goBack={goBack} categorySelected = {filter} query={query}/>   
         </div>
-        <DisplayProduct dataAll={dataAll} page = {page} categorySelected={filter} query={query} handleViewMore = {handleViewMore} handleViewProduct={handleViewProduct} handlePageChange ={handlePageChange}/>
+        
+        <DisplayProduct {... propsDisplayProduct}/>
         
         </div>
        
