@@ -48,52 +48,6 @@ const product_categories = {
         })
     } 
 }
-const product_features = {
-    useGetAll: ()=>{    
-        return useQuery({
-            queryKey: ["product_features"],
-            queryFn: productsServices.product_features.getAll,
-            staleTime: 5 * 60 * 1000,
-        })
-    },
-    useGetByProductId: (product_id)=>{
-        return useQuery({
-            queryKey: ["product_feature", product_id],
-            queryFn: () => productsServices.product_features.getByProductId(product_id),
-            staleTime: 5 * 60 * 1000,
-        })
-    },
-    useGetOne: (product_id, feature_id)=>{
-        return useQuery({
-            queryKey: ["product_feature", product_id, feature_id],
-            queryFn: () => productsServices.product_features.getOne(product_id, feature_id),
-            staleTime: 5 * 60 * 1000,
-        })
-    }   
-}
-const product_highlight_features = {
-    useGetAll: ()=>{    
-        return useQuery({
-            queryKey: ["product_highlight_features"],
-            queryFn: productsServices.product_highlight_features.getAll,
-            staleTime: 5 * 60 * 1000,
-        })
-    },
-    useGetByProductId: (product_id)=>{
-        return useQuery({
-            queryKey: ["product_highlight_feature", product_id],
-            queryFn: () => productsServices.product_highlight_features.getByProductId(product_id),
-            staleTime: 5 * 60 * 1000,
-        })
-    },
-    useGetOne: (product_id, feature_id)=>{
-        return useQuery({
-            queryKey: ["product_highlight_feature", product_id, feature_id],
-            queryFn: () => productsServices.product_highlight_features.getOne(product_id, feature_id),
-            staleTime: 5 * 60 * 1000,
-        })
-    }   
-}
 const product_prices = {
     useGetAll: ()=>{
         return useQuery({
@@ -135,16 +89,6 @@ export default {
     product_categories: {
         getAll: product_categories.useGetAll,
         getOne: product_categories.useGetOne
-    },
-    product_features: {
-        getAll: product_features.useGetAll,
-        getByProductId: product_features.useGetByProductId,
-        getOne: product_features.useGetOne
-    },
-    product_highlight_features: {
-        getAll: product_highlight_features.useGetAll,
-        getByProductId: product_highlight_features.useGetByProductId,
-        getOne: product_highlight_features.useGetOne
     },
     product_prices: {
         getAll: product_prices.useGetAll,

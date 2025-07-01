@@ -31,37 +31,6 @@ const product_categories = {
         return res.data;
     }
 }
-const product_features = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.product.product_features.getAll);
-        return res.data;
-    },
-    getByProductId: async (product_id) => {
-        const res = await axios.get(API_ROUTES.product.product_features.getByProductId(product_id));
-        return res.data;
-    },
-    getOne: async (product_id, feature_id) => {
-        const res = await axios.get(API_ROUTES.product.product_features.getOne(product_id, feature_id));
-        return res.data;
-    }
-}
-const product_highlight_features = {
-    getAll: async () => 
-        {
-            const res = await axios.get(API_ROUTES.product.product_highlight_features.getAll);
-            return res.data;
-        },
-    getByProductId: async (product_id) => 
-        {
-            const res = await axios.get(API_ROUTES.product.product_highlight_features.getByProductId(product_id));
-            return res.data;
-        },
-    getOne: async (product_id, feature_id) => 
-        {
-            const res = await axios.get(API_ROUTES.product.product_highlight_features.getOne(product_id, feature_id));
-            return res.data;
-        }   
-} 
 const product_prices = {
     getAll: async () => 
         {
@@ -87,8 +56,6 @@ export default {
     getProductPage,
     products,
     product_categories,
-    product_features,
-    product_highlight_features,
     product_prices,
     getPricePage,
     getSearchSuggestions

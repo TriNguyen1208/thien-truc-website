@@ -25,7 +25,6 @@ export default function PricePage() {
         const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
         const { data: productPrices = [], isLoading: isLoadingPrices } = useProducts.product_prices.getAll();
         const { data: products = [], isLoading: isLoadingProducts } = useProducts.products.getList();
-        console.log("productPrices", productPrices)
         
         const handleButton = (category, query) => {
           setQuery(query)

@@ -29,16 +29,6 @@ const API_ROUTES = {
             getAll: `${PRODUCT_BASE}/product_categories`,
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
         },
-        product_features: {
-            getAll: `${PRODUCT_BASE}/product_features`,
-            getByProductId: (product_id) => `${PRODUCT_BASE}/product_features/${product_id}`,
-            getOne: (product_id, feature_id) => `${PRODUCT_BASE}/product_features/${product_id}/${feature_id}`,
-        },
-        product_highlight_features: {
-            getAll: `${PRODUCT_BASE}/product_highlight_features`,
-            getByProductId: (product_id) => `${PRODUCT_BASE}/product_highlight_features/${product_id}`,
-            getOne: (product_id, feature_id) => `${PRODUCT_BASE}/product_highlight_features/${product_id}/${feature_id}`,
-        },
         product_prices: {
             getAll: `${PRODUCT_BASE}/product_prices`,
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
