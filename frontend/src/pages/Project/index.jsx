@@ -10,7 +10,7 @@ export default function Project() {
 
     // Khai bao cac hooks
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,13 +20,13 @@ export default function Project() {
 
     // Lay params
     const filter = searchParams.get('filter') || undefined;
-    const query = searchParams.get('query') || undefined;
+    var query = searchParams.get('query') || undefined;
     const page = Number(searchParams.get('page')) || 1;
 
     // fetch data 
     const { data: projectPageData, isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
     const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.getAll();
-    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter, page);
+    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter === "Tất cả dự án" ? undefined : filter, page);
 
 
     if (isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject) {
@@ -55,16 +55,20 @@ export default function Project() {
         navigate(`/du-an/${id}`);
     }
     const handleSearchSubmit = (filter, query) => {
-        const params = new URLSearchParams();
-        if (query) params.set("query", query);
-        if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
-        const queryString = params.toString();
-        navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+        // const params = new URLSearchParams();
+        // if (query) params.set("query", query);
+        // if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
+        // setSearchParams(params);
+        const newParams = new URLSearchParams();
+        newParams.set("query", query);
+        newParams.set("filter", filter);
+        newParams.set("page", "1");
+        setSearchParams(newParams);
 
     }
 
     const handlePageChange = (page) => {
-         const params = new URLSearchParams();
+        const params = new URLSearchParams();
         if (query) params.set("query", query);
         if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
         if (page >= 2) params.set('page', page)
@@ -80,15 +84,19 @@ export default function Project() {
     const handleClickPostCategory = (idCategory) => {
         const nameRegion = categoriesData[idCategory];
         const region = projectRegionData.find(item => item.name === nameRegion);
+        query = undefined;
         if (region && region.name != categoriesDefault) {
             navigate(`/du-an?filter=${region.name}`);
+            
         }
         else {
             navigate(`/du-an`);
         }
+        
+       
     }
 
-   const handleButton = () => {
+    const handleButton = () => {
         navigate('/lien-he');
     }
 
@@ -100,6 +108,7 @@ export default function Project() {
         hasSearch: true,
         categories: categoriesData || categoriesDefault,
         contentPlaceholder: "Nhập vào đây",
+        value: query,
         handleButton: handleSearchSubmit,
         handleSearchSuggestion: handleSearchSuggestion,
         handleEnter: handleEnter
@@ -113,7 +122,7 @@ export default function Project() {
         colorText: "#000000",
         hasButton: true,
         contentButton: "Liên hệ tư vấn",
-        handleButton: handleButton 
+        handleButton: handleButton
     };
 
 
