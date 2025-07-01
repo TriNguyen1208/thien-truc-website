@@ -65,7 +65,7 @@ export default function ProductDetail(){
     {
         return(<Loading/>)
     }
-    
+    console.log(product)
     
     const goBack = ()=>{
         navigate('/san-pham')
