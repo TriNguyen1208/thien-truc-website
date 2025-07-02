@@ -27,7 +27,7 @@ const ListType = ({categories, handleClick, current}) => {
     return (
         <div ref={wrapperRef} className="relative border border-gray-200 rounded-sm shadow-lg">
             <button
-                className="rounded-tl-md rounded-bl-md w-38 h-[40px] pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
+                className="rounded-tl-md rounded-bl-md w-40 h-[40px] pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
                 onClick={(e) => {
                     e.stopPropagation();
                     setDropdownOpen(!dropdownOpen);
