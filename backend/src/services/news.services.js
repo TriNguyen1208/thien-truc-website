@@ -23,8 +23,9 @@ const getNumPage = async (query, filter) => {
             FROM news.news n
             JOIN news.news_categories n_cate ON n.category_id = n_cate.id
             WHERE 
-                ($2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2))
-                AND similarity(unaccent(n.title), unaccent($1)) > 0.1
+                $2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2) AND
+                (unaccent(n.title) ILIKE '%' || unaccent($1) || '%' OR
+                similarity(unaccent(n.title), unaccent($1)) > 0.1)
         `;
         const values = [query, filter];
         const result = await pool.query(sql, values);
@@ -93,8 +94,9 @@ const news = {
                 FROM news.news n
                 JOIN news.news_categories n_cate ON n.category_id = n_cate.id
                 WHERE 
-                    ($2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2))
-                    AND similarity(unaccent(n.title::text), unaccent($1::text)) > 0.1
+                    $2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2) AND
+                    (unaccent(n.title::text) ILIKE '%' || unaccent($1::text) || '%' OR
+                    similarity(unaccent(n.title::text), unaccent($1::text)) > 0.1)
                 ORDER BY 
                     similarity(unaccent(n.title), unaccent($1)) DESC
                 LIMIT $3 OFFSET $4
