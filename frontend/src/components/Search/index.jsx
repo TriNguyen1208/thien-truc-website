@@ -17,6 +17,8 @@ const SearchBar = ({ data }) => {
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [displaySuggestion, setDisplaySuggestion] = useState([]);
+
   const wrapperRef = useRef(null);
 
   // Debounce query
@@ -30,9 +32,26 @@ const SearchBar = ({ data }) => {
   // Gọi API sau khi debounce query
   const { data: suggestions = [], isLoading } = handleSearchSuggestion(
     debouncedQuery,
-    category === categories[0] ? "" : category
+    category === categories[0] ? '' : category
   );
-  // Click outside để đóng dropdown & suggestion
+
+  // Cập nhật displaySuggestion khi debounceQuery hoặc suggestions thay đổi
+  useEffect(() => {
+    setHighlightedIndex(0);
+    if (!query.trim()) {
+      setDisplaySuggestion([]);
+      return;
+    }
+
+    const baseSuggestions = Array.isArray(suggestions) ? suggestions : [];
+
+    setDisplaySuggestion([
+      { id: 'input', query: query },
+      ...baseSuggestions,
+    ]);
+  }, [query, suggestions.length]);
+
+  // Đóng dropdown và suggestions khi click bên ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -45,11 +64,11 @@ const SearchBar = ({ data }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  //Xử lý khi click, enter và nhấn nút tìm kiếm
   const handleSearch = (query) => {
     if (onSearch) {
       onSearch(category, query);
     }
+    setShowSuggestions(false);
   };
 
   if (!categories || !contentPlaceholder) return null;
@@ -71,8 +90,8 @@ const SearchBar = ({ data }) => {
           </svg>
         </button>
         {dropdownOpen && (
-        <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {categories.map((r) => (
               <li
                 key={r}
@@ -108,42 +127,61 @@ const SearchBar = ({ data }) => {
           onKeyDown={(e) => {
             if (e.key === 'ArrowDown') {
               e.preventDefault();
-              setHighlightedIndex((prev) => Math.min(prev + 1, suggestions.length - 1));
+              setHighlightedIndex((prev) => Math.min(prev + 1, displaySuggestion.length - 1));
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
               setHighlightedIndex((prev) => Math.max(prev - 1, 0));
             } else if (e.key === 'Enter') {
-              if (showSuggestions && suggestions[highlightedIndex]) {
-                const item = suggestions[highlightedIndex];
-                handleEnter(item.id);
+              const item = displaySuggestion[highlightedIndex];
+              if (item) {
+                if (item.id === 'input') {
+                  handleSearch(item.query);
+                } else {
+                  handleEnter(item.id);
+                }
               } else {
-                handleSearch(query); // fallback nếu không có gợi ý
+                handleSearch(query);
               }
             }
           }}
         />
 
+        {/* Gợi ý kết quả */}
         {showSuggestions && debouncedQuery && (
           <ul className="absolute z-10 left-0 py-2 mt-3 w-full bg-white shadow-md max-h-64 overflow-y-auto">
-            {isLoading ? (
-              // <li className="py-2 px-4 text-sm text-gray-500">Đang tải...</li>
-              <li key='loading' className="py-2 px-4 text-sm text-gray-500">Đang tải...</li>
+            {displaySuggestion.map((item, index) => (
+              <li
+                key={index}
+                className={`py-2 cursor-pointer text-sm text-bold text-gray-700 text-left px-4 flex gap-3 items-center ${
+                  index === highlightedIndex ? 'bg-gray-100' : ''
+                }`}
+                onMouseEnter={() => setHighlightedIndex(index)}
+                onClick={() => {
+                  if (item.id === 'input') {
+                    handleSearch(item.query);
+                  } else {
+                    handleEnter(item.id);
+                  }
+                }}
+              >
+                {item.id === 'input' ? (
+                  <>
+                    <SearchOutlined style={{ fontSize: '16px'}} />
+                    {query}
+                  </>
+                ) : (
+                  <>
+                    <img src={item.img} alt="" className="w-5 h-5" />
+                    {item.query}
+                  </>
+                )}
+              </li>
+            ))}
 
-            ) : suggestions.length > 0 ? (
-              suggestions.map((item, index) => (
-                <li key={index} className={`py-2 hover:bg-gray-100 cursor-pointer text-sm text-bold text-gray-700 text-left px-4 flex gap-3 items-center ${index === highlightedIndex ? 'bg-gray-100' : ''
-                    }`}
-                  onMouseEnter={() => setHighlightedIndex(index)} // di chuột cũng highlight
-                  onClick={() => {
-                    handleEnter(item.id)
-                  }}
-                >
-                  <img src={item.img} alt="" className="w-5 h-5" />
-                  {item.query}
-                </li>
-              ))
-            ) : (
-              <li className="py-2 px-4 text-sm text-gray-500">Không có kết quả</li>
+            {isLoading && (
+              <li key="loading" className="py-2 px-4 text-sm text-gray-500">
+                Đang tải...
+              </li>
             )}
           </ul>
         )}
