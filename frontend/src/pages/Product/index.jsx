@@ -157,7 +157,10 @@ export default function Product(){
     const handleSearchSuggestion = (query, filter) => {
         return useProducts.getSearchSuggestions(query, filter)
     }
-    
+    const handleEnterSearch = (idProduct)=>{   
+        const path = location.pathname;
+        navigate(`${path}/${idProduct}`)
+    }
     const handleViewMore = (category)=>{
          const newParams = new URLSearchParams();
         newParams.set("filter", category);
@@ -210,7 +213,8 @@ export default function Product(){
         handleButton : handleSearch,
         categories : categories,
         contentPlaceholder : 'Tìm kiếm sản phẩm...',
-        handleSearchSuggestion: handleSearchSuggestion
+        handleSearchSuggestion: handleSearchSuggestion,
+        handleEnter: handleEnterSearch
     }
     
     const bannerViewPrices = {
