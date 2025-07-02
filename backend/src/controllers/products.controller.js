@@ -52,6 +52,10 @@ const product_prices = {
     }
 }
 
+const getHighlightProducts = async (req, res) => {
+    const data = await productServices.getHighlightProducts();
+    res.status(200).json(data);
+}
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
@@ -60,4 +64,4 @@ const getSearchSuggestions = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getSearchSuggestions };
+export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getHighlightProducts, getSearchSuggestions };

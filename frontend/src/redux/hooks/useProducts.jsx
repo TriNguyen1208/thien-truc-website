@@ -71,6 +71,15 @@ function useGetPricePage(){
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function useGetHighlightProducts(){
+    return useQuery({
+        queryKey: ["highlight_products"],
+        queryFn: productsServices.getHighlightProducts,
+        staleTime: 5 * 60 * 1000,
+    })
+}
+
 function useSearchSuggest(query, filter){
     return useQuery({
         queryKey: ['product-suggestions', query, filter],
@@ -95,5 +104,6 @@ export default {
         getOne: product_prices.useGetOne
     },
     getPricePage: useGetPricePage,
+    getHighlightProducts: useGetHighlightProducts,
     getSearchSuggestions: useSearchSuggest,
   };

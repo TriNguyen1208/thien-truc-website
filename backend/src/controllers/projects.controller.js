@@ -47,6 +47,11 @@ const project_contents = {
     }
 }
 
+const getHighlightProjects = async (req, res) => {
+    const data = await projectsServices.getHighlightProjects();
+    res.status(200).json(data);
+}
+
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
@@ -54,4 +59,4 @@ const getSearchSuggestions = async (req, res) => {
     const data = await projectsServices.getSearchSuggestions(query, filter);
     res.status(200).json(data);
 }
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getSearchSuggestions};
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions};

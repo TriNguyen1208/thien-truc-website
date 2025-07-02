@@ -340,6 +340,45 @@ const project_contents = {
     }
 }
 
+const getHighlightProjects = async () => {
+    const sql = `
+        SELECT
+            prj.id AS prj_id,
+            prj.title,
+            prj.province,
+            prj.complete_time,
+            prj.main_img,
+            prj.main_content,
+
+            prj_reg.id AS reg_id,
+            prj_reg.name,
+            prj_reg.rgb_color
+
+        FROM project.project_regions prj_reg,
+            unnest(prj_reg.highlight_project_ids) AS highlighted_id
+        JOIN project.projects prj ON prj.id = highlighted_id
+    `;
+    try {
+        const { rows } = await pool.query(sql);
+        const results = rows.map(row => ({
+            id: row.prj_id,
+            title: row.title,
+            province: row.province,
+            complete_time: row.complete_time,
+            main_img: row.main_img,
+            main_content: row.main_content,
+            region: {
+                id: row.reg_id,
+                name: row.name,
+                rgb_color: row.rgb_color
+            }
+        }));
+        return results;
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+}
+
 const getSearchSuggestions = async (query, filter) => {
     const cleanedQuery = query.trim().replaceAll(`'`, ``);
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
@@ -368,4 +407,4 @@ const getSearchSuggestions = async (query, filter) => {
     }
 };
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getSearchSuggestions};
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions};

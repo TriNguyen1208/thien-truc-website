@@ -45,8 +45,14 @@ const project_contents = {
         return res.data;
     }
 }
+
+const getHighlightProjects = async () => {
+    const res = await axios.get(API_ROUTES.project.highlight_projects);
+    return res.data;
+}
+
 const getSearchSuggestions = async (query, filter) => {
     const res = await axios.get(API_ROUTES.project.search_suggestions(query, filter));
     return res.data
 }
-export default { getAll, getProjectPage, projects, project_regions, project_contents, getSearchSuggestions };
+export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions };
