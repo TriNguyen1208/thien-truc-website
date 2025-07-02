@@ -41,6 +41,7 @@ export default function News() {
     sortBy,
     currentPage
   );
+  const idSelectedCategories = rawFilter ? categories.findIndex((name) => name === filter) : 0;
 
   if (isLoadingNewsPage || isLoadingfilter) return <Loading />;
 
@@ -95,6 +96,8 @@ export default function News() {
     hasSearch: true,
     categories: categories,
     contentPlaceholder: "Nhập vào đây",
+    value: query,
+    idCategories: idSelectedCategories,
     handleButton: handleButton,
     handleSearchSuggestion: handleSearchSuggestion,
     handleEnter: handleEnter,
