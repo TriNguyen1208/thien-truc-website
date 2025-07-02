@@ -1,6 +1,6 @@
 import UserCard from "@/components/UserCard";
 import Banner from "@/components/Banner";
-import {useLocation } from 'react-router-dom';
+import {Link, useLocation } from 'react-router-dom';
 import useContact from "@/redux/hooks/useContact";
 import Form from "@/components/Form";
 import{useRef, useEffect} from 'react'
@@ -125,9 +125,9 @@ export default function Contact() {
                                                 href={item.googlemaps_url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="hover:underline no-underline text-sm hover:"
+                                                className="text-sm hover:underline"
                                             >
-                                                <div >{item.address} </div>
+                                                <div className="font-inherit text-[16px]">{item.address}</div>
                                             </a>
                                         ))}
 
@@ -154,6 +154,7 @@ export default function Contact() {
                             href={companyInfoData.fanpage_url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            className="hover:underline"
                         >
 
                             <div className="flex items-center">
