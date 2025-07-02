@@ -35,42 +35,6 @@ const product_categories = {
     }
 }
 
-const product_features = {
-    getAll: async (req, res) => {
-        const data = await productServices.product_features.getAll();
-        res.status(200).json(data);
-    },
-    getByProductId: async (req, res) => {
-        const product_id = req.params.product_id
-        const data = await productServices.product_features.getByProductId(product_id);
-        res.status(200).json(data);
-    },
-    getOne: async (req, res) => {
-        const product_id = req.params.product_id
-        const feature_id = req.params.feature_id
-        const data = await productServices.product_features.getOne(product_id, feature_id);
-        res.status(200).json(data);
-    }
-}
-
-const product_highlight_features = {
-    getAll: async (req, res) => {
-        const data = await productServices.product_highlight_features.getAll();
-        res.status(200).json(data);
-    },
-    getByProductId: async (req, res) => {
-        const product_id = req.params.product_id
-        const data = await productServices.product_highlight_features.getByProductId(product_id);
-        res.status(200).json(data);
-    },
-    getOne: async (req, res) => {
-        const product_id = req.params.product_id
-        const feature_id = req.params.feature_id
-        const data = await productServices.product_highlight_features.getOne(product_id, feature_id);
-        res.status(200).json(data);
-    }
-}
-
 const getPricePage = async (req, res) => {
     const data = await productServices.getPricePage();
     res.status(200).json(data);
@@ -96,4 +60,4 @@ const getSearchSuggestions = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProductPage, products, product_categories, product_features, product_highlight_features, getPricePage, product_prices, getSearchSuggestions };
+export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getSearchSuggestions };

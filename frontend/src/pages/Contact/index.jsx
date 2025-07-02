@@ -1,8 +1,9 @@
 import UserCard from "@/components/UserCard";
 import Banner from "@/components/Banner";
-import { useNavigate } from 'react-router-dom';
+import {useLocation } from 'react-router-dom';
 import useContact from "@/redux/hooks/useContact";
 import Form from "@/components/Form";
+import{useRef, useEffect} from 'react'
 import {
     Mail,
     Phone,
@@ -10,13 +11,28 @@ import {
     Clock,
 } from 'lucide-react';
 import Loading from "@/components/Loading";
-import { FiFacebook } from "react-icons/fi"; // Fi = Feather Icons (outline)
+import { FiFacebook } from "react-icons/fi";
 export default function Contact() {
+    //Liên kết với banner của trang 'về chúng tôi'
+    const location = useLocation();
+//     const componentForm = useRef(null);
+
+//     useEffect(() => {
+//         if (location.state?.scrollTo === "componentForm") {
+//         componentForm.current?.scrollIntoView({ behavior: "smooth" });
+//         }
+//   }, [location]);
+  //
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
-    const navigate = useNavigate();
-    //Cái này là của whiteButton
+    const sectionRef = useRef(null);
+
+    useEffect(() => {
+        if (location.state?.scrollToForm) {
+            sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [location]);
     const handleButton = () => {
-        navigate('/lien-he')
+        sectionRef.current?.scrollIntoView({ behavior: "smooth" });
     }
     if (isLoadingDataAll) {
         return (
@@ -56,14 +72,14 @@ export default function Contact() {
                             url_facebook: item.facebook_url,
                         }
                         return (
-                            <div key={item.id} className="w-[350px] mr-[20px] mb-[20px]">
+                            <div key={item.id} className="w-[260px] mr-[20px] mb-[20px]">
                                 <UserCard data={dataUserCard} />
                             </div>
                         )
                     })}
                 </div>
             </div>
-            <div className="container-fluid flex py-[70px] ">
+            <div ref={sectionRef} className="container-fluid flex py-[70px] ">
                 <div className="w-1/2 text-[var(--dark-green)] font-[400] ">
                     <div className="text-[30px] font-[600] mb-[15px]">
                         Liên hệ về chúng tôi
@@ -122,7 +138,7 @@ export default function Contact() {
                                                 <div >{item.address} </div>
                                             </a>
                                         ))}
-                                        
+
                                     </div>
                                 </div>
                             </div>

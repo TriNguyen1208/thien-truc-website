@@ -10,7 +10,7 @@ export default function ProjectDetail() {
     const navigate = useNavigate();
     const { data: projectContentData, isLoading: isLoadingProjectContent } = useProjects.project_contents.getOne(id);
     const handleButton = () => {
-        navigate('/lien-he')
+         navigate("/lien-he", { state: { scrollToForm: true } });
     }
     if (isLoadingProjectContent) {
         return (

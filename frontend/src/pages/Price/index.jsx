@@ -25,7 +25,6 @@ export default function PricePage() {
         const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
         const { data: productPrices = [], isLoading: isLoadingPrices } = useProducts.product_prices.getAll();
         const { data: products = [], isLoading: isLoadingProducts } = useProducts.products.getList();
-        console.log("productPrices", productPrices)
         
         const handleButton = (category, query) => {
           setQuery(query)
@@ -226,7 +225,7 @@ export default function PricePage() {
         <p className="text-gray-700 mb-5">
           Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.
         </p>
-          <div className="mx-auto px-150 ">
+          <div className="mx-auto px-140 ">
           <GreenButton
             content="Liên Hệ Ngay →"
             width="90%"

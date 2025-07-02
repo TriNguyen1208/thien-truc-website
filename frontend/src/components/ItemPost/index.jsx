@@ -7,7 +7,7 @@ import {
     MailOutlined
 } from '@ant-design/icons';
 
-const ItemPost = ({ data, width = "100%"}) => {
+const ItemPost = ({ data, width = "100%" }) => {
     const {
         type, // 'project' hoặc 'news'
         title,
@@ -49,18 +49,18 @@ const ItemPost = ({ data, width = "100%"}) => {
 
     const renderContent = () => (
         <>
-        <div className="p-4 flex-1 relative">
-            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 break-words">
-                {title}
-            </h3>
+            <div className="p-4 flex-1 relative">
+                <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 break-words">
+                    {title}
+                </h3>
 
-            {description && (
-                <p className="text-gray-600 text-sm mb-3 line-clamp-5 break-words">
-                    {description}
-                </p>
-            )}
-        </div>
-        <div className='bottom-3 left-0 absolute w-full px-4'>
+                {description && (
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-5 break-words">
+                        {description}
+                    </p>
+                )}
+            </div>
+            <div className='bottom-3 left-0 absolute w-full px-4'>
 
                 {/* Location và Date */}
                 <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
@@ -98,7 +98,7 @@ const ItemPost = ({ data, width = "100%"}) => {
                         <ShareAltOutlined
                             style={{ fontSize: '16px', cursor: 'pointer' }}
                             className="hover:text-gray-700"
-                            />
+                        />
                     </div>
                 )}
             </div>
@@ -107,13 +107,14 @@ const ItemPost = ({ data, width = "100%"}) => {
     );
 
     return (
-        <div 
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
-            style={{width}}
+        <div
+            className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-102 transition-transform transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
+            style={{ width }}
         >
             {renderImage()}
             {renderContent()}
         </div>
+
     );
 };
 
