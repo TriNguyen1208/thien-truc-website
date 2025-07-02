@@ -42,11 +42,10 @@ export default function AboutUs(){
     const { data: aboutusServices, isLoading: isLoadingAboutUsServices } = useAboutUs.company_services.getAll()
     const { data: aboutusChoose, isLoading: isLoadingAboutUsChoose } = useAboutUs.why_choose_us.getAll()
     
-    
     if (isLoadingAboutUs || isLoadingAboutUsPage ||isLoadingAboutUsServices || isLoadingAboutUsChoose) {
         return <p>Loading...</p>;
     }
-  
+    
     const bannerMain = {
         title : aboutusPage.banner_title,
         description: aboutusPage.banner_description,
