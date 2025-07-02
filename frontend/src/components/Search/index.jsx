@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 
 const SearchBar = ({ data }) => {
@@ -18,7 +18,6 @@ const SearchBar = ({ data }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [displaySuggestion, setDisplaySuggestion] = useState([]);
-
   const wrapperRef = useRef(null);
 
   // Debounce query
@@ -36,20 +35,25 @@ const SearchBar = ({ data }) => {
   );
 
   // Cập nhật displaySuggestion khi debounceQuery hoặc suggestions thay đổi
+  // Dùng useMemo để ổn định suggestions nếu nội dung thay đổi nhưng độ dài không đổi
+  const stableSuggestions = useMemo(() => {
+    // Nếu suggestions null hoặc undefined thì trả về mảng rỗng
+    return Array.isArray(suggestions) ? suggestions : [];
+  }, [JSON.stringify(suggestions)]); // Dùng stringify để phát hiện thay đổi nội dung
+
   useEffect(() => {
     setHighlightedIndex(0);
+
     if (!query.trim()) {
       setDisplaySuggestion([]);
       return;
     }
 
-    const baseSuggestions = Array.isArray(suggestions) ? suggestions : [];
-
     setDisplaySuggestion([
       { id: 'input', query: query },
-      ...baseSuggestions,
+      ...stableSuggestions,
     ]);
-  }, [query, suggestions.length]);
+  }, [query, stableSuggestions]);
 
   // Đóng dropdown và suggestions khi click bên ngoài
   useEffect(() => {
