@@ -63,7 +63,7 @@ export default function Contact() {
                             url_facebook: item.facebook_url,
                         }
                         return (
-                            <div key={item.id} className="w-[350px] mr-[20px] mb-[20px]">
+                            <div key={item.id} className="w-[260px] mr-[20px] mb-[20px]">
                                 <UserCard data={dataUserCard} />
                             </div>
                         )
