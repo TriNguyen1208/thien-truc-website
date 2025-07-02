@@ -1,12 +1,20 @@
 import React from 'react'
 import { useEffect } from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 
 const ListType = ({categories, handleClick, current}) => {
     const [category, setCategory] = useState(current);
     useEffect(() => {
         setCategory(current);
       }, [current]);
+    const truncateCategories = useMemo(() => {
+        return categories.map((category) => {
+            if (Array.from(category).length >= 20) {
+            return category.slice(0, 20) + '...';
+            }
+            return category;
+        });
+    }, []);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const wrapperRef = useRef(null);
     useEffect(() => {
@@ -33,7 +41,7 @@ const ListType = ({categories, handleClick, current}) => {
                     setDropdownOpen(!dropdownOpen);
                 }}
             >
-            <span>{category}</span>
+            <span>{truncateCategories[categories.indexOf(category)]}</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
             </svg>
