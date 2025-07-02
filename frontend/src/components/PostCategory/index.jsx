@@ -9,7 +9,6 @@ function ItemCategory({ content }) {
 }
 
 function PostCategory({ categories, handleClick, idCategories = '0' }) {
-    console.log(idCategories);
     const [selected, setSelected] = useState(String(idCategories));
      useEffect(() => {
         setSelected(String(idCategories));
