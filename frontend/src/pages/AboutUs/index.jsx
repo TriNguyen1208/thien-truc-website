@@ -71,7 +71,7 @@ export default function AboutUs(){
         hasButton : true,
         hasSearch : false,
         contentButton : 'Liên Hệ Ngay',
-        handleButton : ()=>{ navigate('/lien-he',  { state: { scrollTo: "componentForm" } })},
+        handleButton : ()=>{ navigate('/lien-he',  { state: { scrollToForm: true } })},
         categories : null,
         contentPlaceholder : null
     }

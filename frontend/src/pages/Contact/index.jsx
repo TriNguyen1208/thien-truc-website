@@ -15,14 +15,6 @@ import { FiFacebook } from "react-icons/fi";
 export default function Contact() {
     //Liên kết với banner của trang 'về chúng tôi'
     const location = useLocation();
-//     const componentForm = useRef(null);
-
-//     useEffect(() => {
-//         if (location.state?.scrollTo === "componentForm") {
-//         componentForm.current?.scrollIntoView({ behavior: "smooth" });
-//         }
-//   }, [location]);
-  //
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
     const sectionRef = useRef(null);
 

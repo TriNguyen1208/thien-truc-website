@@ -9,7 +9,7 @@ import useProducts from "@/redux/hooks/useproducts";
 import Loading from '@/components/Loading'
 import '@/styles/custom.css'
 import { useNavigate } from 'react-router-dom'
-import GreenButton from '@/components/GreenButton'
+
 
 export default function PricePage() {
   
@@ -113,13 +113,25 @@ export default function PricePage() {
             handleSearchSuggestion: handleSearchSuggestion,
             handleEnter: handleEnter
           };
+           const bannerContact = {
+              title : 'Sẵn Sàng Hợp Tác Với Chúng Tôi?',
+              description: 'Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.',
+              colorBackground : "#F0FDF4",
+              colorText : "#000000",
+              hasButton : true,
+              hasSearch : false,
+              contentButton : 'Liên Hệ Ngay',
+              handleButton : ()=>{ navigate('/lien-he',  { state: { scrollToForm: true } })},
+              categories : null,
+              contentPlaceholder : null
+          }
   return (
   <>
     <div className="w-screen">
         <Banner data={bannerHead} />
       </div>
-    <div className="container-fluid flex flex-col gap-10 pt-10">
-    <div className="bg-[#F0FDF4] py-20 px-6 md:px-[80px] shadow-md rounded-xl">
+    <div className="container-fluid flex flex-col gap-10 py-10">
+    <div className="bg-[#F0FDF4] pt-20 px-6 md:px-[80px] shadow-md rounded-xl">
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto rounded-xl shadow-2xl overflow-hidden">
         <div className="text-center font-bold text-3xl py-7 bg-white">
           BẢNG GIÁ SẢN PHẨM
@@ -218,21 +230,7 @@ export default function PricePage() {
           </table>
         </div>
       </div>
-      <div className="text-center pt-30">
-        <h2 className="text-2xl md:text-3xl font-bold text-black mb-4">
-          Sẵn Sàng Hợp Tác Với Chúng Tôi?
-        </h2>
-        <p className="text-gray-700 mb-5">
-          Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.
-        </p>
-          <div className="mx-auto px-140 ">
-          <GreenButton
-            content="Liên Hệ Ngay →"
-            width="90%"
-            handleClick={() => navigate('/lien-he')}
-          />
-        </div>
-      </div>
+      <Banner data = {bannerContact}/>
     </div>
    {selectedProduct && (<ProductDetailModal product={flatProducts.find(p => p.id === selectedProduct.id) || selectedProduct} onClose={() => setSelectedProduct(null)}/>)}
   </div>
