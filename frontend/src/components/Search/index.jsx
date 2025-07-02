@@ -5,15 +5,15 @@ const SearchBar = ({ data }) => {
   const {
     categories,
     contentPlaceholder,
+    query: initQuery = "",
     onSearch,
     handleSearchSuggestion,
     handleEnter
   } = data;
-
-  const [category, setCategory] = useState(categories?.[0] || '');
+  const [category, setCategory] = useState(categories?.[0] || "");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initQuery);
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
