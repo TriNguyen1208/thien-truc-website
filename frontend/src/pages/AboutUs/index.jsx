@@ -1,12 +1,13 @@
 import useAboutUs from '@/redux/hooks/useAboutUs'
 import Banner from '@/components/Banner'
-import {CheckCircleOutlined} from '@ant-design/icons'
-import {UsergroupAddOutlined} from '@ant-design/icons'
-import {LineChartOutlined} from '@ant-design/icons'
-import {WifiOutlined} from '@ant-design/icons'
-import {DollarOutlined} from '@ant-design/icons'
-import Card from '../../components/Card'    
-import CenterCard from '../../components/CenterCard'
+import Card from '@/components/Card'    
+import CenterCard from '@/components/CenterCard'
+import Loading from '@/components/Loading'
+import useContact from '@/redux/hooks/useContact'
+import {CheckCircleOutlined,  UsergroupAddOutlined, LineChartOutlined, WifiOutlined, DollarOutlined} from '@ant-design/icons'
+import {useNavigate} from 'react-router-dom'
+
+//Start extra Component 
 function ProgressItem({ icon, label, value, percent }) {
   return (
     <div className="mb-[30px] text-[16px]">
@@ -35,16 +36,19 @@ function Title({content})
         </h1>
     )
 }
+//End extra component
 
+
+//Main component
 export default function AboutUs(){
-    const { data: aboutus, isLoading: isLoadingAboutUs } = useAboutUs.getAll()
+    const { data: company_info, isLoading: isLoadingContact } = useContact.getCompanyInfo()
     const { data: aboutusPage, isLoading: isLoadingAboutUsPage } = useAboutUs.getAboutUsPage()
     const { data: aboutusServices, isLoading: isLoadingAboutUsServices } = useAboutUs.company_services.getAll()
     const { data: aboutusChoose, isLoading: isLoadingAboutUsChoose } = useAboutUs.why_choose_us.getAll()
+    const navigate = useNavigate()
     
-    
-    if (isLoadingAboutUs || isLoadingAboutUsPage ||isLoadingAboutUsServices || isLoadingAboutUsChoose) {
-        return <p>Loading...</p>;
+    if (isLoadingContact || isLoadingAboutUsPage ||isLoadingAboutUsServices || isLoadingAboutUsChoose) {
+        return (<Loading/>);
     }
   
     const bannerMain = {
@@ -54,12 +58,12 @@ export default function AboutUs(){
         colorText : "#ffffff",
         hasButton : true,
         hasSearch : false,
-        contentButton : 'Trụ sở chính',
-        handleButton : ()=>{ console.log('Hi')},
+        contentButton : `Trụ sở chính: ${company_info.main_office.address}`,
+        handleButton : ()=>{ window.open(company_info.main_office.googlemaps_url, "_blank")},
         categories : null,
         contentPlaceholder : null
     } 
-    const banner2 = {
+    const bannerContact = {
         title : 'Sẵn Sàng Hợp Tác Với Chúng Tôi?',
         description: 'Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.',
         colorBackground : "#F0FDF4",
@@ -67,7 +71,7 @@ export default function AboutUs(){
         hasButton : true,
         hasSearch : false,
         contentButton : 'Liên Hệ Ngay',
-        handleButton : ()=>{ console.log('Hi')},
+        handleButton : ()=>{ navigate('/lien-he',  { state: { scrollTo: "componentForm" } })},
         categories : null,
         contentPlaceholder : null
     }
@@ -149,6 +153,8 @@ export default function AboutUs(){
     return (
         <>
             <Banner data = {bannerMain}/>
+            {/////////////////////////////////////////////
+            }
             <div className='flex flex-grow px-[100px] py-[50px] gap-x-[50px] '>
                 <div className='w-[50%]'>
                     <div className='flex flex-col my-[20px]'>
@@ -177,6 +183,8 @@ export default function AboutUs(){
                 </div>
                 
             </div>
+             {/////////////////////////////////////////////
+            }
             <div className='flex flex-col bg-[#F0FDF4] px-[150px] pb-[100px] pt-[50px] ' >
                 <div className='flex  justify-center mb-[20px]'>
                     <Title content={'Nhiệm Vụ & Trách Nhiệm'}/>
@@ -198,6 +206,8 @@ export default function AboutUs(){
                         }
                 </div>
             </div>
+             {/////////////////////////////////////////////
+            }
              <div className='flex flex-col bg-[#ffffff] px-[150px] py-[50px] ' >
                 <div className='flex  justify-center mb-[20px]'>
                     <Title content={' Giá Trị Cốt Lõi'}/>
@@ -219,6 +229,8 @@ export default function AboutUs(){
                         }
                 </div>
             </div>
+             {/////////////////////////////////////////////
+            }
             <div className='flex flex-col bg-[#157E3C] px-[150px] pb-[100px] pt-[50px] ' >
                 <div className='flex  justify-center mb-[20px] !text-white'>
                         <h1 className=' font-bold text-[30px] text-white '>
@@ -242,7 +254,9 @@ export default function AboutUs(){
                         }
                 </div>
             </div>
-            <Banner data = {banner2}/>
+             {/////////////////////////////////////////////
+            }
+            <Banner data = {bannerContact}/>
         </>
     )
 }

@@ -1,7 +1,9 @@
 import UserCard from "@/components/UserCard";
 import Banner from "@/components/Banner";
+import {useLocation } from 'react-router-dom';
 import useContact from "@/redux/hooks/useContact";
 import Form from "@/components/Form";
+import{useRef, useEffect} from 'react'
 import {
     Mail,
     Phone,
@@ -10,12 +12,19 @@ import {
 } from 'lucide-react';
 import Loading from "@/components/Loading";
 import { FiFacebook } from "react-icons/fi";
-import { useRef } from "react";
-import { useLocation, useEffect } from "react-router-dom";
 export default function Contact() {
+    //Liên kết với banner của trang 'về chúng tôi'
+    const location = useLocation();
+//     const componentForm = useRef(null);
+
+//     useEffect(() => {
+//         if (location.state?.scrollTo === "componentForm") {
+//         componentForm.current?.scrollIntoView({ behavior: "smooth" });
+//         }
+//   }, [location]);
+  //
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
     const sectionRef = useRef(null);
-    const location = useLocation();
 
     useEffect(() => {
         if (location.state?.scrollToForm) {
