@@ -1,7 +1,7 @@
 import GreenButton from "../GreenButton";
 
 function handleDisplayHighlights(product) {
-    const numberOfHighlights = Math.min(product.highlight_features.length, 3);
+    const numberOfHighlights = Math.min((product.highlight_features || []).length, 3);
     const clampClass =
         numberOfHighlights === 0 ? 'line-clamp-5' :
             numberOfHighlights === 1 ? 'line-clamp-4' :
@@ -26,8 +26,6 @@ function handleDisplayHighlights(product) {
     )
 }
 function ItemProduct({product, handleClick , width = "w-full", height = "h-full"}) {
- 
-
     return (
         <div
             className="flex flex-col w-full h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"

@@ -225,7 +225,7 @@ export default function PricePage() {
         <p className="text-gray-700 mb-5">
           Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.
         </p>
-          <div className="mx-auto px-150 ">
+          <div className="mx-auto px-140 ">
           <GreenButton
             content="Liên Hệ Ngay →"
             width="90%"

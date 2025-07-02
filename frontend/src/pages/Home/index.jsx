@@ -115,16 +115,16 @@ export default function Home() {
                 <div>
                     <div className="flex justify-between">
                         <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton} highLightFeature={[]}/>
+                            <ItemProduct product={product} handleClick={handleClickButton}/>
                         </div>
                         <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton} highLightFeature={[]}/>
+                            <ItemProduct product={product} handleClick={handleClickButton}/>
                         </div>
                         <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton} highLightFeature={[]}/>
+                            <ItemProduct product={product} handleClick={handleClickButton}/>
                         </div>
                         <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton} highLightFeature={[]}/>
+                            <ItemProduct product={product} handleClick={handleClickButton}/>
                         </div>
                     </div>
                 </div>
