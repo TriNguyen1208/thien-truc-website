@@ -1,6 +1,5 @@
 import UserCard from "@/components/UserCard";
 import Banner from "@/components/Banner";
-import { useNavigate } from 'react-router-dom';
 import useContact from "@/redux/hooks/useContact";
 import Form from "@/components/Form";
 import {
@@ -10,13 +9,21 @@ import {
     Clock,
 } from 'lucide-react';
 import Loading from "@/components/Loading";
-import { FiFacebook } from "react-icons/fi"; // Fi = Feather Icons (outline)
+import { FiFacebook } from "react-icons/fi";
+import { useRef } from "react";
+import { useLocation, useEffect } from "react-router-dom";
 export default function Contact() {
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
-    const navigate = useNavigate();
-    //Cái này là của whiteButton
+    const sectionRef = useRef(null);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.scrollToForm) {
+            sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [location]);
     const handleButton = () => {
-        navigate('/lien-he')
+        sectionRef.current?.scrollIntoView({ behavior: "smooth" });
     }
     if (isLoadingDataAll) {
         return (
@@ -63,7 +70,7 @@ export default function Contact() {
                     })}
                 </div>
             </div>
-            <div className="container-fluid flex py-[70px] ">
+            <div ref={sectionRef} className="container-fluid flex py-[70px] ">
                 <div className="w-1/2 text-[var(--dark-green)] font-[400] ">
                     <div className="text-[30px] font-[600] mb-[15px]">
                         Liên hệ về chúng tôi
@@ -122,7 +129,7 @@ export default function Contact() {
                                                 <div >{item.address} </div>
                                             </a>
                                         ))}
-                                        
+
                                     </div>
                                 </div>
                             </div>
