@@ -6,6 +6,7 @@ const SearchBar = ({ data }) => {
     categories,
     contentPlaceholder,
     query: initQuery = "",
+    idCategories: idCategories,
     onSearch,
     handleSearchSuggestion,
     handleEnter
@@ -18,7 +19,7 @@ const SearchBar = ({ data }) => {
       return category;
     });
   }, []);
-  const [category, setCategory] = useState(categories?.[0] || "");
+  const [category, setCategory] = useState(categories?.[idCategories] || categories[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [query, setQuery] = useState(initQuery);

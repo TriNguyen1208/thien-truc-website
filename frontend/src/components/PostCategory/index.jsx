@@ -8,11 +8,12 @@ function ItemCategory({ content }) {
     );
 }
 
-function PostCategory({ categories, handleClick, idSelected = '0' }) {
-    const [selected, setSelected] = useState(String(idSelected));
+function PostCategory({ categories, handleClick, idCategories = '0' }) {
+    console.log(idCategories);
+    const [selected, setSelected] = useState(String(idCategories));
      useEffect(() => {
-        setSelected(String(idSelected));
-    }, [idSelected]);
+        setSelected(String(idCategories));
+    }, [idCategories]);
     const handleParentClick = (e) => {
         const childClicked = e.target.closest('[data-index]');
         if (childClicked) {
