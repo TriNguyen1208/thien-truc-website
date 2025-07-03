@@ -6,6 +6,7 @@ const SearchBar = ({ data }) => {
     categories,
     contentPlaceholder,
     query: initQuery = "",
+    idCategories: idCategories,
     onSearch,
     handleSearchSuggestion,
     handleEnter
@@ -18,7 +19,7 @@ const SearchBar = ({ data }) => {
       return category;
     });
   }, []);
-  const [category, setCategory] = useState(categories?.[0] || "");
+  const [category, setCategory] = useState();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [query, setQuery] = useState(initQuery);
@@ -35,6 +36,17 @@ const SearchBar = ({ data }) => {
     }, 100);
     return () => clearTimeout(timeout);
   }, [query]);
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      setCategory(categories[idCategories] || categories[0]);
+    }
+  }, [categories, idCategories]);
+  useEffect(() => {
+   if (categories && categories.length > 0) {
+     setCategory(categories[idCategories] || categories[0]);
+   }
+  }, [categories, idCategories]);
 
   // Gọi API sau khi debounce query
   const { data: suggestions = [], isLoading } = handleSearchSuggestion(
@@ -103,7 +115,7 @@ const SearchBar = ({ data }) => {
         </button>
         {dropdownOpen && (
           <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {categories.map((r) => (
               <li
                 key={r}
@@ -165,9 +177,8 @@ const SearchBar = ({ data }) => {
             {displaySuggestion.map((item, index) => (
               <li
                 key={index}
-                className={`py-2 cursor-pointer text-sm text-bold text-gray-700 text-left px-4 flex gap-3 items-center ${
-                  index === highlightedIndex ? 'bg-gray-100' : ''
-                }`}
+                className={`py-2 cursor-pointer text-sm text-bold text-gray-700 text-left px-4 flex gap-3 items-center ${index === highlightedIndex ? 'bg-gray-100' : ''
+                  }`}
                 onMouseEnter={() => setHighlightedIndex(index)}
                 onClick={() => {
                   if (item.id === 'input') {
@@ -179,7 +190,7 @@ const SearchBar = ({ data }) => {
               >
                 {item.id === 'input' ? (
                   <>
-                    <SearchOutlined style={{ fontSize: '16px'}} />
+                    <SearchOutlined style={{ fontSize: '16px' }} />
                     {query}
                   </>
                 ) : (

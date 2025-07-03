@@ -42,7 +42,7 @@ export default function Project() {
     const totalProjects = Number(projectData.totalCount);
     const pageSizes = 9;
     const numberPages = Math.ceil(totalProjects / pageSizes);
-    const idSelected = filter ? categoriesData.findIndex((name) => name === filter) : 0;
+    const idSelectedCategories = filter ? categoriesData.findIndex((name) => name === filter) : 0;
     const dataPagination = {
         numberPagination: numberPages,
     };
@@ -109,6 +109,7 @@ export default function Project() {
         categories: categoriesData || categoriesDefault,
         contentPlaceholder: "Nhập vào đây",
         value: query,
+        idCategories: idSelectedCategories,
         handleButton: handleSearchSubmit,
         handleSearchSuggestion: handleSearchSuggestion,
         handleEnter: handleEnter
@@ -137,7 +138,7 @@ export default function Project() {
                 <div className="my-[40px] text-center">
                     <h1 className='text-4xl mb-[30px] font-bold'>Công trình tiêu biểu</h1>
                     <div className="mb-[30px]">
-                        <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idSelected={idSelected} />
+                        <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
                     </div>
                     <div className="inline-block w-1/2 font-[300]">
                         {projectPageData.banner_description}
