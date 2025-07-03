@@ -68,7 +68,7 @@ const SearchBar = ({ data }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSearch = (query) => {
+  const handleSearch = (query = "", category) => {
     if (onSearch) {
       onSearch(category, query);
     }
@@ -104,6 +104,7 @@ const SearchBar = ({ data }) => {
                   e.stopPropagation();
                   setCategory(r);
                   setDropdownOpen(false);
+                  handleSearch(undefined, r);
                 }}
               >
                 {r}
@@ -139,12 +140,12 @@ const SearchBar = ({ data }) => {
               const item = displaySuggestion[highlightedIndex];
               if (item) {
                 if (item.id === 'input') {
-                  handleSearch(item.query);
+                  handleSearch(item.query, category);
                 } else {
                   handleEnter(item.id);
                 }
               } else {
-                handleSearch(query);
+                handleSearch(query, category);
               }
             }
           }}
@@ -162,7 +163,7 @@ const SearchBar = ({ data }) => {
                 onMouseEnter={() => setHighlightedIndex(index)}
                 onClick={() => {
                   if (item.id === 'input') {
-                    handleSearch(item.query);
+                    handleSearch(item.query, category);
                   } else {
                     handleEnter(item.id);
                   }
@@ -194,7 +195,7 @@ const SearchBar = ({ data }) => {
       {/* Nút tìm kiếm */}
       <button
         className="bg-[#ffc107] hover:bg-[#EBBE1C] text-black px-6 py-2 font-medium text-sm flex items-center gap-2 rounded-r-md cursor-pointer"
-        onClick={() => handleSearch(query)}
+        onClick={() => handleSearch(query, category)}
       >
         <SearchOutlined style={{ fontSize: '16px', position: 'relative', top: '1px' }} />
         <span>Tìm kiếm</span>

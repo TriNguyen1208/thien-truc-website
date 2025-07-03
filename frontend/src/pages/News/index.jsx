@@ -1,11 +1,9 @@
-import { useEffect } from "react";
 import Banner from "../../components/Banner";
 import useNews from "../../redux/hooks/useNews";
 import Loading from "@/components/Loading";
 import ItemByType from "./components/ItemByType";
 import ListType from "./components/ListType";
 import ItemPost from "../../components/ItemPost";
-import { Spin } from "antd";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Paging from "../../components/Paging";
 
@@ -128,9 +126,7 @@ export default function News() {
 
         <div className="grid grid-cols-3 gap-10 mx-auto px-4">
           {isLoadingDataFilter ? (
-            <Spin tip={<span className="text-3xl font-semibold">Đang tải...</span>} size="large">
-              <div className="p-10 w-[400px] h-[400px] rounded-sm" />
-            </Spin>
+            <Loading/>
           ) : (
             dataFilter.results?.map((item) => {
               const data = {
