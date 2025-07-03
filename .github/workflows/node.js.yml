@@ -25,31 +25,31 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    # ===== Backend =====
-    - name: Cache backend dependencies
+    # ===== server =====
+    - name: Cache server dependencies
       uses: actions/cache@v3
       with:
-        path: backend/node_modules
-        key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }}
+        path: server/node_modules
+        key: ${{ runner.os }}-server-${{ hashFiles('server/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-backend-
+          ${{ runner.os }}-server-
 
-    - name: Install backend dependencies
-      working-directory: ./backend
+    - name: Install server dependencies
+      working-directory: ./server
       run: npm ci
-    # ===== Frontend =====
-    - name: Cache frontend dependencies
+    # ===== client =====
+    - name: Cache client dependencies
       uses: actions/cache@v3
       with:
-        path: frontend/node_modules
-        key: ${{ runner.os }}-frontend-${{ hashFiles('frontend/package-lock.json') }}
+        path: client/node_modules
+        key: ${{ runner.os }}-client-${{ hashFiles('client/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-frontend-
+          ${{ runner.os }}-client-
           
-    - name: Install frontend dependencies
-      working-directory: ./frontend
+    - name: Install client dependencies
+      working-directory: ./client
       run: npm ci
 
-    - name: Build frontend
-      working-directory: ./frontend
+    - name: Build client
+      working-directory: ./client
       run: npm run build
