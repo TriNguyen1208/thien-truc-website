@@ -402,6 +402,52 @@ const product_prices = {
     }
 }
 
+const getHighlightProducts = async () => {
+    const sql = `
+        SELECT
+            prd.id AS product_id,
+            prd.name AS product_name,
+            prd.product_img,
+            prd.description,
+            prd.product_specifications,
+            prd.warranty_period,
+            prd.product_features,
+            prd.highlight_features,
+
+            pp.price AS price,
+            pc.id AS category_id,
+            pc.name AS category_name
+
+        FROM unnest((
+            SELECT highlight_product_ids FROM product.highlight_products as hp LIMIT 1
+        )) As highlighted_id
+        JOIN product.products prd ON highlighted_id = prd.id
+        JOIN product.product_categories pc ON prd.category_id = pc.id
+        JOIN product.product_prices pp ON prd.id = pp.product_id
+        `
+    try {
+        const { rows } = await pool.query(sql);
+        const results = rows.map(row => ({
+            id: row.product_id,
+            name: row.product_name,
+            product_img: row.product_img,
+            description: row.description,
+            price: row.price,
+            product_specifications: JSON.parse(row.product_specifications || '{}'),
+            warranty_period: row.warranty_period,
+            product_features: row.product_features || [],
+            highlight_features: row.highlight_features || [],
+            category: {
+                id: row.category_id,
+                name: row.category_name
+            }
+        }));
+        return results;
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+}
+
 const getSearchSuggestions = async (query, filter) => {
     const cleanedQuery = query.trim().replaceAll(`'`, ``);
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
@@ -432,4 +478,4 @@ const getSearchSuggestions = async (query, filter) => {
 };
 
 
-export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getSearchSuggestions };
+export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getHighlightProducts, getSearchSuggestions };

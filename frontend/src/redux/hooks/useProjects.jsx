@@ -70,6 +70,14 @@ const project_contents = {
         })
     }
 }
+function useGetHighlightProjects(){
+    return useQuery({
+        queryKey: ["highlight_projects"],
+        queryFn: projectsServices.getHighlightProjects,
+        staleTime: 5 * 60 * 1000,
+    })
+}
+
 function useSearchSuggest(query, filter){
     return useQuery({
         queryKey: ['project-suggestions', query, filter],
@@ -92,5 +100,6 @@ export default {
         getAll: project_contents.useGetAll,
         getOne: project_contents.useGetOne,
     },
+    getHighlightProjects: useGetHighlightProjects,
     getSearchSuggestions: useSearchSuggest,
 };
