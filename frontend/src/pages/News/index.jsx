@@ -147,7 +147,7 @@ export default function News() {
               };
               return (
                 <Link to={`${location.pathname}/${item.id}`} key={item.id}>
-                  <ItemPost data={data} />
+                  <ItemPost data={data} id={item.id}/>
                 </Link>
               );
             })
