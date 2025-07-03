@@ -88,7 +88,8 @@ const projects = {
                 JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
                 WHERE
                     ($2 = '' OR unaccent(prj_reg.name) ILIKE unaccent($2)) AND
-                    similarity(unaccent(prj.title::text), unaccent($1::text)) > 0.1
+                    (unaccent(prj.title::text) ILIKE '%' || unaccent($1::text) || '%' OR
+                    similarity(unaccent(prj.title::text), unaccent($1::text)) > 0.1)
                 ORDER BY 
                     similarity(unaccent(prj.title::text), unaccent($1::text)) DESC,
                     prj.title
@@ -350,7 +351,8 @@ const getSearchSuggestions = async (query, filter) => {
         JOIN project.project_regions R ON P.region_id = R.id
         WHERE
             ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(P.title::text), unaccent($1::text)) > 0
+            (unaccent(P.title::text) ILIKE '%' || unaccent($1::text) || '%' OR
+            similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
         ORDER BY
             similarity(unaccent(P.title::text), unaccent($1::text)) DESC
         LIMIT 5

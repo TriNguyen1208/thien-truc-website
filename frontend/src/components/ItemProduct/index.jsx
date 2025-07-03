@@ -1,7 +1,7 @@
 import GreenButton from "../GreenButton";
 
-function handleDisplayHighlights(product, highLightFeature) {
-    const numberOfHighlights = Math.min(highLightFeature.length, 3);
+function handleDisplayHighlights(product) {
+    const numberOfHighlights = Math.min((product.highlight_features || []).length, 3);
     const clampClass =
         numberOfHighlights === 0 ? 'line-clamp-5' :
             numberOfHighlights === 1 ? 'line-clamp-4' :
@@ -25,9 +25,7 @@ function handleDisplayHighlights(product, highLightFeature) {
         </div>
     )
 }
-function ItemProduct({product, highLightFeatures, handleClick , width = "w-full", height = "h-full"}) {
-    const highLightFeature = (highLightFeatures || []).filter((hl, index) =>hl.product_id == product.id)
-
+function ItemProduct({product, handleClick , width = "w-full", height = "h-full"}) {
     return (
         <div
             className="flex flex-col w-full h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
@@ -35,7 +33,7 @@ function ItemProduct({product, highLightFeatures, handleClick , width = "w-full"
         >
             <div className="w-[full] h-[322px]  bg-[#F3F4F6] rounded-t-[6px] p-[8px]">
                 <img
-                    src={product.img || "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"}
+                    src={product.product_img || "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"}
                     alt={product.name}
                     className="w-full h-full object-cover rounded-t-[6px]"
                 />
@@ -50,7 +48,7 @@ function ItemProduct({product, highLightFeatures, handleClick , width = "w-full"
                    {typeof product.price === "number" ? product.price.toLocaleString("vi-VN") + " ₫" : "Chưa có giá"}
                 </div>
 
-                {handleDisplayHighlights(product, highLightFeature)}
+                {handleDisplayHighlights(product)}
             </div>
             <div className="mt-auto mb-[0px] p-[8px] w-full flex justify-center">
                 <GreenButton content="Xem thêm" handleClick={handleClick} />

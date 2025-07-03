@@ -95,7 +95,8 @@ const products = {
                     JOIN product.product_prices pp ON prd.id = pp.product_id
                     WHERE
                         ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
-                        similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1
+                        (unaccent(prd.name::text) ILIKE unaccent($1::text) || '%' OR 
+                        similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1)
                     ORDER BY
                         similarity(unaccent(prd.name::text), unaccent($1::text)) DESC,
                         prd.name
@@ -410,8 +411,9 @@ const getSearchSuggestions = async (query, filter) => {
         FROM product.products P
         JOIN product.product_categories C ON P.category_id = C.id
         WHERE 
-            ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(P.name::text), unaccent($1::text)) > 0
+            $2 = '' OR unaccent(C.name) ILIKE unaccent($2) AND
+            (unaccent(P.name::text) ILIKE '%' || unaccent($1::text) || '%' OR
+            similarity(unaccent(P.name::text), unaccent($1::text)) > 0)
         ORDER BY
             similarity(unaccent(P.name::text), unaccent($1::text)) DESC
         LIMIT 5
