@@ -49,10 +49,10 @@ const product_categories = {
     } 
 }
 const product_prices = {
-    useGetAll: ()=>{
+     useGetAll: (query = '', filter = '')=>{
         return useQuery({
-            queryKey: ["product_prices"],
-            queryFn: productsServices.product_prices.getAll,
+            queryKey: ["product_prices", query, filter],
+            queryFn: ()=> productsServices.product_prices.getAll(query, filter),
             staleTime: 5 * 60 * 1000,
         })
     },

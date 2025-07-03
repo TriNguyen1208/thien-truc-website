@@ -42,7 +42,8 @@ const getPricePage = async (req, res) => {
 
 const product_prices = {
     getAll: async (req, res) => {
-        const data = await productServices.product_prices.getAll();
+        const {query ='', filter = ''} = req.query;
+        const data = await productServices.product_prices.getAll(query, filter);
         res.status(200).json(data);
     },
     getOne: async (req, res) => {

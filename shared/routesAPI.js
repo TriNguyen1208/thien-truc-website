@@ -30,7 +30,7 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
         },
         product_prices: {
-            getAll: `${PRODUCT_BASE}/product_prices`,
+            getAll: (query, filter) => `${PRODUCT_BASE}/product_prices?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,

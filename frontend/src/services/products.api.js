@@ -32,9 +32,8 @@ const product_categories = {
     }
 }
 const product_prices = {
-    getAll: async () => 
-        {
-            const res = await axios.get(API_ROUTES.product.product_prices.getAll);
+    getAll: async (query = '', filter = '') =>  {
+            const res = await axios.get(API_ROUTES.product.product_prices.getAll(query, filter));
             return res.data;
         },
     getOne: async (id) => 

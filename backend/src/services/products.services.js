@@ -315,12 +315,20 @@ const getPricePage = async () => {
 }
 
 const product_prices = {
-    getAll: async () => {
-        const query = `
-            select 
+    getAll: async (query = '', filter = '') => {
+        const cleanedQuery = query.trim().replaceAll(`'`, ``);
+        const cleanedFilter = filter.trim().replaceAll(`'`, ``);  
+        const hasQuery = cleanedQuery !== '';
+        const hasFilter = cleanedFilter !== '';
+
+
+        if (hasQuery) {
+        const sql = `
+            select
                 prd_pri.id as price_id,
                 prd_pri.price,
                 prd_pri.note,
+
 
                 prd.id as product_id,
                 prd.name as product_name,
@@ -330,13 +338,71 @@ const product_prices = {
                 prd.product_features,
                 prd.highlight_features,
 
+
                 prd_cate.id as category_id,
                 prd_cate.name as category_name
             from product.product_prices prd_pri
             join product.products prd on prd_pri.product_id = prd.id
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
+            WHERE
+                ($2 = '' OR unaccent(prd_cate.name) ILIKE unaccent($2)) AND
+                (unaccent(prd.name::text) ILIKE unaccent($1::text) || '%' OR
+                similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1)
+            ORDER BY
+                similarity(unaccent(prd.name::text), unaccent($1::text)) DESC,
+                prd.name
+            LIMIT 20
         `
-        const { rows } = await pool.query(query);
+        const { rows } = await pool.query(sql, [cleanedQuery, cleanedFilter]);
+        const product_prices = rows.map(row => ({
+            id: row.price_id,
+            price: row.price,
+            note: row.note,
+            product: {
+                id: row.product_id,
+                name: row.product_name,
+                description: row.description,
+                product_img: row.product_img,
+                warranty_period: row.warranty_period,
+                product_features: row.product_features || [],
+                highlight_features: row.highlight_features || [],
+                category: {
+                    id: row.category_id,
+                    name: row.category_name
+                }
+            }
+
+
+          }));
+        return product_prices
+        }
+        // CASE 2: Không có query
+        if (!hasFilter) {
+            const sql = `
+            select
+                prd_pri.id as price_id,
+                prd_pri.price,
+                prd_pri.note,
+
+
+                prd.id as product_id,
+                prd.name as product_name,
+                prd.description,
+                prd.product_img,
+                prd.warranty_period,
+                prd.product_features,
+                prd.highlight_features,
+
+
+                prd_cate.id as category_id,
+                prd_cate.name as category_name
+            from product.product_prices prd_pri
+            join product.products prd on prd_pri.product_id = prd.id
+            join product.product_categories prd_cate on prd.category_id = prd_cate.id
+
+
+        `
+        const { rows } = await pool.query(sql);
         const product_prices = rows.map(row => ({
             id: row.price_id,
             price: row.price,
@@ -356,6 +422,53 @@ const product_prices = {
             }
           }));
         return product_prices
+        } else {
+            // Có filter nhưng không có query => phân trang theo filter
+        const sql = `
+            select
+                prd_pri.id as price_id,
+                prd_pri.price,
+                prd_pri.note,
+
+
+                prd.id as product_id,
+                prd.name as product_name,
+                prd.description,
+                prd.product_img,
+                prd.warranty_period,
+                prd.product_features,
+                prd.highlight_features,
+
+
+                prd_cate.id as category_id,
+                prd_cate.name as category_name
+            from product.product_prices prd_pri
+            join product.products prd on prd_pri.product_id = prd.id
+            join product.product_categories prd_cate on prd.category_id = prd_cate.id
+            where
+                ($1 = '' OR unaccent(prd_cate.name) ILIKE unaccent($1))
+        `
+        const { rows } = await pool.query(sql, [cleanedFilter]);
+        const product_prices = rows.map(row => ({
+            id: row.price_id,
+            price: row.price,
+            note: row.note,
+            product: {
+                id: row.product_id,
+                name: row.product_name,
+                description: row.description,
+                product_img: row.product_img,
+                warranty_period: row.warranty_period,
+                product_features: row.product_features || [],
+                highlight_features: row.highlight_features || [],
+                category: {
+                    id: row.category_id,
+                    name: row.category_name
+                }
+            }
+          }));
+        return product_prices
+        }
     },
     getOne: async (id) => {
         const query = `
