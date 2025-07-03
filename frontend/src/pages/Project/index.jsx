@@ -163,7 +163,7 @@ export default function Project() {
                                 <div className=" mb-[30px]"
                                     style={{ width: '100%' }}
                                 >
-                                    <ItemPost data={dataProject} />
+                                    <ItemPost data={dataProject}/>
                                 </div>
                             </Link>
 

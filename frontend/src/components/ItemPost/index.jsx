@@ -6,8 +6,8 @@ import {
     ShareAltOutlined,
     MailOutlined
 } from '@ant-design/icons';
-
-const ItemPost = ({ data, width = "100%" }) => {
+import ShareButton from '../ShareButton';
+const ItemPost = ({ data, id= "", width = "100%"}) => {
     const {
         type, // 'project' hoặc 'news'
         title,
@@ -95,10 +95,11 @@ const ItemPost = ({ data, width = "100%" }) => {
                                 <span>{status.views}</span>
                             </div>
                         </div>
-                        <ShareAltOutlined
+                        {/* <ShareAltOutlined
                             style={{ fontSize: '16px', cursor: 'pointer' }}
                             className="hover:text-gray-700"
-                        />
+                        /> */}
+                        <ShareButton id={id}/>
                     </div>
                 )}
             </div>
