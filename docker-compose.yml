@@ -18,9 +18,22 @@ services:
       context: ./client
     container_name: web-client
     ports:
-      - "5173:5173"
+      - "3000:3000"
     volumes:
       - ./client:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev
+    depends_on:
+      - server
+  admin:
+    build:
+      context: ./admin
+    container_name: web-admin
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./admin:/app
       - /app/node_modules
     working_dir: /app
     command: npm run dev

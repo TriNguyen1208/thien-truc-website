@@ -5,13 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -20,36 +19,52 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-    # ===== server =====
-    - name: Cache server dependencies
-      uses: actions/cache@v3
-      with:
-        path: server/node_modules
-        key: ${{ runner.os }}-server-${{ hashFiles('server/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-server-
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      # ===== server =====
+      - name: Cache server dependencies
+        uses: actions/cache@v3
+        with:
+          path: server/node_modules
+          key: ${{ runner.os }}-server-${{ hashFiles('server/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-server-
 
-    - name: Install server dependencies
-      working-directory: ./server
-      run: npm ci
-    # ===== client =====
-    - name: Cache client dependencies
-      uses: actions/cache@v3
-      with:
-        path: client/node_modules
-        key: ${{ runner.os }}-client-${{ hashFiles('client/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-client-
-          
-    - name: Install client dependencies
-      working-directory: ./client
-      run: npm ci
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+      # ===== client =====
+      - name: Cache client dependencies
+        uses: actions/cache@v3
+        with:
+          path: client/node_modules
+          key: ${{ runner.os }}-client-${{ hashFiles('client/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-client-
 
-    - name: Build client
-      working-directory: ./client
-      run: npm run build
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Build client
+        working-directory: ./client
+        run: npm run build
+      # ===== admin =====
+      - name: Cache admin dependencies
+        uses: actions/cache@v3
+        with:
+          path: admin/node_modules
+          key: ${{ runner.os }}-admin-${{ hashFiles('admin/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-admin-
+
+      - name: Install admin dependencies
+        working-directory: ./admin
+        run: npm ci
+
+      - name: Build admin
+        working-directory: ./admin
+        run: npm run build
