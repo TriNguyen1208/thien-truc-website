@@ -58,7 +58,7 @@ function DisplayProduct({ dataAll, categorySelected, query, handleViewMore, hand
             handlePageChange: handlePageChange,
 
         }
-        return (<Category {...props} paging={<Paging data={{ numberPagination: Math.ceil(dataAll.results.length / 12), }} onPageChange={() => handlePageChange(dataAll.page)} currentPage={dataAll.page} />} />)
+        return (<Category {...props} paging={<Paging data={{ numberPagination: Math.ceil(dataAll.totalCount / 12) }} onPageChange={handlePageChange} currentPage={dataAll.page} />} />)
 
 
     } else {
@@ -72,7 +72,7 @@ function DisplayProduct({ dataAll, categorySelected, query, handleViewMore, hand
         }
         return (<div className='flex flex-col my-[20px]'>
             <ListProduct {...props} />
-            <Paging data={{ numberPagination: Math.ceil(dataAll.results.length / 12), }} onPageChange={() => handlePageChange(dataAll.page)} currentPage={dataAll.page} />
+            <Paging data={{ numberPagination: Math.ceil(dataAll.totalCount / 12)}} onPageChange={ handlePageChange} currentPage={dataAll.page} />
         </div>)
     }
 
@@ -179,6 +179,8 @@ export default function Product() {
         const newParams = new URLSearchParams();
 
         newParams.set("page", `${page}`);
+        newParams.set("filter", filter);
+        newParams.set("query", query);
         setSearchParams(newParams);
     }
     const categories = productCategories.map((category) => {
