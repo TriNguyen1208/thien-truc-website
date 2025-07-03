@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { EnvironmentOutlined, CalendarOutlined, ArrowLeftOutlined} from '@ant-design/icons';
+import { EnvironmentOutlined, CalendarOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import Banner from "@/components/Banner";
 import useProjects from "@/redux/hooks/useProjects";
 import Loading from "@/components/Loading";
@@ -10,7 +10,7 @@ export default function ProjectDetail() {
     const navigate = useNavigate();
     const { data: projectContentData, isLoading: isLoadingProjectContent } = useProjects.project_contents.getOne(id);
     const handleButton = () => {
-         navigate("/lien-he", { state: { scrollToForm: true } });
+        navigate("/lien-he", { state: { scrollToForm: true } });
     }
     if (isLoadingProjectContent) {
         return (
@@ -70,7 +70,9 @@ export default function ProjectDetail() {
                 <div className="w-3/4 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[50px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
                 >
-                    <div dangerouslySetInnerHTML={{ __html: projectContentData.content}}  className="break-words"/>
+                    <img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án"></img>
+
+                    <div dangerouslySetInnerHTML={{ __html: projectContentData.content }} className="break-words" />
                 </div>
                 <div className="w-3/4 mx-auto mb-[30px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
