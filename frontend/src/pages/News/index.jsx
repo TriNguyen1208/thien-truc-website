@@ -1,11 +1,9 @@
-import { useEffect } from "react";
 import Banner from "../../components/Banner";
 import useNews from "../../redux/hooks/useNews";
 import Loading from "@/components/Loading";
 import ItemByType from "./components/ItemByType";
 import ListType from "./components/ListType";
 import ItemPost from "../../components/ItemPost";
-import { Spin } from "antd";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Paging from "../../components/Paging";
 
@@ -31,18 +29,19 @@ export default function News() {
 
   // Lúc này mới tạo categories (sau khi có newsfilter)
   const categories = [
-    "Chọn thể loại",
+    "Tất cả thể loại",
     ...(newsfilter?.map((filter) => filter.name) ?? []),
   ];
   const rawFilter = searchParams.get("filter");
-  const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Chọn thể loại";
+  const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Tất cả thể loại";
   // Gọi API với params đã xử lý
   const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.news.getList(
     query,
-    filter === "Chọn thể loại" ? undefined : filter,
+    filter === "Tất cả thể loại" ? undefined : filter,
     sortBy,
     currentPage
   );
+  const idSelectedCategories = rawFilter ? categories.findIndex((name) => name === filter) : 0;
 
   if (isLoadingNewsPage || isLoadingfilter) return <Loading />;
 
@@ -97,6 +96,8 @@ export default function News() {
     hasSearch: true,
     categories: categories,
     contentPlaceholder: "Nhập vào đây",
+    value: query,
+    idCategories: idSelectedCategories,
     handleButton: handleButton,
     handleSearchSuggestion: handleSearchSuggestion,
     handleEnter: handleEnter,
@@ -117,7 +118,7 @@ export default function News() {
               current={sortBys.indexOf(sortBy)}
             />
           </div>
-          <div className="flex-1 flex justify-end">
+          <div className="flex-1 flex justify-end w-[500px]">
             <ListType
               categories={categories}
               handleClick={handleClickfilter}
@@ -128,9 +129,7 @@ export default function News() {
 
         <div className="grid grid-cols-3 gap-10 mx-auto px-4">
           {isLoadingDataFilter ? (
-            <Spin tip={<span className="text-3xl font-semibold">Đang tải...</span>} size="large">
-              <div className="p-10 w-[400px] h-[400px] rounded-sm" />
-            </Spin>
+            <Loading/>
           ) : (
             dataFilter.results?.map((item) => {
               const data = {
@@ -147,7 +146,7 @@ export default function News() {
               };
               return (
                 <Link to={`${location.pathname}/${item.id}`} key={item.id}>
-                  <ItemPost data={data} />
+                  <ItemPost data={data} id={item.id}/>
                 </Link>
               );
             })
