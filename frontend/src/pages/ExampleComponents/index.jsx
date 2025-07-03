@@ -12,6 +12,7 @@
 // import ItemPost from '../../components/ItemPost'
 // import useProducts from "../../redux/hooks/useProducts"
 const ExampleComponents = () => {
+    
     // Example Banner
     //Cái này là của thanh search bar
     // const handleButton = (category, query) => {
