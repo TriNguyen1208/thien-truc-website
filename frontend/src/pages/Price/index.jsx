@@ -58,7 +58,7 @@ export default function PricePage() {
           }
 
        const categories = [
-          "Tất cả sản phầm",
+          "Tất cả sản phẩm",
           ...productCategories.map((category) => category.name),
         ];
         

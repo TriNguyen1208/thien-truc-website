@@ -29,15 +29,15 @@ export default function News() {
 
   // Lúc này mới tạo categories (sau khi có newsfilter)
   const categories = [
-    "Chọn thể loại",
+    "Tất cả thể loại",
     ...(newsfilter?.map((filter) => filter.name) ?? []),
   ];
   const rawFilter = searchParams.get("filter");
-  const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Chọn thể loại";
+  const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Tất cả thể loại";
   // Gọi API với params đã xử lý
   const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.news.getList(
     query,
-    filter === "Chọn thể loại" ? undefined : filter,
+    filter === "Tất cả thể loại" ? undefined : filter,
     sortBy,
     currentPage
   );
@@ -118,7 +118,7 @@ export default function News() {
               current={sortBys.indexOf(sortBy)}
             />
           </div>
-          <div className="flex-1 flex justify-end">
+          <div className="flex-1 flex justify-end w-[500px]">
             <ListType
               categories={categories}
               handleClick={handleClickfilter}

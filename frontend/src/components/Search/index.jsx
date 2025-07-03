@@ -102,7 +102,7 @@ const SearchBar = ({ data }) => {
       {/* Dropdown chọn category */}
       <div className="relative">
         <button
-          className="rounded-tl-md rounded-bl-md w-38 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
+          className="rounded-tl-md rounded-bl-md w-44 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             setDropdownOpen(!dropdownOpen);

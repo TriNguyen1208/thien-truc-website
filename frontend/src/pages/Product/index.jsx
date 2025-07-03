@@ -10,8 +10,8 @@ import { TruckOutlined, UserOutlined, CreditCardOutlined, SafetyOutlined, ArrowL
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 //Start extra components
-function GoBackListProduct({ goBack, categorySelected, query }) {
-    return ((categorySelected != 'Chọn thể loại' && categorySelected != '') || query != '' ?
+function GoBackListProduct({goBack ,categorySelected ,query}){
+    return( (categorySelected != 'Tất cả sản phẩm' && categorySelected != '') || query != '' ?
         <div onClick={goBack} className='flex flex-row text-[#16A34A] my-[10px] text-[15px] gap-[10px] cursor-pointer hover:text-[#0B4A24] transition-all duration-300 ease-in-out '>
             <ArrowLeftOutlined /> <p className=''>Quay Lại</p>
         </div> : <div></div>
@@ -133,9 +133,12 @@ export default function Product() {
     const filter = searchParams.get('filter') || "";
     const page = parseInt(searchParams.get('page')) || 1;
     const query = searchParams.get('query') || "";
-    const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage()
-    const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll()
-    const { data: dataAll, isLoading: isLoadingProduct } = useProducts.products.getList(query, filter == 'Chọn thể loại' ? "" : filter, page)
+    const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
+    const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
+    const {data: dataAll , isLoading : isLoadingProduct} =  useProducts.products.getList(query, filter =='Tất cả sản phẩm' ?"":filter , page)
+  
+   
+   
 
 
 
@@ -182,11 +185,11 @@ export default function Product() {
         newParams.set("filter", filter);
         newParams.set("query", query);
         setSearchParams(newParams);
-    }
-    const categories = productCategories.map((category) => {
-        return (category.name)
-    })
-    categories.unshift("Chọn thể loại")
+    }   
+     const categories = productCategories.map((category) => {
+         return (category.name)
+        }) 
+    categories.unshift("Tất cả sản phẩm")
     const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
     const handleSearch = (category, query) => {
         const newParams = new URLSearchParams();
