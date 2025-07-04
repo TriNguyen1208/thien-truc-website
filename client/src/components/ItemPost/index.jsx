@@ -17,7 +17,7 @@ const ItemPost = ({ data, id= "", width = "100%"}) => {
         date, //project và news
         tag,
         tagColor = '#ef4444',
-        image = "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg",
+        image,
         status,
     } = data;
 

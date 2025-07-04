@@ -71,7 +71,7 @@ export default function ProjectDetail() {
                 <div className="w-3/4 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[50px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
                 >
-                    <img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án"></img>
+                    {projectContentData.project.main_img && (<img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án"></img>)}
 
                     <div dangerouslySetInnerHTML={{ __html: projectContentData.content }} className="break-words" />
                 </div>
