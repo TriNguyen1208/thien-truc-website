@@ -130,6 +130,7 @@ export default function PricePage() {
       categories: categories,
       idCategories: idSelectedCategories,
       contentPlaceholder: "Nhập vào đây",
+      value: query, 
       handleButton: handleButton,
       handleSearchSuggestion: handleSearchSuggestion,
       handleEnter: handleEnter
@@ -221,7 +222,9 @@ export default function PricePage() {
                                     <td className="px-2 py-5 font-semibold text-center text-green-800 w-[31%]">
                                       {product.price.toLocaleString('vi-VN')}
                                     </td>
+                                    {/* <td className="px-6 py-2 w-[15%]">{product.warranty}</td> */}
                                     <td className="px-6 py-2 w-[15%]">{product.warranty}</td>
+
                                     <td className="px-4 py-2 w-[15%] text-green-800">
                                       <Button
                                         type="default"
