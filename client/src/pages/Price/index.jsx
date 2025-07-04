@@ -233,7 +233,7 @@ export default function PricePage() {
                                           color: '#00c37e',
                                         }}
                                         className="border border-[#00c37e] text-[#00c37e] hover:!bg-[#00c37e] hover:!text-white active:!bg-green-900"
-                                        onClick={() => setSelectedProduct(product)}
+                                        onClick={() => navigate(`/san-pham/${product.id}`)}
                                       >
                                         Xem chi tiết
                                       </Button>
@@ -262,7 +262,6 @@ export default function PricePage() {
       </div>
       <Banner data = {bannerContact}/>
     </div>
-   {selectedProduct && (<ProductDetailModal product={flatProducts.find(p => p.id === selectedProduct.id) || selectedProduct} onClose={() => setSelectedProduct(null)}/>)}
   </div>
   </>
 )
