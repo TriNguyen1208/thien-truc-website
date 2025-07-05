@@ -12,10 +12,10 @@ export default function FeatureCard({title, description, buttonEdit, buttonDelet
             </p>
         </div>
         <div className=" flex flex-row gap-[4px] absolute top-[8px] right-[8px] invisible  group-hover:visible">
-           <div className="w-[40px] h-[36px]">
+           <div className="w-[40px] h-[36px] ">
              {buttonEdit}
            </div>
-            <div className="w-[40px] h-[36px]">
+            <div className="w-[40px] h-[36px] ">
                 {buttonDelete}
             </div>
         </div>
