@@ -38,9 +38,9 @@ export default function Home() {
     }
     const product = {
         image: "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg",
-        name: "fdsafdafadf",
-        price: 123
-    }
+        name: "Cable COMMSCOPE (THÙNG 305M) Cat 5 (6-219590-2)",
+        price: 2650000,
+    };
     const categories = [
         "Công Ty",
         "Điện Thoại"

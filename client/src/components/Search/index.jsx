@@ -38,16 +38,15 @@ const SearchBar = ({ data }) => {
   }, [query]);
 
   useEffect(() => {
-    if (categories && categories.length > 0) {
-      setCategory(categories[idCategories] || categories[0]);
-    }
-  }, [categories, idCategories]);
-  useEffect(() => {
    if (categories && categories.length > 0) {
      setCategory(categories[idCategories] || categories[0]);
    }
   }, [categories, idCategories]);
 
+   useEffect(() => {
+    initQuery ? setQuery(initQuery) : setQuery("");
+  }, [initQuery]);
+  
   // Gọi API sau khi debounce query
   const { data: suggestions = [], isLoading } = handleSearchSuggestion(
     debouncedQuery,

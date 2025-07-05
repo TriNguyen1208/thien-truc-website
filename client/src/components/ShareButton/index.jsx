@@ -35,6 +35,7 @@ const ShareButton = ({id}) => {
                     e.preventDefault();
                     setOpen(true);
                 }}
+                style={{backgroundColor: "var(--green-bg)"}}
             >
                 <ShareAltOutlined
                     style={{ fontSize: '16px', cursor: 'pointer' }}

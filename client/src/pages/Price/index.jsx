@@ -120,43 +120,44 @@
       }
 
 
-      // Banner data
-      const bannerHead = {
-        title: pricePage?.banner_title,
-        description: pricePage?.banner_description,
-        colorBackground: "var(--gradient-banner)",
-        colorText: "#ffffff",
-        hasSearch: true,
-        categories: categories,
-        idCategories: idSelectedCategories,
-        contentPlaceholder: "Nhập vào đây",
-        handleButton: handleButton,
-        handleSearchSuggestion: handleSearchSuggestion,
-        handleEnter: handleEnter
-      };
-      const bannerContact = {
-        title : 'Sẵn Sàng Hợp Tác Với Chúng Tôi?',
-        description: 'Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.',
-        colorBackground : "#F0FDF4",
-        colorText : "#000000",
-        hasButton : true,
-        hasSearch : false,
-        contentButton : 'Liên Hệ Ngay',
-        handleButton : ()=>{ navigate('/lien-he',  { state: { scrollToForm: true } })},
-        categories : null,
-        contentPlaceholder : null
-      }  
-    return (
-    <>
-      <div className="w-screen">
-          <Banner data={bannerHead} />
+    // Banner data
+    const bannerHead = {
+      title: pricePage?.banner_title,
+      description: pricePage?.banner_description,
+      colorBackground: "var(--gradient-banner)",
+      colorText: "#ffffff",
+      hasSearch: true,
+      categories: categories,
+      idCategories: idSelectedCategories,
+      contentPlaceholder: "Nhập vào đây",
+      value: query, 
+      handleButton: handleButton,
+      handleSearchSuggestion: handleSearchSuggestion,
+      handleEnter: handleEnter
+    };
+    const bannerContact = {
+      title : 'Sẵn Sàng Hợp Tác Với Chúng Tôi?',
+      description: 'Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.',
+      colorBackground : "#F0FDF4",
+      colorText : "#000000",
+      hasButton : true,
+      hasSearch : false,
+      contentButton : 'Liên Hệ Ngay',
+      handleButton : ()=>{ navigate('/lien-he',  { state: { scrollToForm: true } })},
+      categories : null,
+      contentPlaceholder : null
+    }  
+  return (
+  <>
+    <div className="w-screen">
+        <Banner data={bannerHead} />
+      </div>
+    <div className="container-fluid flex flex-col gap-10 py-10">
+    <div className="bg-[#F0FDF4] pt-20 px-6 md:px-[80px] shadow-md rounded-xl">
+      <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto rounded-xl shadow-2xl overflow-hidden">
+        <div className="text-center font-bold text-3xl py-7 bg-white">
+          BẢNG GIÁ SẢN PHẨM
         </div>
-      <div className="container-fluid flex flex-col gap-10 py-10">
-      <div className="bg-[#F0FDF4] pt-20 px-6 md:px-[80px] shadow-md rounded-xl">
-        <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto rounded-xl shadow-2xl overflow-hidden">
-          <div className="text-center font-bold text-3xl py-7 bg-white">
-            BẢNG GIÁ SẢN PHẨM
-          </div>
 
 
           <div className="overflow-y-auto max-h-[600px] px-7 md:px-10">
@@ -194,72 +195,74 @@
                     </tr>
 
 
-                  <AnimatePresence initial={false}>
-                      {openCategories[cat.category] && (
-                        <motion.tr>
-                          <td colSpan={5} className="p-0">
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.4 }}
-                              style={{ overflow: 'hidden' }}
-                            >
-                              <table className="w-full text-sm md:text-[14px]">
-                                <tbody>
-                                  {cat.products.map((product, idx) => (
-                                    <tr
-                                      key={product.id}
-                                      className={`${
-                                        idx !== cat.products.length - 1
-                                          ? 'border-b border-gray-300'
-                                          : ''
-                                      } hover:bg-gray-200 transition-colors duration-200`}
-                                    >
-                                      <td className="px-4 py-5 w-[5%]">{idx + 1}</td>
-                                      <td className="pl-13 py-5 w-[36%]">{product.name}</td>
-                                      <td className="px-2 py-5 font-semibold text-center text-green-800 w-[31%]">
-                                        {product.price.toLocaleString('vi-VN')}
-                                      </td>
-                                      <td className="px-6 py-2 w-[15%]">{product.warranty}</td>
-                                      <td className="px-4 py-2 w-[15%] text-green-800">
-                                        <Button
-                                          type="default"
-                                          style={{
-                                            borderColor: '#00c37e',
-                                            color: '#00c37e',
-                                          }}
-                                          className="border border-[#00c37e] text-[#00c37e] hover:!bg-[#00c37e] hover:!text-white active:!bg-green-900"
-                                          onClick={() => navigate(`/san-pham/${product.id}`)}
-                                        >
-                                          Xem chi tiết
-                                        </Button>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                  {cat.products.length === 0 && (
-                                    <tr>
-                                      <td colSpan={5} className="text-center py-4 text-gray-400">
-                                        Không có sản phẩm phù hợp
-                                      </td>
-                                    </tr>
-                                  )}
-                                </tbody>
-                              </table>
-                            </motion.div>
-                          </td>
-                        </motion.tr>
-                      )}
-                      </AnimatePresence>
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                 <AnimatePresence initial={false}>
+                    {openCategories[cat.category] && (
+                      <motion.tr>
+                        <td colSpan={5} className="p-0">
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.4 }}
+                            style={{ overflow: 'hidden' }}
+                          >
+                            <table className="w-full text-sm md:text-[14px]">
+                              <tbody>
+                                {cat.products.map((product, idx) => (
+                                  <tr
+                                    key={product.id}
+                                    className={`${
+                                      idx !== cat.products.length - 1
+                                        ? 'border-b border-gray-300'
+                                        : ''
+                                    } hover:bg-gray-200 transition-colors duration-200`}
+                                  >
+                                    <td className="px-4 py-5 w-[5%]">{idx + 1}</td>
+                                    <td className="pl-13 py-5 w-[36%]">{product.name}</td>
+                                    <td className="px-2 py-5 font-semibold text-center text-green-800 w-[31%]">
+                                      {product.price.toLocaleString('vi-VN')}
+                                    </td>
+                                    {/* <td className="px-6 py-2 w-[15%]">{product.warranty}</td> */}
+                                    <td className="px-6 py-2 w-[15%]">{product.warranty}</td>
+
+                                    <td className="px-4 py-2 w-[15%] text-green-800">
+                                      <Button
+                                        type="default"
+                                        style={{
+                                          borderColor: '#00c37e',
+                                          color: '#00c37e',
+                                        }}
+                                        className="border border-[#00c37e] text-[#00c37e] hover:!bg-[#00c37e] hover:!text-white active:!bg-green-900"
+                                        onClick={() => navigate(`/san-pham/${product.id}`)}
+                                      >
+                                        Xem chi tiết
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                                {cat.products.length === 0 && (
+                                  <tr>
+                                    <td colSpan={5} className="text-center py-4 text-gray-400">
+                                      Không có sản phẩm phù hợp
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          </motion.div>
+                        </td>
+                      </motion.tr>
+                    )}
+                    </AnimatePresence>
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <Banner data = {bannerContact}/>
       </div>
+      <Banner data = {bannerContact}/>
     </div>
-    </>
-  )
-  }
+  </div>
+  </>
+)
+}
