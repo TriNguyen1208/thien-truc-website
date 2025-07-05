@@ -17,18 +17,23 @@ const ControlPanel = () => {
     description : "Chỉnh sửa tiêu đề và mô tả trang chủ",
     listInput: [{label: "Tiêu đề Banner", placeholder : "Vui lòng nhập nội dung tiêu đề", contentCurrent: "Thiên Trúc là một cái gì đó"}
       ,
+      {label: "Mô tả Banner", placeholder : "Vui lòng nhập nội dung mô tả"},
       {label: "Mô tả Banner", placeholder : "Vui lòng nhập nội dung mô tả"}
-    ]
+
+    ],
+    saveButton:  (arr)=>{console.log(arr)},
  }
   return (
-    <div className='w-[1136px] h-fit'>
-       <div className='w-[352px] h-[98px]'>
-       <div className='w-[100px] h-[36px]'>
-         <Button {...props} />
-       </div>
-        <FeatureCard title={"500+"} description={"Dự án hoàn thành"} buttonDelete={ <Button {...props} />} buttonEdit={  <Button {...props} />}/>
-      </div>
-      <EditBanner {...props} />
+    <div className='w-[1136px] h-fit '>
+
+       <div className='w-[352px] h-[98px] my-[50px]'>
+          <div className='w-[100px] h-[36px]'>
+            <Button {...props} />
+          </div>
+           <FeatureCard title={"500+"} description={"Dự án hoàn thành"} buttonDelete={ <Button {...prop2} />} buttonEdit={  <Button {...prop2} />}/>
+      </div > 
+      
+         <EditBanner {...props} />
     </div>)
 
 

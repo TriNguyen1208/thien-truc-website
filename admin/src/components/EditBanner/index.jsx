@@ -1,23 +1,46 @@
-
-function Input({label, placeholder,idInput,contentCurrent} )
+import Button from '../../components/Button'
+import {SaveOutlined } from '@ant-design/icons'
+import { useRef } from 'react';
+function Input({label, placeholder,idInput,contentCurrent,ref} )
 {
     return(<div className="flex flex-col mb-[16px]">
         <label htmlFor = {idInput} className="mb-[8px]">{label}  </label>
-        <textarea type="text" id = {idInput} placeholder={placeholder} defaultValue={contentCurrent}
-        className="text-[14px] font-regular p-[12px] border border-[#E4E4E7] bg-white rounded-[6px] focus:border-[#E4E4E7] outline-none "/>
+        <textarea type="text" ref ={ref} id = {idInput} placeholder={placeholder} defaultValue={contentCurrent}
+        className="text-[14px] font-regular p-[12px] min-h-[45px] border border-[#E4E4E7] bg-white rounded-[6px] focus:border-[#E4E4E7] outline-none "/>
     </div>)
 }
-export default function EditBanner({title, description, listInput, contentButton})
+function convertToE(str)
 {
-    function convertToE(str)
-    {
-        return str
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .replace(/đ/g, "d")
-                .replace(/Đ/g, "D")
-                .replace(/\s+/g, '');
-        
+    return str
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/đ/g, "d")
+            .replace(/Đ/g, "D")
+            .replace(/\s+/g, '');
+    
+}
+export default function EditBanner({title, description, listInput,saveButton})
+{
+    const inputRefs = listInput.map((input, index)=>{
+        return useRef()
+    })
+    const firstIdInput = convertToE(title)
+    const handleSaveButton = ()=>{
+        if(saveButton)
+        {
+            const result =inputRefs.map((inputRef, index)=>{
+                return inputRef.current.value
+            })
+            saveButton(result)
+        }
+    }
+    const propsButton ={
+        Icon: SaveOutlined,
+        text: "Lưu thây đổi",
+        colorText: "#ffffff",
+        colorBackground: "#000000",
+        padding : 8,
+        handleButton: handleSaveButton
     }
     return(
         <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]">
@@ -37,19 +60,20 @@ export default function EditBanner({title, description, listInput, contentButton
                         const props = {
                             label: input.label,
                             placeholder: input.placeholder,
-                            idInput: convertToE(title)+ index,
-                            contentCurrent: input.contentCurrent
+                            idInput: firstIdInput + index,
+                            contentCurrent: input.contentCurrent,
+                            ref: inputRefs[index]
                         }
                         
                         return(<div key = {index}>
-                            <Input {...props}/>
+                            <Input  {...props}/>
                              </div>)
                     })
                 }
 
             </div>
-            <div>
-                button
+            <div className='w-[145px] h-40[px]'>
+               <Button {...propsButton}/>
             </div>
         </div>
     )
