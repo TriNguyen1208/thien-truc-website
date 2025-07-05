@@ -156,7 +156,7 @@ const SearchBar = ({data}) => {
         setShowSuggestion(false);
     }
     return (
-        <div className='rounded-sm p-6 bg-amber-300'>
+        <div className='rounded-sm bg-amber-300'>
             <div ref={wrapperRef} className={`flex flex-row gap-5 justify-between w-full rounded-md h-10 bg-red-500`}>
                 <div className={`relative flex flex-row items-center rounded-sm gap-3 px-4 w-full bg-green-500 ${hasButton ? "" : "flex-1"} ${isFocus ? "border border-gray-500" : ""}`}>
                     <SearchIcon/>
