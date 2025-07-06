@@ -1,8 +1,10 @@
 import React from 'react'
-
+import {SearchIcon} from '@/components/Icon'
 const ControlPanel = () => {
   return (
-    <div>Day la noi dung trang ControlPanel</div>
+    <div>
+      <SearchIcon/>
+    </div>
   )
 }
 
