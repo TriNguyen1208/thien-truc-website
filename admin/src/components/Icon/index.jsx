@@ -4,6 +4,26 @@ export const SearchIcon = () => (
         <path d="M14 14L11.1333 11.1333" stroke="#9CA3AF" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 )
+export const UserIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M10 9.16667C11.8409 9.16667 13.3333 7.67428 13.3333 5.83333C13.3333 3.99238 11.8409 2.5 10 2.5C8.15905 2.5 6.66666 3.99238 6.66666 5.83333C6.66666 7.67428 8.15905 9.16667 10 9.16667Z"
+      stroke="#9CA3AF"
+      strokeWidth="1.66667"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16.6667 17.5V15.8333C16.6667 14.9493 16.3155 14.1014 15.6903 13.4763C15.0652 12.8512 14.2173 12.5 13.3333 12.5H6.66666C5.78261 12.5 4.93476 12.8512 4.30964 13.4763C3.68452 14.1014 3.33333 14.9493 3.33333 15.8333V17.5"
+      stroke="#9CA3AF"
+      strokeWidth="1.66667"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+
 export const FilterIcon = () => (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.6668 2H1.3335L6.66683 8.30667V12.6667L9.3335 14V8.30667L14.6668 2Z" stroke="#09090B" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
@@ -166,3 +186,34 @@ export const ExitIcon = () => (
     </svg>
 
 )
+export const CompanyIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2.5 17.5H17.5M5.833 17.5V5.83333C5.833 5.3731 6.2061 5 6.66634 5H13.333C13.7932 5 14.1663 5.3731 14.1663 5.83333V17.5M8.33301 8.33333H11.6663M8.33301 11.6667H11.6663" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+export const RecruitIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 17.5V15.8333C15 14.9493 14.6488 14.1014 14.0237 13.4763C13.3986 12.8512 12.5507 12.5 11.6667 12.5H8.33333C7.44928 12.5 6.60143 12.8512 5.97631 13.4763C5.35119 14.1014 5 14.9493 5 15.8333V17.5M10 9.16667C11.8409 9.16667 13.3333 7.67428 13.3333 5.83333C13.3333 3.99238 11.8409 2.5 10 2.5C8.15905 2.5 6.66667 3.99238 6.66667 5.83333C6.66667 7.67428 8.15905 9.16667 10 9.16667Z" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+export const CategoryIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2.5 10V5.83333C2.5 4.45262 3.61929 3.33333 5 3.33333H10L17.5 10L10 16.6667L2.5 10Z" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M7.5 7.5H7.50833" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+export const NewsIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2.5" y="3.333" width="15" height="13.334" rx="1.667" stroke="#9CA3AF" strokeWidth="1.66667"/>
+    <path d="M5.833 6.667H14.167" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round"/>
+    <path d="M5.833 10H14.167" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round"/>
+    <path d="M5.833 13.333H10.833" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round"/>
+  </svg>
+);
+export const ProductIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3.333" y="3.333" width="13.333" height="13.333" rx="2" stroke="#9CA3AF" strokeWidth="1.66667"/>
+    <path d="M3.333 8.333H16.667" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round"/>
+    <path d="M8.333 3.333V16.667" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round"/>
+  </svg>
+);
