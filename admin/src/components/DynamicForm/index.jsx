@@ -71,6 +71,7 @@ const DynamicForm = ({ data, config }) => {
             }
         });
         config.handleSubmitButton(finalData);
+        setFormData(initialValues);
     }
 
     const handleChange = (e) => {
@@ -264,6 +265,7 @@ const DynamicForm = ({ data, config }) => {
                                     <input
                                         type="text"
                                         value={entry.name || ''}
+                                        required = {item.isRequired || defaultField.isRequired}
                                         onChange={(e) =>
                                             handleDynamicFieldsChange(
                                                 nameColumn,
@@ -280,6 +282,7 @@ const DynamicForm = ({ data, config }) => {
                                 <input
                                     type="text"
                                     value={isSingle ? entry : entry.value || ''}
+                                    required = {item.isRequired || defaultField.isRequired}
                                     onChange={(e) =>
                                         handleDynamicFieldsChange(
                                             nameColumn,
@@ -330,7 +333,7 @@ const DynamicForm = ({ data, config }) => {
                 <div className="container-fluid p-6">
                     <div className="font-[700] text-[25px] mb-[5px]">{config?.title || defaultConfig.title}</div>
                     <div className="text-gray-800 mb-[30px]">{config?.description || defaultConfig.description}</div>
-                    <form >
+                    <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-12 gap-4">
                             {data.map((item, index) => {
                                 const nameColumn = item.name || defaultField.name;
@@ -354,7 +357,7 @@ const DynamicForm = ({ data, config }) => {
                         </div>
                         <div className="flex justify-end">
                             <button
-                                type="submit"
+                                type="button"
                                 onClick={config.handleCancelButton}
                                 className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px]"
                             >
@@ -362,7 +365,6 @@ const DynamicForm = ({ data, config }) => {
                             </button>
                             <button
                                 type="submit"
-                                onClick={handleSubmit}
                                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                             >
                                 Submit
