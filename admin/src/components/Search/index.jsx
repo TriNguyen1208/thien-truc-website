@@ -250,7 +250,7 @@ const SearchBar = ({data}) => {
                                     className='rounded-sm w-44 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer'
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setDropDownOpenCategory(true);
+                                        setDropDownOpenCategory(!dropdownOpenCategory);
                                     }}
                                 >
                                     <FilterIcon/>
@@ -285,7 +285,7 @@ const SearchBar = ({data}) => {
                                     className='rounded-sm w-55 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer'
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setDropDownOpenDisplay(true);
+                                        setDropDownOpenDisplay(!dropdownOpenDisplay);
                                     }}
                                 >
                                     <FilterIcon/>
