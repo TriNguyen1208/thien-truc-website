@@ -166,3 +166,8 @@ export const ExitIcon = () => (
     </svg>
 
 )
+export const AcceptIcon = () => (
+    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.133 4.49512L6.79964 11.8285L3.46631 8.49512" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+)

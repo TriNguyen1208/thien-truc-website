@@ -1,4 +1,4 @@
-import newsServices from "#@/services/client/news.services.js";
+import newsServices from "#@/services/news.services.js";
 
 const getAllTables = async (req, res) => {
     const data = await newsServices.getAllTables();

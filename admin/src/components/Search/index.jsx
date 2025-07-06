@@ -1,31 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-
-const SearchIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="#9CA3AF" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M14 14L11.1333 11.1333" stroke="#9CA3AF" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-)
-const FilterIcon = () => (
-    <svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clipPath="url(#clip0_1724_13026)">
-        <path d="M14.6666 2H1.33325L6.66659 8.30667V12.6667L9.33325 14V8.30667L14.6666 2Z" stroke="#09090B" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
-        </g>
-        <defs>
-        <clipPath id="clip0_1724_13026">
-        <rect width="16" height="16" fill="white"/>
-        </clipPath>
-        </defs>
-    </svg>
-)
-const OpenIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g opacity="0.5">
-        <path d="M4 6L8 10L12 6" stroke="#09090B" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
-        </g>
-    </svg>
-
-)
+import { SearchIcon, FilterIcon, OpenIcon } from '../Icon';
 const SearchBar = ({data}) => {
     //prop
     const {
@@ -35,7 +9,10 @@ const SearchBar = ({data}) => {
         onSearch,
         categories = null,
         displays = null,
-        handleSearchSuggestion //co 3 tham so la query, category = null, display = null
+        handleSearchSuggestion, //co 3 tham so la query, category = null, display = null,
+        currentQuery,
+        currentCategory,
+        currentDisplay,
     } = data;
     //using useState
     const [query, setQuery] = useState("");
@@ -48,6 +25,24 @@ const SearchBar = ({data}) => {
     const [dropdownOpenDisplay, setDropDownOpenDisplay] = useState(false);
     const [category, setCategory] = useState(categories?.[0] ?? null);
     const [display, setDisplay] = useState(displays?.[0] ?? null);
+    // //Giữ trạng thái của category
+    useEffect(() => {
+        if (categories && categories.length > 0) {
+            setCategory(currentCategory);
+        }
+    }, []);
+
+    //Giữ trạng thái của query
+    useEffect(() => {
+        setQuery(currentQuery)
+    }, []);
+
+    //Giữ trạng thái của 
+    useEffect(() => {
+        if (displays && displays.length > 0) {
+            setDisplay(currentDisplay);
+        }
+    }, []);
 
     //using useRef
     const wrapperRef = useRef(null);
@@ -86,37 +81,11 @@ const SearchBar = ({data}) => {
     }, [query]);
 
     //Call API khi debounced query
-    // const {data: suggestions = [], isLoading} = handleSearchSuggestion(
-    //     debouncedQuery,
-    //     category != null ? (category == categories[0] ? '' : category) : null,
-    //     display != null ? (display == displays[0] ? '' : display) : null,
-    // );
-    const suggestions = [
-    {
-        "query": "Ủy ban nhân dân xã Ka Đơn",
-        "id": 12,
-        "img": null
-    },
-    {
-        "query": "Ban QLDA Đầu tư Xây dựng quận Hoàn Kiếm",
-        "id": 2,
-        "img": null
-    },
-    {
-        "query": "Học viện Cán bộ Tp. HCM",
-        "id": 16,
-        "img": null
-    },
-    {
-        "query": "Liên đoàn Lao động quận Bình Thạnh - TP.HCM",
-        "id": 14,
-        "img": null
-    },
-    {
-        "query": "Ngân hàng Vietcombank Chi nhánh Thăng Long",
-        "id": 7,
-        "img": null
-    }];
+    const {data: suggestions = [], isLoading} = handleSearchSuggestion(
+        debouncedQuery,
+        category != null ? (category == categories[0] ? '' : category) : null,
+        display != null ? (display == displays[0] ? '' : display) : null,
+    );
     //Cap nhat displaySuggestion
     const stableSuggestion = useMemo(()=>{
         return Array.isArray(suggestions) ? suggestions : [];
@@ -156,9 +125,8 @@ const SearchBar = ({data}) => {
         setShowSuggestion(false);
     }
     return (
-        <div className='rounded-sm bg-amber-300'>
-            <div ref={wrapperRef} className={`flex flex-row gap-5 justify-between w-full rounded-md h-10 bg-red-500`}>
-                <div className={`relative flex flex-row items-center rounded-sm gap-3 px-4 w-full bg-green-500 ${hasButton ? "" : "flex-1"} ${isFocus ? "border border-gray-500" : ""}`}>
+            <div ref={wrapperRef} className={`flex flex-row gap-4 justify-between w-full rounded-md h-10`}>
+                <div className={`relative flex flex-row items-center rounded-md gap-3 px-4 w-full bg-[#F9FAFB] ${hasButton ? "" : "flex-1"} ${isFocus ? "border border-gray-500" : ""}`}>
                     <SearchIcon/>
                     <input
                         type='text'
@@ -198,7 +166,7 @@ const SearchBar = ({data}) => {
                     {/* Hien thi goi y */}
                     { 
                         showSuggestions && debouncedQuery && (
-                            <ul className='absolute z-10 left-0 py-2 mt-67 w-full bg-red-700 shadow-md max-h-64 overflow-y-auto'>
+                            <ul className='absolute z-10 left-0 top-full w-full bg-white shadow-md max-h-64 overflow-y-auto border border-gray-500'>
                                 {displaySuggestion.map((item, index) => (
                                     <li
                                         key={index}
@@ -232,11 +200,11 @@ const SearchBar = ({data}) => {
                                     </li>
                                 ))}
                                 {
-                                    // isLoading && (
-                                    //     <li key="loading" className="py-2 px-4 text-sm text-gray-500">
-                                    //         Đang tải...
-                                    //     </li>
-                                    // )
+                                    isLoading && (
+                                        <li key="loading" className="py-2 px-4 text-sm text-gray-500">
+                                            Đang tải...
+                                        </li>
+                                    )
                                 }
                             </ul>
                         )
@@ -244,10 +212,10 @@ const SearchBar = ({data}) => {
                 </div>
                 {
                     hasButton && (
-                        <div className='flex flex-row gap-5 justify-between'>
+                        <div className='flex flex-row gap-4 justify-between'>
                             <div className='relative h-full rounded-sm flex flex-row'>
                                 <button
-                                    className='rounded-sm w-44 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer'
+                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setDropDownOpenCategory(!dropdownOpenCategory);
@@ -259,13 +227,13 @@ const SearchBar = ({data}) => {
                                 </button>
                                 {
                                     dropdownOpenCategory && (
-                                        <ul className="absolute z-10 left-0 py-2 mt-12 w-full bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
+                                        <ul className="absolute z-10 left-0 py-2 mt-12 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[160px] overflow-y-auto"
                                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                         >
                                             {categories.map((item, index) => (
                                                 <li
                                                     key={index}
-                                                    className='py-2 px-3 hover:bg-red-500 cursor-pointer text-sm text-center text-bold text-gray-700'
+                                                    className='py-2 px-3 hover:bg-gray-100 cursor-pointer text-sm text-center text-gray-700'
                                                     onClick={(e)=> {
                                                         e.preventDefault();
                                                         setCategory(item);
@@ -282,7 +250,7 @@ const SearchBar = ({data}) => {
                             </div>
                             <div className='relative h-full rounded-sm flex flex-row'>
                                 <button
-                                    className='rounded-sm w-55 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer'
+                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setDropDownOpenDisplay(!dropdownOpenDisplay);
@@ -300,7 +268,7 @@ const SearchBar = ({data}) => {
                                             {displays.map((item, index) => (
                                                 <li
                                                     key={index}
-                                                    className='py-2 px-3 hover:bg-red-500 cursor-pointer text-sm text-center text-bold text-gray-700'
+                                                    className='py-2 px-3 hover:bg-gray-100 cursor-pointer text-sm text-center text-gray-700'
                                                     onClick={(e)=> {
                                                         e.preventDefault();
                                                         setDisplay(item);
@@ -319,7 +287,6 @@ const SearchBar = ({data}) => {
                     )
                 }
             </div>
-        </div>
     )
 }
 

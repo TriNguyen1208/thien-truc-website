@@ -1,188 +1,293 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SearchBar from '../Search'
 import { useState } from 'react'
 import Table from '../Table'
-const Icon = () => (
-  <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M8 2.5H3.33333C2.97971 2.5 2.64057 2.64048 2.39052 2.89052C2.14048 3.14057 2 3.47971 2 3.83333V13.1667C2 13.5203 2.14048 13.8594 2.39052 14.1095C2.64057 14.3595 2.97971 14.5 3.33333 14.5H12.6667C13.0203 14.5 13.3594 14.3595 13.6095 14.1095C13.8595 13.8594 14 13.5203 14 13.1667V8.5" stroke="#09090B" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M12.25 2.25003C12.5152 1.98481 12.8749 1.83582 13.25 1.83582C13.6251 1.83582 13.9848 1.98481 14.25 2.25003C14.5152 2.51525 14.6642 2.87496 14.6642 3.25003C14.6642 3.6251 14.5152 3.98481 14.25 4.25003L8.00001 10.5L5.33334 11.1667L6.00001 8.50003L12.25 2.25003Z" stroke="#09090B" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-)
-function Button({icon, width = "100%", handleClick}){
-  return(
-      <button 
-          className = "flex justify-center items-center py-[8px] border border-black text-white bg-(--green-bg) rounded-[6px] hover:bg-[#166534] transition-colors ease-out duration-300 cursor-pointer"
-          style={{width}}
-          onClick={handleClick}
-      >
-          {icon}
-      </button>
-  )
-}
-const ColorBlock = ({ color }) => (
-  <div className="flex items-center gap-2">
-    <div
-      className="w-4 h-4 rounded-sm"
-      style={{ backgroundColor: color }}
-    />
-    <span>{color}</span>
-  </div>
-);
-const Setting = ({content}) => {
+import { AcceptIcon, ExitIcon } from '../Icon'
+import LabelAssign from "../LabelAssgin"
+import { Modal } from 'antd'
+import { useMemo } from 'react'
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
+
+const Setting = ({
+    isOpen,
+    onClose,
+    content,
+    useDataList,
+    useDataSuggestion,
+    useDataCategories
+}) => {
     const {
         title,
-        description
+        description,
+        type,
+        category,
     } = content
 
-    //Search
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [filtered, setFiltered] = useState([]);
+    const [selectedId, setSelectedId] = useState([]);
+    const [display, setDisplay] = useState([]);
+    const [countAssign, setCountAssign] = useState(0);
+
+    const queryParam = searchParams.get('query') || "";
+    const categoryParam = searchParams.get('category') || "Tất cả loại";
+    const displayParam = searchParams.get('display') || "Tất cả trạng thái";
+
+    const [filtersSearch, setFiltersSearch] = useState({
+        query: queryParam,
+        category: categoryParam,
+        display: displayParam
+    });
+    const { data: projects, isLoading: isLoadingProjects } = useDataList.getList(
+        filtersSearch.query,
+        filtersSearch.category === "Tất cả loại" ? "" : filtersSearch.category,
+        1
+    );
+
+    useEffect(() => {
+        if (!projects) return;
+
+        const projectsFetch = projects.results.map((item) => ({
+            id: item.id,
+            name: item.name || item.title,
+            category: item.region.name || item.category.name,
+            display: (item.region.name || item.category.name) === category ? "Đã gán" : "Chưa gán"
+        }));
+
+        const filteredDisplay = projectsFetch.filter((product) => {
+            const matchDisplay =
+                filtersSearch.display === "Tất cả trạng thái" ||
+                (filtersSearch.display === "Trưng bày" && product.display === "Đã gán") ||
+                (filtersSearch.display === "Không trưng bày" && product.display === "Chưa gán");
+            return matchDisplay;
+        });
+
+        setFiltered(filteredDisplay);
+        setSelectedId([]);
+    }, [projects, filtersSearch.display]);
+
+    useEffect(() => {
+        const allDisplay = filtered.map(item => ({
+            id: item.id,
+            display: item.display
+        }));
+        setDisplay(allDisplay);
+    }, [filtered]);
+
+    useEffect(() => {
+        const assign = display.filter(item => item.display === "Đã gán");
+        setCountAssign(assign.length)
+    }, [display]);
+
     const handleEnter = (id) => {
-        console.log(id);
-    }
+        // updateFilters({ query: id });
+    };
+
     const handleSearch = (query, category, display) => {
-        console.log(query, category, display);
-    }
-    const handleSearchSuggestion = (query) => {
-        const mockdata = [
-        {
-            "query": "Ủy ban nhân dân xã Ka Đơn",
-            "id": 12,
-            "img": null
-        },
-        {
-            "query": "Ban QLDA Đầu tư Xây dựng quận Hoàn Kiếm",
-            "id": 2,
-            "img": null
-        },
-        {
-            "query": "Học viện Cán bộ Tp. HCM",
-            "id": 16,
-            "img": null
-        },
-        {
-            "query": "Liên đoàn Lao động quận Bình Thạnh - TP.HCM",
-            "id": 14,
-            "img": null
-        },
-        {
-            "query": "Ngân hàng Vietcombank Chi nhánh Thăng Long",
-            "id": 7,
-            "img": null
-        }];
-        return mockdata;
-    }
-    const data = {
+        updateFilters({ query, category, display });
+    };
+
+    const updateFilters = ({ query, category, display }) => {
+        const newFilters = {
+            query: query ?? filtersSearch.query,
+            category: category ?? filtersSearch.category,
+            display: display ?? filtersSearch.display
+        };
+        setFiltersSearch(newFilters);
+
+        const params = new URLSearchParams();
+        if (newFilters.query) params.set("query", newFilters.query);
+        if (newFilters.category) params.set("category", newFilters.category);
+        if (newFilters.display) params.set("display", newFilters.display);
+
+        navigate({
+            pathname: location.pathname,
+            search: params.toString()
+        });
+    };
+
+    const handleSearchSuggestion = (query, filter) => {
+        return useDataSuggestion.getSearchSuggestions(query, filter);
+    };
+
+    const handleToggle = (id) => {
+        setSelectedId((prev) =>
+            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+        );
+    };
+
+    const handleToggleAll = () => {
+        const allId = filtered.map(item => item.id);
+        if (selectedId.length === allId.length) {
+            setSelectedId([]);
+        } else {
+            setSelectedId(allId);
+        }
+    };
+
+    const handleClear = () => setSelectedId([]);
+
+    const { data: dataCategories, isLoading: isLoadingCategories } = useDataCategories.getAll();
+
+    const searchProps = {
         hasButton: true,
-        placeholder: "Tìm kiếm theo tên loại sản phẩm",
-        handleEnter: handleEnter,
+        placeholder: `Tìm kiếm theo tên loại ${type}`,
+        handleEnter,
         onSearch: handleSearch,
-        handleSearchSuggestion: handleSearchSuggestion,
+        handleSearchSuggestion,
         categories: [
             "Tất cả loại",
-            "Công ty",
-            "Nhà ở",
-            "Hợp đồngdjfdaksffksahflkjsahfashf"
+            ...(dataCategories?.map(item => item.name) || [])
         ],
         displays: [
             "Tất cả trạng thái",
             "Trưng bày",
             "Không trưng bày"
-        ]
-    }
-    const [selectedId, setSelectedId] = useState([]);
-    const handleToggle = (id) => {
-      setSelectedId((prev) => 
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-      )
-    }
-    const handleToggleAll = () => {
-        
-    }
-    const handleClear = () => setSelectedId([]);
+        ],
+        currentQuery: filtersSearch.query,
+        currentCategory: filtersSearch.category,
+        currentDisplay: filtersSearch.display
+    };
 
-    const handleButton = () => {
-      console.log("hello world")
-    }
-    const columns = [
-        { type: "checkbox", content: "Mã tin tức", checked: selectedId.includes("DA002"), onChange: () => handleToggleAll()},
-        { type: "text", content: "Tên tin tức"},
-        { type: "text", content: "Loại tin tức"},
-        { type: "text", content: "Trạng thái"},
-    ];
+    if (isLoadingProjects || isLoadingCategories) return <></>;
+
     const dataTable = [
         [
             {
                 type: "checkbox",
-                content: "DA002"
+                content: "Mã sản phẩm",
+                checked: selectedId.length === filtered.length,
+                onChange: handleToggleAll
             },
-            {
-                type: "text",
-                content: "Ra mắt sản phẩm mới IPhone 15 Pro Max"
-            },
-            {
-                type: "text",
-                content: "Công Ty"
-            },
-            {
-                type: "text",
-                content: "Đã gán"
-            },
+            { type: "text", content: "Tên sản phẩm" },
+            { type: "text", content: "Loại sản phẩm" },
+            { type: "text", content: "Trạng thái" }
         ],
-        [
+        ...filtered.map((product) => [
             {
-                type: "text",
-                content: "DA002"
+                type: "checkbox",
+                content: product.id,
+                checked: selectedId.includes(product.id),
+                onChange: () => handleToggle(product.id)
             },
+            { type: "text", content: product.name },
+            { type: "text", content: product.category },
             {
-                type: "text",
-                content: "Ra mắt sản phẩm mới IPhone 15 Pro Max"
-            },
-            {
-                type: "text",
-                content: "Công Ty"
-            },
-            {
-                type: "text",
-                content: "Đã gán"
-            },
-        ]
-    ]
-    return (
-        <div className='flex flex-col gap-5 px-5 py-3 bg-red-500 w-full rounded-md'>
-            <div className='flex justify-between'>
-                <div className='flex flex-col'>
-                   <span className='font-bold'>{title}</span> 
-                   <span className='opacity-50 text-sm'>{description}</span>
-                </div>
-                <button className='h-[50%]'>X</button>
-            </div>
-            <div className=''>
-                <SearchBar data={data}/>
-            </div>
-            <div className="relative">
-                {selectedId.length > 0 && (
-                    <div className="w-full bg-blue-50 border border-blue-200 z-20 flex justify-between items-center">
-                    <span className="text-blue-600 font-medium">
-                        Đã chọn {selectedId.length} dòng
-                    </span>
-                    <div className="flex gap-2">
-                        <button className="bg-green-600 text-white px-4 py-2 rounded">Gán</button>
-                        <button className="border px-4 py-2 rounded">Bỏ</button>
-                        <button onClick={handleClear} className="underline">
-                        Bỏ chọn
-                        </button>
-                    </div>
-                    </div>
-                )}
-                <div className="">
-                    <Table
-                        columns={columns}
-                        data={dataTable}
-                        selectedId={selectedId}
-                        onToggle={handleToggle}
+                type: "component",
+                component: (
+                    <LabelAssign
+                        current={display.find(item => item.id === product.id)?.display}
+                        onAssign={(newDisplay) => {
+                            setDisplay(prev =>
+                                prev.map(item =>
+                                    item.id === product.id ? { ...item, display: newDisplay } : item
+                                )
+                            );
+                        }}
                     />
+                )
+            }
+        ])
+    ];
+
+    const handleClickAssign = () => {
+        setDisplay(prev =>
+            prev.map(item =>
+                selectedId.includes(item.id)
+                    ? { ...item, display: "Đã gán" }
+                    : item
+            )
+        );
+        setSelectedId([]);
+    };
+
+    const handleClickRemove = () => {
+        setDisplay(prev =>
+            prev.map(item =>
+                selectedId.includes(item.id)
+                    ? { ...item, display: "Chưa gán" }
+                    : item
+            )
+        );
+        setSelectedId([]);
+    };
+
+    const handleSave = () => {
+        console.log("hello world");
+    };
+    return (
+        <Modal
+            open={isOpen}
+            onCancel={onClose}
+            width={1000}
+            centered
+            footer={null}
+        >
+            <div className='flex flex-col gap-5 px-5 py-3 bg-white w-full rounded-md text-[18px]'>
+                <div className='flex justify-between'>
+                    <div className='flex flex-col'>
+                        <span className='font-bold'>{title}</span> 
+                        <span className='text-sm text-[#71717A]'>{description}</span>
+                    </div>
+                </div>
+                <div className=''>
+                    <SearchBar data={searchProps}/>
+                </div>
+                <div className="relative">
+                    {selectedId.length > 0 && (
+                        <div className="px-5 py-3 w-full rounded-md bg-[#EFF6FF] border border-[#EFF6FF] z-20 flex items-center gap-4 mb-5">
+                            <span className="text-[#1E4DE8] font-medium">
+                                Đã chọn {selectedId.length} {type}
+                            </span>
+                            <div className="flex gap-2 justify-between">
+                                <button 
+                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded flex items-center gap-2 cursor-pointer"
+                                    onClick={handleClickAssign}
+                                >
+                                    <AcceptIcon/>
+                                    <span>Gán vào danh mục</span>
+                                </button>
+                                <button 
+                                    className="border border-gray-300 px-3 py-2 rounded flex items-center gap-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={handleClickRemove}
+                                >
+                                    <ExitIcon/>
+                                    <span>Bỏ khỏi danh mục</span>
+                                </button>
+                                <button onClick={handleClear} className="px-3 cursor-pointer hover:bg-gray-100">
+                                    Bỏ chọn
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    <div className="max-h-100 overflow-y-auto">
+                        <Table
+                            columns={[]}
+                            data={dataTable}
+                            isSetting={true}
+                        />
+                    </div>
+                </div>
+                <div className='pt-5 flex flex-row justify-between'>
+                    <span className='text-[#4b5563]'>
+                        Tổng: {countAssign} tin tức đã được gán vào danh mục {category}
+                    </span>
+                    <div className='flex flex-row gap-2'>
+                        <button 
+                            className='px-4 py-2 bg-white text-black rounded-md cursor-pointer'
+                            onClick={onClose}
+                        >Hủy</button>
+                        <button 
+                            className='px-4 py-2 bg-[#18181b] text-white rounded-md cursor-pointer'
+                            onClick={handleSave}
+                        >Lưu thay đổi</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Modal>
     )
 }
 

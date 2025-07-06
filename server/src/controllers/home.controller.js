@@ -1,4 +1,4 @@
-import homeServices from "#@/services/client/home.services.js";
+import homeServices from "#@/services/home.services.js";
 
 const getAllTables = async (req, res) => {
     const data = await homeServices.getAllTables();

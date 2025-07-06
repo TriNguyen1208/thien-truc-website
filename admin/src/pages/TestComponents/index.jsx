@@ -1,193 +1,226 @@
-import React from 'react'
-import SearchBar from '../../components/Search'
-import Setting from '../../components/Setting'
-const TestComponents = () => {
-    // const handleEnter = (id) => {
-    //     console.log(id);
-    // }
-    // const handleSearch = (query, category, display) => {
-    //     console.log(query, category, display);
-    // }
-    // const handleSearchSuggestion = (query) => {
-    //     const mockdata = [
-    //     {
-    //         "query": "Ủy ban nhân dân xã Ka Đơn",
-    //         "id": 12,
-    //         "img": null
-    //     },
-    //     {
-    //         "query": "Ban QLDA Đầu tư Xây dựng quận Hoàn Kiếm",
-    //         "id": 2,
-    //         "img": null
-    //     },
-    //     {
-    //         "query": "Học viện Cán bộ Tp. HCM",
-    //         "id": 16,
-    //         "img": null
-    //     },
-    //     {
-    //         "query": "Liên đoàn Lao động quận Bình Thạnh - TP.HCM",
-    //         "id": 14,
-    //         "img": null
-    //     },
-    //     {
-    //         "query": "Ngân hàng Vietcombank Chi nhánh Thăng Long",
-    //         "id": 7,
-    //         "img": null
-    //     }];
-    //     return mockdata;
-    // }
-    // const data = {
-    //     hasButton: true,
-    //     placeholder: "Tìm kiếm theo tên loại sản phẩm",
-    //     handleEnter: handleEnter,
-    //     onSearch: handleSearch,
-    //     handleSearchSuggestion: handleSearchSuggestion,
-    //     categories: [
-    //         "Tất cả dự án",
-    //         "Công ty",
-    //         "Nhà ở",
-    //         "Hợp đồngdjfdaksffksahflkjsahfashf"
-    //     ],
-    //     displays: [
-    //         "Tất cả hiển thị",
-    //         "Trưng bày",
-    //         "Không trưng bày"
-    //     ]
-    // }
-    // return (
-    //     <>
-    //         <SearchBar data={data}/>
-    //     </>
-    // )
-    const content = {
-        title: `Quản lý danh sách tin tức thuộc loại "Công Ty"`,
-        description: `Chọn các tin tức muốn thêm hoặc xóa khỏi loại "Công ty"`
-    }
-    return <Setting content={content}/>
-// import React, { useState } from 'react'
-// import Table from '@/components/Table'
-
-// const Icon = () => (
-//   <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-//       <path d="M8 2.5H3.33333C2.97971 2.5 2.64057 2.64048 2.39052 2.89052C2.14048 3.14057 2 3.47971 2 3.83333V13.1667C2 13.5203 2.14048 13.8594 2.39052 14.1095C2.64057 14.3595 2.97971 14.5 3.33333 14.5H12.6667C13.0203 14.5 13.3594 14.3595 13.6095 14.1095C13.8595 13.8594 14 13.5203 14 13.1667V8.5" stroke="#09090B" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-//       <path d="M12.25 2.25003C12.5152 1.98481 12.8749 1.83582 13.25 1.83582C13.6251 1.83582 13.9848 1.98481 14.25 2.25003C14.5152 2.51525 14.6642 2.87496 14.6642 3.25003C14.6642 3.6251 14.5152 3.98481 14.25 4.25003L8.00001 10.5L5.33334 11.1667L6.00001 8.50003L12.25 2.25003Z" stroke="#09090B" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-//   </svg>
-// )
-// function Button({icon, width = "100%", handleClick}){
-//   return(
-//       <button 
-//           className = "flex justify-center items-center py-[8px] border border-black text-white bg-(--green-bg) rounded-[6px] hover:bg-[#166534] transition-colors ease-out duration-300 cursor-pointer"
-//           style={{width}}
-//           onClick={handleClick}
-//       >
-//           {icon}
-//       </button>
-//   )
-// }
-// const ColorBlock = ({ color }) => (
-//   <div className="flex items-center gap-2">
-//     <div
-//       className="w-4 h-4 rounded-sm"
-//       style={{ backgroundColor: color }}
-//     />
-//     <span>{color}</span>
-//   </div>
-// );
-
+// import React, { use, useEffect } from 'react'
+// import SearchBar from '../../components/Search'
+// import Setting from '../../components/Setting'
+// import { useState } from 'react'
+// import { useMemo } from 'react'
+// import LabelAssign from '../../components/LabelAssgin'
+// import useProjects from '../../hooks/useProjects'
 // const TestComponents = () => {
-//     const [selectedId, setSelectedId] = useState([]);
+//     const [filteredProducts, setFilteredProducts] = useState([]);
+//     const [filters, setFilters] = useState({
+//         query: "",
+//         category: "Tất cả loại",
+//         display: "Tất cả trạng thái"
+//     });
+//     const { query, category, display } = filters;
+//     const {data: projects, isLoading: isLoadingProjects} = useProjects.projects.getList(query, category, 1)
+//     if(isLoadingProjects){
+//         return <></>
+//     }
+
+//     useEffect(() => {
+        
+        
+//         const projectsFetch = projects.results.map((item) => ({
+//             name: item.name,
+//             category: item.region.name,
+//             state: item.region.name === "Miền Bắc" ? "Đã gán" : "Chưa gán",
+//             id: item.id // thêm id nếu có để phục vụ cho checkbox
+//         }));
+//         setFilteredProducts(projectsFetch);
+//         setSelectedId([]); // reset selection nếu cần
+//     }, [filters]);
+
+
+//     const handleEnter = (id) => {
+//         // setFilters(prev => ({ ...prev, query: id }));
+//     }
+//     const handleSearch = (query, category, display) => {
+//         setFilters({
+//             query: query || "",
+//             category: category || "Tất cả loại",
+//             display: display || "Tất cả trạng thái"
+//         });
+//     }
+//     const [state, setState] = useState([]);
+//     console.log(state);
+//     const [selectedId, setSelectedId] = useState([]); //tra ve 1 cai mang khi tick vao checkbox
+//     const handleSearchSuggestion = (query, filter) => {
+//         return useProjects.getSearchSuggestions(query, filter);
+//     }
 //     const handleToggle = (id) => {
-//       setSelectedId((prev) => 
-//         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-//       )
+//         setSelectedId((prev) => 
+//           prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+//         )
 //     }
-//     const handleButton = () => {
-//       console.log("hello world")
-//     }
-//     const columns = [
-//       "Mã dự án",
-//       "Hình ảnh",
-//       "Tên dự án",
-//       "Vị trí",
-//       "Hoàn thành",
-//       "Trưng bày",
-//       "Thao tác"
+
+//     const productFetch = [
+//         {
+//             id: 2,
+//             name: "Cable COMMSCOPE (THÙNG 305M) Cat 5 (6-219590-2)",
+//             category: "CABLE",
+//             state: "Chưa gán"
+//         },
+//         {
+//             id: 43,
+//             name: "CAMERA EZVIZ CS-C6N-3MP",
+//             category: "CAMERA XOAY, CỐ ĐỊNH",
+//             state: "Đã gán"
+//         },
+//         {
+//             id: 4,
+//             name: "CAMERA IMOU IPC-A32EP-L 3MP",
+//             category: "CAMERA XOAY, CỐ ĐỊNH",
+//             state: "Đã gán"
+//         },
+//         {
+//             id: 21,
+//             name: "CPU Intel Core i5-12400- Box(SK1700)",
+//             category: "CPU INTEL",
+//             state: "Chưa gán"
+//         },
+//         {
+//             id: 24,
+//             name: "HDD Western 1TB - WD11PURZ",
+//             category: "HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA",
+//             state: "Đã gán"
+//         }
 //     ];
-//     const data = [
+//     useEffect(()=>{
+//         const allState = filteredProducts.map(item => ({
+//             id: item.id,
+//             state: item.state,
+//         }));
+//         setState(allState);
+//     }, [])
+//     console.log(state)
+//     const allId = filteredProducts.map(item => item.id)
+//     const handleToggleAll = () => {
+//         if (selectedId.length === allId.length) {
+//         setSelectedId([]);
+//         } else {
+//         setSelectedId(allId);
+//         }
+//     };
+    
+//     const handleClear = () => setSelectedId([]);
+//     const content = {
+//         title: `Quản lý danh sách tin tức thuộc loại "Công Ty"`,
+//         description: `Chọn các tin tức muốn thêm hoặc xóa khỏi loại "Công ty"`,
+//         type: "tin tức"
+//     }
+//     const searchProps = {
+//         hasButton: true,
+//         placeholder: "Tìm kiếm theo tên loại sản phẩm",
+//         handleEnter: handleEnter,
+//         onSearch: handleSearch,
+//         handleSearchSuggestion: handleSearchSuggestion,
+//         categories: [
+//             "Tất cả loại",
+//             "Công ty",
+//             "Nhà ở",
+//             "Hợp đồngdjfdaksffksahflkjsahfashf"
+//         ],
+//         displays: [
+//             "Tất cả trạng thái",
+//             "Trưng bày",
+//             "Không trưng bày"
+//         ]
+//     }
+//     const dataTable = [
+//         // Header row
 //         [
 //             {
-//                 type: "text",
-//                 content: "DA002"
-//             },
-//             {
-//                 type: "img",
-//                 path: "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"
-//             },
-//             {
-//                 type: "text",
-//                 content: "Hệ thống an ninh Lotte Center"
+//                 type: "checkbox",
+//                 content: "Mã sản phẩm",
+//                 checked: selectedId.length === filteredProducts.length,
+//                 onChange: handleToggleAll,
 //             },
 //             {
 //                 type: "text",
-//                 content: "Ba Đình, Hà Nội"
+//                 content: "Tên sản phẩm"
 //             },
 //             {
 //                 type: "text",
-//                 content: "24/06/2024"
+//                 content: "Loại sản phẩm"
+//             },
+//             {
+//                 type: "text",
+//                 content: "Trạng thái"
+//             },
+//         ],
+//         // Data rows
+//         ...filteredProducts.map((product) => [
+//             {
+//                 type: "checkbox",
+//                 content: product.id,
+//                 checked: selectedId.includes(product.id),
+//                 onChange: () => handleToggle(product.id),
+//             },
+//             {
+//                 type: "text",
+//                 content: product.name
+//             },
+//             {
+//                 type: "text",
+//                 content: product.category
 //             },
 //             {
 //                 type: "component",
-//                 component: <ColorBlock color="#10b981"/>
-//             },
-//             {
-//                 type: "array-components",
-//                 components: [
-//                     {component: <Button icon={<Icon/>} handleClick={handleButton}/>},
-//                     {component: <Button icon={<Icon/>} handleClick={handleButton}/>}
-//                 ]
+//                 component: <LabelAssign 
+//                                 current={state.find(item => item.id === product.id)?.state} 
+//                                 onAssign={(newState) => {
+//                                     setState(prev => 
+//                                         prev.map(item =>
+//                                             item.id === product.id ? { ...item, state: newState } : item
+//                                         )
+//                                     );
+//                                 }}
+//                             />
 //             }
-//         ],
-//         [
-//             {
-//                 type: "text",
-//                 content: "DA002"
-//             },
-//             {
-//                 type: "img",
-//                 path: "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"
-//             },
-//             {
-//                 type: "text",
-//                 content: "Hệ thống an ninh Lotte Center"
-//             },
-//             {
-//                 type: "text",
-//                 content: "Ba Đình, Hà Nội"
-//             },
-//             {
-//                 type: "text",
-//                 content: "24/06/2024"
-//             },
-//             {
-//                 type: "checkbox",
-//                 checked: selectedId.includes("DA002"),
-//                 onChange: () => handleToggle("DA002")
-//             },
-//             {
-//               type: "array-components",
-//               components: [
-//                   {component: <Button icon={<Icon/>} handleClick={handleButton}/>},
-//                   {component: <Button icon={<Icon/>} handleClick={handleButton}/>}
-//               ]
-//             }
-//         ]
-//     ]
-//     return (
-//       <div>
-//           <Table columns={columns} data={data}/>
-//       </div>
-//     )
-}
+//         ])
+//     ];
+//     const [isModalOpen, setIsModalOpen] = useState(true);
+//     return <Setting 
+//         isOpen={isModalOpen}
+//         onClose={() => setIsModalOpen(false)}
+//         content={content}
+//         searchProps={searchProps}
+//         dataTable={dataTable}
+//         selectedId={selectedId}
+//         setSelectedId={setSelectedId}
+//         handleClear={handleClear}
+//         setState={setState}
+//         state={state}
+//     />
+// }
 
-export default TestComponents
+// export default TestComponents
+
+import React, { useState } from 'react';
+import SearchBar from '../../components/Search';
+import Setting from '../../components/Setting';
+import LabelAssign from '../../components/LabelAssgin';
+import useProjects from '../../hooks/useProjects';
+
+const TestComponents = () => {
+    const [isModalOpen, setIsModalOpen] = useState(true);
+    const content = {
+        title: `Quản lý danh sách dự án thuộc loại "Miền Bắc"`,
+        description: `Chọn các dự án muốn thêm hoặc xóa khỏi loại "Miền Bắc"`,
+        type: "dự án",
+        category: "Miền Bắc",
+    };
+    return (
+        <Setting
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            content={content}
+            useDataList={useProjects.projects}
+            useDataSuggestion={useProjects}
+            useDataCategories={useProjects.project_regions}
+        />
+    );
+};
+
+export default TestComponents;
