@@ -1,7 +1,6 @@
 import React from 'react'
 import EditBanner from '../../components/EditBanner'
 import Button from '../../components/Button'
-import {PlusSquareFilled} from '@ant-design/icons'
 import FeatureCard from '../../components/FeatureCard'
 import {LeftCircleOutlined} from '@ant-design/icons'
 const ControlPanel = () => {

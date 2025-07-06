@@ -1,5 +1,5 @@
-import Button from '../../components/Button'
-import {SaveOutlined } from '@ant-design/icons'
+import Button from '@/components/Button'
+import {SaveIcon}  from '../Icon';
 import { useRef } from 'react';
 function Input({label, placeholder,idInput,contentCurrent,ref} )
 {
@@ -35,7 +35,7 @@ export default function EditBanner({title, description, listInput,saveButton})
         }
     }
     const propsButton ={
-        Icon: SaveOutlined,
+        Icon: SaveIcon,
         text: "Lưu thây đổi",
         colorText: "#ffffff",
         colorBackground: "#000000",
