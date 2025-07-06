@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import useContact from '@/hooks/useContact';
 import GreenButton from '@/components/GreenButton';
 import Loading from '@/components/Loading'; // Import component Loading của bạn
@@ -112,12 +112,13 @@ const Form = ({ data }) => {
                     <form action="" className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
                         <div className="flex flex-row gap-10 justify-between">
                             <div className="flex flex-col gap-3 w-[340px]">
-                                <label className="text-sm font-medium text-[#374151]">
+                                <label for = "name" className="text-sm font-medium text-[#374151]">
                                     Họ và tên <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="name"
+                                    id = "name"
                                     value={formData.name}
                                     onChange={handleChangeDataForm}
                                     placeholder="Nguyễn Đức Trí"
@@ -127,12 +128,13 @@ const Form = ({ data }) => {
                             </div>
 
                             <div className="flex flex-col gap-3 w-[340px]">
-                                <label className="text-sm font-medium text-[#374151]">
+                                <label for = "email" className="text-sm font-medium text-[#374151]">
                                     Email <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="email"
                                     name="email"
+                                    id = "email"
                                     value={formData.email}
                                     onChange={handleChangeDataForm}
                                     placeholder="ductri0981@gmail.com"
@@ -144,12 +146,13 @@ const Form = ({ data }) => {
 
                         <div className="flex flex-row gap-10 justify-between">
                             <div className="flex flex-col gap-3 w-[340px]">
-                                <label className="text-sm font-medium text-[#374151]">
+                                <label htmlFor = "phone" className="text-sm font-medium text-[#374151]">
                                     Số điện thoại
                                 </label>
                                 <input
                                     type="tel"
                                     name="phone"
+                                    id = "phone"
                                     value={formData.phone}
                                     onChange={handleChangeDataForm}
                                     placeholder="0906640981"
@@ -158,12 +161,13 @@ const Form = ({ data }) => {
                             </div>
 
                             <div className="flex flex-col gap-3 w-[340px]">
-                                <label className="text-sm font-medium text-[#374151]">
+                                <label htmlFor = "title" className="text-sm font-medium text-[#374151]">
                                     Tiêu đề <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="title"
+                                    id = "title"
                                     value={formData.title}
                                     onChange={handleChangeDataForm}
                                     placeholder="Nhập tiêu đề"
@@ -174,11 +178,12 @@ const Form = ({ data }) => {
                         </div>
 
                         <div className="flex flex-col gap-3">
-                            <label className="text-sm font-medium text-[#374151]">
+                            <label htmlFor = "content" className="text-sm font-medium text-[#374151]">
                                 Nội dung <span className="text-red-500">*</span>
                             </label>
                             <textarea
                                 name="content"
+                                id = "content"
                                 value={formData.content}
                                 onChange={handleChangeDataForm}
                                 rows={6}
