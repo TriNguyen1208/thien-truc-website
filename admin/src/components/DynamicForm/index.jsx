@@ -379,9 +379,10 @@ const DynamicForm = ({ data, config }) => {
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-12 gap-4">
                             {data.map((item, index) => {
+                                console.log('item.width =', item.width);
                                 const nameColumn = item.name || defaultField.name;
                                 return (
-                                    <div key={index} className={`col-span-${item.width || defaultField.width}`}>
+                                    <div key={index} style={{ gridColumn: `span ${item.width}` }}>
                                         {item.type !== 'checkbox' && (
                                             <label htmlFor={nameColumn} className="block font-[700] mb-2">
                                                 {item.label || defaultField.label}
