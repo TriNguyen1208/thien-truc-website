@@ -21,8 +21,8 @@ const Header = () => {
 
   return (
     <div>
-      <header className="fixed left-64 py-1 w-[85%] bg-white z-50 shadow-sm border-gray-200 border-solid border-b ">
-        <div className="max-w-screen-xl mx-auto flex justify-end items-center px-6 py-2">
+      <header className="sticky top-0 py-1 bg-white z-50 shadow-sm border-gray-200 border-solid border-b ">
+        <div className="flex justify-end items-center px-6 py-2">
           <div
           className="flex items-center gap-2 cursor-pointer relative"
           onClick={handleClick}

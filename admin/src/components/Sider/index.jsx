@@ -63,7 +63,7 @@ const sections = [
 
 const Sider = () => {
   return (
-    <div className="w-65 h-full top-0 left-0 overflow-y-auto  overflow-x-hidden no-scrollbar px-3 border-gray-200 border-solid shadow-sm">
+    <div className="w-65 h-full top-0 left-0 overflow-y-auto overflow-x-hidden no-scrollbar px-3 border-gray-200 border-solid shadow-sm">
       <div className="mb-2 pt-7">
         <h1 className="px-3 text-[23px] font-bold text-gray-800">Trang Quản Trị</h1>
       </div>
