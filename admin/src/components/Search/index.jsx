@@ -13,7 +13,7 @@ const SearchBar = ({data}) => {
         currentQuery = "",
         currentCategory,
         currentDisplay,
-        displayMap
+        displayMap = null
     } = data;
     //using useState
     const [query, setQuery] = useState("");
@@ -31,11 +31,13 @@ const SearchBar = ({data}) => {
         if (categories && categories.length > 0) {
             setCategory(currentCategory);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //Giữ trạng thái của query
     useEffect(() => {
         setQuery(currentQuery)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //Giữ trạng thái của 
@@ -43,6 +45,7 @@ const SearchBar = ({data}) => {
         if (displays && displays.length > 0) {
             setDisplay(currentDisplay);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //using useRef
@@ -59,6 +62,7 @@ const SearchBar = ({data}) => {
             }
             return category
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const truncateDisplays = useMemo(()=>{
         if(!displays){
@@ -70,6 +74,7 @@ const SearchBar = ({data}) => {
             }
             return display;
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //function
@@ -90,15 +95,16 @@ const SearchBar = ({data}) => {
     const stableSuggestion = useMemo(()=>{
         // return Array.isArray(suggestions) ? suggestions : [];
         if (!Array.isArray(suggestions)) return [];
-
-        return suggestions.filter((item) => {
-            const displayVal = displayMap.get(item.id) || "Chưa gán";
-            if (display === "Tất cả trạng thái") return true;
-            if (display === "Trưng bày") return displayVal === "Đã gán";
-            if (display === "Không trưng bày") return displayVal === "Chưa gán";
-            return true;
-    });
-    }, [JSON.stringify(suggestions), displayMap, display])
+        if (displayMap != null){
+            return suggestions.filter((item) => {
+                const displayVal = displayMap.get(item.id) || "Chưa gán";
+                if (display === "Tất cả trạng thái") return true;
+                return display == displayVal
+            })
+        };
+        return suggestions;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[JSON.stringify(suggestions), displayMap, display]);
 
     //cap nhat displaySuggestion
     useEffect(()=> {

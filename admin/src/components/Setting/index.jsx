@@ -21,7 +21,9 @@ const Setting = ({
         description,
         type,
         category,
+        header
     } = content
+    // eslint-disable-next-line no-unused-vars
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -66,9 +68,7 @@ const Setting = ({
             };
         }
         const dataFetch = dataFetchFunc();
-        if(filtersSearch.display === "Tất cả trạng thái" ||
-            (filtersSearch.display === "Trưng bày" && dataFetch.display === "Đã gán") ||
-            (filtersSearch.display === "Không trưng bày" && dataFetch.display === "Chưa gán")){
+        if(filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === dataFetch.display){
             setFiltered([dataFetch])
         }else{
             setFiltered([]);
@@ -76,6 +76,7 @@ const Setting = ({
         console.log(dataFetch)
         setDisplayMap(updatedMap)
         setSelectedId([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, filtersSearch.display, category])
     useEffect(() => {
         if (!datas) return;
@@ -93,17 +94,15 @@ const Setting = ({
                 display: displayVal
             };
         });
-        const filteredDisplay = datasFetch.filter((product) => {
-            const matchDisplay =
-                filtersSearch.display === "Tất cả trạng thái" ||
-                (filtersSearch.display === "Trưng bày" && product.display === "Đã gán") ||
-                (filtersSearch.display === "Không trưng bày" && product.display === "Chưa gán");
+        const filteredDisplay = datasFetch.filter((data) => {
+            const matchDisplay = filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === data.display;
             return matchDisplay;
         });
 
         setFiltered(filteredDisplay);
         setDisplayMap(updatedMap)
         setSelectedId([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datas, filtersSearch.display, category]);
     useEffect(() => {
         const updatedMap = new Map(displayMap);
@@ -111,6 +110,7 @@ const Setting = ({
             updatedMap.set(id, display);
         });
         setDisplayMap(updatedMap);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [display]);
     
     useEffect(() => {
@@ -221,8 +221,8 @@ const Setting = ({
         ],
         displays: [
             "Tất cả trạng thái",
-            "Trưng bày",
-            "Không trưng bày"
+            "Đã gán",
+            "Chưa gán"
         ],
         currentQuery: filtersSearch.query,
         currentCategory: filtersSearch.category,
@@ -233,32 +233,32 @@ const Setting = ({
         [
             {
                 type: "checkbox",
-                content: "Mã sản phẩm",
+                content: header[0],
                 checked: selectedId.length === filtered.length,
                 onChange: handleToggleAll
             },
-            { type: "text", content: "Tên sản phẩm" },
-            { type: "text", content: "Loại sản phẩm" },
+            { type: "text", content: header[1] },
+            { type: "text", content: header[2] },
             { type: "text", content: "Trạng thái" }
         ],
-        ...filtered.map((product) => [
+        ...filtered.map((data) => [
             {
                 type: "checkbox",
-                content: product.id,
-                checked: selectedId.includes(product.id),
-                onChange: () => handleToggle(product.id)
+                content: data.id,
+                checked: selectedId.includes(data.id),
+                onChange: () => handleToggle(data.id)
             },
-            { type: "text", content: product.name },
-            { type: "text", content: product.category },
+            { type: "text", content: data.name },
+            { type: "text", content: data.category },
             {
                 type: "component",
                 component: (
                     <LabelAssign
-                        current={display.find(item => item.id === product.id)?.display}
+                        current={display.find(item => item.id === data.id)?.display}
                         onAssign={(newDisplay) => {
                             setDisplay(prev =>
                                 prev.map(item =>
-                                    item.id === product.id ? { ...item, display: newDisplay } : item
+                                    item.id === data.id ? { ...item, display: newDisplay } : item
                                 )
                             );
                         }}
