@@ -5,7 +5,6 @@ import Table from '../Table'
 import { AcceptIcon, ExitIcon } from '../Icon'
 import LabelAssign from "../LabelAssgin"
 import { Modal } from 'antd'
-import { useMemo } from 'react'
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 
 const Setting = ({
@@ -40,7 +39,7 @@ const Setting = ({
         category: categoryParam,
         display: displayParam
     });
-    const { data: projects, isLoading: isLoadingProjects } = useData.getList(
+    const { data: datas, isLoading: isLoadingDatas } = useData.getList(
         filtersSearch.query,
         filtersSearch.category === "Tất cả loại" ? "" : filtersSearch.category,
         1
@@ -79,9 +78,9 @@ const Setting = ({
         setSelectedId([]);
     }, [data, filtersSearch.display, category])
     useEffect(() => {
-        if (!projects) return;
+        if (!datas) return;
         const updatedMap = new Map(displayMap);
-        const projectsFetch = projects.results.map((item) => {
+        const datasFetch = datas.results.map((item) => {
             const id = item.id;
             const name = item.name || item.title;
             const cat = item.region.name || item.category.name;
@@ -94,7 +93,7 @@ const Setting = ({
                 display: displayVal
             };
         });
-        const filteredDisplay = projectsFetch.filter((product) => {
+        const filteredDisplay = datasFetch.filter((product) => {
             const matchDisplay =
                 filtersSearch.display === "Tất cả trạng thái" ||
                 (filtersSearch.display === "Trưng bày" && product.display === "Đã gán") ||
@@ -105,7 +104,7 @@ const Setting = ({
         setFiltered(filteredDisplay);
         setDisplayMap(updatedMap)
         setSelectedId([]);
-    }, [projects, filtersSearch.display, category]);
+    }, [datas, filtersSearch.display, category]);
     useEffect(() => {
         const updatedMap = new Map(displayMap);
         display.forEach(({ id, display }) => {
@@ -268,7 +267,7 @@ const Setting = ({
             }
         ])
     ];
-    if (isLoadingProjects || isLoadingCategories || isLoadingData) return <></>;
+    if (isLoadingDatas || isLoadingCategories || isLoadingData) return <></>;
 
    
     return (
@@ -326,7 +325,7 @@ const Setting = ({
                 </div>
                 <div className='pt-5 flex flex-row justify-between'>
                     <span className='text-[#4b5563]'>
-                        Tổng: {countAssign} tin tức đã được gán vào danh mục {category}
+                        Tổng: {countAssign} {type} đã được gán vào danh mục {category}
                     </span>
                     <div className='flex flex-row gap-2'>
                         <button 
