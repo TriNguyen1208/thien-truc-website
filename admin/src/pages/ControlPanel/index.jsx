@@ -5,6 +5,8 @@ import EditBanner from '../../components/EditBanner'
 import Button from '../../components/Button'
 import FeatureCard from '../../components/FeatureCard'
 import {LeftCircleOutlined} from '@ant-design/icons'
+import Form from '../../components/Form'
+
 const ControlPanel = () => {
     const prop2 ={
      Icon :LeftCircleOutlined  ,
@@ -35,10 +37,12 @@ const ControlPanel = () => {
       </div > 
       
          <EditBanner {...props} />
-    </div>)
-
-
-
-  }
+    </div>
+  )
+}
+    // <div>Day la noi dung trang ControlPanel</div>
+    // <Form />
+  // )
+// }
 
 export default ControlPanel
