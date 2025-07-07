@@ -4,8 +4,17 @@
   import { Outlet } from "react-router-dom";
   import CustomButton from "@/components/ButtonLayout";
   import { PlusOutlined } from "@ant-design/icons";
+  import { useLayout } from "@/layouts/layoutcontext";
 
-  export default function DefaultLayout({ title, description, hasButton, buttonLabel, buttonAction = () => {}, }) {
+  export default function DefaultLayout({ children }) {
+  const { layoutProps } = useLayout() ?? {};
+  const {
+    title = '',
+    description = '',
+    hasButton = false,
+    buttonLabel = '',
+    buttonAction = () => {},
+  } = layoutProps ?? {};
     return (
       <div className="flex h-screen overflow-hidden">
         {/* SIDER */}
@@ -36,7 +45,7 @@
               )}
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden">
-                  <Outlet />
+                <Outlet />
               </div>
           </main>
           {/* <Footer /> nếu cần */}
