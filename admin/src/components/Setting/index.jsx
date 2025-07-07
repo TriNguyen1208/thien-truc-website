@@ -12,7 +12,7 @@ const Setting = ({
     isOpen,
     onClose,
     content,
-    useDataList,
+    useData,
     useDataSuggestion,
     useDataCategories
 }) => {
@@ -31,7 +31,7 @@ const Setting = ({
     const [selectedId, setSelectedId] = useState([]);
     const [display, setDisplay] = useState([]);
     const [countAssign, setCountAssign] = useState(0);
-
+    const [id, setId] = useState(null);
     const queryParam = searchParams.get('query') || "";
     const categoryParam = searchParams.get('category') || "Tất cả loại";
     const displayParam = searchParams.get('display') || "Tất cả trạng thái";
@@ -41,11 +41,30 @@ const Setting = ({
         category: categoryParam,
         display: displayParam
     });
-    const { data: projects, isLoading: isLoadingProjects } = useDataList.getList(
+    const { data: projects, isLoading: isLoadingProjects } = useData.getList(
         filtersSearch.query,
         filtersSearch.category === "Tất cả loại" ? "" : filtersSearch.category,
         1
     );
+    const {data: data, isLoading: isLoadingData} = useData.getOne(id);
+
+    useEffect(()=>{
+        if(!data) return
+        const dataFetch = {
+            id: data.id,
+            name: data.name || data.title,
+            category: data.region.name || data.category.name,
+            display: (data.region.name || data.category.name) === category ? "Đã gán" : "Chưa gán"
+        }
+        if(filtersSearch.display === "Tất cả trạng thái" ||
+            (filtersSearch.display === "Trưng bày" && dataFetch.display === "Đã gán") ||
+            (filtersSearch.display === "Không trưng bày" && dataFetch.display === "Chưa gán")){
+            setFiltered([dataFetch])
+        }else{
+            setFiltered([]);
+        }
+        setSelectedId([]);
+    }, [data, filtersSearch.display, category])
 
     useEffect(() => {
         if (!projects) return;
@@ -67,7 +86,7 @@ const Setting = ({
 
         setFiltered(filteredDisplay);
         setSelectedId([]);
-    }, [projects, filtersSearch.display]);
+    }, [projects, filtersSearch.display, category]);
 
     useEffect(() => {
         const allDisplay = filtered.map(item => ({
@@ -83,11 +102,7 @@ const Setting = ({
     }, [display]);
 
     const handleEnter = (item) => {
-        updateFilters({ 
-            query: item.query, 
-            category: "Tất cả loại", 
-            display: "Tất cả trạng thái" 
-        });
+        setId(item.id);
     };
 
     const handleSearch = (query, category, display) => {
@@ -156,7 +171,7 @@ const Setting = ({
         currentDisplay: filtersSearch.display
     };
 
-    if (isLoadingProjects || isLoadingCategories) return <></>;
+    if (isLoadingProjects || isLoadingCategories || isLoadingData) return <></>;
 
     const dataTable = [
         [

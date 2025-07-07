@@ -19,7 +19,7 @@ const TestComponents = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             content={content}
-            useDataList={useProjects.projects}
+            useData={useProjects.projects}
             useDataSuggestion={useProjects}
             useDataCategories={useProjects.project_regions}
         />
