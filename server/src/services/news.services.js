@@ -108,7 +108,7 @@ const news = {
             limit = 'ALL';
         }
         
-        // Xử lý nếu các thành phần trong query trống -> set up để vô hiệu hóa lệnh
+        // Chuẩn hóa từng thành phần truy vấn
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
         if (limit != '') limit = ` LIMIT ${limit} `;
