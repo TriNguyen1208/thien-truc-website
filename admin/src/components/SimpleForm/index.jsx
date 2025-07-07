@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Button, Modal } from 'antd';
-const SimpleForm = ({ data, config}) => {
+const SimpleForm = ({ data, config }) => {
     const defaultField = {
         type: 'text',
         name: '',
@@ -31,7 +31,7 @@ const SimpleForm = ({ data, config}) => {
         setFormData(initialValues);
     }
     const handleChange = (e) => {
-        const { name, value} = e.target;
+        const { name, value } = e.target;
         let newValue = value;
         console.log(name, value);
         setFormData((prev) => ({
@@ -50,7 +50,7 @@ const SimpleForm = ({ data, config}) => {
             required: item.isRequired || defaultField.isRequired,
             className: "px-4 py-2 block border border-gray-300 w-full rounded-[5px]",
         };
-        
+
         return <input {...commonProps} type={type} value={value} placeholder={item.placeholder || defaultField.placeholder} />;
     }
     return (
@@ -70,7 +70,7 @@ const SimpleForm = ({ data, config}) => {
                             {data.map((item, index) => {
                                 const nameColumn = item.name || defaultField.name;
                                 return (
-                                    <div key={index} className={`col-span-${item.width || defaultField.width}`}>
+                                    <div key={index} style={{ gridColumn: `span ${item.width}` }}>
                                         {item.type !== 'checkbox' && (
                                             <label htmlFor={nameColumn} className="block font-[700] mb-2">
                                                 {item.label || defaultField.label}
