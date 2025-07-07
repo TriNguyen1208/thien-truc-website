@@ -16,26 +16,25 @@ const Setting = ({
     useDataSuggestion,
     useDataCategories
 }) => {
+    //Khởi tạo lấy data bằng useState và call API ở đây
     const {
         title,
         description,
         type,
         category,
     } = content
-
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
-
     const [filtered, setFiltered] = useState([]);
     const [selectedId, setSelectedId] = useState([]);
     const [display, setDisplay] = useState([]);
+    const [displayMap, setDisplayMap] = useState(new Map());
     const [countAssign, setCountAssign] = useState(0);
     const [id, setId] = useState(null);
     const queryParam = searchParams.get('query') || "";
     const categoryParam = searchParams.get('category') || "Tất cả loại";
     const displayParam = searchParams.get('display') || "Tất cả trạng thái";
-
     const [filtersSearch, setFiltersSearch] = useState({
         query: queryParam,
         category: categoryParam,
@@ -47,15 +46,27 @@ const Setting = ({
         1
     );
     const {data: data, isLoading: isLoadingData} = useData.getOne(id);
+    const { data: dataCategories, isLoading: isLoadingCategories } = useDataCategories.getAll();
 
+    //Sử dụng useEffect để cập nhật state
     useEffect(()=>{
         if(!data) return
-        const dataFetch = {
-            id: data.id,
-            name: data.name || data.title,
-            category: data.region.name || data.category.name,
-            display: (data.region.name || data.category.name) === category ? "Đã gán" : "Chưa gán"
+        const updatedMap = new Map(displayMap);
+
+        const dataFetchFunc = () => {
+            const id = data.id;
+            const name = data.name || data.title;
+            const cat = data.region.name || data.category.name;
+            const displayVal = updatedMap.get(id) || (cat === category ? "Đã gán" : "Chưa gán");
+            updatedMap.set(id, displayVal);
+            return {
+                id: id,
+                name: name,
+                category: cat,
+                display: displayVal
+            };
         }
+        const dataFetch = dataFetchFunc();
         if(filtersSearch.display === "Tất cả trạng thái" ||
             (filtersSearch.display === "Trưng bày" && dataFetch.display === "Đã gán") ||
             (filtersSearch.display === "Không trưng bày" && dataFetch.display === "Chưa gán")){
@@ -63,19 +74,26 @@ const Setting = ({
         }else{
             setFiltered([]);
         }
+        console.log(dataFetch)
+        setDisplayMap(updatedMap)
         setSelectedId([]);
     }, [data, filtersSearch.display, category])
-
     useEffect(() => {
         if (!projects) return;
-
-        const projectsFetch = projects.results.map((item) => ({
-            id: item.id,
-            name: item.name || item.title,
-            category: item.region.name || item.category.name,
-            display: (item.region.name || item.category.name) === category ? "Đã gán" : "Chưa gán"
-        }));
-
+        const updatedMap = new Map(displayMap);
+        const projectsFetch = projects.results.map((item) => {
+            const id = item.id;
+            const name = item.name || item.title;
+            const cat = item.region.name || item.category.name;
+            const displayVal = updatedMap.get(id) || (cat === category ? "Đã gán" : "Chưa gán");
+            updatedMap.set(id, displayVal);
+            return {
+                id: id,
+                name: name,
+                category: cat,
+                display: displayVal
+            };
+        });
         const filteredDisplay = projectsFetch.filter((product) => {
             const matchDisplay =
                 filtersSearch.display === "Tất cả trạng thái" ||
@@ -85,22 +103,32 @@ const Setting = ({
         });
 
         setFiltered(filteredDisplay);
+        setDisplayMap(updatedMap)
         setSelectedId([]);
     }, [projects, filtersSearch.display, category]);
-
+    useEffect(() => {
+        const updatedMap = new Map(displayMap);
+        display.forEach(({ id, display }) => {
+            updatedMap.set(id, display);
+        });
+        setDisplayMap(updatedMap);
+    }, [display]);
+    
     useEffect(() => {
         const allDisplay = filtered.map(item => ({
             id: item.id,
             display: item.display
         }));
         setDisplay(allDisplay);
-    }, [filtered]);
+    }, [filtered]); //khong biet de lam gi
 
     useEffect(() => {
         const assign = display.filter(item => item.display === "Đã gán");
         setCountAssign(assign.length)
     }, [display]);
 
+
+    //Các hàm handler cần có
     const handleEnter = (item) => {
         setId(item.id);
     };
@@ -108,7 +136,6 @@ const Setting = ({
     const handleSearch = (query, category, display) => {
         updateFilters({ query, category, display });
     };
-
     const updateFilters = ({ query, category, display }) => {
         const newFilters = {
             query: query ?? filtersSearch.query,
@@ -127,17 +154,14 @@ const Setting = ({
             search: params.toString()
         });
     };
-
     const handleSearchSuggestion = (query, filter) => {
         return useDataSuggestion.getSearchSuggestions(query, filter);
     };
-
     const handleToggle = (id) => {
         setSelectedId((prev) =>
             prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
         );
     };
-
     const handleToggleAll = () => {
         const allId = filtered.map(item => item.id);
         if (selectedId.length === allId.length) {
@@ -146,11 +170,46 @@ const Setting = ({
             setSelectedId(allId);
         }
     };
-
     const handleClear = () => setSelectedId([]);
+    const handleClickAssign = () => {
+        setDisplay(prev =>
+            prev.map(item =>
+                selectedId.includes(item.id)
+                    ? { ...item, display: "Đã gán" }
+                    : item
+            )
+        );
+        setSelectedId([]);
+        const params = new URLSearchParams();
+        params.set("display", "Tất cả trạng thái");
+        navigate({
+            pathname: location.pathname,
+            search: params.toString()
+        });
+    };
 
-    const { data: dataCategories, isLoading: isLoadingCategories } = useDataCategories.getAll();
+    const handleClickRemove = () => {
+        setDisplay(prev =>
+            prev.map(item =>
+                selectedId.includes(item.id)
+                    ? { ...item, display: "Chưa gán" }
+                    : item
+            )
+        );
+        setSelectedId([]);
+        const params = new URLSearchParams();
+        params.set("display", "Tất cả trạng thái");
+        navigate({
+            pathname: location.pathname,
+            search: params.toString()
+        });
+    };
 
+    const handleSave = () => {
+        console.log("hello world");
+    };
+
+    //Truyền vào props thì dùng ở đây
     const searchProps = {
         hasButton: true,
         placeholder: `Tìm kiếm theo tên loại ${type}`,
@@ -168,11 +227,9 @@ const Setting = ({
         ],
         currentQuery: filtersSearch.query,
         currentCategory: filtersSearch.category,
-        currentDisplay: filtersSearch.display
+        currentDisplay: filtersSearch.display,
+        displayMap: displayMap
     };
-
-    if (isLoadingProjects || isLoadingCategories || isLoadingData) return <></>;
-
     const dataTable = [
         [
             {
@@ -211,32 +268,9 @@ const Setting = ({
             }
         ])
     ];
+    if (isLoadingProjects || isLoadingCategories || isLoadingData) return <></>;
 
-    const handleClickAssign = () => {
-        setDisplay(prev =>
-            prev.map(item =>
-                selectedId.includes(item.id)
-                    ? { ...item, display: "Đã gán" }
-                    : item
-            )
-        );
-        setSelectedId([]);
-    };
-
-    const handleClickRemove = () => {
-        setDisplay(prev =>
-            prev.map(item =>
-                selectedId.includes(item.id)
-                    ? { ...item, display: "Chưa gán" }
-                    : item
-            )
-        );
-        setSelectedId([]);
-    };
-
-    const handleSave = () => {
-        console.log("hello world");
-    };
+   
     return (
         <Modal
             open={isOpen}

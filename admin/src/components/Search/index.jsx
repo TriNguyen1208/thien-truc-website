@@ -13,6 +13,7 @@ const SearchBar = ({data}) => {
         currentQuery = "",
         currentCategory,
         currentDisplay,
+        displayMap
     } = data;
     //using useState
     const [query, setQuery] = useState("");
@@ -84,12 +85,20 @@ const SearchBar = ({data}) => {
     const {data: suggestions = [], isLoading} = handleSearchSuggestion(
         debouncedQuery,
         category != null ? (category == categories[0] ? '' : category) : null,
-        display != null ? (display == displays[0] ? '' : display) : null,
     );
     //Cap nhat displaySuggestion
     const stableSuggestion = useMemo(()=>{
-        return Array.isArray(suggestions) ? suggestions : [];
-    }, [JSON.stringify(suggestions)])
+        // return Array.isArray(suggestions) ? suggestions : [];
+        if (!Array.isArray(suggestions)) return [];
+
+        return suggestions.filter((item) => {
+            const displayVal = displayMap.get(item.id) || "Chưa gán";
+            if (display === "Tất cả trạng thái") return true;
+            if (display === "Trưng bày") return displayVal === "Đã gán";
+            if (display === "Không trưng bày") return displayVal === "Chưa gán";
+            return true;
+    });
+    }, [JSON.stringify(suggestions), displayMap, display])
 
     //cap nhat displaySuggestion
     useEffect(()=> {
