@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { Button, Modal } from 'antd';
+import SimpleForm from "../SimpleForm"
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
     const defaultField = {
@@ -12,14 +13,19 @@ const DynamicForm = ({ data, config }) => {
         width: 12,
         numberRows: 2,
         isSingleColumn: false,
+        limitRowDynamicFields: undefined,
         options: [{ value: "", label: "" }],
     }
     const defaultConfig = {
         title: "",
         description: "",
         widthModal: 800,
+        contentCancelButton: 'Hủy',
+        contentSubmitButton: 'Tạo mới'
     }
     const [urlInput, setUrlInput] = useState('');
+    const [isModalOpenSimple, setIsModalOpenSimple] = useState(false);
+    const [simpleFormData, setSimpleFormData] = useState([]);
     const initialValues = useMemo(() => {
         const result = {};
         data.forEach(field => {
@@ -129,10 +135,16 @@ const DynamicForm = ({ data, config }) => {
     };
 
     const addDynamicFields = (fieldName, isSingle = false) => {
-        setFormData((prev) => ({
-            ...prev,
-            [fieldName]: [...(prev[fieldName] || []), isSingle ? '' : { name: '', value: '' }],
-        }));
+        setFormData((prev) => {
+            const current = prev[fieldName] || [];
+            const field = data.find(item => item.name === fieldName);
+            const limit = field?.limitRowDynamicFields || Infinity;
+            if (current.length >= limit) return prev;
+            return {
+                ...prev,
+                [fieldName]: [...(prev[fieldName] || []), isSingle ? '' : { name: '', value: '' }],
+            }
+        });
     };
 
     const removeDynamicFields = (fieldName, index) => {
@@ -142,7 +154,20 @@ const DynamicForm = ({ data, config }) => {
             return { ...prev, [fieldName]: specs };
         });
     };
-
+    const handleAddButtonSelect = () => {
+        const formData = [
+            {
+                name: 'create-category-product',
+                label: 'Tên loại sản phẩm',
+                type: 'text',
+                width: 12,
+                isRequired: false,
+                placeholder: "VD: Điện thoại, laptop",
+            }
+        ];
+        setSimpleFormData(formData);
+        setIsModalOpenSimple(true);
+    };
     const renderInput = (item) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
@@ -152,7 +177,7 @@ const DynamicForm = ({ data, config }) => {
             id: nameColumn,
             onChange: handleChange,
             required: item.isRequired || defaultField.isRequired,
-            className: "px-2 py-1 block border border-gray-300 w-full rounded-[5px]",
+            className: "px-3 py-2 block border border-gray-300 w-full rounded-[5px]",
         };
 
         switch (type) {
@@ -167,11 +192,25 @@ const DynamicForm = ({ data, config }) => {
                 );
             case 'select':
                 return (
-                    <select {...commonProps} value={value}>
-                        {(item.options || defaultField.options).map((opt, idx) => (
-                            <option key={idx} value={opt.value} className="text-center">{opt.label}</option>
-                        ))}
-                    </select>
+                    <div className="flex gap-2 mb-2">
+                        <select
+                            {...commonProps}
+                            value={value}
+                            className="flex-1 border border-gray-300 rounded-[5px]"
+                        >
+                            {(item.options || defaultField.options).map((opt, idx) => (
+                                <option key={idx} value={opt.value} className="text-center">{opt.label}</option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            onClick={handleAddButtonSelect}
+                            className="px-3 py-2  border  border-gray-300 rounded-md "
+                        >
+                            +
+                        </button>
+                    </div>
+
                 );
             case 'checkbox':
                 return (
@@ -257,6 +296,8 @@ const DynamicForm = ({ data, config }) => {
             case 'dynamicFields': {
                 const specs = formData[nameColumn] || [];
                 const isSingle = item.isSingleColumn;
+                const field = data.find(item => item.name === nameColumn);
+                const limit = field?.limitRowDynamicFields || Infinity;
                 return (
                     <div>
                         {specs.map((entry, index) => (
@@ -265,7 +306,7 @@ const DynamicForm = ({ data, config }) => {
                                     <input
                                         type="text"
                                         value={entry.name || ''}
-                                        required = {item.isRequired || defaultField.isRequired}
+                                        required={item.isRequired || defaultField.isRequired}
                                         onChange={(e) =>
                                             handleDynamicFieldsChange(
                                                 nameColumn,
@@ -282,7 +323,7 @@ const DynamicForm = ({ data, config }) => {
                                 <input
                                     type="text"
                                     value={isSingle ? entry : entry.value || ''}
-                                    required = {item.isRequired || defaultField.isRequired}
+                                    required={item.isRequired || defaultField.isRequired}
                                     onChange={(e) =>
                                         handleDynamicFieldsChange(
                                             nameColumn,
@@ -295,13 +336,15 @@ const DynamicForm = ({ data, config }) => {
                                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md "
                                     placeholder={isSingle ? item.placeholder || defaultField.placeholder : item.placeholder?.[1] ?? defaultField.placeholder}
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => addDynamicFields(nameColumn, isSingle)}
-                                    className="px-3 py-2  border  border-gray-300 rounded-md "
-                                >
-                                    +
-                                </button>
+                                {specs.length < limit && (
+                                    <button
+                                        type="button"
+                                        onClick={() => addDynamicFields(nameColumn, isSingle)}
+                                        className="px-3 py-2  border  border-gray-300 rounded-md "
+                                    >
+                                        +
+                                    </button>
+                                )}
                                 {specs.length > 1 && (
                                     <button
                                         type="button"
@@ -355,24 +398,44 @@ const DynamicForm = ({ data, config }) => {
                                 )
                             })}
                         </div>
-                        <div className="flex justify-end">
+                        <div className="flex justify-end mt-[10px]">
                             <button
                                 type="button"
                                 onClick={config.handleCancelButton}
                                 className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px]"
                             >
-                                Hủy
+                                {config.contentCancelButton || defaultConfig.contentCancelButton}
                             </button>
                             <button
                                 type="submit"
                                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                             >
-                                Submit
+                                {config.contentSubmitButton || defaultConfig.contentSubmitButton}
                             </button>
                         </div>
                     </form>
                 </div>
             </Modal>
+
+            {/* Nên đặt ở đây */}
+            <SimpleForm
+                data={simpleFormData}
+                config={{
+                    title: "Thêm dữ liệu mới",
+                    description: "Nhập thông tin cần thêm",
+                    widthModal: 600,
+                    isModalOpenSimple,
+                    setIsModalOpenSimple,
+                    handleSubmitButton: (valueForm) => {
+                        console.log("Submit simple form", valueForm);
+                        setIsModalOpenSimple(false);
+                    },
+                    handleCancelButton: () => {
+                        console.log("Cancel simple form");
+                        setIsModalOpenSimple(false);
+                    }
+                }}
+            />
         </>
     )
 }
