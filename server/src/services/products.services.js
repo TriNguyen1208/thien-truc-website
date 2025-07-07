@@ -65,186 +65,274 @@ const getProductPage = async () => {
 }
 
 const products = {
-    getList: async (query = '', filter = '', page = 1) => {
-            const cleanedQuery = query.trim().replaceAll(`'`, ``);
-            const cleanedFilter = filter.trim().replaceAll(`'`, ``);
-            const pageSize = 12;
+    getList: async (query = '', filter = '', page, is_featured) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
+        const pageSize = 12;
+        const totalCount = await getNumPage(query, filter);
+
+        let where = [];
+        let order = [];
+        let limit = '';
+
+        if (query != '') {
+            where.push(
+                `(unaccent(prd.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(prd.name::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(prd.name), unaccent('${query}')) DESC`
+            );
+        }
+
+        if (filter != '') {
+            where.push(
+                `unaccent(pc.name) ILIKE unaccent('${filter}')`
+            );
+        }
+
+        if (is_featured == 'true' || is_featured == 'false') {
+            where.push(`prd.is_featured = ${is_featured}`);
+        }
+
+        if (page) {
             const offset = (page - 1) * pageSize;
+            limit = `${pageSize} OFFSET ${offset}`;
+        } else {
+            limit = 'ALL';
+        }
         
-            const hasQuery = cleanedQuery !== '';
-            const hasFilter = cleanedFilter !== '';
-            const totalCount = await getNumPage(cleanedQuery, cleanedFilter)
-            // CASE 1: Có query (searchBar)
-            if (hasQuery) {
-                const sql = `
-                    SELECT 
-                        prd.id AS product_id,
-                        prd.name AS product_name,
-                        prd.description,
-                        prd.product_img,
-                        prd.warranty_period,
-                        prd.product_specifications,
-                        prd.product_features,
-                        prd.highlight_features,
-                        
-                        pp.price AS price,
-                        pc.id AS category_id,
-                        pc.name AS category_name
-                    FROM product.products prd
-                    JOIN product.product_categories pc ON prd.category_id = pc.id
-                    JOIN product.product_prices pp ON prd.id = pp.product_id
-                    WHERE
-                        ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
-                        (unaccent(prd.name::text) ILIKE unaccent($1::text) || '%' OR 
-                        similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1)
-                    ORDER BY
-                        similarity(unaccent(prd.name::text), unaccent($1::text)) DESC,
-                        prd.name
-                    LIMIT $3 OFFSET $4
-                `;
-                const values = [cleanedQuery, cleanedFilter, pageSize, offset];
-                const { rows } = await pool.query(sql, values);
-                const results = rows.map(row => ({
-                    id: row.product_id,
-                    name: row.product_name,
-                    description: row.description,
-                    product_img: row.product_img,
-                    price: row.price,
-                    product_specifications: JSON.parse(row.product_specifications || '{}'),
-                    warranty_period: row.warranty_period,
-                    product_features: row.product_features || [],
-                    highlight_features: row.highlight_features || [],
-                    category: {
-                        id: row.category_id,
-                        name: row.category_name
-                    }
-                }));
-        
-                return {
-                    totalCount,
-                    page,
-                    pageSize: rows.length,
-                    results
-                };
-            }
-        
-            // CASE 2: Không có query
-            if (!hasFilter) {
-                // Lấy mỗi loại sản phẩm ra 4 sản phẩm
-                const sql = `
-                    SELECT 
-                        prd.id AS product_id,
-                        prd.name AS product_name,
-                        prd.description,
-                        prd.product_img,
-                        prd.product_specifications,
-                        prd.warranty_period,
-                        prd.product_features,
-                        prd.highlight_features,
-                        
-                        pp.price AS price,
-                        pc.id AS category_id,
-                        pc.name AS category_name
-                    FROM product.products prd
-                    JOIN product.product_categories pc ON prd.category_id = pc.id
-                    JOIN product.product_prices pp ON prd.id = pp.product_id
-                    WHERE prd.id IN (
-                        SELECT id FROM (
-                            SELECT 
-                                prd.id,
-                                ROW_NUMBER() OVER (PARTITION BY prd.category_id ORDER BY prd.name) AS rn
-                            FROM product.products prd
-                        ) sub
-                        WHERE rn <= 4
-                    )
-                    ORDER BY pc.name, prd.name
-                `;
-            
-                const { rows } = await pool.query(sql);
-            
-                // Group theo category_name
-                const groupedResults = {};
-                for (const row of rows) {
-                    const categoryName = row.category_name;
-                    if (!groupedResults[categoryName]) {
-                        groupedResults[categoryName] = [];
-                    }
-            
-                    groupedResults[categoryName].push({
-                        id: row.product_id,
-                        name: row.product_name,
-                        description: row.description,
-                        product_img: row.product_img,
-                        price: row.price,
-                        product_specifications: JSON.parse(row.product_specifications || '{}'),
-                        warranty_period: row.warranty_period,
-                        product_features: row.product_features || [],
-                        highlight_features: row.highlight_features || [],
-                        
-                        category: {
-                            id: row.category_id,
-                            name: row.category_name
-                        }
-                    });
-                }
-            
-                return {
-                    totalCount,
-                    page: page,
-                    pageSize: rows.length,
-                    results: groupedResults
-                };
-            } else {
-                // Có filter nhưng không có query => phân trang theo filter
-                const sql = `
-                    SELECT 
-                        prd.id AS product_id,
-                        prd.name AS product_name,
-                        prd.description,
-                        prd.product_img,
-                        prd.warranty_period,
-                        prd.product_specifications,
-                        prd.product_features,
-                        prd.highlight_features,
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+        if (limit != '') limit = ` LIMIT ${limit} `;
 
-                        pp.price AS price,
-                        pc.id AS category_id,
-                        pc.name AS category_name
-                    FROM product.products prd
-                    JOIN product.product_categories pc ON prd.category_id = pc.id
-                    JOIN product.product_prices pp ON prd.id = pp.product_id
-                    WHERE 
-                        ($1 = '' OR unaccent(pc.name) ILIKE unaccent($1))
-                    ORDER BY prd.name
-                    LIMIT $2 OFFSET $3
-                `;
-                const values = [cleanedFilter, pageSize, offset];
-                const { rows } = await pool.query(sql, values);
-        
-                const results = rows.map(row => ({
-                    id: row.product_id,
-                    name: row.product_name,
-                    description: row.description,
-                    product_img: row.product_img,
-                    price: row.price,
-                    product_specifications: JSON.parse(row.product_specifications || '{}'),
-                    warranty_period: row.warranty_period,
-                    product_features: row.product_features || [],
-                    highlight_features: row.highlight_features || [],
+        const sql = `
+            SELECT 
+                prd.id AS product_id,
+                prd.name AS product_name,
+                prd.description,
+                prd.product_img,
+                prd.warranty_period,
+                prd.product_specifications,
+                prd.product_features,
+                prd.highlight_features,
+            
+                pp.price AS price,
+                pc.id AS category_id,
+                pc.name AS category_name
+            FROM product.products prd
+            JOIN product.product_categories pc ON prd.category_id = pc.id
+            JOIN product.product_prices pp ON prd.id = pp.product_id
+            ${where}
+            ${order}
+            ${limit}
+        `;
 
-                    category: {
-                        id: row.category_id,
-                        name: row.category_name
-                    }
-                }));
-        
-                return {
-                    totalCount,
-                    page: page,
-                    pageSize: rows.length,
-                    results: results
-                };
+        const { rows } = await pool.query(sql);
+        const results = rows.map(row => ({
+            id: row.product_id,
+            name: row.product_name,
+            description: row.description,
+            product_img: row.product_img,
+            price: row.price,
+            product_specifications: JSON.parse(row.product_specifications || '{}'),
+            warranty_period: row.warranty_period,
+            product_features: row.product_features || [],
+            highlight_features: row.highlight_features || [],
+            category: {
+                id: row.category_id,
+                name: row.category_name
             }
+        }));
+        if (page)
+            return {
+                totalCount,
+                page,
+                pageSize: rows.length,
+                results
+            };
+        else return [...results];
+        // const cleanedQuery = query.trim().replaceAll(`'`, ``);
+        // const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+        // const pageSize = 12;
+        // const offset = (page - 1) * pageSize;
+    
+        // const hasQuery = cleanedQuery !== '';
+        // const hasFilter = cleanedFilter !== '';
+        // const totalCount = await getNumPage(cleanedQuery, cleanedFilter)
+        // // CASE 1: Có query (searchBar)
+        // if (hasQuery) {
+        //     const sql = `
+        //         SELECT 
+        //             prd.id AS product_id,
+        //             prd.name AS product_name,
+        //             prd.description,
+        //             prd.product_img,
+        //             prd.warranty_period,
+        //             prd.product_specifications,
+        //             prd.product_features,
+        //             prd.highlight_features,
+                    
+        //             pp.price AS price,
+        //             pc.id AS category_id,
+        //             pc.name AS category_name
+        //         FROM product.products prd
+        //         JOIN product.product_categories pc ON prd.category_id = pc.id
+        //         JOIN product.product_prices pp ON prd.id = pp.product_id
+        //         WHERE
+        //             ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
+        //             (unaccent(prd.name::text) ILIKE unaccent($1::text) || '%' OR 
+        //             similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1)
+        //         ORDER BY
+        //             similarity(unaccent(prd.name::text), unaccent($1::text)) DESC,
+        //             prd.name
+        //         LIMIT $3 OFFSET $4
+        //     `;
+        //     const values = [cleanedQuery, cleanedFilter, pageSize, offset];
+        //     const { rows } = await pool.query(sql, values);
+        //     const results = rows.map(row => ({
+        //         id: row.product_id,
+        //         name: row.product_name,
+        //         description: row.description,
+        //         product_img: row.product_img,
+        //         price: row.price,
+        //         product_specifications: JSON.parse(row.product_specifications || '{}'),
+        //         warranty_period: row.warranty_period,
+        //         product_features: row.product_features || [],
+        //         highlight_features: row.highlight_features || [],
+        //         category: {
+        //             id: row.category_id,
+        //             name: row.category_name
+        //         }
+        //     }));
+    
+        //     return {
+        //         totalCount,
+        //         page,
+        //         pageSize: rows.length,
+        //         results
+        //     };
+        // }
+    
+        // // CASE 2: Không có query
+        // if (!hasFilter) {
+        //     // Lấy mỗi loại sản phẩm ra 4 sản phẩm
+        //     const sql = `
+        //         SELECT 
+        //             prd.id AS product_id,
+        //             prd.name AS product_name,
+        //             prd.description,
+        //             prd.product_img,
+        //             prd.product_specifications,
+        //             prd.warranty_period,
+        //             prd.product_features,
+        //             prd.highlight_features,
+                    
+        //             pp.price AS price,
+        //             pc.id AS category_id,
+        //             pc.name AS category_name
+        //         FROM product.products prd
+        //         JOIN product.product_categories pc ON prd.category_id = pc.id
+        //         JOIN product.product_prices pp ON prd.id = pp.product_id
+        //         WHERE prd.id IN (
+        //             SELECT id FROM (
+        //                 SELECT 
+        //                     prd.id,
+        //                     ROW_NUMBER() OVER (PARTITION BY prd.category_id ORDER BY prd.name) AS rn
+        //                 FROM product.products prd
+        //             ) sub
+        //             WHERE rn <= 4
+        //         )
+        //         ORDER BY pc.name, prd.name
+        //     `;
+        
+        //     const { rows } = await pool.query(sql);
+        
+        //     // Group theo category_name
+        //     const groupedResults = {};
+        //     for (const row of rows) {
+        //         const categoryName = row.category_name;
+        //         if (!groupedResults[categoryName]) {
+        //             groupedResults[categoryName] = [];
+        //         }
+        
+        //         groupedResults[categoryName].push({
+        //             id: row.product_id,
+        //             name: row.product_name,
+        //             description: row.description,
+        //             product_img: row.product_img,
+        //             price: row.price,
+        //             product_specifications: JSON.parse(row.product_specifications || '{}'),
+        //             warranty_period: row.warranty_period,
+        //             product_features: row.product_features || [],
+        //             highlight_features: row.highlight_features || [],
+                    
+        //             category: {
+        //                 id: row.category_id,
+        //                 name: row.category_name
+        //             }
+        //         });
+        //     }
+        
+        //     return {
+        //         totalCount,
+        //         page: page,
+        //         pageSize: rows.length,
+        //         results: groupedResults
+        //     };
+        // } else {
+        //     // Có filter nhưng không có query => phân trang theo filter
+        //     const sql = `
+        //         SELECT 
+        //             prd.id AS product_id,
+        //             prd.name AS product_name,
+        //             prd.description,
+        //             prd.product_img,
+        //             prd.warranty_period,
+        //             prd.product_specifications,
+        //             prd.product_features,
+        //             prd.highlight_features,
+
+        //             pp.price AS price,
+        //             pc.id AS category_id,
+        //             pc.name AS category_name
+        //         FROM product.products prd
+        //         JOIN product.product_categories pc ON prd.category_id = pc.id
+        //         JOIN product.product_prices pp ON prd.id = pp.product_id
+        //         WHERE 
+        //             ($1 = '' OR unaccent(pc.name) ILIKE unaccent($1))
+        //         ORDER BY prd.name
+        //         LIMIT $2 OFFSET $3
+        //     `;
+        //     const values = [cleanedFilter, pageSize, offset];
+        //     const { rows } = await pool.query(sql, values);
+    
+        //     const results = rows.map(row => ({
+        //         id: row.product_id,
+        //         name: row.product_name,
+        //         description: row.description,
+        //         product_img: row.product_img,
+        //         price: row.price,
+        //         product_specifications: JSON.parse(row.product_specifications || '{}'),
+        //         warranty_period: row.warranty_period,
+        //         product_features: row.product_features || [],
+        //         highlight_features: row.highlight_features || [],
+
+        //         category: {
+        //             id: row.category_id,
+        //             name: row.category_name
+        //         }
+        //     }));
+    
+        //     return {
+        //         totalCount,
+        //         page: page,
+        //         pageSize: rows.length,
+        //         results: results
+        //     };
+        // }
     },
     getOne: async (id) => {
         const query = `
