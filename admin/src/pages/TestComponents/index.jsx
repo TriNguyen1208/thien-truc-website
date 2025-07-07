@@ -178,3 +178,86 @@ const TestComponents = () => {
 };
 
 export default TestComponents;
+
+
+
+/*
+========== COMPONENT FORM ================= 
+import React from 'react'
+import DynamicForm from '../../components/DynamicForm'
+import { useState } from 'react';
+import { Button, Modal } from 'antd';
+import DefaultLayout from '../../layouts/DefaultLayout';
+const Manager = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const data = [
+    { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12 },
+    { name: 'password', label: 'Mat khau', type: 'password', width: 12},
+    { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12, isRequired: false, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
+    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5, maxLength: 10},
+    {
+      name: 'categoriesProduct', label: 'Chức vụ', type: 'select', width: 6, isRequired: true,
+      options: [
+        { value: "Chọn loại sản phẩm", label: "Chọn loại sản phẩm" },
+        { value: "Iphone", label: "IPhone" },
+        { value: "Apple", label: "Apple" },
+        { value: "Macbook", label: "Macbook" },
+        { value: "Computer", label: "Computer" },
+      ],
+      value: 'Iphone',
+    },
+    { name: 'agree', label: 'Đồng ý điều khoản', type: 'checkbox', width: 12 },
+    {
+      type: 'dynamicFields',
+      name: 'technicalDetails',
+      label: 'Thông số kỹ thuật',
+      isRequired: true,
+      isSingleColumn: false,
+      value: {
+        "CPU": 'Intel i5',
+        "RAM": '8GB',
+      },
+      placeholder: ["VD: 1", "VD: 2"],
+      width: 12,
+    },
+    {
+      type: 'dynamicFields',
+      name: '123',
+      label: 'Thông số',
+      isRequired: true,
+      isSingleColumn: true,
+      placeholder: "VD: Toi la",
+      width: 6,
+      limitRowDynamicFields: 5,
+    },
+    { name: 'Trine123', label: 'Mô tả', type: 'image_upload', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+  ]
+  const handleSubmitButton = (valueForm) => {
+    console.log('Day la button submit', valueForm)
+    setIsModalOpen(false)
+  }
+  const config = {
+    title: "Thêm sản phẩm mới",
+    description: "Điền thông tin để thêm sản phẩm mới",
+    widthModal: 800,
+    contentCancelButton: "Huỷ",
+    contentSubmitButton: "Tạo mới sản phẩm",
+    isModalOpen,
+    handleSubmitButton,
+    setIsModalOpen
+  }
+  return (
+    <>
+      <Button type="primary" onClick={() => setIsModalOpen(true)}>
+        Open Modal
+      </Button>
+      <DynamicForm data={data} config={config} />
+    </>
+  )
+}
+
+export default Manager
+
+
+*/
