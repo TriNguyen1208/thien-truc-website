@@ -7,13 +7,15 @@ import { PlusOutlined } from "@ant-design/icons";
 
 export default function DefaultLayout({ title, description, hasButton, buttonLabel, buttonAction = () => {}, }) {
   return (
-    <div className="grid grid-cols-24">
-      <div className="col-span-4">
+     <div className="flex h-screen overflow-hidden">
+      {/* SIDER */}
+      <div className="w-64 flex-shrink-0 bg-white border-r border-gray-200 overflow-y-auto">
         <Sider />
       </div>
-      <div className="col-span-20 bg-white min-h-screen flex flex-col">
+
+      <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 bg-gray-100 py-25 pr-6 pl-7">
+        <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-100 py-25 pr-6 pl-7">
           <div className="flex justify-between items-center mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
