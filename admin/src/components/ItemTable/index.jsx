@@ -25,7 +25,7 @@ const ItemTable = ({data}) => {
                         <div className="flex gap-2">
                         {item.components.map((comp, i) => (
                             <React.Fragment key={i}>
-                                {comp.component}
+                                {comp}
                             </React.Fragment>
                         ))}
                         </div>

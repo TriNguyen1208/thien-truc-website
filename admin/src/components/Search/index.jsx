@@ -10,7 +10,7 @@ const SearchBar = ({data}) => {
         categories = null,
         displays = null,
         handleSearchSuggestion, //co 3 tham so la query, category = null, display = null,
-        currentQuery,
+        currentQuery = "",
         currentCategory,
         currentDisplay,
     } = data;
@@ -155,7 +155,7 @@ const SearchBar = ({data}) => {
                                     if(item.id == 'input'){
                                         handleSearch(item.query, category, display)
                                     }else{
-                                        handleEnter(item.id);
+                                        handleEnter(item);
                                     }
                                 }else{
                                     handleSearch(item.query, category, display)
@@ -178,7 +178,7 @@ const SearchBar = ({data}) => {
                                             if(item.id == 'input'){
                                                 handleSearch(item.query, category, display)
                                             }else{
-                                                handleEnter(item.id);
+                                                handleEnter(item);
                                             }
                                         }}
                                     >

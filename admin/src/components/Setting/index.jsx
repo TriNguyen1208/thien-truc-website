@@ -82,8 +82,12 @@ const Setting = ({
         setCountAssign(assign.length)
     }, [display]);
 
-    const handleEnter = (id) => {
-        // updateFilters({ query: id });
+    const handleEnter = (item) => {
+        updateFilters({ 
+            query: item.query, 
+            category: "Tất cả loại", 
+            display: "Tất cả trạng thái" 
+        });
     };
 
     const handleSearch = (query, category, display) => {
