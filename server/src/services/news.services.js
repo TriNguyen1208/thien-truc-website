@@ -12,6 +12,7 @@ const getAllTables = async () => {
         news_categories: _news_categories
     };
 }
+
 const getNumPage = async (query, filter) => {
     let totalCount = 0;
     const hasQuery = query !== '';
@@ -64,155 +65,98 @@ const getNewsPage = async () => {
 }
 
 const news = {
-    getList: async (query = '', filter = '', sort_by = 'date_desc', page = 1) => {
-        let orderBy = 'n.public_date DESC';
-        if (sort_by == 'popular')
-            orderBy = 'n.num_readers DESC';
-        const cleanedQuery = query.trim().replaceAll(`'`, ``);
-        const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+    getList: async (query = '', filter = '', sort_by = 'date_desc', page, is_published) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
         const pageSize = 9;
-        const offset = (page - 1) * pageSize;
+        const totalCount = await getNumPage(query, filter);
 
-        const hasQuery = cleanedQuery !== '';
-        const hasFilter = cleanedFilter !== '';
-        const totalCount = await getNumPage(cleanedQuery, cleanedFilter);
-        // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
-        if (hasQuery) {
-            const sql = `
-                SELECT 
-                    n.id AS news_id,
-                    n.title,
-                    n.public_date,
-                    n.measure_time,
-                    n.num_readers,
-                    n.main_img,
-                    n.main_content,
+        let where = [];
+        let order = [];
+        let limit = '';
 
-                    n_cate.id AS category_id,
-                    n_cate.name,
-                    n_cate.rgb_color
-                FROM news.news n
-                JOIN news.news_categories n_cate ON n.category_id = n_cate.id
-                WHERE 
-                    $2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2) AND
-                    (unaccent(n.title::text) ILIKE '%' || unaccent($1::text) || '%' OR
-                    similarity(unaccent(n.title::text), unaccent($1::text)) > 0.1)
-                ORDER BY 
-                    similarity(unaccent(n.title), unaccent($1)) DESC
-                LIMIT $3 OFFSET $4
-            `;
-            const values = [cleanedQuery, cleanedFilter, pageSize, offset];
-            const { rows } = await pool.query(sql, values);
-            const results = rows.map(row => ({
-                id: row.news_id,
-                title: row.title,
-                public_date: row.public_date,
-                measure_time: row.measure_time,
-                num_readers: row.num_readers,
-                main_img: row.main_img,
-                main_content: row.main_content,
-                category: {
-                    id: row.category_id,
-                    name: row.name,
-                    rgb_color: row.rgb_color
-                }
-            }));
-            return {
-                totalCount: totalCount,
-                page: page,
-                pageSize: rows.length,
-                results
-            };
+        if (query != '') {
+            where.push(
+                `(unaccent(n.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(n.title::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(n.title), unaccent('${query}')) DESC`
+            );
         }
 
-        // ✅ 2. Không có query
-        if (!hasFilter) {
-            // Trả về tối đa 9 trang, sắp xếp theo sortBy
-            const sql = `
-                SELECT 
-                    n.id AS news_id,
-                    n.title,
-                    n.public_date,
-                    n.measure_time,
-                    n.num_readers,
-                    n.main_img,
-                    n.main_content,
+        if (filter != '') {
+            where.push(
+                `unaccent(n_cate.name) ILIKE unaccent('${filter}')`
+            );
+            
+            let order_option = 'n.public_date DESC';
+            if (sort_by == 'popular')
+                order_option = 'n.num_readers DESC';
+            order.push(order_option);
+        }
 
-                    n_cate.id AS category_id,
-                    n_cate.name,
-                    n_cate.rgb_color
-                FROM news.news n
-                JOIN news.news_categories n_cate ON n.category_id = n_cate.id
-                ORDER BY ${orderBy}
-                LIMIT $1 OFFSET $2
-            `;
-            const values = [pageSize, offset]
-            const { rows } = await pool.query(sql, values);
+        if (is_published == 'true' || is_published == 'false') {
+            where.push(`n.is_published = ${is_published}`);
+        }
 
-            const results = rows.map(row => ({
-                id: row.news_id,
-                title: row.title,
-                public_date: row.public_date,
-                measure_time: row.measure_time,
-                num_readers: row.num_readers,
-                main_img: row.main_img,
-                main_content: row.main_content,
-                category: {
-                    id: row.category_id,
-                    name: row.name,
-                    rgb_color: row.rgb_color
-                }
-            }));
-            return {
-                totalCount: totalCount,
-                page: page,
-                pageSize: rows.length,
-                results
-            };
+        if (page) {
+            const offset = (page - 1) * pageSize;
+            limit = `${pageSize} OFFSET ${offset}`;
         } else {
-            // Có filter (theo category), phân trang theo sortBy
-            const sql = `
-                SELECT 
-                    n.id AS news_id,
-                    n.title,
-                    n.public_date,
-                    n.measure_time,
-                    n.num_readers,
-                    n.main_img,
-                    n.main_content,
+            limit = 'ALL';
+        }
+        
+        // Xử lý nếu các thành phần trong query trống -> set up để vô hiệu hóa lệnh
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+        if (limit != '') limit = ` LIMIT ${limit} `;
 
-                    n_cate.id AS category_id,
-                    n_cate.name,
-                    n_cate.rgb_color
-                FROM news.news n
-                JOIN news.news_categories n_cate ON n.category_id = n_cate.id
-                WHERE unaccent(n_cate.name) ILIKE unaccent($1)
-                ORDER BY ${orderBy}
-                LIMIT $2 OFFSET $3
-            `;
-            const values = [cleanedFilter, pageSize, offset];
-            const { rows } = await pool.query(sql, values);
-            const results = rows.map(row => ({
-                id: row.news_id,
-                title: row.title,
-                public_date: row.public_date,
-                measure_time: row.measure_time,
-                num_readers: row.num_readers,
-                main_img: row.main_img,
-                main_content: row.main_content,
-                category: {
-                    id: row.category_id,
-                    name: row.name,
-                    rgb_color: row.rgb_color
-                }
-            }));
+        const sql = `
+            SELECT 
+                n.id AS news_id,
+                n.title,
+                n.public_date,
+                n.measure_time,
+                n.num_readers,
+                n.main_img,
+                n.main_content,
+
+                n_cate.id AS category_id,
+                n_cate.name,
+                n_cate.rgb_color
+            FROM news.news n
+            JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+            ${where}
+            ${order}
+            ${limit}
+        `;
+        const { rows } = await pool.query(sql);
+
+        const results = rows.map(row => ({
+            id: row.news_id,
+            title: row.title,
+            public_date: row.public_date,
+            measure_time: row.measure_time,
+            num_readers: row.num_readers,
+            main_img: row.main_img,
+            main_content: row.main_content,
+            category: {
+                id: row.category_id,
+                name: row.name,
+                rgb_color: row.rgb_color
+            }
+        }));
+        
+        if (page)
             return {
                 totalCount: totalCount,
                 page: page,
                 pageSize: rows.length,
                 results
             };
-        }
+        else return [...results];
     },
     getOne: async (id) => {
         const query = `
