@@ -1,123 +1,123 @@
-// src/pages/Price/index.jsx  
-import React, { useState } from 'react'
-import Banner from '@/components/Banner'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { Button } from 'antd'
-import ProductDetailModal from '@/components/ProductDetailModal'
-// eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from 'framer-motion';
-import useProducts from "@/hooks/useproducts";
-import Loading from '@/components/Loading'
-import '@/styles/custom.css'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+  // src/pages/Price/index.jsx  
+  import React, { useState } from 'react'
+  import Banner from '@/components/Banner'
+  import { ChevronDownIcon } from '@heroicons/react/24/outline'
+  import { Button } from 'antd'
+  import ProductDetailModal from '@/components/ProductDetailModal'
+  // eslint-disable-next-line no-unused-vars
+  import { motion, AnimatePresence } from 'framer-motion';
+  import useProducts from "@/hooks/useproducts";
+  import Loading from '@/components/Loading'
+  import '@/styles/custom.css'
+  import { useNavigate, useSearchParams } from 'react-router-dom'
 
-export default function PricePage() {
- 
-    // Biến để lưu trữ tham chiếu đến phần tử
-    const navigate = useNavigate();
-    const [selectedProduct, setSelectedProduct] = useState(null)
-    const [openCategories, setOpenCategories] = useState({});
-    const [search, setSearch] = useState('');
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [selectedCategory, setSelectedCategory] = useState('Tất cả')  
-
-
-    const query = searchParams.get("query") || "";
+  export default function PricePage() {
+  
+      // Biến để lưu trữ tham chiếu đến phần tử
+      const navigate = useNavigate();
+      const [selectedProduct, setSelectedProduct] = useState(null)
+      const [openCategories, setOpenCategories] = useState({});
+      const [search, setSearch] = useState('');
+      const [searchParams, setSearchParams] = useSearchParams();
+      const [selectedCategory, setSelectedCategory] = useState('Tất cả')  
 
 
-    // Load dữ liệu từ API
-    const { data: pricePage, isLoading: isLoadingPage } = useProducts.getPricePage()
-    const { data: productCategories =[], isLoading: isLoadingCategories } = useProducts.product_categories.getAll()
-   
-    const categories = [
-        "Tất cả sản phẩm",
-        ...productCategories.map((category) => category.name),
-      ];
-    const rawFilter = searchParams.get("filter") || "" ;
-    const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Tất cả sản phẩm";
-    const { data: products = [], isLoading: isLoadingProducts } = useProducts.products.getList();
-    const { data: productPrices = [], isLoading: isLoadingPrices } = useProducts.product_prices.getAll(
-      query,
-      filter === "Tất cả sản phẩm" ? "" : filter
-    );
-    const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
-    if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
-      return <Loading />
-    }
-    // Xử lý dữ liệu sản phẩm
-    const groupedData = productPrices.reduce((acc, item) => {
-        const category = item.product.category.name;
-        if (!acc[category]) {
-          acc[category] = [];
-        }
-        acc[category].push({
-          id: item.product.id,
-          name: item.product.name,
-          price: item.price,
-          warranty: item.product.warranty_period,
-          description: item.product.description,
-          image: item.product.product_img
-        });
-        return acc;
-      }, {});
-     
-    const filteredData = Object.entries(groupedData)
-        .filter(([cat]) =>
-          selectedCategory === "Tất cả" || cat === selectedCategory
-        )
-        .map(([cat, products]) => ({
-          category: cat,
-          products: products.filter((p) =>
-            p.name.toLowerCase().includes(search.toLowerCase())
-          ),
-        }));
-     
-    const flatProducts = Array.isArray(products.results)
-        ? products.results
-        : Object.values(products.results || {}).flat();
-   
-    if (
-        Object.keys(openCategories).length === 0 &&
-        productCategories?.length > 0
-      ) {
-        setOpenCategories((prev) => {
-          if (Object.keys(prev).length === 0) {
-            const initial = productCategories.reduce((acc, cur) => {
-              acc[cur.name] = true;
-              return acc;
-            }, {});
-            return initial;
+      const query = searchParams.get("query") || "";
+
+
+      // Load dữ liệu từ API
+      const { data: pricePage, isLoading: isLoadingPage } = useProducts.getPricePage()
+      const { data: productCategories =[], isLoading: isLoadingCategories } = useProducts.product_categories.getAll()
+    
+      const categories = [
+          "Tất cả sản phẩm",
+          ...productCategories.map((category) => category.name),
+        ];
+      const rawFilter = searchParams.get("filter") || "" ;
+      const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Tất cả sản phẩm";
+      const { data: products = [], isLoading: isLoadingProducts } = useProducts.products.getList();
+      const { data: productPrices = [], isLoading: isLoadingPrices } = useProducts.product_prices.getAll(
+        query,
+        filter === "Tất cả sản phẩm" ? "" : filter
+      );
+      const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
+      if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
+        return <Loading />
+      }
+      // Xử lý dữ liệu sản phẩm
+      const groupedData = productPrices.reduce((acc, item) => {
+          const category = item.product.category.name;
+          if (!acc[category]) {
+            acc[category] = [];
           }
-          return prev;
-        });
+          acc[category].push({
+            id: item.product.id,
+            name: item.product.name,
+            price: item.price,
+            warranty: item.product.warranty_period,
+            description: item.product.description,
+            image: item.product.product_img
+          });
+          return acc;
+        }, {});
+      
+      const filteredData = Object.entries(groupedData)
+          .filter(([cat]) =>
+            selectedCategory === "Tất cả" || cat === selectedCategory
+          )
+          .map(([cat, products]) => ({
+            category: cat,
+            products: products.filter((p) =>
+              p.name.toLowerCase().includes(search.toLowerCase())
+            ),
+          }));
+      
+      const flatProducts = Array.isArray(products.results)
+          ? products.results
+          : Object.values(products.results || {}).flat();
+    
+      if (
+          Object.keys(openCategories).length === 0 &&
+          productCategories?.length > 0
+        ) {
+          setOpenCategories((prev) => {
+            if (Object.keys(prev).length === 0) {
+              const initial = productCategories.reduce((acc, cur) => {
+                acc[cur.name] = true;
+                return acc;
+              }, {});
+              return initial;
+            }
+            return prev;
+          });
+        }
+
+
+      // Handlers
+      const handleEnter = (id) => {
+          navigate(`/san-pham/${id}`);
+        }
+      const handleSearchSuggestion = (query, filter) => {
+          return useProducts.getSearchSuggestions(query, filter);
+      };
+
+
+      const handleButton = (category, query) => {
+        const newParams = new URLSearchParams();
+        newParams.set("query", query);
+        newParams.set("filter", category);
+        setSearchParams(newParams);
+        setTimeout(() => {
+        scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 0);
       }
-
-
-    // Handlers
-    const handleEnter = (id) => {
-        navigate(`/san-pham/${id}`);
+      // Toggle category open/close state
+      const toggleCategory = (category) => {
+        setOpenCategories((prev) => ({
+          ...prev,
+          [category]: !prev[category],
+        }))
       }
-    const handleSearchSuggestion = (query, filter) => {
-        return useProducts.getSearchSuggestions(query, filter);
-    };
-
-
-    const handleButton = (category, query) => {
-      const newParams = new URLSearchParams();
-      newParams.set("query", query);
-      newParams.set("filter", category);
-      setSearchParams(newParams);
-      setTimeout(() => {
-      scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 0);
-    }
-    // Toggle category open/close state
-    const toggleCategory = (category) => {
-      setOpenCategories((prev) => ({
-        ...prev,
-        [category]: !prev[category],
-      }))
-    }
 
 
     // Banner data
@@ -160,39 +160,39 @@ export default function PricePage() {
         </div>
 
 
-        <div className="overflow-y-auto max-h-[600px] px-7 md:px-10">
-          <table className="min-w-full text-base">
-            <thead className="sticky top-0 z-20 bg-[#00A651] text-white shadow-md">
-              <tr>
-                <th className="px-4 py-[15px] text-left rounded-tl-lg rounded-bl-md  w-[5%]">STT</th>
-                <th className="pl-14 pr-4 py-4 text-left  w-[45%]">TÊN SẢN PHẨM</th>            
-                <th className="px-4 py-4 text-left  w-[15%]">GIÁ (VND)</th>
-                <th className="px-4 py-4 text-center  w-[15%]">BẢO HÀNH</th>
-                <th className="px-4 py-4 text-center  w-[15%] rounded-tr-lg rounded-br-md">CHI TIẾT</th>
-              </tr>
-            </thead>
+          <div className="overflow-y-auto max-h-[600px] px-7 md:px-10">
+            <table className="min-w-full text-base">
+              <thead className="sticky top-0 z-20 bg-[#00A651] text-white shadow-md">
+                <tr>
+                  <th className="px-4 py-[15px] text-left rounded-tl-lg rounded-bl-md  w-[5%]">STT</th>
+                  <th className="pl-14 pr-4 py-4 text-left  w-[45%]">TÊN SẢN PHẨM</th>            
+                  <th className="px-4 py-4 text-left  w-[15%]">GIÁ (VND)</th>
+                  <th className="px-4 py-4 text-center  w-[15%]">BẢO HÀNH</th>
+                  <th className="px-4 py-4 text-center  w-[15%] rounded-tr-lg rounded-br-md">CHI TIẾT</th>
+                </tr>
+              </thead>
 
 
-            <tbody>
-              {filteredData.map((cat) => (
-                <React.Fragment key={cat.category}>
-                  <tr>
-                    <td colSpan={5}>
-                      <div
-                        className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[21px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"
-                        onClick={() => toggleCategory(cat.category)}
-                      >
-                        <div className="flex items-center gap-1">
-                          <ChevronDownIcon
-                            className={`w-9 h-10 transform transition-transform duration-300 ${
-                              openCategories[cat.category] ? 'rotate-180' : ''
-                            }`}
-                          />
-                          {cat.category}
+              <tbody>
+                {filteredData.map((cat) => (
+                  <React.Fragment key={cat.category}>
+                    <tr>
+                      <td colSpan={5}>
+                        <div
+                          className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[21px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"
+                          onClick={() => toggleCategory(cat.category)}
+                        >
+                          <div className="flex items-center gap-1">
+                            <ChevronDownIcon
+                              className={`w-9 h-10 transform transition-transform duration-300 ${
+                                openCategories[cat.category] ? 'rotate-180' : ''
+                              }`}
+                            />
+                            {cat.category}
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
 
 
                  <AnimatePresence initial={false}>
