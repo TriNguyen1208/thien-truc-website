@@ -442,6 +442,7 @@ const DynamicForm = ({ data, config }) => {
 
 export default DynamicForm
 /*
+
 import React from 'react'
 import DynamicForm from '../../components/DynamicForm'
 import { useState } from 'react';
@@ -493,7 +494,6 @@ const Manager = () => {
       isSingleColumn: true,
       placeholder: "VD: Toi la",
       width: 6,
-      limitRowDynamicFields: 5,
     },
     { name: 'Trine123', label: 'Mô tả', type: 'image_upload', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]

@@ -10,7 +10,6 @@ const Manager = () => {
     { name: 'password', label: 'Mat khau', type: 'password', width: 6, isRequired: true },
     { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12, isRequired: false, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
-    { name: 'username13213', label: 'Tên đăng nhập123213', type: 'color', width: 6, isRequired: false },
     {
       name: 'role', label: 'Chức vụ', type: 'select', width: 6, isRequired: true,
       options: [
@@ -50,6 +49,7 @@ const Manager = () => {
       isSingleColumn: true,
       placeholder: "VD: Toi la",
       width: 6,
+      limitRowDynamicFields: 5,
     },
     { name: 'Trine123', label: 'Mô tả', type: 'image_upload', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]

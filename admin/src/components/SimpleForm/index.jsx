@@ -27,8 +27,7 @@ const SimpleForm = ({ data, config}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
-        const finalData = { ...formData };
-        config.handleSubmitButton(finalData);
+        config.handleSubmitButton(formData);
         setFormData(initialValues);
     }
     const handleChange = (e) => {
@@ -105,3 +104,5 @@ const SimpleForm = ({ data, config}) => {
     )
 }
 export default SimpleForm
+
+
