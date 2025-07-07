@@ -210,7 +210,8 @@ const Setting = ({
 
     //Truyền vào props thì dùng ở đây
     const searchProps = {
-        hasButton: true,
+        hasButtonCategory: true,
+        hasButtonDisplay: true,
         placeholder: `Tìm kiếm theo tên loại ${type}`,
         handleEnter,
         onSearch: handleSearch,
