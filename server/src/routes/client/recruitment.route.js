@@ -1,5 +1,5 @@
 import express from 'express'
-import recruitmentController from '#@/controllers/client/recruitment.controller.js';
+import recruitmentController from '#@/controllers/recruitment.controller.js';
 import validateForm from '#@/middlewares/validateForm.middleware.js';
 
 const router = express.Router();

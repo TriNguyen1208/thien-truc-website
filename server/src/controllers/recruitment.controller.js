@@ -1,4 +1,4 @@
-import recruitmentServices from "#@/services/client/recruitment.services.js";
+import recruitmentServices from "#@/services/recruitment.services.js";
 
 const getAllTables = async (req, res) => {
     const data = await recruitmentServices.getAllTables();

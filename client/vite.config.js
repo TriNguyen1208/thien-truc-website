@@ -13,7 +13,7 @@ export default defineConfig({
       }
     },
     host: '0.0.0.0', // expose ra bên ngoài container
-    port: 3000       // hoặc port bạn muốn
+    port: 3000   // hoặc port bạn muốn
   },
   plugins: [
     react(),

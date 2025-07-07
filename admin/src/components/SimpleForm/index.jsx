@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 const SimpleForm = ({ data, config }) => {
     const defaultField = {
         type: 'text',
@@ -85,14 +85,18 @@ const SimpleForm = ({ data, config }) => {
                         <div className="flex justify-end mt-[20px]">
                             <button
                                 type="button"
-                                onClick={config.handleCancelButton}
+                                onClick={() => {
+                                    console.log('Huy button');
+                                    setFormData(initialValues);
+                                    config.setIsModalOpenSimple(false)
+                                }}
                                 className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px]"
                             >
                                 Hủy
                             </button>
                             <button
                                 type="submit"
-                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                className="mt-4 px-4 py-2 bg-neutral-900  text-white rounded  hover:bg-neutral-800 cursor-pointer"
                             >
                                 Submit
                             </button>

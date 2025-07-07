@@ -18,6 +18,7 @@ import ProjectCategories from "../pages/ProjectCategories"
 import ProjectPageContent from "../pages/ProjectPageContent"
 import RecruitmentPageContent from "../pages/RecruitmentPageContent"
 import ControlPanel from "../pages/ControlPanel"
+import TestComponents from "../pages/TestComponents"
 export const routes = [
     {
         path: "/",
@@ -95,7 +96,10 @@ export const routes = [
                 path: "/noi-dung-trang/ve-chung-toi",
                 element: <AboutUsPageContent />
             },
-
+            {
+                path: "/testcomponents",
+                element: <TestComponents/>
+            }
         ]
     },
     {

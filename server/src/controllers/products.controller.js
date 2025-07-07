@@ -1,4 +1,4 @@
-import productServices from "#@/services/client/products.services.js";
+import productServices from "#@/services/products.services.js";
 
 const getAllTables = async (req, res) => {
     const data = await productServices.getAllTables();

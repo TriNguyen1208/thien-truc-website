@@ -1,4 +1,4 @@
-import contactServices from "#@/services/client/contact.services.js";
+import contactServices from "#@/services/contact.services.js";
 
 const getAllTables = async (req, res) => {
     const data = await contactServices.getAllTables();

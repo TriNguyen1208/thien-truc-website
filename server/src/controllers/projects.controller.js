@@ -1,4 +1,4 @@
-import projectsServices from "#@/services/client/projects.services.js";
+import projectsServices from "#@/services/projects.services.js";
 
 const getAllTables = async (req, res) => {
     const data = await projectsServices.getAllTables();

@@ -1,8 +1,10 @@
 import { useState, useMemo, useRef } from "react";
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import SimpleForm from "../SimpleForm"
+import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
+    const [visible, setVisible] = useState(false);
     const defaultField = {
         type: 'text',
         name: '',
@@ -88,7 +90,6 @@ const DynamicForm = ({ data, config }) => {
         } else if (type === 'file') {
             newValue = files[0];
         }
-        console.log(name, value);
         setFormData((prev) => ({
             ...prev,
             [name]: newValue
@@ -188,6 +189,7 @@ const DynamicForm = ({ data, config }) => {
                         value={value}
                         rows={item.numberRows || defaultField.numberRows}
                         placeholder={item.placeholder || defaultField.placeholder}
+                        maxLength={item.maxLength || undefined }
                     />
                 );
             case 'select':
@@ -207,7 +209,6 @@ const DynamicForm = ({ data, config }) => {
                             onClick={handleAddButtonSelect}
                             className="px-3 py-2  border  border-gray-300 rounded-md "
                         >
-                            +
                         </button>
                     </div>
 
@@ -269,9 +270,15 @@ const DynamicForm = ({ data, config }) => {
                                 type="button"
                                 onClick={() => fileInputRef.current.click()}
                                 disabled={!!image}
-                                className="h-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-300"
+                                className="flex h-full px-4 py-2 bg-neutral-900 text-white rounded-md hover:bg-neutral-800 disabled:bg-gray-300 cursor-pointer"
+
                             >
+                                <div>
+                                <UploadIcon/>
+                                </div>
+                                <div className="ml-[15px]">
                                 Upload ảnh
+                                </div>
                             </button>
                         </div>
 
@@ -340,7 +347,7 @@ const DynamicForm = ({ data, config }) => {
                                     <button
                                         type="button"
                                         onClick={() => addDynamicFields(nameColumn, isSingle)}
-                                        className="px-3 py-2  border  border-gray-300 rounded-md "
+                                        className="px-3 py-2  border  border-gray-300 rounded-md cursor-pointer"
                                     >
                                         +
                                     </button>
@@ -349,9 +356,9 @@ const DynamicForm = ({ data, config }) => {
                                     <button
                                         type="button"
                                         onClick={() => removeDynamicFields(nameColumn, index)}
-                                        className="px-3 py-2 border  border-gray-300 rounded-md "
+                                        className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
                                     >
-                                        −
+                                        <DeleteIcon />
                                     </button>
                                 )}
                             </div>
@@ -359,8 +366,35 @@ const DynamicForm = ({ data, config }) => {
                     </div>
                 );
             }
+            case 'password': {
+                
+
+                return (
+                    <div className="relative">
+                        <input
+                            {...commonProps}
+                            type={visible ? 'text' : 'password'}
+                            value={value}
+                            placeholder={item.placeholder || defaultField.placeholder}
+                        />
+                        <span
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                            onClick={() => setVisible(!visible)}
+                        >
+                            {visible ? <EyeOffIcon /> : <EyeIcon />}
+                        </span>
+                    </div>
+                );
+            }
+            
             default:
-                return <input {...commonProps} type={type} value={value} placeholder={item.placeholder || defaultField.placeholder} />;
+                return <input 
+                    {...commonProps} 
+                    type={type} 
+                    value={value} 
+                    placeholder={item.placeholder || defaultField.placeholder} 
+                    maxLength={item.maxLength || undefined }
+                />;
         }
     }
 
@@ -371,7 +405,10 @@ const DynamicForm = ({ data, config }) => {
                 open={config?.isModalOpen || false}
                 footer={null}
                 width={config?.widthModal || defaultConfig.widthModal}
-                onCancel={() => config.setIsModalOpen(false)}
+                onCancel={() => {
+                    setFormData(initialValues);
+                    config.setIsModalOpen(false);
+                }}
             >
                 <div className="container-fluid p-6">
                     <div className="font-[700] text-[25px] mb-[5px]">{config?.title || defaultConfig.title}</div>
@@ -379,10 +416,10 @@ const DynamicForm = ({ data, config }) => {
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-12 gap-4">
                             {data.map((item, index) => {
-                                console.log('item.width =', item.width);
                                 const nameColumn = item.name || defaultField.name;
                                 return (
                                     <div key={index} style={{ gridColumn: `span ${item.width}` }}>
+
                                         {item.type !== 'checkbox' && (
                                             <label htmlFor={nameColumn} className="block font-[700] mb-2">
                                                 {item.label || defaultField.label}
@@ -399,17 +436,20 @@ const DynamicForm = ({ data, config }) => {
                                 )
                             })}
                         </div>
-                        <div className="flex justify-end mt-[10px]">
+                        <div className="flex justify-end mt-[20px]">
                             <button
                                 type="button"
-                                onClick={config.handleCancelButton}
-                                className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px]"
+                                onClick={() => {
+                                    config.setIsModalOpen(false);
+                                    setFormData(initialValues);
+                                }}
+                                className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px] cursor-pointer"
                             >
                                 {config.contentCancelButton || defaultConfig.contentCancelButton}
                             </button>
                             <button
                                 type="submit"
-                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                className="mt-4 px-4 py-2 bg-neutral-900  text-white rounded  hover:bg-neutral-800 cursor-pointer"
                             >
                                 {config.contentSubmitButton || defaultConfig.contentSubmitButton}
                             </button>
