@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { Modal } from 'antd';
 const SimpleForm = ({ data, config }) => {
      const [focusedFields, setFocusedFields] = useState({});
-     console.log(data);
     const defaultField = {
         type: 'text',
         name: '',
@@ -35,7 +34,6 @@ const SimpleForm = ({ data, config }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         let newValue = value;
-        console.log(name, value);
         setFormData((prev) => ({
             ...prev,
             [name]: newValue
