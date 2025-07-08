@@ -5,6 +5,7 @@ import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
     const [visible, setVisible] = useState(false);
+    const [focusedFields, setFocusedFields] = useState({});
     const defaultField = {
         type: 'text',
         name: '',
@@ -173,14 +174,32 @@ const DynamicForm = ({ data, config }) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
         let value = formData[nameColumn] || defaultField.value;
+        const maxLength = item.maxLength || Infinity;
+        const isInvalid = maxLength !== undefined && value.length >= maxLength;
+        const isFocused = focusedFields[nameColumn] || false;
         const commonProps = {
             name: nameColumn,
             id: nameColumn,
+            value,
             onChange: handleChange,
-            required: item.isRequired || defaultField.isRequired,
-            className: "px-3 py-2 block border border-gray-300 w-full rounded-[5px]",
-        };
+            onFocus: () => setFocusedFields(prev => ({ ...prev, [nameColumn]: true })),
+            onBlur: () => setFocusedFields(prev => ({ ...prev, [nameColumn]: false })),
 
+            required: item.isRequired || defaultField.isRequired,
+            maxLength: maxLength || undefined,
+            style: {
+                padding: '8px 12px',
+                display: 'block',
+                width: '100%',
+                borderRadius: '5px',
+                outline: 'none',
+                border: isInvalid
+                    ? '1px solid red'
+                    : isFocused
+                        ? '1px solid black'
+                        : '1px solid #D1D5DB'
+            }
+        };
         switch (type) {
             case 'textarea':
                 return (
@@ -189,7 +208,7 @@ const DynamicForm = ({ data, config }) => {
                         value={value}
                         rows={item.numberRows || defaultField.numberRows}
                         placeholder={item.placeholder || defaultField.placeholder}
-                        maxLength={item.maxLength || undefined }
+                        maxLength={item.maxLength || undefined}
                     />
                 );
             case 'select':
@@ -209,6 +228,7 @@ const DynamicForm = ({ data, config }) => {
                             onClick={handleAddButtonSelect}
                             className="px-3 py-2  border  border-gray-300 rounded-md "
                         >
+                            +
                         </button>
                     </div>
 
@@ -219,7 +239,10 @@ const DynamicForm = ({ data, config }) => {
                         {...commonProps}
                         type="checkbox"
                         checked={!!formData[nameColumn]}
-                        className="mr-2"
+                        style={{
+                            display: 'inline-block',
+                            marginRight: '0.5rem' // tương đương với Tailwind `mr-2`
+                        }}
                     />
                 );
             case 'file':
@@ -274,10 +297,10 @@ const DynamicForm = ({ data, config }) => {
 
                             >
                                 <div>
-                                <UploadIcon/>
+                                    <UploadIcon />
                                 </div>
                                 <div className="ml-[15px]">
-                                Upload ảnh
+                                    Upload ảnh
                                 </div>
                             </button>
                         </div>
@@ -367,7 +390,7 @@ const DynamicForm = ({ data, config }) => {
                 );
             }
             case 'password': {
-                
+
 
                 return (
                     <div className="relative">
@@ -386,14 +409,14 @@ const DynamicForm = ({ data, config }) => {
                     </div>
                 );
             }
-            
+
             default:
-                return <input 
-                    {...commonProps} 
-                    type={type} 
-                    value={value} 
-                    placeholder={item.placeholder || defaultField.placeholder} 
-                    maxLength={item.maxLength || undefined }
+                return <input
+                    {...commonProps}
+                    type={type}
+                    value={value}
+                    placeholder={item.placeholder || defaultField.placeholder}
+                    maxLength={item.maxLength || undefined}
                 />;
         }
     }
@@ -421,16 +444,24 @@ const DynamicForm = ({ data, config }) => {
                                     <div key={index} style={{ gridColumn: `span ${item.width}` }}>
 
                                         {item.type !== 'checkbox' && (
-                                            <label htmlFor={nameColumn} className="block font-[700] mb-2">
-                                                {item.label || defaultField.label}
-                                                {item.isRequired && <span className="text-red-500 ml-1">*</span>}
-                                            </label>
+                                            <>
+                                                <label htmlFor={nameColumn} className="block font-[700] mb-2">
+                                                    {item.label || defaultField.label}
+                                                    {item.isRequired && <span className="text-red-500 ml-1">*</span>}
+                                                </label>
+                                                {renderInput(item, index)}
+                                            </>
                                         )}
-                                        {renderInput(item, index)}
                                         {item.type === 'checkbox' && (
-                                            <label htmlFor={nameColumn} className="ml-2">
-                                                {item.label}
-                                            </label>
+                                            <>
+                                                <div className="flex items-center">
+
+                                                    {renderInput(item, index)}
+                                                    <label htmlFor={nameColumn} className="ml-2">
+                                                        {item.label}
+                                                    </label>
+                                                </div>
+                                            </>
                                         )}
                                     </div>
                                 )
@@ -492,10 +523,10 @@ const Manager = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const data = [
-    { name: 'username', label: 'Tên đăng nhập', type: 'text', width: 6, isRequired: false, placeholder: "VD: 123", value: "123" },
+    { name: 'username', label: 'Tên đăng nhập', type: 'text', width: 6, isRequired: false, placeholder: "VD: 123", value: "123", maxLength: 10},
     { name: 'password', label: 'Mat khau', type: 'password', width: 6, isRequired: true },
     { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12, isRequired: false, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
-    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5, maxLength: 10},
     {
       name: 'role', label: 'Chức vụ', type: 'select', width: 6, isRequired: true,
       options: [

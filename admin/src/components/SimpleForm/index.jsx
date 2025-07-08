@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { Modal } from 'antd';
 const SimpleForm = ({ data, config }) => {
+     const [focusedFields, setFocusedFields] = useState({});
+     console.log(data);
     const defaultField = {
         type: 'text',
         name: '',
@@ -43,15 +45,40 @@ const SimpleForm = ({ data, config }) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
         let value = formData[nameColumn] || defaultField.value;
+        const maxLength = item.maxLength || Infinity;
+        const isInvalid = maxLength !== undefined && value.length >= maxLength;
+        const isFocused = focusedFields[nameColumn] || false;
         const commonProps = {
             name: nameColumn,
             id: nameColumn,
+            value,
             onChange: handleChange,
+            onFocus: () => setFocusedFields(prev => ({ ...prev, [nameColumn]: true })),
+            onBlur: () => setFocusedFields(prev => ({ ...prev, [nameColumn]: false })),
+
             required: item.isRequired || defaultField.isRequired,
-            className: "px-4 py-2 block border border-gray-300 w-full rounded-[5px]",
+            maxLength: maxLength || undefined,
+            style: {
+                padding: '8px 12px',
+                display: 'block',
+                width: '100%',
+                borderRadius: '5px',
+                outline: 'none',
+                border: isInvalid
+                    ? '1px solid red'
+                    : isFocused
+                        ? '1px solid black'
+                        : '1px solid #D1D5DB'
+            }
         };
 
-        return <input {...commonProps} type={type} value={value} placeholder={item.placeholder || defaultField.placeholder} />;
+        return <
+            input {...commonProps}
+            type={type}
+            value={value}
+            placeholder={item.placeholder || defaultField.placeholder}
+            maxLength={item.maxLength || undefined}
+        />;
     }
     return (
         <>
