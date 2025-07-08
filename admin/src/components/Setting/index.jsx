@@ -44,7 +44,7 @@ const Setting = ({
     const { data: datas, isLoading: isLoadingDatas } = useData.getList(
         filtersSearch.query,
         filtersSearch.category === "Tất cả loại" ? "" : filtersSearch.category,
-        1
+        undefined
     );
     const {data: data, isLoading: isLoadingData} = useData.getOne(id);
     const { data: dataCategories, isLoading: isLoadingCategories } = useDataCategories.getAll();
@@ -81,7 +81,7 @@ const Setting = ({
     useEffect(() => {
         if (!datas) return;
         const updatedMap = new Map(displayMap);
-        const datasFetch = datas.results.map((item) => {
+        const datasFetch = datas.map((item) => {
             const id = item.id;
             const name = item.name || item.title;
             const cat = item.region.name || item.category.name;
@@ -205,6 +205,8 @@ const Setting = ({
     };
 
     const handleSave = () => {
+        //Ở đây có 1 lệnh post gửi lên API sau đó thoát ra luôn
+        onClose()
         console.log("hello world");
     };
 

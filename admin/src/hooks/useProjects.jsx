@@ -16,7 +16,7 @@ function useGetProjectPage(){
     })
 }
 const projects = {
-    useGetList: (query = '', filter = '', page = 1) => {
+    useGetList: (query = '', filter = '', page = '') => {
         return useQuery({
             queryKey: ["admin_projects_list", query, filter, page],
             queryFn: () => projectsServices.projects.getList(query, filter, page),
