@@ -13,13 +13,18 @@ const TestComponents = () => {
         description: `Chọn các dự án muốn thêm hoặc xóa khỏi loại "Miền Bắc"`,
         type: "dự án",
         category: "Miền Bắc",
+        header: [
+            "Mã dự án",
+            "Tên dự án",
+            "Khu vực",
+        ]
     };
     return (
         <Setting
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             content={content}
-            useDataList={useProjects.projects}
+            useData={useProjects.projects}
             useDataSuggestion={useProjects}
             useDataCategories={useProjects.project_regions}
         />

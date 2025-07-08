@@ -16,7 +16,7 @@ function useGetProjectPage(){
     })
 }
 const projects = {
-    useGetList: (query = '', filter = '', page = 1) => {
+    useGetList: (query = '', filter = '', page = '') => {
         return useQuery({
             queryKey: ["admin_projects_list", query, filter, page],
             queryFn: () => projectsServices.projects.getList(query, filter, page),
@@ -28,6 +28,7 @@ const projects = {
             queryKey: ["admin_project", id],
             queryFn: () => projectsServices.projects.getOne(id),
             staleTime: 5 * 60 * 1000,
+            enabled: id != null
         })
     }
 }

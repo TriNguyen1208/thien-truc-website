@@ -12,8 +12,8 @@ const getProjectPage = async (req, res) => {
 
 const projects = {
     getList: async (req, res) => {
-        const { query = '', filter = '', page = '1' } = req.query;
-        const data = await projectsServices.projects.getList(query, filter, parseInt(page));
+        const { query = '', filter = '', page, is_featured } = req.query;
+        const data = await projectsServices.projects.getList(query, filter, parseInt(page), is_featured);
         res.status(200).json(data);
     },
     getOne: async (req, res) => {

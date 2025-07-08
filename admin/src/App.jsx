@@ -4,9 +4,9 @@ import { LayoutProvider } from '@/layouts/LayoutContext';
 export default function App() {
   return (
     <BrowserRouter>
-    <LayoutProvider>
-        <RoutesElement/>
-    </LayoutProvider>
+      <LayoutProvider>
+          <RoutesElement/>
+      </LayoutProvider>
     </BrowserRouter>
   )
 }

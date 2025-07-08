@@ -12,8 +12,8 @@ const getNewsPage = async (req, res) => {
 
 const news = {
     getList: async (req, res) => {
-        const {query = '', filter = '', sort_by = 'popular', page = 1} = req.query;
-        const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page));
+        const {query = '', filter = '', sort_by = 'popular', page, is_published} = req.query;
+        const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page), is_published);
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
