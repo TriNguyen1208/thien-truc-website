@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Button } from "antd";
-
+import RoutesElement from "./routes";
 // Fake page content
 const ManagerTable = () => (
   <div>
@@ -23,11 +23,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<DefaultLayout {...layoutProps} />}>
-          <Route path="/" element={<ManagerTable />} />
-        </Route>
-      </Routes>
+      <RoutesElement/>
     </BrowserRouter>
   );
 }
