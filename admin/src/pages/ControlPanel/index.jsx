@@ -1,8 +1,7 @@
-<<<<<<< HEAD
-import DefaultLayout from '../../layouts/DefaultLayout'
 import Card from '../../components/Card'
-import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon} from '../../components/Icon'
+import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon, PulseIcon, ActivityIcon} from '../../components/Icon'
 import { useEffect } from 'react'
+import {useNavigate} from 'react-router-dom'
 import {useLayout} from '../../layouts/LayoutContext'
 function DisplayCards ({data})
 {
@@ -22,8 +21,8 @@ function DisplayCards ({data})
 function ItemActivity({data})
 {
   return(
-    <div className='w-full h-full relative border border-white hover:bg-[#F9FAFB] hover:border hover:border-[#F9FAFB] hover:rounded-[8px] p-[12px]'>
-        <div className='absolute'></div>
+    <div className='w-full h-full relative border border-white hover:bg-[#F9FAFB] hover:border hover:border-[#F9FAFB] hover:rounded-[8px] px-[30px] py-[12px]'> 
+        <div className='absolute left-[12px] top-[16px]'><ActivityIcon/></div>
         <div className='flex flex-col'>
               <div className='font-medium text-black text-[14px]'> {data.content} </div>
               <div className='text-[#71717A] text-[13px] font-regular '> {data.implementer} </div>
@@ -34,6 +33,7 @@ function ItemActivity({data})
 }
 const ControlPanel = () => {
   const {setLayoutProps} = useLayout()
+  const navigate = useNavigate()
   useEffect(()=>{
     setLayoutProps({
       title: "Bảng điều khiển",
@@ -41,6 +41,7 @@ const ControlPanel = () => {
       hasButton: false,
     })
   })
+  
   const members = {
     title: "Nhân sự",
     cards: [{
@@ -48,14 +49,14 @@ const ControlPanel = () => {
       description: "Tổng số manager", 
       quanlity: 12,
       icon: <UserIcon/>,
-      handleClick: ()=>{console.log("member")}
+      handleClick: ()=>{navigate("/quan-ly-manager")}
     },
     {
       title: "Đội ngũ liên lạc",
       description: "Nhân viên liên lạc", 
       quanlity: 5,
       icon: <PhoneIcon/> ,
-      handleClick: ()=>{console.log("Contact Team")}
+      handleClick: ()=>{navigate("/doi-ngu-lien-lac")}
 
     }
   ]
@@ -68,7 +69,7 @@ const ControlPanel = () => {
       quanlity: 156,
       quanCategory: "5 loại",
       icon: <BoxIcon/>,
-      handleClick: ()=>{console.log("Product")}
+      handleClick: ()=>{navigate("/quan-ly-san-pham")}
 
     },
     {
@@ -77,7 +78,8 @@ const ControlPanel = () => {
       quanlity: 28,
       quanCategory: "3 khu vực",
       icon: <ProjectIcon/> ,
-      handleClick: ()=>{console.log("Project")}
+      handleClick: ()=>{navigate("/quan-ly-du-an")}
+
 
     },
     {
@@ -86,7 +88,8 @@ const ControlPanel = () => {
       quanlity:45,
       quanCategory: "5 loại",
       icon: <NewsIcon/> ,
-      handleClick: ()=>{console.log("Paper")}
+      handleClick: ()=>{navigate("/quan-ly-tin-tuc")}
+
 
     }
   ]
@@ -118,9 +121,12 @@ const ControlPanel = () => {
     <DisplayCards data={members}/>
     <DisplayCards data={contents}/>
     <div>
-      <h1 className='text-[24px] font-semibold text-black my-[24px] px-[12px]'>
+      <div className='flex flex-row gap-[4px] items-center px-[12px]'>
+        <PulseIcon/>
+        <h1 className='text-[24px] font-semibold text-black my-[24px] px-[12px]'>
         Hoạt động gần đây
       </h1>
+      </div>
         <div className='gap-[4px]'>
           {
         recentActivities.map((activity, index)=>{
@@ -135,55 +141,5 @@ const ControlPanel = () => {
     
   )
 }
-=======
-import React from 'react'
-import Card from '@/components/Card'
-import { PlayCircleOutlined } from '@ant-design/icons'
-import EditBanner from '../../components/EditBanner'
-import Button from '../../components/Button'
-import FeatureCard from '../../components/FeatureCard'
-import { LeftCircleOutlined } from '@ant-design/icons'
-
-const ControlPanel = () => {
-  const prop2 = {
-    Icon: LeftCircleOutlined,
-
-    colorText: "#000000",
-    colorBackground: "#ffffff",
-    handleButton: () => { console.log("Hi") }
-  }
-  const props = {
-    title: "Banner Trang Chủ",
-    description: "Chỉnh sửa tiêu đề và mô tả trang chủ",
-    listInput: [{ label: "Tiêu đề Banner", placeholder: "Vui lòng nhập nội dung tiêu đề", contentCurrent: "Thiên Trúc là một cái gì đó" }
-      ,
-    { label: "Mô tả Banner", placeholder: "Vui lòng nhập nội dung mô tả" },
-    { label: "Mô tả Banner", placeholder: "Vui lòng nhập nội dung mô tả" }
-
-    ],
-    saveButton: (arr) => { console.log(arr) },
-  }
-  return (
-    <>
-      <div>Day la noi dung trang ControlPanel</div>
-      <div className='w-[1136px] h-fit '>
-
-        <div className='w-[352px] h-[98px] my-[50px]'>
-          <div className='w-[100px] h-[36px]'>
-            <Button {...props} />
-          </div>
-          <FeatureCard title={"500+"} description={"Dự án hoàn thành"} buttonDelete={<Button {...prop2} />} buttonEdit={<Button {...prop2} />} />
-        </div >
-
-        <EditBanner {...props} />
-      </div>
-    </>
-  )
-}
-// <div>Day la noi dung trang ControlPanel</div>
-// <Form />
-// )
-// }
->>>>>>> 05cca1db363b97cfeabf881d341801d1779e5b3d
 
 export default ControlPanel
