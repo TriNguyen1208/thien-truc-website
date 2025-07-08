@@ -3,7 +3,8 @@ import { SearchIcon, FilterIcon, OpenIcon } from '../Icon';
 const SearchBar = ({data}) => {
     //prop
     const {
-        hasButton,
+        hasButtonCategory = false,
+        hasButtonDisplay = false,
         placeholder,
         handleEnter,
         onSearch,
@@ -13,6 +14,7 @@ const SearchBar = ({data}) => {
         currentQuery = "",
         currentCategory,
         currentDisplay,
+        displayMap = null
     } = data;
     //using useState
     const [query, setQuery] = useState("");
@@ -30,11 +32,13 @@ const SearchBar = ({data}) => {
         if (categories && categories.length > 0) {
             setCategory(currentCategory);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //Giữ trạng thái của query
     useEffect(() => {
         setQuery(currentQuery)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //Giữ trạng thái của 
@@ -42,6 +46,7 @@ const SearchBar = ({data}) => {
         if (displays && displays.length > 0) {
             setDisplay(currentDisplay);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //using useRef
@@ -58,6 +63,7 @@ const SearchBar = ({data}) => {
             }
             return category
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const truncateDisplays = useMemo(()=>{
         if(!displays){
@@ -69,6 +75,7 @@ const SearchBar = ({data}) => {
             }
             return display;
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //function
@@ -84,12 +91,21 @@ const SearchBar = ({data}) => {
     const {data: suggestions = [], isLoading} = handleSearchSuggestion(
         debouncedQuery,
         category != null ? (category == categories[0] ? '' : category) : null,
-        display != null ? (display == displays[0] ? '' : display) : null,
     );
     //Cap nhat displaySuggestion
     const stableSuggestion = useMemo(()=>{
-        return Array.isArray(suggestions) ? suggestions : [];
-    }, [JSON.stringify(suggestions)])
+        // return Array.isArray(suggestions) ? suggestions : [];
+        if (!Array.isArray(suggestions)) return [];
+        if (displayMap != null){
+            return suggestions.filter((item) => {
+                const displayVal = displayMap.get(item.id) || "Chưa gán";
+                if (display === "Tất cả trạng thái") return true;
+                return display == displayVal
+            })
+        };
+        return suggestions;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[JSON.stringify(suggestions), displayMap, display]);
 
     //cap nhat displaySuggestion
     useEffect(()=> {
@@ -107,8 +123,10 @@ const SearchBar = ({data}) => {
     useEffect(()=>{
         const handleClickOutside = (e) => {
             if(wrapperRef.current && !wrapperRef.current.contains(e.target)){
-                if(hasButton){
+                if(hasButtonCategory){
                     setDropDownOpenCategory(false);
+                }
+                if(hasButtonDisplay){
                     setDropDownOpenDisplay(false);
                 }
                 setIsFocus(false);
@@ -126,7 +144,7 @@ const SearchBar = ({data}) => {
     }
     return (
             <div ref={wrapperRef} className={`flex flex-row gap-4 justify-between w-full rounded-md h-10`}>
-                <div className={`relative flex flex-row items-center rounded-md gap-3 px-4 w-full bg-[#F9FAFB] ${hasButton ? "" : "flex-1"} ${isFocus ? "border border-gray-500" : ""}`}>
+                <div className={`relative flex flex-row items-center rounded-md gap-3 px-4 w-full bg-[#F9FAFB] ${(hasButtonCategory || hasButtonDisplay) ? "" : "flex-1"} ${isFocus ? "border border-gray-500" : ""}`}>
                     <SearchIcon/>
                     <input
                         type='text'
@@ -211,9 +229,9 @@ const SearchBar = ({data}) => {
                     }
                 </div>
                 {
-                    hasButton && (
+                    // hasButton && (
                         <div className='flex flex-row gap-4 justify-between'>
-                            <div className='relative h-full rounded-sm flex flex-row'>
+                            {hasButtonCategory && (<div className='relative h-full rounded-sm flex flex-row'>
                                 <button
                                     className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer'
                                     onClick={(e) => {
@@ -247,8 +265,8 @@ const SearchBar = ({data}) => {
                                         </ul>
                                     ) 
                                 }
-                            </div>
-                            <div className='relative h-full rounded-sm flex flex-row'>
+                            </div>)}
+                            {hasButtonDisplay && (<div className='relative h-full rounded-sm flex flex-row'>
                                 <button
                                     className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer'
                                     onClick={(e) => {
@@ -282,9 +300,9 @@ const SearchBar = ({data}) => {
                                         </ul>
                                     ) 
                                 }
-                            </div>
+                            </div>)}
                         </div>
-                    )
+                    // )
                 }
             </div>
     )

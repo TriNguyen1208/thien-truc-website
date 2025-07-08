@@ -12,7 +12,7 @@ const getProjectPage = async () => {
 }
 
 const projects = {
-    getList: async (query = '', filter = '', page = 1) => {
+    getList: async (query = '', filter = '', page = '') => {
         const res = await axios.get(API_ROUTES.project.projects.getList(query, filter, page));
         return res.data;
     },

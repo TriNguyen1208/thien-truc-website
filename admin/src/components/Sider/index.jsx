@@ -49,21 +49,21 @@ const sections = [
   {
     label: 'NỘI DUNG TRANG',
     items: [
-      { label: 'Trang chủ', to: '/trang-chu', icon: HomeIcon },
-      { label: 'Trang sản phẩm', to: '/trang-san-pham', icon: ProductIcon },
-      { label: 'Trang bảng giá', to: '/trang-bang-gia', icon: DollarIcon }, // 🔸 Thiếu icon: DollarIcon
-      { label: 'Trang dự án', to: '/trang-du-an', icon: ProjectIcon },
-      { label: 'Trang tin tức', to: '/trang-tin-tuc', icon: NewsIcon },
-      { label: 'Trang tuyển dụng', to: '/trang-tuyen-dung', icon: PeopleIcon }, // 🔸 Thiếu icon: RecruitIcon
-      { label: 'Trang liên hệ', to: '/trang-lien-he', icon: PhoneIcon },
-      { label: 'Về chúng tôi', to: '/trang-gioi-thieu', icon: InfoIcon }, // 🔸 Thiếu icon: CompanyIcon
+      { label: 'Trang chủ', to: '/noi-dung-trang/trang-chu', icon: HomeIcon },
+      { label: 'Trang sản phẩm', to: '/noi-dung-trang/san-pham', icon: ProductIcon },
+      { label: 'Trang bảng giá', to: '/noi-dung-trang/bang-gia', icon: DollarIcon }, // 🔸 Thiếu icon: DollarIcon
+      { label: 'Trang dự án', to: '/noi-dung-trang/du-an', icon: ProjectIcon },
+      { label: 'Trang tin tức', to: '/noi-dung-trang/tin-tuc', icon: NewsIcon },
+      { label: 'Trang tuyển dụng', to: '/noi-dung-trang/tuyen-dung', icon: PeopleIcon }, // 🔸 Thiếu icon: RecruitIcon
+      { label: 'Trang liên hệ', to: '/noi-dung-trang/lien-he', icon: PhoneIcon },
+      { label: 'Về chúng tôi', to: '/noi-dung-trang/ve-chung-toi', icon: InfoIcon }, // 🔸 Thiếu icon: CompanyIcon
     ],
   },
 ];
 
 const Sider = () => {
   return (
-    <div className="w-65 h-screen top-0 left-0 overflow-y-auto no-scrollbar px-3 border-gray-200 border-solid shadow-sm">
+    <div className="w-65 h-full top-0 left-0 overflow-y-auto overflow-x-hidden no-scrollbar px-3 border-gray-200 border-solid shadow-sm">
       <div className="mb-2 pt-7">
         <h1 className="px-3 text-[23px] font-bold text-gray-800">Trang Quản Trị</h1>
       </div>
