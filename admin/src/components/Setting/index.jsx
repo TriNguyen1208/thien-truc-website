@@ -5,95 +5,136 @@ import Table from '../Table'
 import { AcceptIcon, ExitIcon } from '../Icon'
 import LabelAssign from "../LabelAssgin"
 import { Modal } from 'antd'
-import { useMemo } from 'react'
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 
 const Setting = ({
     isOpen,
     onClose,
     content,
-    useDataList,
+    useData,
     useDataSuggestion,
     useDataCategories
 }) => {
+    //Khởi tạo lấy data bằng useState và call API ở đây
     const {
         title,
         description,
         type,
         category,
+        header
     } = content
-
+    // eslint-disable-next-line no-unused-vars
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
-
     const [filtered, setFiltered] = useState([]);
     const [selectedId, setSelectedId] = useState([]);
     const [display, setDisplay] = useState([]);
+    const [displayMap, setDisplayMap] = useState(new Map());
     const [countAssign, setCountAssign] = useState(0);
-
+    const [id, setId] = useState(null);
     const queryParam = searchParams.get('query') || "";
     const categoryParam = searchParams.get('category') || "Tất cả loại";
     const displayParam = searchParams.get('display') || "Tất cả trạng thái";
-
     const [filtersSearch, setFiltersSearch] = useState({
         query: queryParam,
         category: categoryParam,
         display: displayParam
     });
-    const { data: projects, isLoading: isLoadingProjects } = useDataList.getList(
+    const { data: datas, isLoading: isLoadingDatas } = useData.getList(
         filtersSearch.query,
         filtersSearch.category === "Tất cả loại" ? "" : filtersSearch.category,
         1
     );
+    const {data: data, isLoading: isLoadingData} = useData.getOne(id);
+    const { data: dataCategories, isLoading: isLoadingCategories } = useDataCategories.getAll();
 
+    //Sử dụng useEffect để cập nhật state
+    useEffect(()=>{
+        if(!data) return
+        const updatedMap = new Map(displayMap);
+
+        const dataFetchFunc = () => {
+            const id = data.id;
+            const name = data.name || data.title;
+            const cat = data.region.name || data.category.name;
+            const displayVal = updatedMap.get(id) || (cat === category ? "Đã gán" : "Chưa gán");
+            updatedMap.set(id, displayVal);
+            return {
+                id: id,
+                name: name,
+                category: cat,
+                display: displayVal
+            };
+        }
+        const dataFetch = dataFetchFunc();
+        if(filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === dataFetch.display){
+            setFiltered([dataFetch])
+        }else{
+            setFiltered([]);
+        }
+        console.log(dataFetch)
+        setDisplayMap(updatedMap)
+        setSelectedId([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, filtersSearch.display, category])
     useEffect(() => {
-        if (!projects) return;
-
-        const projectsFetch = projects.results.map((item) => ({
-            id: item.id,
-            name: item.name || item.title,
-            category: item.region.name || item.category.name,
-            display: (item.region.name || item.category.name) === category ? "Đã gán" : "Chưa gán"
-        }));
-
-        const filteredDisplay = projectsFetch.filter((product) => {
-            const matchDisplay =
-                filtersSearch.display === "Tất cả trạng thái" ||
-                (filtersSearch.display === "Trưng bày" && product.display === "Đã gán") ||
-                (filtersSearch.display === "Không trưng bày" && product.display === "Chưa gán");
+        if (!datas) return;
+        const updatedMap = new Map(displayMap);
+        const datasFetch = datas.results.map((item) => {
+            const id = item.id;
+            const name = item.name || item.title;
+            const cat = item.region.name || item.category.name;
+            const displayVal = updatedMap.get(id) || (cat === category ? "Đã gán" : "Chưa gán");
+            updatedMap.set(id, displayVal);
+            return {
+                id: id,
+                name: name,
+                category: cat,
+                display: displayVal
+            };
+        });
+        const filteredDisplay = datasFetch.filter((data) => {
+            const matchDisplay = filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === data.display;
             return matchDisplay;
         });
 
         setFiltered(filteredDisplay);
+        setDisplayMap(updatedMap)
         setSelectedId([]);
-    }, [projects, filtersSearch.display]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [datas, filtersSearch.display, category]);
+    useEffect(() => {
+        const updatedMap = new Map(displayMap);
+        display.forEach(({ id, display }) => {
+            updatedMap.set(id, display);
+        });
+        setDisplayMap(updatedMap);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [display]);
+    
     useEffect(() => {
         const allDisplay = filtered.map(item => ({
             id: item.id,
             display: item.display
         }));
         setDisplay(allDisplay);
-    }, [filtered]);
+    }, [filtered]); //khong biet de lam gi
 
     useEffect(() => {
         const assign = display.filter(item => item.display === "Đã gán");
         setCountAssign(assign.length)
     }, [display]);
 
+
+    //Các hàm handler cần có
     const handleEnter = (item) => {
-        updateFilters({ 
-            query: item.query, 
-            category: "Tất cả loại", 
-            display: "Tất cả trạng thái" 
-        });
+        setId(item.id);
     };
 
     const handleSearch = (query, category, display) => {
         updateFilters({ query, category, display });
     };
-
     const updateFilters = ({ query, category, display }) => {
         const newFilters = {
             query: query ?? filtersSearch.query,
@@ -112,17 +153,14 @@ const Setting = ({
             search: params.toString()
         });
     };
-
     const handleSearchSuggestion = (query, filter) => {
         return useDataSuggestion.getSearchSuggestions(query, filter);
     };
-
     const handleToggle = (id) => {
         setSelectedId((prev) =>
             prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
         );
     };
-
     const handleToggleAll = () => {
         const allId = filtered.map(item => item.id);
         if (selectedId.length === allId.length) {
@@ -131,72 +169,7 @@ const Setting = ({
             setSelectedId(allId);
         }
     };
-
     const handleClear = () => setSelectedId([]);
-
-    const { data: dataCategories, isLoading: isLoadingCategories } = useDataCategories.getAll();
-
-    const searchProps = {
-        hasButton: true,
-        placeholder: `Tìm kiếm theo tên loại ${type}`,
-        handleEnter,
-        onSearch: handleSearch,
-        handleSearchSuggestion,
-        categories: [
-            "Tất cả loại",
-            ...(dataCategories?.map(item => item.name) || [])
-        ],
-        displays: [
-            "Tất cả trạng thái",
-            "Trưng bày",
-            "Không trưng bày"
-        ],
-        currentQuery: filtersSearch.query,
-        currentCategory: filtersSearch.category,
-        currentDisplay: filtersSearch.display
-    };
-
-    if (isLoadingProjects || isLoadingCategories) return <></>;
-
-    const dataTable = [
-        [
-            {
-                type: "checkbox",
-                content: "Mã sản phẩm",
-                checked: selectedId.length === filtered.length,
-                onChange: handleToggleAll
-            },
-            { type: "text", content: "Tên sản phẩm" },
-            { type: "text", content: "Loại sản phẩm" },
-            { type: "text", content: "Trạng thái" }
-        ],
-        ...filtered.map((product) => [
-            {
-                type: "checkbox",
-                content: product.id,
-                checked: selectedId.includes(product.id),
-                onChange: () => handleToggle(product.id)
-            },
-            { type: "text", content: product.name },
-            { type: "text", content: product.category },
-            {
-                type: "component",
-                component: (
-                    <LabelAssign
-                        current={display.find(item => item.id === product.id)?.display}
-                        onAssign={(newDisplay) => {
-                            setDisplay(prev =>
-                                prev.map(item =>
-                                    item.id === product.id ? { ...item, display: newDisplay } : item
-                                )
-                            );
-                        }}
-                    />
-                )
-            }
-        ])
-    ];
-
     const handleClickAssign = () => {
         setDisplay(prev =>
             prev.map(item =>
@@ -206,6 +179,12 @@ const Setting = ({
             )
         );
         setSelectedId([]);
+        const params = new URLSearchParams();
+        params.set("display", "Tất cả trạng thái");
+        navigate({
+            pathname: location.pathname,
+            search: params.toString()
+        });
     };
 
     const handleClickRemove = () => {
@@ -217,11 +196,81 @@ const Setting = ({
             )
         );
         setSelectedId([]);
+        const params = new URLSearchParams();
+        params.set("display", "Tất cả trạng thái");
+        navigate({
+            pathname: location.pathname,
+            search: params.toString()
+        });
     };
 
     const handleSave = () => {
         console.log("hello world");
     };
+
+    //Truyền vào props thì dùng ở đây
+    const searchProps = {
+        hasButtonCategory: true,
+        hasButtonDisplay: true,
+        placeholder: `Tìm kiếm theo tên loại ${type}`,
+        handleEnter,
+        onSearch: handleSearch,
+        handleSearchSuggestion,
+        categories: [
+            "Tất cả loại",
+            ...(dataCategories?.map(item => item.name) || [])
+        ],
+        displays: [
+            "Tất cả trạng thái",
+            "Đã gán",
+            "Chưa gán"
+        ],
+        currentQuery: filtersSearch.query,
+        currentCategory: filtersSearch.category,
+        currentDisplay: filtersSearch.display,
+        displayMap: displayMap
+    };
+    const dataTable = [
+        [
+            {
+                type: "checkbox",
+                content: header[0],
+                checked: selectedId.length === filtered.length,
+                onChange: handleToggleAll
+            },
+            { type: "text", content: header[1] },
+            { type: "text", content: header[2] },
+            { type: "text", content: "Trạng thái" }
+        ],
+        ...filtered.map((data) => [
+            {
+                type: "checkbox",
+                content: data.id,
+                checked: selectedId.includes(data.id),
+                onChange: () => handleToggle(data.id)
+            },
+            { type: "text", content: data.name },
+            { type: "text", content: data.category },
+            {
+                type: "component",
+                component: (
+                    <LabelAssign
+                        current={display.find(item => item.id === data.id)?.display}
+                        onAssign={(newDisplay) => {
+                            setDisplay(prev =>
+                                prev.map(item =>
+                                    item.id === data.id ? { ...item, display: newDisplay } : item
+                                )
+                            );
+                        }}
+                    />
+                )
+            }
+        ])
+    ];
+    if (isLoadingDatas || isLoadingCategories || isLoadingData) return <></>;
+
+   
     return (
         <Modal
             open={isOpen}
@@ -277,7 +326,7 @@ const Setting = ({
                 </div>
                 <div className='pt-5 flex flex-row justify-between'>
                     <span className='text-[#4b5563]'>
-                        Tổng: {countAssign} tin tức đã được gán vào danh mục {category}
+                        Tổng: {countAssign} {type} đã được gán vào danh mục {category}
                     </span>
                     <div className='flex flex-row gap-2'>
                         <button 

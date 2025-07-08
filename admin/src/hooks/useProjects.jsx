@@ -28,6 +28,7 @@ const projects = {
             queryKey: ["admin_project", id],
             queryFn: () => projectsServices.projects.getOne(id),
             staleTime: 5 * 60 * 1000,
+            enabled: id != null
         })
     }
 }
