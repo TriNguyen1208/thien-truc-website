@@ -62,150 +62,90 @@ const getProjectPage = async () => {
 }
 
 const projects = {
-    getList: async (query = '', filter = '', page = 1) => {
-        const cleanedQuery = query.trim().replaceAll(`'`, ``);
-        const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+    getList: async (query = '', filter = '', page, is_featured) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
         const pageSize = 9;
-        const offset = (page - 1) * pageSize;
-        const totalCount = await getNumPage(cleanedQuery, cleanedFilter);
-        const hasQuery = cleanedQuery !== '';
-        const hasFilter = cleanedFilter !== '';
-    
-        // ✅ 1. Có query (tức dùng search bar)
-        if (hasQuery) {
-            const sql = `
-                SELECT 
-                    prj.id AS prj_id,
-                    prj.title,
-                    prj.province,
-                    prj.complete_time,
-                    prj.main_img,
-                    prj.main_content,
-                    prj_reg.id AS reg_id,
-                    prj_reg.name,
-                    prj_reg.rgb_color
-                FROM project.projects prj
-                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
-                WHERE
-                    ($2 = '' OR unaccent(prj_reg.name) ILIKE unaccent($2)) AND
-                    (unaccent(prj.title::text) ILIKE '%' || unaccent($1::text) || '%' OR
-                    similarity(unaccent(prj.title::text), unaccent($1::text)) > 0.1)
-                ORDER BY 
-                    similarity(unaccent(prj.title::text), unaccent($1::text)) DESC,
-                    prj.title
-                LIMIT $3 OFFSET $4
-            `;
-            const values = [cleanedQuery, cleanedFilter, pageSize, offset];
-            const { rows } = await pool.query(sql, values);
-    
-            const results = rows.map(row => ({
-                id: row.prj_id,
-                title: row.title,
-                province: row.province,
-                complete_time: row.complete_time,
-                main_img: row.main_img,
-                main_content: row.main_content,
-                region: {
-                    id: row.reg_id,
-                    name: row.name,
-                    rgb_color: row.rgb_color
-                }
-            }));
-    
-            return {
-                totalCount,
-                page,
-                pageSize: rows.length,
-                results
-            };
+        const totalCount = await getNumPage(query, filter);
+
+        let where = [];
+        let order = [];
+        let limit = '';
+
+        if (query != '') {
+            where.push(
+                `(unaccent(prj.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(prj.title::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(prj.title), unaccent('${query}')) DESC`
+            );
         }
-    
-        // ✅ 2. Không có query
-    
-        if (!hasFilter) {
-            // Trả về tối đa 9 trang (81 dự án)
-            const sql = `
-                SELECT 
-                    prj.id AS prj_id,
-                    prj.title,
-                    prj.province,
-                    prj.complete_time,
-                    prj.main_img,
-                    prj.main_content,
-                    prj_reg.id AS reg_id,
-                    prj_reg.name,
-                    prj_reg.rgb_color
-                FROM project.projects prj
-                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
-                ORDER BY prj.title
-                LIMIT $1 OFFSET $2
-            `;
-            const values = [pageSize, offset]
-            const { rows } = await pool.query(sql, values);
-    
-            const results = rows.map(row => ({
-                id: row.prj_id,
-                title: row.title,
-                province: row.province,
-                complete_time: row.complete_time,
-                main_img: row.main_img,
-                main_content: row.main_content,
-                region: {
-                    id: row.reg_id,
-                    name: row.name,
-                    rgb_color: row.rgb_color
-                }
-            }));
-    
+
+        if (filter != '') {
+            where.push(
+                `unaccent(prj_reg.name) ILIKE unaccent('${filter}')`
+            );
+        }
+
+        if (is_featured == 'true' || is_featured == 'false') {
+            where.push(`prj.is_featured = ${is_featured}`);
+        }
+
+        if (page) {
+            const offset = (page - 1) * pageSize;
+            limit = `${pageSize} OFFSET ${offset}`;
+        } else {
+            limit = 'ALL';
+        }
+        
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+        if (limit != '') limit = ` LIMIT ${limit} `;
+        
+        const sql = `
+            SELECT 
+                prj.id AS prj_id,
+                prj.title,
+                prj.province,
+                prj.complete_time,
+                prj.main_img,
+                prj.main_content,
+                prj_reg.id AS reg_id,
+                prj_reg.name,
+                prj_reg.rgb_color
+            FROM project.projects prj
+            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+            ${where}
+            ${order}
+            ${limit}
+        `;
+        
+        const { rows } = await pool.query(sql);
+        const results = rows.map(row => ({
+            id: row.prj_id,
+            title: row.title,
+            province: row.province,
+            complete_time: row.complete_time,
+            main_img: row.main_img,
+            main_content: row.main_content,
+            region: {
+                id: row.reg_id,
+                name: row.name,
+                rgb_color: row.rgb_color
+            }
+        }));
+        if (page)
             return {
                 totalCount,
                 page: page,
                 pageSize: rows.length,
                 results
             };
-        } else {
-            // Có filter, không có query → lọc theo region + phân trang
-            const sql = `
-                SELECT 
-                    prj.id AS prj_id,
-                    prj.title,
-                    prj.province,
-                    prj.complete_time,
-                    prj.main_img,
-                    prj.main_content,
-                    prj_reg.id AS reg_id,
-                    prj_reg.name,
-                    prj_reg.rgb_color
-                FROM project.projects prj
-                JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
-                    WHERE unaccent(prj_reg.name) ILIKE unaccent($1)
-                ORDER BY prj.title
-                LIMIT $2 OFFSET $3
-            `;
-            const values = [cleanedFilter, pageSize, offset];
-            const { rows } = await pool.query(sql, values);
-    
-            const results = rows.map(row => ({
-                id: row.prj_id,
-                title: row.title,
-                province: row.province,
-                complete_time: row.complete_time,
-                main_img: row.main_img,
-                main_content: row.main_content,
-                region: {
-                    id: row.reg_id,
-                    name: row.name,
-                    rgb_color: row.rgb_color
-                }
-            }));
-    
-            return {
-                totalCount,  
-                page,
-                pageSize: rows.length,
-                results
-            };
-        }
+        else
+            return [...results];
     },
     getOne: async (id) => {
         const query = `
