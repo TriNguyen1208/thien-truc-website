@@ -15,4 +15,6 @@ router.get('/product_prices/:product_id', productController.product_prices.getOn
 
 router.get('/highlight_products', productController.getHighlightProducts);
 router.get('/search_suggestions', productController.getSearchSuggestions);
+
+router.get('/count', productController.count);
 export default router;
