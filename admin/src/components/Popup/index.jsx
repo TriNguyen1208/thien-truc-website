@@ -1,5 +1,4 @@
 // src/components/Popups.jsx
-import React, { useState } from 'react';
 import { Modal, Result, Button } from 'antd';
 import { CloseCircleFilled } from '@ant-design/icons';
 import { CheckCircleFilled } from '@ant-design/icons';

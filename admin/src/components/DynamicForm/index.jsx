@@ -294,6 +294,7 @@ const DynamicForm = ({ data, config }) => {
                             display: 'inline-block',
                             marginRight: '0.5rem' // tương đương với Tailwind `mr-2`
                         }}
+                        className="accent-black"
                     />
                 );
             case 'file':
@@ -440,6 +441,7 @@ const DynamicForm = ({ data, config }) => {
                                                 true
                                             )
                                         }
+                                        className="accent-black"
                                     />
                                 )}
 

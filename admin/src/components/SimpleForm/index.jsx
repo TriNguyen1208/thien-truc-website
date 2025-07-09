@@ -15,6 +15,8 @@ const SimpleForm = ({ data, config }) => {
         title: "Tạo loại sản phẩm mới",
         description: "Thêm loại sản phẩm mới với màu sắc đại diện",
         widthModal: 600,
+        contentCancelButton: "Hủy",
+        contentSubmitButton: "Tạo loại",
     }
     const initialValues = useMemo(() => {
         const result = {};
@@ -117,13 +119,13 @@ const SimpleForm = ({ data, config }) => {
                                 }}
                                 className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px]"
                             >
-                                Hủy
+                                {config.contentCancelButton || defaultConfig.contentCancelButton}
                             </button>
                             <button
                                 type="submit"
                                 className="mt-4 px-4 py-2 bg-neutral-900  text-white rounded  hover:bg-neutral-800 cursor-pointer"
                             >
-                                Submit
+                                {config.contentSubmitButton || defaultConfig.contentSubmitButton}
                             </button>
                         </div>
                     </form>
