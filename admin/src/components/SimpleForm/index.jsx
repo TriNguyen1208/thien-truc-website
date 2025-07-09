@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Modal } from 'antd';
 const SimpleForm = ({ data, config }) => {
-     const [focusedFields, setFocusedFields] = useState({});
+    const [focusedFields, setFocusedFields] = useState({});
     const defaultField = {
         type: 'text',
         name: '',
