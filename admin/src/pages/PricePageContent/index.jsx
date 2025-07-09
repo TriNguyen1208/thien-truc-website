@@ -1,8 +1,10 @@
-import React from 'react'
-import { useLayout } from '../layouts/layoutContext'
+import {useEffect} from 'react'
+import {useLayout} from '@/layouts/LayoutContext'
+import useProducts from '@/hooks/useProducts'
+import EditBanner from '@/components/EditBanner'
 const PricePageContent = () => {
   const {setLayoutProps} = useLayout()
- const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
+ const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
     useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang bảng giá",
@@ -10,7 +12,7 @@ const PricePageContent = () => {
       hasButton: false,
     })
   },[])
-  if(isLoadingProductPage)
+  if(isLoadingPricePage)
   {
     return(<div> Dang load</div>)
   }
@@ -24,13 +26,13 @@ const PricePageContent = () => {
       listInput: [{
         label: "Tiêu đề Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
-        contentCurrent: productPage.banner_title ,
+        contentCurrent: pricePage.banner_title ,
         isRequire: true
       },
       {
         label: "Mô tả Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
-        contentCurrent: productPage.banner_description,
+        contentCurrent: pricePage.banner_description,
         isRequire: true
       }
     ],
