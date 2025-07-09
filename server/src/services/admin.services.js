@@ -28,12 +28,16 @@ const activity_logs = {
             throw new Error("Can't get activity_logs or accounts");
         }
         
-        const data = rows.map(row => ({
-            content: row.content,
-            username: row.username,
-            fullname: row.fullname,
-            time: row.time
-        }));
+        const data = rows.map(row => {
+            const d = new Date(row.time);
+            return {
+                content: row.content,
+                username: row.username,
+                fullname: row.fullname,
+                date: d.toLocaleDateString('vi-VN'), // dd/mm/yyyy
+                time: d.toLocaleTimeString('vi-VN', { hour12: false }) // hh:mm:...
+            }
+        });
 
         return [...data];
     }
