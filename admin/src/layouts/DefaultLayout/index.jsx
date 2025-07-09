@@ -1,5 +1,4 @@
   import Header from "@/components/Header";
-  import Footer from "@/components/Footer";
   import Sider from "@/components/Sider";
   import { Outlet } from "react-router-dom";
   import CustomButton from "@/components/ButtonLayout";
@@ -44,9 +43,8 @@
               </CustomButton>
               )}
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden">
                 <Outlet />
-              </div>
+              
           </main>
           {/* <Footer /> nếu cần */}
         </div>
