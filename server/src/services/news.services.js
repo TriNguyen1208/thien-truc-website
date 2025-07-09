@@ -142,6 +142,7 @@ const news = {
             num_readers: row.num_readers,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_published: row.is_published,
             category: {
                 id: row.category_id,
                 name: row.name,

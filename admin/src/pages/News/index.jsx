@@ -2,18 +2,38 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useLayout } from '@/layouts/layoutcontext';
 import { useSearchParams } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 const MockData = [
-  { id: 1, title: 'Tin tức 1', content: 'Nội dung tin tức 1', state: 'published' },
-  { id: 2, title: 'Tin tức 2', content: 'Nội dung tin tức 2', state: 'draft' },
-  { id: 3, title: 'Tin tức 3', content: 'Nội dung tin tức 3', state: 'published'   },
+  {category_id: 1, id: 1, title: 'Tin tức 1', content: 'Nội dung tin tức 1', state: 'published', public_date: '2023-10-01' },
+  {category_id: 1, id: 2, title: 'Tin tức 2', content: 'Nội dung tin tức 2', state: 'draft', public_date: '2023-10-02' },
+  {category_id: 1, id: 3, title: 'Tin tức 3', content: 'Nội dung tin tức 3', state: 'published', public_date: '2023-10-03' },
+  {category_id: 2, id: 1, title: 'Tin tức 1', content: 'Nội dung tin tức 1', state: 'published', public_date: '2023-10-01' },
+  {category_id: 2, id: 2, title: 'Tin tức 2', content: 'Nội dung tin tức 2', state: 'draft', public_date: '2023-10-02' },
+  {category_id: 3, id: 3, title: 'Tin tức 3', content: 'Nội dung tin tức 3', state: 'published', public_date: '2023-10-03' },
+  {category_id: 4, id: 1, title: 'Tin tức 1', content: 'Nội dung tin tức 1', state: 'published', public_date: '2023-10-01' },
+  {category_id: 5, id: 2, title: 'Tin tức 2', content: 'Nội dung tin tức 2', state: 'draft', public_date: '2023-10-02' },
+  {category_id: 5, id: 3, title: 'Tin tức 3', content: 'Nội dung tin tức 3', state: 'published', public_date: '2023-10-03' },
+];
+
+const MockCategories = [
+  { id: 1, name: 'Tin tức chung' },
+  { id: 2, name: 'Tin tức công nghệ' },
+  { id: 3, name: 'Tin tức thể thao' },
+  { id: 4, name: 'Tin tức giải trí' },
+  { id: 5, name: 'Tin tức kinh doanh' }
 ];
 
 export default function Product() {
 
-  
+  const navigate = useNavigate();
   const { setLayoutProps } = useLayout();
   const [news, setNews] = React.useState(MockData);
+  const [categories, setCategories] = React.useState(MockCategories);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') || '';
+  const filter = searchParams.get('filter') || '';
+  const state = searchParams.get('state') || '';
 
   useEffect(() => {
     setLayoutProps({
@@ -26,6 +46,8 @@ export default function Product() {
       },
     })
   }, []);
+
+  
   return (
     <div>
       <div className="flex flex-wrap gap-5 mt-3 mb-4">
