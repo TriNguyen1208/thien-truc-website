@@ -117,13 +117,13 @@ const ControlPanel = () => {
     },
   ]
   return(
-  <div className=''>
+  <div className='p-[12px]'>
     <DisplayCards data={members}/>
     <DisplayCards data={contents}/>
-    <div>
-      <div className='flex flex-row gap-[4px] items-center px-[12px]'>
+    <div className='bg-white my-[24px] p-[24px] border border-white rounded-[8px]'>
+      <div className='flex flex-row gap-[4px]  items-center mb-[24px] px-[12px]'>
         <PulseIcon/>
-        <h1 className='text-[24px] font-semibold text-black my-[24px] px-[12px]'>
+        <h1 className='text-[24px] font-semibold text-black  px-[12px]'>
         Hoạt động gần đây
       </h1>
       </div>
