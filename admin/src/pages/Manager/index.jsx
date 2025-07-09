@@ -25,6 +25,7 @@ const Manager = () => {
     padding: 4,
     handleButton: (e)=>{
       const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
+      
       return(<div>
         <DynamicForm/>
       </div>)
