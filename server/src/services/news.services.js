@@ -340,4 +340,28 @@ const getSearchSuggestions = async (query, filter) => {
         throw new Error(`DB error: ${err.message}`);
     }
 };
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions};
+
+const count = async () => {
+    const news_count = (await pool.query(`
+        SELECT COUNT(*)::int AS news_count
+        FROM news.news
+    `)).rows[0];
+    if(!news_count){
+        throw new Error("Can't get news");
+    }
+
+    const categories_count = (await pool.query(`
+        SELECT COUNT(*)::int AS categories_count
+        FROM news.news_categories
+    `)).rows[0];
+    if(!categories_count){
+        throw new Error("Can't get news_categories");
+    }
+
+    return {
+        ...news_count,
+        ...categories_count
+    };
+}
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count};
