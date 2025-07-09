@@ -349,4 +349,27 @@ const getSearchSuggestions = async (query, filter) => {
     }
 };
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions};
+const count = async () => {
+    const project_count = (await pool.query(`
+        SELECT COUNT(*)::int AS project_count
+        FROM project.projects
+    `)).rows[0];
+    if(!project_count){
+        throw new Error("Can't get project");
+    }
+
+    const regions_count = (await pool.query(`
+        SELECT COUNT(*)::int AS regions_count
+        FROM project.project_regions
+    `)).rows[0];
+    if(!regions_count){
+        throw new Error("Can't get project_regions");
+    }
+
+    return {
+        ...project_count,
+        ...regions_count
+    };
+}
+
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, count};

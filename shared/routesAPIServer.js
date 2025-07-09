@@ -7,9 +7,14 @@ const NEWS_BASE = `${BASE_API}/news`;
 const RECRUITMENT_BASE = `${BASE_API}/recruitment`;
 const CONTACT_BASE = `${BASE_API}/contact`;
 const ABOUT_US_BASE = `${BASE_API}/about_us`;
+const ADMIN_BASE = `${BASE_API}/admin`;
 
 const API_ROUTES = {
     schemaTable: (schema, table) => `${BASE_API}/${schema}/${table}`,
+    admin: {
+        base: ADMIN_BASE,
+        count: `${ADMIN_BASE}/count`
+    },
     home: {
         base: HOME_BASE,
         home_page: `${HOME_BASE}/home_page`,
@@ -35,7 +40,8 @@ const API_ROUTES = {
         },
         price_page: `${PRODUCT_BASE}/price_page`,
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
-        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
+        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
+        count: `${PRODUCT_BASE}/count`
     },
     project: {
         base: PROJECT_BASE,
@@ -53,7 +59,8 @@ const API_ROUTES = {
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
-        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
+        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
+        count: `${PROJECT_BASE}/count`
     },
     news: {
         base: NEWS_BASE,
@@ -71,7 +78,8 @@ const API_ROUTES = {
             getAll: `${NEWS_BASE}/news_contents`,
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
-        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`
+        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
+        count: `${NEWS_BASE}/count`
     },
     recruitment: {
         base: RECRUITMENT_BASE,
@@ -87,6 +95,7 @@ const API_ROUTES = {
             getOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
         contact_messages: `${CONTACT_BASE}/contact_messages`,
+        count: `${CONTACT_BASE}/count`
     },
     about_us: {
         base: ABOUT_US_BASE,
