@@ -44,7 +44,7 @@
               </CustomButton>
               )}
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden">
+              <div className="bg-gray-100 overflow-x-hidden">
                 <Outlet />
               </div>
           </main>
