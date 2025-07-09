@@ -65,10 +65,10 @@ const getNewsPage = async () => {
 }
 
 const news = {
-    getList: async (query = '', filter = '', sort_by = 'date_desc', page, is_published) => {
+    getList: async (query = '', filter = '', sort_by = 'date_desc', page, is_published, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = 9;
+        const pageSize = item_limit || 9;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
