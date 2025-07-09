@@ -16,10 +16,10 @@ function useGetNewsPage(){
     })
 }
 const news = {
-    useGetList: (query = '', filter = '', sort_by = '', page = 1) => {
+    useGetList: (query = '', filter = '', is_published, sort_by = '', page = undefined, limit) => {
         return useQuery({
-            queryKey: ["admin_news_list", query, filter, sort_by, page],
-            queryFn: () => newsServices.news.getList(query, filter, sort_by, page),
+            queryKey: ["admin_news_list", query, filter, is_published, sort_by, page, limit],
+            queryFn: () => newsServices.news.getList(query, filter, is_published, sort_by, page, limit),
             staleTime: 5 * 60 * 1000,
         })
     },

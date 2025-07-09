@@ -122,6 +122,7 @@ const news = {
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id AS category_id,
                 n_cate.name,
