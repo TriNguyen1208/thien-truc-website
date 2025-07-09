@@ -27,7 +27,7 @@ const getNumPage = async (query, filter) => {
             WHERE 
                 ($2 = '' OR unaccent(pc.name) ILIKE unaccent($2)) AND
                 similarity(unaccent(prd.name::text), unaccent($1::text)) > 0.1
-        `;
+        `;  
         const values = [query, filter];
         const result = await pool.query(sql, values);
         totalCount = parseInt(result.rows[0].total);
@@ -499,5 +499,27 @@ const getSearchSuggestions = async (query, filter) => {
     }
 };
 
+const count = async () => {
+    const product_count = (await pool.query(`
+        SELECT COUNT(*)::int AS product_count
+        FROM product.products
+    `)).rows[0];
+    if(!product_count){
+        throw new Error("Can't get products");
+    }
 
-export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getHighlightProducts, getSearchSuggestions };
+    const categories_count = (await pool.query(`
+        SELECT COUNT(*)::int AS categories_count
+        FROM product.product_categories
+    `)).rows[0];
+    if(!categories_count){
+        throw new Error("Can't get product_categories");
+    }
+
+    return {
+        ...product_count,
+        ...categories_count
+    };
+}
+
+export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };

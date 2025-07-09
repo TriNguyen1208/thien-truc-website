@@ -59,4 +59,10 @@ const getSearchSuggestions = async (req, res) => {
     const data = await projectsServices.getSearchSuggestions(query, filter);
     res.status(200).json(data);
 }
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions};
+
+const count = async (req, res) => {
+    const data = await projectsServices.count();
+    res.status(200).json(data);
+}
+
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, count};
