@@ -9,6 +9,15 @@ function useGetQuantity()
         staleTime: 5 * 60 * 1000
     })
 }
+function useGetActivityLogs()
+{
+    return useQuery({
+        queryKey: ['admin_admin_activity_logs'],
+        queryFn: adminServices.getActivityLogs,
+        staleTime: 5 * 60 * 1000
+    })
+}
 export default {
-    getQuantity: useGetQuantity
+    getQuantity: useGetQuantity,
+    getActivityLogs: useGetActivityLogs
 };

@@ -31,9 +31,9 @@ function ItemActivity({data})
         <div className='absolute left-[12px] top-[16px]'><ActivityIcon/></div>
         <div className='flex flex-col'>
               <div className='font-medium text-black text-[14px]'> {data.content} </div>
-              <div className='text-[#71717A] text-[13px] font-regular '> {data.implementer} </div>
+              <div className='text-[#71717A] text-[13px] font-regular '> Thực hiện bởi: {data.username} </div>
         </div>
-        <div className='absolute top-[12px] right-[12px] text-[#71717A] text-[13px] font-regular '>{data.time}</div>
+        <div className='absolute top-[12px] right-[12px] text-[#71717A] text-[13px] font-regular '>{data.time} - {data.date}</div>
     </div>
   )
 }
@@ -43,6 +43,7 @@ const ControlPanel = () => {
   const { data: quantityNews, isLoading: isLoadingQuantityNews} = useNews.getQuantity()
   const { data: quantityAdmin, isLoading: isLoadingQuantityAdmin} = useAdmin.getQuantity()
   const { data: quantityContact, isLoading: isLoadingQuantityContact} = useContact.getQuantity()
+  const { data: activityLogs, isLoading: isLoadingActivity} = useAdmin.getActivityLogs()
   
   const {setLayoutProps} = useLayout()
   const navigate = useNavigate()
@@ -53,11 +54,11 @@ const ControlPanel = () => {
       hasButton: false,
     })
   },[])
-  if(isLoadingQuantityProject || isLoadingQuantityProduct || isLoadingQuantityNews || isLoadingQuantityAdmin || isLoadingQuantityContact)
+  if(isLoadingQuantityProject || isLoadingQuantityProduct || isLoadingQuantityNews || isLoadingQuantityAdmin || isLoadingQuantityContact || isLoadingActivity)
     {
       return(<div>Dang load</div>)
     }
-  
+ 
     
   
   const members = {
@@ -112,28 +113,7 @@ const ControlPanel = () => {
     }
   ]
   }
-  const recentActivities = [
-    {
-      content: "Thêm sản phẩm mới 'iPhone 15 Pro Max'",
-      implementer: "Thực hiện bởi: admin@company.com",
-      time: "10:45PM"
-    },
-     {
-      content: "Thêm sản phẩm mới 'iPhone 15 Pro Max'",
-      implementer: "Thực hiện bởi: admin@company.com",
-      time: "10:45PM"
-    },
-     {
-      content: "Thêm sản phẩm mới 'iPhone 15 Pro Max'",
-      implementer: "Thực hiện bởi: admin@company.com",
-      time: "10:45PM"
-    },
-     {
-      content: "Thêm sản phẩm mới 'iPhone 15 Pro Max'",
-      implementer: "Thực hiện bởi: admin@company.com",
-      time: "10:45PM"
-    },
-  ]
+  
   return(
   <div className='p-[12px]'>
     <DisplayCards data={members}/>
@@ -147,7 +127,7 @@ const ControlPanel = () => {
       </div>
         <div className='gap-[4px]'>
           {
-        recentActivities.map((activity, index)=>{
+        activityLogs.map((activity, index)=>{
           return(<div key={index}>
             <ItemActivity data={activity}/>
           </div>)
