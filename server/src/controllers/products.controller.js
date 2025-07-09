@@ -12,8 +12,13 @@ const getProductPage = async (req, res) => {
 
 const products = {
     getList: async (req, res) => {
-        const {query ='', filter = '', page, is_featured} = req.query;
-        const data = await productServices.products.getList(query, filter, parseInt(page), is_featured);
+        const {query ='', filter = '', page, is_featured, limit} = req.query;
+        const data = await productServices.products.getList(query, filter, parseInt(page), is_featured, parseInt(limit));
+        res.status(200).json(data);
+    },
+    getListByCategory: async (req, res) => {
+        const {query ='', filter = '', is_featured, limit} = req.query;
+        const data = await productServices.products.getListByCategory(query, filter, is_featured, parseInt(limit));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
