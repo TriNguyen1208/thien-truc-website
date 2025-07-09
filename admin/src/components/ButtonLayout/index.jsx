@@ -14,6 +14,7 @@ const CustomButton = ({
   fontSize = 16,
   paddingX = 24,
   borderRadius = 6,
+  htmlType = "button",
   ...rest
 }) => {
   const [hovered, setHovered] = useState(false);
@@ -23,6 +24,7 @@ const CustomButton = ({
       type={type}
       icon={icon}
       style={{
+        htmlType,
         height,
         backgroundColor: hovered ? hoverBackgroundColor : backgroundColor,
         borderColor,
