@@ -62,10 +62,10 @@ const getProjectPage = async () => {
 }
 
 const projects = {
-    getList: async (query = '', filter = '', page, is_featured) => {
+    getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = 9;
+        const pageSize = item_limit || 9;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];

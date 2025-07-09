@@ -65,10 +65,10 @@ const getProductPage = async () => {
 }
 
 const products = {
-    getList: async (query = '', filter = '', page, is_featured) => {
+    getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = 12;
+        const pageSize = item_limit || 12;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
