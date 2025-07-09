@@ -1,13 +1,13 @@
-import Card from '../../components/Card'
-import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon, PulseIcon, ActivityIcon} from '../../components/Icon'
+import Card from '@/components/Card'
+import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon, PulseIcon, ActivityIcon} from '@/components/Icon'
 import { useEffect } from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useLayout} from '../../layouts/LayoutContext'
-import useProjects from '../../hooks/useProjects'
-import useProducts from '../../hooks/useProducts'
-import useNews from '../../hooks/useNews'
-import useAdmin from '../../hooks/useAdmin'
-import useContact from '../../hooks/useContact'
+import {useLayout} from '@/layouts/LayoutContext'
+import useProjects from '@/hooks/useProjects'
+import useProducts from '@/hooks/useProducts'
+import useNews from '@/hooks/useNews'
+import useAdmin from '@/hooks/useAdmin'
+import useContact from '@/hooks/useContact'
 
 function DisplayCards ({data})
 {
@@ -38,15 +38,17 @@ function ItemActivity({data})
   )
 }
 const ControlPanel = () => {
+
   const { data: quantityProject, isLoading: isLoadingQuantityProject} = useProjects.getQuantity()
   const { data: quantityProduct, isLoading: isLoadingQuantityProduct} = useProducts.getQuantity()
   const { data: quantityNews, isLoading: isLoadingQuantityNews} = useNews.getQuantity()
   const { data: quantityAdmin, isLoading: isLoadingQuantityAdmin} = useAdmin.getQuantity()
   const { data: quantityContact, isLoading: isLoadingQuantityContact} = useContact.getQuantity()
   const { data: activityLogs, isLoading: isLoadingActivity} = useAdmin.getActivityLogs()
-  
   const {setLayoutProps} = useLayout()
   const navigate = useNavigate()
+
+
   useEffect(()=>{
     setLayoutProps({
       title: "Bảng điều khiển",
@@ -54,12 +56,12 @@ const ControlPanel = () => {
       hasButton: false,
     })
   },[])
+
+
   if(isLoadingQuantityProject || isLoadingQuantityProduct || isLoadingQuantityNews || isLoadingQuantityAdmin || isLoadingQuantityContact || isLoadingActivity)
     {
       return(<div>Dang load</div>)
     }
- 
-    
   
   const members = {
     title: "Nhân sự",
