@@ -4,16 +4,12 @@ import { Modal, Result, Button } from 'antd';
 import { CloseCircleFilled } from '@ant-design/icons';
 import { CheckCircleFilled } from '@ant-design/icons';
 
-export const SuccessPopup = () => {
-  const [open, setOpen] = useState(false);
+export const SuccessPopup = ({ open, setOpen }) => {
 
   const handleOk = () => setOpen(false);
 
   return (
     <div className="p-6">
-      <Button type="primary" onClick={() => setOpen(true)}>
-        Show Success Popup
-      </Button>
 
       <Modal
         open={open}
@@ -51,14 +47,10 @@ export const SuccessPopup = () => {
   );
 };
 
-export const CancelPopup = () => {
-  const [open, setOpen] = useState(false);
+export const CancelPopup = ({ open, setOpen }) => {
 
   return (
     <div className="p-6">
-      <Button type ="primary" danger onClick={() => setOpen(true)}>
-        Show Cancel Confirm
-      </Button>
       <Modal
         open={open}
         footer={null}
