@@ -51,4 +51,8 @@ const getSearchSuggestions = async (query, filter) => {
     const res = await axios.get(API_ROUTES.project.search_suggestions(query, filter));
     return res.data
 }
-export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions };
+const getQuantity = async()=>{
+    const res = await axios.get(API_ROUTES.project.count)
+    return res.data
+}
+export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getQuantity };

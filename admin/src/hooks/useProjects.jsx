@@ -79,6 +79,14 @@ function useSearchSuggest(query, filter){
         staleTime: 5 * 60 * 1000,
     })
 }
+function useGetQuantity()
+{
+    return useQuery({
+        queryKey: ['admin_project_quantity'],
+        queryFn: projectsServices.getQuantity,
+        staleTime: 5 * 60 * 1000
+    })
+}
 export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
@@ -96,4 +104,5 @@ export default {
     },
     getHighlightProjects: useGetHighlightProjects,
     getSearchSuggestions: useSearchSuggest,
+    getQuantity: useGetQuantity
 };

@@ -3,6 +3,12 @@ import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon, PulseIcon, Activity
 import { useEffect } from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useLayout} from '../../layouts/LayoutContext'
+import useProjects from '../../hooks/useProjects'
+import useProducts from '../../hooks/useProducts'
+import useNews from '../../hooks/useNews'
+import useAdmin from '../../hooks/useAdmin'
+import useContact from '../../hooks/useContact'
+
 function DisplayCards ({data})
 {
     return(<div className='flex flex-col'>
@@ -32,6 +38,12 @@ function ItemActivity({data})
   )
 }
 const ControlPanel = () => {
+  const { data: quantityProject, isLoading: isLoadingQuantityProject} = useProjects.getQuantity()
+  const { data: quantityProduct, isLoading: isLoadingQuantityProduct} = useProducts.getQuantity()
+  const { data: quantityNews, isLoading: isLoadingQuantityNews} = useNews.getQuantity()
+  const { data: quantityAdmin, isLoading: isLoadingQuantityAdmin} = useAdmin.getQuantity()
+  const { data: quantityContact, isLoading: isLoadingQuantityContact} = useContact.getQuantity()
+  
   const {setLayoutProps} = useLayout()
   const navigate = useNavigate()
   useEffect(()=>{
@@ -40,34 +52,42 @@ const ControlPanel = () => {
       description: "Chào mừng bạn đến với trang quản trị",
       hasButton: false,
     })
-  })
+  },[])
+  if(isLoadingQuantityProject || isLoadingQuantityProduct || isLoadingQuantityNews || isLoadingQuantityAdmin || isLoadingQuantityContact)
+    {
+      return(<div>Dang load</div>)
+    }
+  
+    
   
   const members = {
     title: "Nhân sự",
     cards: [{
       title: "Manager",
       description: "Tổng số manager", 
-      quanlity: 12,
+      quanlity: quantityAdmin.manager_count,
       icon: <UserIcon/>,
       handleClick: ()=>{navigate("/quan-ly-manager")}
     },
     {
       title: "Đội ngũ liên lạc",
       description: "Nhân viên liên lạc", 
-      quanlity: 5,
+      quanlity: quantityContact.agent_count,
       icon: <PhoneIcon/> ,
       handleClick: ()=>{navigate("/doi-ngu-lien-lac")}
 
     }
   ]
   }
+  
   const contents = {
     title: "Nội dung",
-    cards: [{
+    cards: [
+      {
       title: "Sản phẩm",
       description: "Tổng số sản phẩm", 
-      quanlity: 156,
-      quanCategory: "5 loại",
+      quanlity: quantityProduct.product_count,
+      quanCategory: `${quantityProduct.categories_count} loại`,
       icon: <BoxIcon/>,
       handleClick: ()=>{navigate("/quan-ly-san-pham")}
 
@@ -75,18 +95,16 @@ const ControlPanel = () => {
     {
       title: "Dự án",
       description: "Tổng số dự án", 
-      quanlity: 28,
-      quanCategory: "3 khu vực",
+      quanlity: quantityProject.project_count,
+      quanCategory: `${quantityProject.regions_count} khu vực`,
       icon: <ProjectIcon/> ,
       handleClick: ()=>{navigate("/quan-ly-du-an")}
-
-
     },
     {
       title: "Bài báo",
       description: "Tổng số bài báo", 
-      quanlity:45,
-      quanCategory: "5 loại",
+      quanlity: quantityNews.news_count,
+      quanCategory: `${quantityNews.categories_count} loại`,
       icon: <NewsIcon/> ,
       handleClick: ()=>{navigate("/quan-ly-tin-tuc")}
 
