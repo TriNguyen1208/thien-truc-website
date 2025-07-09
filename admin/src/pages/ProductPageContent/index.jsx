@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
-import EditBanner from '@/components/EdditBanner'
+import EditBanner from '@/components/EditBanner'
+import useProducts from '@/hooks/useProducts'
+
 const ProductPageContent = () => {
 
   const {setLayoutProps} = useLayout()
-
+  const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
     useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang sản phẩm",
@@ -12,16 +14,35 @@ const ProductPageContent = () => {
       hasButton: false,
     })
   },[])
+  if(isLoadingProductPage)
+  {
+    return(<div> Dang load</div>)
+  }
+  
+  const handleSave = (data)=>{
+    console.log(data)
+  }
   const bannerProps = {
       title: "Banner Trang sản phẩm",
       description: "Chỉnh sửa tiêu đề và mô tả banner", 
-      listInput,
-      saveButton
+      listInput: [{
+        label: "Tiêu đề Banner",
+        placeholder: "Vd: Sản phẩm của chúng tôi...",
+        contentCurrent: productPage.banner_title ,
+        isRequire: true
+      },
+      {
+        label: "Mô tả Banner",
+        placeholder: "Vd: Sản phẩm của chúng tôi...",
+        contentCurrent: productPage.banner_description,
+        isRequire: true
+      }
+    ],
+      saveButton: handleSave
   }
   return (
     <div>
-      <EditBanner/>
-
+      <EditBanner {...bannerProps}/>
     </div>
   )
 }
