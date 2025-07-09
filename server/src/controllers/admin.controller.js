@@ -5,4 +5,11 @@ const count = async(req, res) => {
     res.status(200).json(data);
 }
 
-export default { count };
+const activity_logs = {
+    getAll: async(req, res) => {
+        const data = await adminServices.activity_logs.getAll();
+        res.status(200).json(data);
+    }
+}
+
+export default { count, activity_logs};

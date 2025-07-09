@@ -13,7 +13,8 @@ const API_ROUTES = {
     schemaTable: (schema, table) => `${BASE_API}/${schema}/${table}`,
     admin: {
         base: ADMIN_BASE,
-        count: `${ADMIN_BASE}/count`
+        count: `${ADMIN_BASE}/count`,
+        activity_logs: `${ADMIN_BASE}/activity_logs`
     },
     home: {
         base: HOME_BASE,
