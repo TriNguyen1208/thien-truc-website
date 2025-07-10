@@ -6,3 +6,19 @@
   -ms-overflow-style: none;  /* IE và Edge */
   scrollbar-width: none;     /* Firefox */
 }
+body .tox-tinymce {
+  border: 1px solid #e5e7eb !important;
+}
+body .tox-editor-header,
+body .tox-editor-header *{
+  background-color: #f9fafb !important;
+}
+body .tox-editor-header{
+  border: 1px solid #e5e7eb;
+}
+.tox-editor-container::before{
+  border: 1px solid #e5e7ed !important
+}
+body .tox .tox-edit-area::before{
+  border: 1px solid #d1d5dc !important
+}

@@ -133,6 +133,7 @@ const Setting = ({
     };
 
     const handleSearch = (query, category, display) => {
+        console.log(query, category, display)
         updateFilters({ query, category, display });
     };
     const updateFilters = ({ query, category, display }) => {

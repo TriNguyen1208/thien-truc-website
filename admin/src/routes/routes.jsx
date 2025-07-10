@@ -19,6 +19,8 @@ import ProjectPageContent from "../pages/ProjectPageContent"
 import RecruitmentPageContent from "../pages/RecruitmentPageContent"
 import ControlPanel from "../pages/ControlPanel"
 import TestComponents from "../pages/TestComponents"
+import AddNews from "../pages/AddNews"
+import AddProject from "../pages/AddProject"
 export const routes = [
     {
         path: "/",
@@ -99,6 +101,14 @@ export const routes = [
             {
                 path: "/testcomponents",
                 element: <TestComponents/>
+            },
+            {
+                path: "/quan-ly-tin-tuc/them-tin-tuc",
+                element: <AddNews/>
+            },
+            {
+                path: "/quan-ly-du-an/them-du-an",
+                element: <AddProject/>
             }
         ]
     },
