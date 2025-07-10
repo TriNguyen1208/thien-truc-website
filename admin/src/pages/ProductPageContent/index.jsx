@@ -29,13 +29,17 @@ const ProductPageContent = () => {
         label: "Tiêu đề Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: productPage.banner_title ,
-        isRequire: true
+        isRequire: true,
+        maxLength: 200,
+        rows: 1
       },
       {
         label: "Mô tả Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: productPage.banner_description,
-        isRequire: true
+        isRequire: true,
+        maxLength: 700,
+        rows: 3
       }
     ],
       saveButton: handleSave

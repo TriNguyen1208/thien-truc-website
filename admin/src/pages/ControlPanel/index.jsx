@@ -1,8 +1,11 @@
 import React from 'react'
+import EditBanner from '../../components/EditBanner'
 const ControlPanel = () => {
   return (
     <>
-      <div>Day la noi dung trang ControlPanel</div>
+      <div>
+       Day la control panel
+      </div>
     </>
   )
 }
