@@ -28,14 +28,17 @@ const PricePageContent = () => {
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: pricePage.banner_title ,
         isRequire: true,
-        rows: 1
+        rows: 1,
+        maxLength: 200
       },
       {
         label: "Mô tả Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: pricePage.banner_description,
         isRequire: true,
-        rows: 3
+        rows: 3,
+        maxLength: 700
+
       }
     ],
       saveButton: handleSave
