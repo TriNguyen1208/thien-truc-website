@@ -1,13 +1,45 @@
-import React from 'react'
 import { useEffect, useState } from 'react';
 import { useLayout } from '@/layouts/layoutcontext';
 import Button from '@/components/Button';
 import { DeleteIcon, PlusIcon, SaveIcon } from '../../components/Icon';
 import useContact from '../../hooks/useContact'
-const handleSubmit = (e)=>{
-  e.preventDefault()
-    alert("dax nop")
-}
+import { CancelPopup } from '../../components/Popup';
+import { Modal, Result } from 'antd';
+import { CheckCircleFilled } from '@ant-design/icons';
+function SuccessPopup ({ open, setOpen, notification, subTitle }) {
+
+  const handleOk = () => setOpen(false);
+
+  return (
+    <div className="p-6">
+
+      <Modal
+        open={open}
+        footer={null}
+        onCancel={handleOk}
+        centered
+        closable
+        width={550}
+      > 
+        <Result
+          status="success"
+          icon={<CheckCircleFilled style={{ color: '#52c41a', fontSize: 72 }} />}
+          title={
+            <div className="text-lg font-semibold">
+              {notification || 'Successfully Purchased Cloud Server ECS!'}
+            </div>
+          }
+          subTitle={
+            <div className="text-gray-500 text-sm">
+              {subTitle || 'Your order has been successfully processed. You can now manage your cloud server from the console.'}
+            </div>
+          }
+         
+        />
+      </Modal>
+    </div>
+  );
+};
 function Address({index,address,isChecked, isMultiple, handleDelete, handleChange ,handleChecked})
 {
   return(
@@ -50,6 +82,10 @@ const Company = () => {
     const [nextPhoneId, setNextPhoneId] = useState(0);
     const [nextAddressId, setNextAddressId] = useState(0);
     const [selectedAddressId, setSelectedAddressId] = useState(null);
+    const [openCancelPopup, setOpenCancelPopup] = useState(false)
+    const [openSuccesPopup, setOpenSuccesPopup] = useState(false)
+    const [pendingDeleteId, setPendingDeleteId] = useState(null);
+    const [popupType, setPopupType] = useState(null); // "address" | "hour" | "phone"
     useEffect(() => {
       setLayoutProps({
         title: 'Thông tin công ty',
@@ -92,24 +128,62 @@ const Company = () => {
     {
       return(<div> Loading</div>)
     }
+    const handleCanclePopup = ()=>{
+        setOpenCancelPopup(false)
+  
+    }
+     const handleConfirmPopup = ()=>{
+        setOpenCancelPopup(false)
 
-    
-    //===========Addresss=====================
-   
-    const handleDeleteAddress = (e)=>{
-      const parentWithDataIndex = e.target.closest('[data-index]');
-      const index = parentWithDataIndex.getAttribute('data-index');
-
-        setCompanyAddressList(prev=> 
+        if(popupType == "address")
         {
-          const news = prev.filter(addr => addr.id != index)
-          if(index == selectedAddressId) 
+            setCompanyAddressList(prev=> 
+        {
+          const news = prev.filter(addr => addr.id != pendingDeleteId)
+          if(pendingDeleteId == selectedAddressId) 
           {
             setSelectedAddressId(news[0].id)
           }
           return news
         } 
         )
+        }else if(popupType == "hour") setCompanyHourList(prev=>prev.filter(hour => hour.id != pendingDeleteId))
+         else if(popupType == "phone")setCompanyPhoneList(prev=>prev.filter(phone => phone.id != pendingDeleteId))
+    }
+    const handleSubmit = (e)=>{
+        e.preventDefault()
+        setOpenSuccesPopup(true)
+     
+      }
+     
+    
+    //===========Addresss=====================
+   
+     const cancelProps = {
+     open:openCancelPopup, 
+     setOpen :setOpenCancelPopup,
+     notification:"Xác nhận xóa", 
+     subTitle: "Bạn có chắc chắn muốn xóa? Hành động này không thể hoàn tác.", 
+     buttonLabel1 : "Hủy", 
+     buttonAction1: handleCanclePopup, 
+     buttonLabel2: "Xác nhận xóa", 
+     buttonAction2: handleConfirmPopup
+  }
+  const succesProps = {
+     open: openSuccesPopup, 
+     setOpen :setOpenSuccesPopup,
+     notification:"Bạn đã lưu thành công!", 
+     subTitle:" "
+    
+
+  }
+    const handleDeleteAddress = (e)=>{
+      const parentWithDataIndex = e.target.closest('[data-index]');
+      const index = parentWithDataIndex.getAttribute('data-index');
+        setPendingDeleteId(index)
+        setPopupType("address")
+        setOpenCancelPopup(true)
+       
     }
     const handleAddAddress = ()=>{
        setCompanyAddressList(prev=> ([
@@ -158,7 +232,10 @@ const handleSelectMainAddress = (id) => {
   const handleDeleteHour =(e)=> {
       const parentWithDataIndex = e.target.closest('[data-index]');
       const index = parentWithDataIndex.getAttribute('data-index');
-      setCompanyHourList(prev=>prev.filter(hour => hour.id != index))
+       setPendingDeleteId(index)
+        setPopupType("hour")
+        setOpenCancelPopup(true)
+     
   }
   const handleHourChange = (id, value) => {
       setCompanyHourList(prev =>
@@ -184,7 +261,10 @@ const handleSelectMainAddress = (id) => {
   const handleDeletePhone =(e)=> {
       const parentWithDataIndex = e.target.closest('[data-index]');
       const index = parentWithDataIndex.getAttribute('data-index');
-      setCompanyPhoneList(prev=>prev.filter(phone => phone.id != index))
+       setPendingDeleteId(index)
+        setPopupType("phone")
+        setOpenCancelPopup(true)
+      
   }
   const handlePhoneChange = (id, value) => {
       setCompanyPhoneList(prev =>
@@ -202,6 +282,7 @@ const handleSelectMainAddress = (id) => {
     padding :8, 
     handleButton:()=>{}
   }
+
  
   return (
     <form  onSubmit={handleSubmit} className='flex flex-col bg-white p-[24px] border border-gray-300 rounded-[8px] gap-[24px]'>
@@ -323,7 +404,10 @@ const handleSelectMainAddress = (id) => {
         <button type = 'submit'>
             <Button {...submitButton} />
         </button>
-
+           <div className='absolute'>
+             <CancelPopup {...cancelProps}/>
+             <SuccessPopup {...succesProps}/>
+           </div>
     </form>
   )
 }
