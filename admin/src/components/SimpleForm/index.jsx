@@ -1,7 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Modal } from 'antd';
 const SimpleForm = ({ data, config }) => {
-     const [focusedFields, setFocusedFields] = useState({});
+    const [focusedFields, setFocusedFields] = useState({});
     const defaultField = {
         type: 'text',
         name: '',
@@ -25,6 +25,9 @@ const SimpleForm = ({ data, config }) => {
         return result;
     }, [data]);
     const [formData, setFormData] = useState(initialValues);
+    useEffect(() => {
+        setFormData(initialValues);
+    }, [initialValues]);
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
