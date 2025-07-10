@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import recruitmentServices from "@/services/recruitment.api.js";
-
 function useGetAll(){
     return useQuery({
         queryKey: ["recruitment"],
@@ -14,8 +13,16 @@ function useGetRecruitmentPage(){
         queryFn: recruitmentServices.getRecruitmentPage,
         staleTime: 5 * 60 * 1000,
     })
-}z
+}
+function usePatchRecruitment({ onSuccess, onError }){
+    return useMutation({
+        mutationFn: (data) => recruitmentServices.patchRecruitment(data),
+        onSuccess,
+        onError
+    })
+}
 export default {
     getAll: useGetAll,
-    getRecruitmentPage: useGetRecruitmentPage
+    getRecruitmentPage: useGetRecruitmentPage,
+    patch: usePatchRecruitment
 };
