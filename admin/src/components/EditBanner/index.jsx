@@ -26,10 +26,10 @@ export default function EditBanner({title, description, listInput,saveButton})
     })
     const firstIdInput = convertToE(title)
     const handleSaveButton = (e)=>{
-         e.preventDefault()
+        e.preventDefault()
         if(saveButton)
         {
-            const result =inputRefs.map((inputRef, index)=>{
+            const result = inputRefs.map((inputRef, index)=>{
                 return inputRef.current.value
             })
             saveButton(result)
@@ -41,7 +41,6 @@ export default function EditBanner({title, description, listInput,saveButton})
         colorText: "#ffffff",
         colorBackground: "#000000",
         padding : 8,
-       
     }
     return(
         <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]">
