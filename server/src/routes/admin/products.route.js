@@ -18,4 +18,8 @@ router.get('/highlight_products', productController.getHighlightProducts);
 router.get('/search_suggestions', productController.getSearchSuggestions);
 
 router.get('/count', productController.count);
+
+router.delete('/products/:id', productController.products.deleteOne);
+router.delete('/product_categories/:id', productController.product_categories.deleteOne);
+
 export default router;

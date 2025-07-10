@@ -287,6 +287,14 @@ const products = {
                 }
             };
         return product
+    },
+    deleteOne: async (id) => {
+        const query = `
+            DELETE FROM product.product_prices WHERE product_id = ${id};
+            DELETE FROM product.products WHERE id = ${id};
+        `;
+        const result = await pool.query(query);
+        return result[1];
     }
 }
 
@@ -304,6 +312,15 @@ const product_categories = {
             throw new Error("Can't get product_categories");
         }
         return product_category
+    },
+    deleteOne: async (id) => {
+        const query = `
+            DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = ${id});
+            DELETE FROM product.products WHERE category_id = ${id};
+            DELETE FROM product.product_categories WHERE id = ${id};
+        `;
+        const result = await pool.query(query);
+        return result[2];
     }
 }
 
