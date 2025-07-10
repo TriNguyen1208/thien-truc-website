@@ -295,6 +295,72 @@ const products = {
         const result = await pool.query(query);
         return result;
     },
+    createOne: async (data) => {
+        const {
+            avatarImage,
+            characteristic,
+            description,
+            isDisplayHomePage,
+            price,
+            productCategories,
+            productName,
+            technicalDetails,
+            warranty
+        } = data;
+
+        // 1. Get category_id
+        const categoryRes = await pool.query(
+            `SELECT id FROM product.product_categories WHERE name ILIKE $1`,
+            [productCategories]
+        );
+        if (categoryRes.rowCount === 0) {
+            throw new Error('Category not found');
+        }
+        const category_id = categoryRes.rows[0].id;
+
+        // 2. Prepare features
+        const product_features = characteristic.map(c => c.value);
+        const highlight_feature_ids = characteristic
+            .map((c, index) => (c.isCheckbox ? index : -1))
+            .filter(index => index !== -1);
+
+        // 3. Insert into products
+        const insertSql = `
+            INSERT INTO product.products (
+            name, description, product_img, category_id,
+            product_specifications, warranty_period,
+            product_features, highlight_features, is_featured
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING id;
+        `;
+
+        const insertValues = [
+            productName,
+            description,
+            avatarImage,
+            category_id,
+            JSON.stringify(technicalDetails), // in case it's an object
+            parseInt(warranty),
+            product_features,
+            highlight_feature_ids,
+            isDisplayHomePage
+        ];
+
+        const productInsertResult = await pool.query(insertSql, insertValues);
+
+        // 4. Update product prices
+        const product_id = productInsertResult.rows[0].id;
+        await pool.query(
+            `INSERT INTO product.product_prices (product_id, price) VALUES ($1, $2)`,
+            [product_id, price]
+        ); 
+
+        // 5. Update item_count
+        await pool.query(
+            `UPDATE product.product_categories SET item_count = item_count + 1 WHERE id = $1`,
+            [category_id]
+        );
+    },
     deleteOne: async (id) => {
         const query = `
             DELETE FROM product.product_prices WHERE product_id = ${id};

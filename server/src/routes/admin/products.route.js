@@ -13,11 +13,11 @@ router.get('/product_categories/:id', productController.product_categories.getOn
 router.get('/price_page', productController.getPricePage);
 router.get('/product_prices', productController.product_prices.getAll);
 router.get('/product_prices/:product_id', productController.product_prices.getOne);
-
 router.get('/highlight_products', productController.getHighlightProducts);
 router.get('/search_suggestions', productController.getSearchSuggestions);
-
 router.get('/count', productController.count);
+
+router.post('/products', productController.products.createOne);
 
 router.patch('/products/is_featured/:id/:status', productController.products.updateFeatureOne);
 

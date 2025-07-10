@@ -39,6 +39,15 @@ const products = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    createOne: async (req, res) => {
+        try {
+            await productServices.products.createOne(req.body);
+            res.status(200).json({ message: 'Product created successfully '});
+        } catch (error) {
+            console.error('Create product error: ', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
     deleteOne: async (req, res) => {
         const id = parseInt(req.params.id);
         try {
