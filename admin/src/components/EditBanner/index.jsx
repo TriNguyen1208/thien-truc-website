@@ -1,12 +1,28 @@
 import Button from '@/components/Button'
 import {SaveIcon}  from '../Icon';
-import { useRef } from 'react';
-function Input({label, placeholder, rows,contentCurrent,ref, isRequire} )
+import { useRef, useState, useEffect } from 'react';
+function Input({label, placeholder, rows,maxLength, contentCurrent,inputRef, isRequire} )
 {
+     const [value, setValue] = useState(contentCurrent || '');
+
+        useEffect(() => {
+            if (inputRef) inputRef.current = { value }; // gán lại giá trị vào ref cho component cha
+        }, [value]);
+
+        const isMax = value.length >= maxLength;
     return(<div className="flex flex-col mb-[16px]">
         <label className="mb-[8px] font-medium">{label}{isRequire && <span className="text-red-500 ml-1">*</span>} </label>
-        <textarea type="text"  ref ={ref} rows={rows}  required = {isRequire}   placeholder={placeholder} defaultValue={contentCurrent}
-        className="text-[14px] resize-none font-regular p-[12px] min-h-[45px] border border-[#E4E4E7] bg-white rounded-[6px] focus:border-[#E4E4E7] outline-none "/>
+        <textarea type="text" 
+        ref ={inputRef} 
+        rows={rows}  
+        required = {isRequire}  
+        placeholder={placeholder} 
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        maxLength={maxLength}
+        className={`text-[14px] resize-none font-regular p-[12px] min-h-[45px] border rounded-[6px] outline-none ${
+          isMax ? 'border-red-500' : 'border-[#E4E4E7]'
+        }`}/>
     </div>)
 }
 
@@ -57,9 +73,10 @@ export default function EditBanner({title, description, listInput,saveButton})
                             label: input.label,
                             placeholder: input.placeholder,
                             contentCurrent: input.contentCurrent,
-                            ref: inputRefs[index],
-                            isRequire: input.isRequire,
-                            rows: input.rows
+                            inputRef: inputRefs[index],
+                            isRequire: input.isRequire, 
+                            rows: input.rows,
+                            maxLength: input.maxLength
                         }
                         
                         return(<div key = {index}>
