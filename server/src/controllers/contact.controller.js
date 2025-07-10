@@ -36,4 +36,9 @@ const postContactMessage = async (req, res) => {
         res.status(500).json({ success: false, message: "Gửi tin nhắn thất bại", error: error.message });
     }
 }
-export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage};
+
+const count = async (req, res) => {
+    const data = await contactServices.count();
+    res.status(200).json(data);
+}
+export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage, count};

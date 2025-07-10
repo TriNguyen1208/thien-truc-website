@@ -2,7 +2,7 @@ import React from 'react'
 
 const News = () => {
   return (
-    <div>Day la noi dung trang News</div>
+    <div>Day la noi dung trang HomePageContent</div>
   )
 }
 
