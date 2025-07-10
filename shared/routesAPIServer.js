@@ -34,6 +34,7 @@ const API_ROUTES = {
             getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             createOne: `${PRODUCT_BASE}/product/products`,
+            updateOne: (id) => `${PRODUCT_BASE}/product/products/:id`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
         },

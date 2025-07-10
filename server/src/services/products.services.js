@@ -361,6 +361,75 @@ const products = {
             [category_id]
         );
     },
+    updateOne: async (data, id) => {
+        const {
+            avatarImage,
+            characteristic,
+            description,
+            isDisplayHomePage,
+            price,
+            productCategories,
+            productName,
+            technicalDetails,
+            warranty
+        } = data;
+
+        // 1. Get category_id
+        const categoryRes = await pool.query(
+            `SELECT id FROM product.product_categories WHERE name ILIKE $1`,
+            [productCategories]
+        );
+        if (categoryRes.rowCount === 0) {
+            throw new Error('Category not found');
+        }
+        const category_id = categoryRes.rows[0].id;
+
+        // 2. Prepare features
+        const product_features = characteristic.map(c => c.value);
+        const highlight_feature_ids = characteristic
+            .map((c, index) => (c.isCheckbox ? index : -1))
+            .filter(index => index !== -1);
+
+        // 3. Insert into products
+        const insertSql = `
+            UPDATE product.products 
+            SET
+                name = $1,
+                description = $2,
+                product_img = $3,
+                category_id = $4,
+                product_specifications = $5,
+                warranty_period = $6,
+                product_features = $7,
+                highlight_features = $8,
+                is_featured = $9
+            WHERE id = ${id}
+        `;
+
+        const insertValues = [
+            productName,
+            description,
+            avatarImage,
+            category_id,
+            JSON.stringify(technicalDetails), // in case it's an object
+            parseInt(warranty),
+            product_features,
+            highlight_feature_ids,
+            isDisplayHomePage
+        ];
+
+        const productInsertResult = await pool.query(insertSql, insertValues);
+
+        // 4. Update product prices
+        await pool.query(
+            `
+                UPDATE product.product_prices
+                SET price = $2
+                WHERE product_id = $1
+            `,
+            [id, price]
+        );
+    },
     deleteOne: async (id) => {
         const query = `
             DELETE FROM product.product_prices WHERE product_id = ${id};

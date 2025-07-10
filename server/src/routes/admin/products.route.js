@@ -19,6 +19,7 @@ router.get('/count', productController.count);
 
 router.post('/products', productController.products.createOne);
 
+router.patch('/products/:id', productController.products.updateOne);
 router.patch('/products/is_featured/:id/:status', productController.products.updateFeatureOne);
 
 router.delete('/products/:id', productController.products.deleteOne);

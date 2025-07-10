@@ -48,6 +48,16 @@ const products = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    updateOne: async (req, res) => {
+        const id = req.params.id;
+        try {
+            await productServices.products.updateOne(req.body, id);
+            res.status(200).json({ message: 'Product updated successfully '});
+        } catch (error) {
+            console.error('Update product error: ', error);
+            res.status(500).json({ message: 'Internal server error '});
+        }
+    },
     deleteOne: async (req, res) => {
         const id = parseInt(req.params.id);
         try {
