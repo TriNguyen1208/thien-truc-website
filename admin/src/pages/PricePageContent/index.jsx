@@ -27,13 +27,15 @@ const PricePageContent = () => {
         label: "Tiêu đề Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: pricePage.banner_title ,
-        isRequire: true
+        isRequire: true,
+        rows: 1
       },
       {
         label: "Mô tả Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: pricePage.banner_description,
-        isRequire: true
+        isRequire: true,
+        rows: 3
       }
     ],
       saveButton: handleSave
