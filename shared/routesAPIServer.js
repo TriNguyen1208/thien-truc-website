@@ -33,10 +33,13 @@ const API_ROUTES = {
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
+            updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
+            deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
         },
         product_categories: {
             getAll: `${PRODUCT_BASE}/product_categories`,
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
+            deleteOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`
         },
         product_prices: {
             getAll: (query, filter) => `${PRODUCT_BASE}/product_prices?query=${uri(query)}&filter=${uri(filter)}`,

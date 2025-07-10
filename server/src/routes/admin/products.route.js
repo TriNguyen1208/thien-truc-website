@@ -18,4 +18,10 @@ router.get('/highlight_products', productController.getHighlightProducts);
 router.get('/search_suggestions', productController.getSearchSuggestions);
 
 router.get('/count', productController.count);
+
+router.patch('/products/is_featured/:id/:status', productController.products.updateFeatureOne);
+
+router.delete('/products/:id', productController.products.deleteOne);
+router.delete('/product_categories/:id', productController.product_categories.deleteOne);
+
 export default router;

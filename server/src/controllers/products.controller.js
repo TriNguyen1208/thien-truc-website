@@ -25,6 +25,32 @@ const products = {
         const id = req.params.id
         const data = await productServices.products.getOne(id);
         res.status(200).json(data);
+    },
+    updateFeatureOne: async (req, res) => {
+        const { id, status } = req.params;
+        try {
+            const result = await productServices.products.updateFeatureOne(id, status);
+            if (result.rowCount == 0) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+            return res.status(200).json({ message: 'Product updated successfully' });
+        } catch (error) {
+            console.error('Update product error: ', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    deleteOne: async (req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            const result = await productServices.products.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({ message: 'Product not found'});
+            }
+            return res.status(200).json({ message: result}); //'Product deleted successfully' });
+        } catch (error) {
+            console.error('Delete product error:', error);
+            res.status(500).json({ message: 'Internal server error'});
+        }
     }
 }
 
@@ -37,6 +63,19 @@ const product_categories = {
         const id = req.params.id
         const data = await productServices.product_categories.getOne(id);
         res.status(200).json(data);
+    },
+    deleteOne: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const result = await productServices.product_categories.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({ message: 'Product categories not found' });
+            }
+            return res.status(200).json({ message: 'Product categories deleted successfully' });
+        } catch (error) {
+            console.error('Delete product categories error:', error);
+            res.status(500).json({ message: 'Internal server error'});
+        }
     }
 }
 
