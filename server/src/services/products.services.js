@@ -288,6 +288,13 @@ const products = {
             };
         return product
     },
+    updateFeatureOne: async (id, status) => {
+        const query = `
+            UPDATE product.products SET is_featured = ${status} WHERE id = ${id};
+        `
+        const result = await pool.query(query);
+        return result;
+    },
     deleteOne: async (id) => {
         const query = `
             DELETE FROM product.product_prices WHERE product_id = ${id};
