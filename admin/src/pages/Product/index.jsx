@@ -11,36 +11,7 @@ import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
-const ProductImageCell = ({ imageUrl, productName = "Sản phẩm" }) => {
-  return (
-    <div className="w-[70px] h-[45px] bg-gray-100 border border-gray-200 rounded-md overflow-hidden flex items-center justify-center">
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={productName}
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-          <svg
-            className="w-full h-full text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-        </div>
-      )}
-    </div>
-  );
-};
-
+import ProductImageCell from './ProductImageCell'
 const Product = () => {
   const [isModalOpenAddProduct, setIsModalOpenAddProduct] = useState(false);
   const [isModalOpenEditProduct, setIsModalOpenEditProduct] = useState(false);
@@ -148,212 +119,12 @@ const Product = () => {
     onSearch: handleSearch,
     handleSearchSuggestion: handleSearchSuggestion, //co 3 tham so la query, category = null, display = null,
   }
-  const columns = [
-    "Mã SP",
-    "Hình ảnh",
-    "Tên sản phẩm",
-    "Giá",
-    "Bảo hành",
-    "Trưng bày",
-    "Thao tác"
-  ]
+  const columns = ["Mã SP","Hình ảnh","Tên sản phẩm","Giá","Bảo hành","Trưng bày","Thao tác"]
   const dataTable = [
-    [
-      {
-        type: "text",
-        content: "1"
-      },
-      {
-        type: "component",
-        component:
-          <ProductImageCell
-            imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center"
-            productName="iPhone 15 Pro Max"
-          />
-
-      },
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
-      {
-        type: "text",
-        content: "12 tháng"
-      },
-      {
-        type: "component",
-        component:
-          <div className='ml-[30px]'>
-            <input type="checkbox" className="w-5 h-5 accent-black" />
-          </div>
-      },
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProduct(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setOpenCancel(true)}
-          >
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ],
-    [
-      {
-        type: "text",
-        content: "1"
-      },
-      {
-        type: "component",
-        component:
-          <ProductImageCell
-            imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center"
-            productName="iPhone 15 Pro Max"
-          />
-
-      },
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
-      {
-        type: "text",
-        content: "12 tháng"
-      },
-      {
-        type: "component",
-        component:
-          <div className='ml-[30px]'>
-            <input type="checkbox" className="w-5 h-5 accent-black" />
-          </div>
-      },
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProduct(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setOpenCancel(true)}
-          >
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ],
-    [
-      {
-        type: "text",
-        content: "1"
-      },
-      {
-        type: "component",
-        component:
-          <ProductImageCell
-            productName="iPhone 15 Pro Max"
-          />
-
-      },
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
-      {
-        type: "text",
-        content: "12 (tháng)"
-      },
-      {
-        type: "component",
-        component:
-          <div className='ml-[30px]'>
-            <input type="checkbox" className="w-5 h-5 accent-black" />
-          </div>
-      },
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProduct(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ],
-    [
-      {
-        type: "text",
-        content: "1"
-      },
-      {
-        type: "component",
-        component:
-          <ProductImageCell
-            productName="iPhone 15 Pro Max"
-          />
-
-      },
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
-      {
-        type: "text",
-        content: "12 tháng"
-      },
-      {
-        type: "component",
-        component:
-          <div className='ml-[30px]'>
-            <input type="checkbox" className="w-5 h-5 accent-black" />
-          </div>
-      },
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProduct(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ]
+    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setOpenCancel(true)}    >      <DeleteIcon />    </button>,] }],
+    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setOpenCancel(true)}    >      <DeleteIcon />    </button>,] }],
+    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 (tháng)" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">      <DeleteIcon />    </button>,] }],
+    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">      <DeleteIcon />    </button>,] }]
   ]
   return (
     <>
@@ -372,7 +143,13 @@ const Product = () => {
       </div>
       <DynamicForm data={dataEditProduct} config={configEditProduct} />
       <DynamicForm data={dataAddProduct} config={configAddProduct} />
-      <CancelPopup open={openCancel} setOpen={setOpenCancel} />
+      <CancelPopup 
+        open={openCancel} 
+        setOpen={setOpenCancel} 
+        notification="Xác nhận xóa"
+        subTitle = "Bạn có chắc chắc muốn xóa sản phẩm này ? "
+        buttonAction2 = {() => {console.log("123"); setOpenCancel(false)}}
+      />
     </>
   )
 }

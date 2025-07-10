@@ -1,19 +1,25 @@
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Sider from "@/components/Sider";
 import { Outlet } from "react-router-dom";
 import CustomButton from "@/components/ButtonLayout";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, ArrowLeftOutlined} from "@ant-design/icons";
 import { useLayout } from "@/layouts/layoutcontext";
+import { useNavigate } from "react-router-dom";
 
 export default function DefaultLayout({ children }) {
-  const { layoutProps } = useLayout() ?? {};
-  const {
-    title = '',
-    description = '',
-    hasButton = false,
-    buttonLabel = '',
-    buttonAction = () => { },
-  } = layoutProps ?? {};
+
+const { layoutProps } = useLayout() ?? {};
+const {
+  title = '',
+  description = '',
+  hasButton = false,
+  hasButtonBack = false,
+  buttonLabel = '',
+  buttonAction = () => {},
+} = layoutProps ?? {};
+  const navigate = useNavigate();
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* SIDER */}
@@ -25,28 +31,39 @@ export default function DefaultLayout({ children }) {
         <Header />
         <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-100 py-13 pr-6 pl-7">
           <div className="flex justify-between items-center mb-4 overflow-x-hidden">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-              {description && (
-                <p className="text-gray-500 text-[17px] mt-1">{description}</p>
+             <div className="flex items-center gap-3">
+              {hasButtonBack && (
+                <CustomButton
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => navigate(-1)}
+                  backgroundColor="#fff"
+                  borderColor="#ccc"
+                  textColor="#000"
+                  height={40}
+                />
               )}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+                {description && (
+                  <p className="text-gray-500 text-[17px] mt-1">{description}</p>
+                )}
+              </div>
             </div>
-            {hasButton && (<CustomButton
-              icon={<PlusOutlined />}
-              onClick={buttonAction}
-              backgroundColor="#000"
-              borderColor="#000"
-              textColor="#fff"
-              height={40}
+            {hasButton &&  (<CustomButton
+                icon={<PlusOutlined />}
+                onClick={buttonAction}
+                backgroundColor="#000"
+                borderColor="#000"
+                textColor="#fff"
+                height={40}
             >
-              {buttonLabel}
+                {buttonLabel}
             </CustomButton>
             )}
-          </div>
-          <div className="bg-gray-100 overflow-x-hidden">
-            <Outlet />
-          </div>
-
+            </div>
+            <div className="bg-gray-100 overflow-x-hidden">
+              <Outlet />
+            </div>
         </main>
         {/* <Footer /> nếu cần */}
       </div>

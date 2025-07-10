@@ -11,11 +11,23 @@ import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, SettingIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
+import Setting from '../../components/Setting';
 const ProductPageContent = () => {
   const [isModalOpenAddProductCategories, setIsModalOpenAddProductCategories] = useState(false);
   const [isModalOpenEditProductCategories, setIsModalOpenEditProductCategories] = useState(false);
+  const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
   const [openCancel, setOpenCancel] = useState(false);
-
+  const contentSetting = {
+    title: `Quản lý danh sách dự án thuộc loại "Miền Bắc"`,
+    description: `Chọn các dự án muốn thêm hoặc xóa khỏi loại "Miền Bắc"`,
+    type: "dự án",
+    category: "Miền Bắc",
+    header: [
+      "Mã dự án",
+      "Tên dự án",
+      "Khu vực",
+    ]
+  };
   const dataAddProductCategories = [
     { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true },
   ]
@@ -108,7 +120,7 @@ const ProductPageContent = () => {
         type: "text",
         content: "1"
       },
- 
+
       {
         type: "text",
         content: "Iphone 16 pro max"
@@ -120,9 +132,9 @@ const ProductPageContent = () => {
       {
         type: "array-components",
         components: [
-           <button
+          <button
             className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
+            onClick={() =>  setIsModalOpenSetting(true)}
           >
             <SettingIcon />
           </button>,
@@ -146,7 +158,7 @@ const ProductPageContent = () => {
         type: "text",
         content: "1"
       },
-   
+
       {
         type: "text",
         content: "Iphone 16 pro max"
@@ -158,9 +170,12 @@ const ProductPageContent = () => {
       {
         type: "array-components",
         components: [
-           <button
+          <button
             className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
+            onClick={() => {
+              setIsModalOpenSetting(true);
+
+            }}
           >
             <SettingIcon />
           </button>,
@@ -184,20 +199,20 @@ const ProductPageContent = () => {
         type: "text",
         content: "1"
       },
-   
+
       {
         type: "text",
         content: "Iphone 16 pro max"
       },
-        {
+      {
         type: "text",
         content: "3"
       },
-  
+
       {
         type: "array-components",
         components: [
-           <button
+          <button
             className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
             onClick={() => setIsModalOpenEditProductCategories(true)}
           >
@@ -231,7 +246,7 @@ const ProductPageContent = () => {
       {
         type: "array-components",
         components: [
-            <button
+          <button
             className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
             onClick={() => setIsModalOpenEditProductCategories(true)}
           >
@@ -267,7 +282,21 @@ const ProductPageContent = () => {
       </div>
       <SimpleForm data={dataEditProductCategories} config={configEditProductCategories} />
       <SimpleForm data={dataAddProductCategories} config={configAddProductCategories} />
-      <CancelPopup open={openCancel} setOpen={setOpenCancel} />
+      <CancelPopup
+        open={openCancel}
+        setOpen={setOpenCancel}
+        notification="Xác nhận xóa"
+        subTitle="Bạn có chắc chắc muốn xóa loại sản phẩm này ? "
+        buttonAction2={() => { console.log("123"); setOpenCancel(false) }}
+      />
+      <Setting
+        isOpen={isModalOpenSetting}
+        onClose={() => setIsModalOpenSetting(false)}
+        content={contentSetting}
+        useData={useProjects.projects}
+        useDataSuggestion={useProjects}
+        useDataCategories={useProjects.project_regions}
+      />
     </>
   )
 }
