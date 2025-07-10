@@ -12,8 +12,8 @@ const getProjectPage = async (req, res) => {
 
 const projects = {
     getList: async (req, res) => {
-        const { query = '', filter = '', page, is_featured } = req.query;
-        const data = await projectsServices.projects.getList(query, filter, parseInt(page), is_featured);
+        const { query = '', filter = '', page, is_featured, limit } = req.query;
+        const data = await projectsServices.projects.getList(query, filter, parseInt(page), is_featured, parseInt(limit));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
@@ -59,4 +59,10 @@ const getSearchSuggestions = async (req, res) => {
     const data = await projectsServices.getSearchSuggestions(query, filter);
     res.status(200).json(data);
 }
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions};
+
+const count = async (req, res) => {
+    const data = await projectsServices.count();
+    res.status(200).json(data);
+}
+
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, count};
