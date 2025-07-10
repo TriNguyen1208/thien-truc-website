@@ -4,20 +4,91 @@ import Table from '../../components/Table'
 import Button from '../../components/Button'
 import { DeleteIcon, EditIcon } from '../../components/Icon'
 import DynamicForm from '../../components/DynamicForm'
+import { CancelPopup } from '../../components/Popup'
+import { Modal, Result } from 'antd';
+import { CheckCircleFilled } from '@ant-design/icons';
+function SuccessPopup({ open, setOpen, notification, subTitle}) {
+
+  const handleOk = () => setOpen(false);
+
+  return (
+    <div className="p-6">
+
+      <Modal
+        open={open}
+        footer={null}
+        onCancel={handleOk}
+        centered
+        closable
+        width={550}
+      > 
+        <Result
+          status="success"
+          icon={<CheckCircleFilled style={{ color: '#52c41a', fontSize: 72 }} />}
+          title={
+            <div className="text-lg font-semibold">
+              {notification || 'Successfully Purchased Cloud Server ECS!'}
+            </div>
+          }
+          subTitle={
+            <div className="text-gray-500 text-sm">
+              {subTitle || 'Your order has been successfully processed. You can now manage your cloud server from the console.'}
+            </div>
+          }
+         
+        />
+      </Modal>
+    </div>
+  );
+};
 
 const Manager = () => {
   const {setLayoutProps} = useLayout();
   const [listManagers , setListManagers] = useState([])
   const [isModalOpenAdd,setIsModalOpenAdd] = useState(false)
   const [isModalOpenEdit,setIsModalOpenEdit] = useState(false)
+  const [pendingItemDel, setPendingItemDel] = useState(null)
+  const [isOpenCancelPopup, setIsOpenCancelPopup] = useState(false)
+  const [isOpenSuccesPopup, setIsOpenSuccesPopup] = useState(false)
+
+  const handleConfirmPopup = ()=>{
+    setIsOpenCancelPopup(false)
+     setListManagers(prev => prev.filter(mgr => prev.indexOf(mgr) !== pendingItemDel))
+
+  }
+  const handleCanclePopup = ()=>{
+    setIsOpenCancelPopup(false)
+
+  }
+  const succesProps = {
+      open: isOpenSuccesPopup, 
+     setOpen: setIsOpenSuccesPopup, 
+     notification: "Lưu thành công!", 
+     subTitle:" ", 
+  }
+  const cancelProps={
+     open: isOpenCancelPopup, 
+     setOpen: setIsOpenCancelPopup, 
+     notification: "Xác nhận xóa Manager!", 
+     subTitle:"Bạn có chắc chắn muốn xóa Manager này.", 
+     buttonLabel1:"Hủy", 
+     buttonAction1:handleCanclePopup, 
+     buttonLabel2: "Xác nhận xóa", 
+     buttonAction2: handleConfirmPopup
+  }
+
+ 
   //====================================================Start Form=========================================================
    const handleSubmitButtonAdd = (valueForm) => {
     console.log('Day la button submit', valueForm)
     setIsModalOpenAdd(false)
+    setIsOpenSuccesPopup(true)
   }
    const handleSubmitButtonEdit = (valueForm) => {
     console.log('Day la button submit', valueForm)
     setIsModalOpenEdit(false)
+    setIsOpenSuccesPopup(true)
+
   }
   const configAdd = {
     title: "Thêm Manager mới",
@@ -53,7 +124,9 @@ const Manager = () => {
   const handleDelItem = (e)=> {
     
     const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
-          setListManagers(prev => prev.filter(mgr => prev.indexOf(mgr) !== index))
+        setPendingItemDel(index)
+        setIsOpenCancelPopup(true)
+         
     }
   const delButton = {
     Icon: DeleteIcon, 
@@ -141,6 +214,8 @@ const Manager = () => {
       </div>
       <DynamicForm data={data} config={configAdd}/>
       <DynamicForm data={data} config={configEdit}/>
+      <CancelPopup {...cancelProps}/>
+      <SuccessPopup {...succesProps}/>
     </div>
   )
 }
