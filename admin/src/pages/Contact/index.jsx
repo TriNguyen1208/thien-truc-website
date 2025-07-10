@@ -55,11 +55,11 @@ const Contact = () => {
     setIsModalOpen: setIsModalOpenEdit
   }
   const data = [
-    { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
-    { name: 'position', label: 'Vị trí', type: 'text', width: 12, placeholder: "VD: Trưởng phòng kinh doanh"  },
-    { name: 'phone', label: 'Số điện thoại', type: 'text', width: 12, isRequired: true ,placeholder: "0123456789" },
+    { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
+    { name: 'position', label: 'Vị trí', type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
+    { name: 'phone', label: 'Số điện thoại', type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
     { name: 'facebook', label: 'Facebook', type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
-    { name: 'Trine123', label: 'Mô tả', type: 'image_upload', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+    { name: 'Trine123', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]
   //====================================================End Form=========================================================
   //====================================================Start Table=======================================================
