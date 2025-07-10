@@ -234,3 +234,10 @@ export const EyeOffIcon = () => (
 export const UploadIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-upload-icon lucide-upload"><path d="M12 3v12" /><path d="m17 8-5-5-5 5" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></svg>
 );
+
+export const AddIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 4.167V15.833" stroke="#FFFF" strokeWidth="1.66667" strokeLinecap="round" />
+    <path d="M4.167 10H15.833" stroke="#FFFF" strokeWidth="1.66667" strokeLinecap="round" />
+  </svg>
+);

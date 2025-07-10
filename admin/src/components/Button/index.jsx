@@ -21,11 +21,11 @@ export default function Button({Icon, text, colorText, colorBackground,padding =
     setHoverStyle({});
   };
     return(<div onMouseEnter={()=>handleMouseEnter(colorBackground)} onMouseLeave={handleMouseLeave} onClick = {handleButton} 
-                className="flex flex-row border border-[#f5f5f5]   items-center gap-[10px] w-full h-full rounded-[6px] hover:cursor-pointer "
+                className="flex flex-row border border-[#f5f5f5]   items-center justify-center  gap-[10px] w-full h-full rounded-[6px] hover:cursor-pointer "
                 style={{ color: colorText, backgroundColor: colorBackground, padding: padding,...hoverStyle, display: 'flex', justifyContent: (text && Icon) ? 'flex-start':'center'   }}
     >
         {
-            Icon?<div className="mx-[8px]"> <Icon/></div>:<></>
+            Icon?<div className="mx-[8px]"> <Icon/></div>:<>+</>
         }
         {
             text? <p className="text-[14px] font-medium">{text} </p> :<></>
