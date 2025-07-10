@@ -12,8 +12,8 @@ const getNewsPage = async (req, res) => {
 
 const news = {
     getList: async (req, res) => {
-        const {query = '', filter = '', sort_by = 'popular', page, is_published} = req.query;
-        const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page), is_published);
+        const {query = '', filter = '', sort_by = 'popular', page, is_published, limit} = req.query;
+        const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page), is_published, parseInt(limit));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
@@ -59,4 +59,9 @@ const getSearchSuggestions = async (req, res) => {
     const data = await newsServices.getSearchSuggestions(query, filter);
     res.status(200).json(data);
 }
-export default { getAllTables, getNewsPage, news, news_categories, news_contents,getSearchSuggestions};
+
+const count = async (req, res) => {
+    const data = await newsServices.count();
+    res.status(200).json(data);
+}
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count};
