@@ -20,15 +20,19 @@ function Address({index,address,isChecked, isMultiple, handleDelete, handleChang
        </div>
        <div className=' flex flex-col gap-[8px]'>
          <label htmlFor="" className='text-[14px] text-black font-medium'>Địa chỉ {index}<span className="text-red-500 ml-1">*</span></label>
-          <textarea type="text"
+          <input type="text"
            onChange={(e) => handleChange(address.id, "address", e.target.value)}
-           required className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] min-h-[45px]' placeholder='Vd: 123 Phường Bến Nghé TP.HCM' value={address.address}/>
+           required
+          
+          className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] min-h-[45px]' placeholder='Vd: 123 Phường Bến Nghé TP.HCM' value={address.address}/>
        </div>
        <div className=' flex flex-col gap-[8px]'>
          <label htmlFor="" className='text-[14px] text-black font-medium'>Link Google Map</label>
           <input type="text"  
            onChange={(e) => handleChange(address.id, "googlemaps_url", e.target.value)}
-          className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] min-h-[45px]' placeholder='Vd: http://maps.google.com/...' value={address.googlemaps_url} />
+           className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] min-h-[45px]'
+           placeholder='Vd: http://maps.google.com/...' 
+           value={address.googlemaps_url} />
        </div>
       {isMultiple && <div className='absolute w-[44px] h-[40px] top-[12px] right-[12px]'><Button Icon = {DeleteIcon} colorText = {"#000000"} colorBackground = "#FFFFFF" handleButton = {handleDelete}/></div>}
     </div>
@@ -241,10 +245,11 @@ const handleSelectMainAddress = (id) => {
         </div>
       </div>
         <div className=' flex flex-col gap-[8px]'>
-         <label htmlFor="" className='text-[14px] text-black font-medium'>Link nhúng Google Maps của chi nhánh chính</label>
+         <label htmlFor="" className='text-[16px] text-black font-medium'>Link nhúng Google Maps của chi nhánh chính</label>
           <textarea type="text" 
             defaultValue={companyInfo.googlemaps_embed_url}
-           className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] min-h-[45px]'
+            rows={6}
+           className='focus:outline-none border resize-none border-gray-300 rounded-[8px] p-[12px] '
             placeholder=' Vd: <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9366.370348283874!2d107.03071395806015!3d11.989540521698338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31731332eb101045%3A0xab2bf64704fbfea5!2sH%C3%A3ng%20Thu%20%C3%82m%20Lil%20Ruby%20Records!5e0!3m2!1sen!2s!4v1752097400688!5m2!1sen!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>' />
        </div>
         <div className='flex flex-col'>
@@ -267,7 +272,7 @@ const handleSelectMainAddress = (id) => {
                     <input type="text" required 
                   value={hour.data}
                  onChange={(e) => handleHourChange(hour.id, e.target.value)} 
-                  className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] w-full'
+                  className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] w-full'
                   placeholder='Vd: 8h-17h' />
                   {companyHourList.length >= 2 && <div className=' w-[44px] h-[40px] top-[12px] right-[12px]'><Button Icon = {DeleteIcon} colorText = {"#000000"} colorBackground = "#FFFFFF" handleButton = {handleDeleteHour}/></div>}
                       </div>)
@@ -283,7 +288,9 @@ const handleSelectMainAddress = (id) => {
 
           <input type="text"
           defaultValue={companyInfo.company_email}
-          required className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] min-h-[45px]' placeholder='Vd: Minhtri@gmail.com' />
+           maxLength={50} 
+          required className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
+          placeholder='Vd: Minhtri@gmail.com' />
         </div>
         <div className='flex flex-col gap-[12px]'>
                 <div className='flex flex-row justify-between  '>
@@ -305,7 +312,7 @@ const handleSelectMainAddress = (id) => {
                     <input type="text" required 
                   value={phone.data}
                  onChange={(e) => handlePhoneChange(phone.id, e.target.value)} 
-                  className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] w-full'
+                  className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] w-full'
                   placeholder='Vd: 8h-17h' />
                   {companyPhoneList.length >= 2 && <div className=' w-[44px] h-[40px] top-[12px] right-[12px]'><Button Icon = {DeleteIcon} colorText = {"#000000"} colorBackground = "#FFFFFF" handleButton = {handleDeletePhone}/></div>}
                       </div>)
@@ -314,7 +321,7 @@ const handleSelectMainAddress = (id) => {
             </div>
         </div>
         <button type = 'submit'>
-            <Button {...submitButton} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}/>
+            <Button {...submitButton} />
         </button>
 
     </form>
