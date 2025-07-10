@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import projectsServices from "@/services/projects.api.js";
 
 function useGetAll(){
@@ -61,6 +61,11 @@ const project_contents = {
             queryKey: ["admin_project_content", id],
             queryFn: () => projectsServices.project_contents.getOne(id),
             staleTime: 5 * 60 * 1000,
+        })
+    },
+    usePostOne: (data) => {
+        return useMutation({
+            mutationFn: () => projectsServices.project_contents.postOne(data),
         })
     }
 }

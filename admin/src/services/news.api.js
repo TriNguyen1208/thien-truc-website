@@ -46,7 +46,8 @@ const new_contents = {
         return res.data;
     },
     postOne: async (data) => {
-        
+        const res = await axios.post(API_ROUTES.news.news_contents.postOne, data);
+        return res.data;
     }
 }
 const getSearchSuggestions = async (query, filter) => {

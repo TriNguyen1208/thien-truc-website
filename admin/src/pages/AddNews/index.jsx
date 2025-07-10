@@ -15,11 +15,12 @@ const AddNews = () => {
             description: "Tạo bài viết tin tức mới"
         })
     }, [])
-
-    const editorRef = useRef(null);
+    const propsContent = {
+        type: "tin tức"
+    }
     return (
         <div className='flex flex-row gap-6'>
-            <ContentManagement/>
+            <ContentManagement {...propsContent}/>
             <EditNews/>
         </div>
       

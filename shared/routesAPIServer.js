@@ -50,6 +50,7 @@ const API_ROUTES = {
         projects: {
             getList: (query, filter, page) => `${PROJECT_BASE}/projects?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
+            postOne: `${PROJECT_BASE}/projects/`,
         },
         project_regions: {
             getAll: `${PROJECT_BASE}/project_regions`,
@@ -58,6 +59,7 @@ const API_ROUTES = {
         project_contents: {
             getAll: `${PROJECT_BASE}/project_contents`,
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
+            postOne: `${PROJECT_BASE}/project_contents/`,
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
         search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
@@ -78,6 +80,7 @@ const API_ROUTES = {
         news_contents: {
             getAll: `${NEWS_BASE}/news_contents`,
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
+            postOne: `${NEWS_BASE}/news_contents/`
         },
         search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
         count: `${NEWS_BASE}/count`
