@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useLayout } from '@/layouts/layoutcontext';
 import { useSearchParams } from 'react-router-dom'; 
 import { useNavigate } from 'react-router-dom';
-import useNews from '@/hooks/useNews';
+//import useNews from '@/hooks/useNews';
 
 const MockData = [
   {category_id: 1, id: 'TT001', title: 'Tin tức 1', content: 'Nội dung tin tức 1', state: 'published', public_date: '2023-10-01' },
