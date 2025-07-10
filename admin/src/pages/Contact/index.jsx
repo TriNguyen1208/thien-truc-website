@@ -4,12 +4,55 @@ import Table from '../../components/Table'
 import Button from '../../components/Button'
 import { DeleteIcon, EditIcon } from '../../components/Icon'
 import DynamicForm from '../../components/DynamicForm'
-import { CancelPopup, SuccessPopup } from '../../components/Popup'
+import { CancelPopup } from '../../components/Popup'
+import { Modal, Result } from 'antd'
+import { CheckCircleFilled } from '@ant-design/icons';
+
+
+function SuccessPopup ({ open, setOpen, notification, subTitle}) {
+
+  const handleOk = () => setOpen(false);
+
+  return (
+    <div className="p-6">
+
+      <Modal
+        open={open}
+        footer={null}
+        onCancel={handleOk}
+        centered
+        closable
+        width={550}
+      > 
+        <Result
+          status="success"
+          icon={<CheckCircleFilled style={{ color: '#52c41a', fontSize: 72 }} />}
+          title={
+            <div className="text-lg font-semibold">
+              {notification || 'Successfully Purchased Cloud Server ECS!'}
+            </div>
+          }
+          subTitle={
+            <div className="text-gray-500 text-sm">
+              {subTitle || 'Your order has been successfully processed. You can now manage your cloud server from the console.'}
+            </div>
+          }
+        
+        />
+      </Modal>
+    </div>
+  );
+};
+
 const Contact = () => {
   const {setLayoutProps} = useLayout();
   const [listContacts , setListContacts] = useState([])
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
+  const [pendingItemDel, setPendingItemDel] = useState(null)
+  const [isOpenDeletePopup, setIsOpenDeletePopup] = useState(false)
+  const [isOpenSuccesPopup, setIsOpenSuccesPopup] = useState(false)
+
  const handleAddContact= ()=>
   {
     setIsModalOpenAdd(true)
@@ -24,15 +67,25 @@ const Contact = () => {
     })
 
   },[])
+  const succesProps = {
+    open:isOpenSuccesPopup, 
+    setOpen:setIsOpenSuccesPopup, 
+    notification:"Lưu thành công!", 
+    subTitle:" "
+  }
   //====================================================Start Form=========================================================
    const handleSubmitButtonAdd = (valueForm) => {
     console.log('Day la button submit', valueForm)
     setIsModalOpenAdd(false)
+    setIsOpenSuccesPopup(true)
   }
    const handleSubmitButtonEdit = (valueForm) => {
     console.log('Day la button submit', valueForm)
     setIsModalOpenEdit(false)
+    setIsOpenSuccesPopup(true)
+
   }
+ 
   const configAdd = {
     title: "Thêm người liên lạc mới",
     description: "Điền thông tin để thêm người liên lạc mới",
@@ -63,11 +116,33 @@ const Contact = () => {
   ]
   //====================================================End Form=========================================================
   //====================================================Start Table=======================================================
+ 
+ const handleConfirmDeletePopup = ()=>{
+    setIsOpenDeletePopup(false)
+    setListContacts(prev => prev.filter(ct => prev.indexOf(ct) !== pendingItemDel))
+
+  }
+  const handleCancelDeletePopup = ()=>{
+    setIsOpenDeletePopup(false)
+
+  }
+  
+  const deleteProps={
+     open: isOpenDeletePopup, 
+     setOpen: setIsOpenDeletePopup, 
+     notification: "Xác nhận xóa nhân viên!", 
+     subTitle:"Bạn có chắc chắn muốn xóa nhân viên này.", 
+     buttonLabel1:"Hủy", 
+     buttonAction1:handleCancelDeletePopup, 
+     buttonLabel2: "Xác nhận xóa", 
+     buttonAction2: handleConfirmDeletePopup
+  }
+  
   const handleDelItem = (e)=> {
     
     const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
-        
-    setListContacts(prev => prev.filter(ct => prev.indexOf(ct) !== index))
+        setPendingItemDel(index)
+        setIsOpenDeletePopup(true)
     }
   const delButton = {
     Icon: DeleteIcon, 
@@ -81,8 +156,8 @@ const Contact = () => {
     padding: 4,
     handleButton: (e)=>{
       const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
-   
-     setIsModalOpenEdit(true)
+      
+      setIsModalOpenEdit(true)
     
     }
     
@@ -151,7 +226,8 @@ const Contact = () => {
       <DynamicForm data={data} config={configAdd} />
       <DynamicForm data={data} config={configEdit} />
      
-      <SuccessPopup/>
+      <CancelPopup {...deleteProps}/>
+      <SuccessPopup {...succesProps}/>
     </div>
   )
 }
