@@ -6,14 +6,13 @@ import { PlusIcon } from '../../components/Icon';
 import { useState } from 'react';
 const ContentManagement = ({
     type, //tin tuc hoac du an
+    form,
+    setForm
 }) => {
-    const [form, setForm] = useState({
-        title: "",
-        main_content: "",
-        content: "",
-        category_name: "",
-        is
-    })
+    const handleChangeDataForm = (e) => {
+        const {name, value} = e.target;
+        setForm((prev) => ({...prev, [name]: value}));
+    }
     return (
         <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-hidden w-[75%]'>
             <div className='flex flex-col p-6'>
@@ -25,22 +24,28 @@ const ContentManagement = ({
                     <label htmlFor="" className='text-[#09090b] font-medium'>Tiêu đề {type} <span style={{color: "red"}}>*</span></label>
                     <input 
                         type="text" 
-                        required 
+                        name="title"
+                        value={form.title}
+                        onChange={handleChangeDataForm}
                         className='px-4 h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none'
                         placeholder={`Nhập tiêu đề ${type}...`}
+
                     />
                 </div>
                 <div className='flex flex-col gap-3'>
                     <label htmlFor="" className='text-[#09090b] font-medium'>Nội dung tóm tắt {type}</label>
                     <input 
                         type="text"  
+                        name="main_content"
+                        value={form.main_content}
+                        onChange={handleChangeDataForm}
                         className='px-4 h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none'
                         placeholder={`Nhập nội dung tóm tắt ${type}...`}
                     />
                 </div>
                 <div className='flex flex-col gap-3'>
                     <label htmlFor="" className='text-[#09090b] font-medium'>Nội dung {type} <span style={{color: "red"}}>*</span></label>
-                    <EditorWord/>
+                    <EditorWord form={form} setForm={setForm}/>
                 </div>
             </div>
         </div>

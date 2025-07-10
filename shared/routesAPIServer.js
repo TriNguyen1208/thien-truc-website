@@ -9,6 +9,8 @@ const CONTACT_BASE = `${BASE_API}/contact`;
 const ABOUT_US_BASE = `${BASE_API}/about_us`;
 const ADMIN_BASE = `${BASE_API}/admin`;
 
+const uri = encodeURIComponent;
+
 const API_ROUTES = {
     schemaTable: (schema, table) => `${BASE_API}/${schema}/${table}`,
     admin: {
@@ -28,7 +30,8 @@ const API_ROUTES = {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
         products: {
-            getList: (query, filter, page) => `${PRODUCT_BASE}/products?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
+            getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
+            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
         },
         product_categories: {
@@ -36,19 +39,20 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
         },
         product_prices: {
-            getAll: (query, filter) => `${PRODUCT_BASE}/product_prices?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
+            getAll: (query, filter) => `${PRODUCT_BASE}/product_prices?query=${uri(query)}&filter=${uri(filter)}`,
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
-        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
+        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
         count: `${PRODUCT_BASE}/count`
     },
     project: {
         base: PROJECT_BASE,
         project_page: `${PROJECT_BASE}/project_page`,
         projects: {
-            getList: (query, filter, page) => `${PROJECT_BASE}/projects?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&page=${page}`,
+            getList: (query, filter, is_featured, page, limit) => `${PROJECT_BASE}/projects?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
+            getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
             postOne: `${PROJECT_BASE}/projects/`,
         },
@@ -62,14 +66,15 @@ const API_ROUTES = {
             postOne: `${PROJECT_BASE}/project_contents/`,
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
-        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
+        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
         count: `${PROJECT_BASE}/count`
     },
     news: {
         base: NEWS_BASE,
         news_page: `${NEWS_BASE}/news_page`,
         news: {
-            getList: (query, filter, sort_by, page) => `${NEWS_BASE}/news?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}&sort_by=${encodeURIComponent(sort_by)}&page=${page}`,
+            getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
+            getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
             updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
         },
@@ -82,7 +87,7 @@ const API_ROUTES = {
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
             postOne: `${NEWS_BASE}/news_contents/`
         },
-        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${encodeURIComponent(query)}&filter=${encodeURIComponent(filter)}`,
+        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
         count: `${NEWS_BASE}/count`
     },
     recruitment: {

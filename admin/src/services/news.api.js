@@ -1,5 +1,5 @@
 import axios from "@/services/axiosInstance.js"
-import API_ROUTES from "../../../shared/routesAPI";
+import API_ROUTES from "../../../shared/routesAPIServer";
 
 const getAll = async () =>{
     const res = await axios.get(API_ROUTES.news.base);

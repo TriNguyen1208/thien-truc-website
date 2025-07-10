@@ -1,11 +1,21 @@
 import React, { useRef } from 'react'
 import {Editor} from "@tinymce/tinymce-react"
-const EditorWord = () => {
+const EditorWord = ({
+  form,
+  setForm,
+}) => {
   const editorRef = useRef(null);
   return (
     <Editor
         tinymceScriptSrc='/tinymce/tinymce.min.js'
         onInit={(_evt, editor) => editorRef.current = editor}
+        value={form.content}
+        onEditorChange={(newContent) => {
+          setForm((prevForm) => ({
+            ...prevForm,
+            content: newContent,
+          }));
+        }}
         init={{
             height: 500,
             menubar: true,
