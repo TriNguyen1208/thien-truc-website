@@ -1,43 +1,37 @@
 import Button from '@/components/Button'
 import {SaveIcon}  from '../Icon';
 import { useRef } from 'react';
-function Input({label, placeholder,idInput,contentCurrent,ref, isRequire} )
+function Input({label, placeholder, rows,contentCurrent,ref, isRequire} )
 {
     return(<div className="flex flex-col mb-[16px]">
-        <label htmlFor = {idInput} className="mb-[8px]">{label}{isRequire && <span className="text-red-500 ml-1">*</span>} </label>
-        <textarea type="text" ref ={ref}  required = {isRequire}  id = {idInput} placeholder={placeholder} defaultValue={contentCurrent}
-        className="text-[14px] font-regular p-[12px] min-h-[45px] border border-[#E4E4E7] bg-white rounded-[6px] focus:border-[#E4E4E7] outline-none "/>
+        <label className="mb-[8px] font-medium">{label}{isRequire && <span className="text-red-500 ml-1">*</span>} </label>
+        <textarea type="text"  ref ={ref} rows={rows}  required = {isRequire}   placeholder={placeholder} defaultValue={contentCurrent}
+        className="text-[14px] resize-none font-regular p-[12px] min-h-[45px] border border-[#E4E4E7] bg-white rounded-[6px] focus:border-[#E4E4E7] outline-none "/>
     </div>)
 }
-function convertToE(str)
-{
-    return str
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/đ/g, "d")
-            .replace(/Đ/g, "D")
-            .replace(/\s+/g, '');
-    
-}
+
 export default function EditBanner({title, description, listInput,saveButton})
 {
     const inputRefs = listInput.map((input, index)=>{
         return useRef()
     })
-    const firstIdInput = convertToE(title)
+
     const handleSaveButton = (e)=>{
          e.preventDefault()
         if(saveButton)
         {
-            const result =inputRefs.map((inputRef, index)=>{
-                return inputRef.current.value
+            const result = {}
+            inputRefs.map((inputRef, index)=>{
+                const key = listInput[index].label
+                result[key] = inputRef.current.value
             })
+            
             saveButton(result)
         }
     }
     const propsButton ={
         Icon: SaveIcon,
-        text: "Lưu thây đổi",
+        text: "Lưu thay đổi",
         colorText: "#ffffff",
         colorBackground: "#000000",
         padding : 8,
@@ -62,10 +56,10 @@ export default function EditBanner({title, description, listInput,saveButton})
                         const props = {
                             label: input.label,
                             placeholder: input.placeholder,
-                            idInput: firstIdInput + index,
                             contentCurrent: input.contentCurrent,
                             ref: inputRefs[index],
-                            isRequire: input.isRequire
+                            isRequire: input.isRequire,
+                            rows: input.rows
                         }
                         
                         return(<div key = {index}>
