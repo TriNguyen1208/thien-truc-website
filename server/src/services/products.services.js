@@ -65,10 +65,10 @@ const getProductPage = async () => {
 }
 
 const products = {
-    getList: async (query = '', filter = '', page, is_featured) => {
+    getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = 12;
+        const pageSize = item_limit || 12;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
@@ -154,6 +154,99 @@ const products = {
                 results
             };
         else return [...results];
+    },
+    getListByCategory: async (query = '', filter = '', is_featured, item_limit) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+
+        if (query != '') {
+            where.push(
+                `(unaccent(prd.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(prd.name::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(prd.name), unaccent('${query}')) DESC`
+            );
+        }
+
+        if (filter != '') {
+            where.push(
+                `unaccent(pc.name) ILIKE unaccent('${filter}')`
+            );
+        }
+
+        if (is_featured == 'true' || is_featured == 'false') {
+            where.push(`prd.is_featured = ${is_featured}`);
+        }
+
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+
+        // ✅ SQL giữ nguyên where/order/limit — nhưng thêm phần row_number cho mỗi category
+        const sql = `
+            SELECT 
+                prd.id AS product_id,
+                prd.name AS product_name,
+                prd.description,
+                prd.product_img,
+                prd.product_specifications,
+                prd.warranty_period,
+                prd.product_features,
+                prd.highlight_features,
+
+                pp.price AS price,
+                pc.id AS category_id,
+                pc.name AS category_name
+            FROM product.products prd
+            JOIN product.product_categories pc   ON prd.category_id = pc.id
+            JOIN product.product_prices pp ON prd.id = pp.product_id
+            WHERE prd.id IN (
+                SELECT id FROM (
+                    SELECT 
+                        prd.id,
+                        ROW_NUMBER() OVER (PARTITION BY prd.category_id ORDER BY prd.name) AS rn
+                    FROM product.products prd   
+                    ${where}
+                    ${order}
+                ) sub
+                WHERE rn <= ${item_limit}
+            )
+        `;
+
+        const { rows } = await pool.query(sql);
+        
+        // ✅ Group theo category_name
+        const groupedResults = {};
+        for (const row of rows) {
+            const categoryName = row.category_name;
+            if (!groupedResults[categoryName]) {
+                groupedResults[categoryName] = [];
+            }
+
+            groupedResults[categoryName].push({
+                id: row.product_id,
+                name: row.product_name,
+                description: row.description,
+                product_img: row.product_img,
+                price: row.price,
+                product_specifications: JSON.parse(row.product_specifications || '{}'),
+                warranty_period: row.warranty_period,
+                product_features: row.product_features || [],
+                highlight_features: row.highlight_features || [],
+                
+                category: {
+                    id: row.category_id,
+                    name: row.category_name
+                }
+            });
+        }
+
+        return groupedResults;
     },
     getOne: async (id) => {
         const query = `
