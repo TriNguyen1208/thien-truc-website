@@ -89,4 +89,17 @@ const postContactMessage = async (applicationData) => {
 
     return { success: true, message: "Ứng tuyển thành công" };
 }
-export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage };
+
+const count = async () => {
+    const data = (await pool.query(`
+        SELECT COUNT(*)::int AS agent_count
+        FROM contact.support_agents
+    `)).rows[0];
+
+    if(!data){
+        throw new Error("Can't get support_agents");
+    }
+
+    return data;
+}
+export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage, count };
