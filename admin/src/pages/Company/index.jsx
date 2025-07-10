@@ -28,7 +28,7 @@ function Address({index,address,isChecked, isMultiple, handleDelete, handleChang
        </div>
        <div className=' flex flex-col gap-[8px]'>
          <label htmlFor="" className='text-[14px] text-black font-medium'>Link Google Map</label>
-          <input type="text"  
+          <input type="url"
            onChange={(e) => handleChange(address.id, "googlemaps_url", e.target.value)}
            className='focus:outline-none border border-gray-300 rounded-[8px] p-[12px] min-h-[45px]'
            placeholder='Vd: http://maps.google.com/...' 
@@ -286,7 +286,7 @@ const handleSelectMainAddress = (id) => {
                   Email<span className="text-red-500 ml-1">*</span>
                 </h2>
 
-          <input type="text"
+          <input type="email"
           defaultValue={companyInfo.company_email}
            maxLength={50} 
           required className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
