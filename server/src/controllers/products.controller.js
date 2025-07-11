@@ -31,31 +31,31 @@ const products = {
         try {
             const result = await productServices.products.updateFeatureOne(id, status);
             if (result.rowCount == 0) {
-                return res.status(404).json({ message: 'Product not found' });
+                return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
             }
-            return res.status(200).json({ message: 'Product updated successfully' });
+            return res.status(200).json({ message: 'Cập nhật sản phẩm thành công' });
         } catch (error) {
-            console.error('Update product error: ', error);
-            res.status(500).json({ message: 'Internal server error' });
+            console.error('Lỗi cập nhật sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
     createOne: async (req, res) => {
         try {
             await productServices.products.createOne(req.body);
-            res.status(200).json({ message: 'Product created successfully '});
+            res.status(200).json({ message: 'Tạo sản phẩm thành công'});
         } catch (error) {
-            console.error('Create product error: ', error);
-            res.status(500).json({ message: 'Internal server error' });
+            console.error('Lỗi tạo sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
     updateOne: async (req, res) => {
         const id = req.params.id;
         try {
             await productServices.products.updateOne(req.body, id);
-            res.status(200).json({ message: 'Product updated successfully '});
+            res.status(200).json({ message: 'Cập nhật sản phẩm thành công' });
         } catch (error) {
-            console.error('Update product error: ', error);
-            res.status(500).json({ message: 'Internal server error '});
+            console.error('Lỗi cập nhật sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
     deleteOne: async (req, res) => {
@@ -63,12 +63,12 @@ const products = {
         try {
             const result = await productServices.products.deleteOne(id);
             if (result.rowCount == 0) {
-                return res.status(404).json({ message: 'Product not found'});
+                return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
             }
             return res.status(200).json({ message: result}); //'Product deleted successfully' });
         } catch (error) {
-            console.error('Delete product error:', error);
-            res.status(500).json({ message: 'Internal server error'});
+            console.error('Lỗi xóa sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     }
 }
@@ -88,12 +88,12 @@ const product_categories = {
         try {
             const result = await productServices.product_categories.deleteOne(id);
             if (result.rowCount == 0) {
-                return res.status(404).json({ message: 'Product categories not found' });
+                return res.status(404).json({ message: 'PKhông tìm thấy loại sản phẩm' });
             }
-            return res.status(200).json({ message: 'Product categories deleted successfully' });
+            return res.status(200).json({ message: 'Xóa loại sản phẩm thành công' });
         } catch (error) {
-            console.error('Delete product categories error:', error);
-            res.status(500).json({ message: 'Internal server error'});
+            console.error('Lỗi xóa loại sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     }
 }
