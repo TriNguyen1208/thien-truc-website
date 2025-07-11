@@ -70,6 +70,64 @@ const manager = {
         }
 
         return data;
+    },
+    createOne: async(data) => {
+        const {
+            username,
+            password,
+            fullname,
+            phone,
+            email,
+            position,
+            description
+        } = data
+
+        const checkUsernameResult = await pool.query('SELECT 1 FROM admin.accounts WHERE username = $1 LIMIT 1', [username]);
+        if (checkUsernameResult.rowCount > 0) {
+            checkUsernameResult.rowCount = 0;
+            return checkUsernameResult;
+        }
+
+        const result = await pool.query(`
+            INSERT INTO admin.accounts (username, role, password, fullname, phone, email, position, description)
+            VALUES ($1, 'manager', $2, $3, $4 ,$5, $6, $7);
+        `, [username, password, fullname, phone, email, position, description]);
+
+        return result;
+    },
+    updateOne: async(data, username) => {
+        const {
+            // username
+            password,
+            fullname,
+            phone,
+            email,
+            position,
+            description
+        } = data
+
+        const result = await pool.query(`
+            UPDATE admin.accounts
+            SET
+                password = $2,
+                fullname = $3,
+                phone = $4,
+                email = $5,
+                position = $6,
+                description = $7
+            WHERE
+                username = $1
+        `,  [username, password, fullname, phone, email, position, description]);
+
+        return result;
+    },
+    deleteOne: async(username) => {
+        const result = await pool.query(`
+            DELETE FROM admin.activity_logs WHERE username = '${username}';
+            DELETE FROM admin.accounts WHERE username = '${username}';
+        `);
+
+        return result[1];
     }
 }
 

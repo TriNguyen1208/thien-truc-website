@@ -22,8 +22,11 @@ const API_ROUTES = {
             getAll: `${ADMIN_BASE}/managers`,
             getOne: (username) => `${ADMIN_BASE}/managers/${username}`,
             // post
+            createOne: `${ADMIN_BASE}/managers`,
             // patch
+            updateOne: (username) => `${ADMIN_BASE}/managers/${username}`,
             // delete
+            deleteOne: (username) => `${ADMIN_BASE}/managers/${username}`
         }
     },
     home: {
