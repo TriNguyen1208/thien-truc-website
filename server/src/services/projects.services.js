@@ -147,6 +147,90 @@ const projects = {
         else
             return [...results];
     },
+    getListByRegion: async (query = '', filter = '', is_featured, item_limit) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        let limit = item_limit || 100;
+
+        if (query != '') {
+            where.push(
+                `(unaccent(prj.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(prj.title::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(prj.title), unaccent('${query}')) DESC`
+            );
+        }
+
+        if (filter != '') {
+            where.push(
+                `unaccent(prj_reg.name) ILIKE unaccent('${filter}')`
+            );
+        }
+
+        if (is_featured == 'true' || is_featured == 'false') {
+            where.push(`prj.is_featured = ${is_featured}`);
+        }
+        
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+        
+        const sql = `
+            SELECT 
+                prj.id AS prj_id,
+                prj.title,
+                prj.province,
+                prj.complete_time,
+                prj.main_img,
+                prj.main_content,
+                prj_reg.id AS reg_id,
+                prj_reg.name,
+                prj_reg.rgb_color
+            FROM project.projects prj
+            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+            WHERE prj.id IN (
+                SELECT id FROM (
+                    SELECT 
+                        prj.id,
+                        ROW_NUMBER() OVER (PARTITION BY prj.region_id ORDER BY prj.title) AS rn
+                    FROM project.projects prj 
+                    ${where}
+                    ${order}
+                ) sub
+                WHERE rn <= ${limit}
+            )
+        `;
+        
+        const { rows } = await pool.query(sql);
+        const groupedResults = {};
+        for (const row of rows) {
+            const regionName = row.name;
+            if (!groupedResults[regionName]) {
+                groupedResults[regionName] = [];
+            }
+
+            groupedResults[regionName].push({
+                id: row.prj_id,
+                title: row.title,
+                province: row.province,
+                complete_time: row.complete_time,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                region: {
+                    id: row.reg_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            });
+        }
+
+        return groupedResults;
+    },
     getOne: async (id) => {
         const query = `
             select 

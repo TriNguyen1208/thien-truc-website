@@ -161,7 +161,8 @@ const products = {
 
         let where = [];
         let order = [];
-
+        const limit = item_limit || 100;
+        
         if (query != '') {
             where.push(
                 `(unaccent(prd.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
@@ -214,7 +215,7 @@ const products = {
                     ${where}
                     ${order}
                 ) sub
-                WHERE rn <= ${item_limit}
+                WHERE rn <= ${limit}
             )
         `;
 

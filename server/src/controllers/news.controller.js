@@ -16,6 +16,11 @@ const news = {
         const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page), is_published, parseInt(limit));
         res.status(200).json(data);
     },
+    getListByCategory: async (req, res) => {
+        const {query = '', filter = '', sort_by = 'popular', is_published, limit} = req.query;
+        const data = await newsServices.news.getListByCategory(query, filter, sort_by, is_published, parseInt(limit));
+        res.status(200).json(data);
+    },
     getOne: async (req, res) => {
         const id = req.params.id;
         const data = await newsServices.news.getOne(id);
