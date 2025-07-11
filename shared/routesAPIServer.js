@@ -40,6 +40,7 @@ const API_ROUTES = {
     product: {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
+        update_product_page: `${PRODUCT_BASE}/product_page`, // patch
         products: {
             // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
@@ -69,6 +70,7 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
+        update_price_page: `${PRODUCT_BASE}/price_page`, // patch
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
         count: `${PRODUCT_BASE}/count`
