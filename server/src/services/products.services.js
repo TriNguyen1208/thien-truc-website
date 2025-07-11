@@ -455,6 +455,22 @@ const product_categories = {
         }
         return product_category
     },
+    createOne: async (data) => {
+        const { productNameCategories } = data;
+        await pool.query(
+            `INSERT INTO product.product_categories (name, item_count) VALUES ($1, 0)`,
+            [productNameCategories]
+        );
+    },
+    updateOne: async (data, id) => {
+        const { productNameCategories } = data;
+        await pool.query(
+            `UPDATE product.product_categories
+            SET name = $1
+            WHERE id = $2`,
+            [productNameCategories, id]
+        );
+    },
     deleteOne: async (id) => {
         const query = `
             DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = ${id});
