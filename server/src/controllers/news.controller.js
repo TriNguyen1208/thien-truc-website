@@ -55,8 +55,9 @@ const news_contents = {
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
+    const is_published = req.query.is_published;
 
-    const data = await newsServices.getSearchSuggestions(query, filter);
+    const data = await newsServices.getSearchSuggestions(query, filter, is_published);
     res.status(200).json(data);
 }
 

@@ -313,24 +313,42 @@ const news_contents = {
     }
 }
 
-const getSearchSuggestions = async (query, filter) => {
-    const cleanedQuery = query.trim().replaceAll(`'`, ``);
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+const getSearchSuggestions = async (query, filter, is_published) => {
+    query = query.trim().replaceAll(`'`, ``);
+    filter = filter.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
+
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(N.title::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(N.title::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(N.title::text), unaccent('${query}')) DESC`);
+    }
+    if (filter != '') {
+        where.push(`unaccent(C.name::text) ILIKE unaccent('${filter}')`);
+    }
+    if (is_published == 'false' || is_published == 'true') {
+        where.push(`N.is_published = ${is_published}`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
 
     const sql = `
         SELECT N.title, N.id, N.main_img
         FROM news.news N
         JOIN news.news_categories C ON N.category_id = C.id
-        WHERE 
-            ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(N.title::text), unaccent($1::text)) > 0
-        ORDER BY
-            similarity(unaccent(N.title::text), unaccent($1::text)) DESC
-        LIMIT 5
+        ${where}
+        ${order}
+        ${limit}
     `;
-    const values = [cleanedQuery, cleanedFilter];
+
     try {
-        const result = await pool.query(sql, values);
+        const result = await pool.query(sql);
         return result.rows.map(row => ({
             query: row.title,
             id: row.id,

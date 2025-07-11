@@ -143,8 +143,9 @@ const getHighlightProducts = async (req, res) => {
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
+    const is_featured = req.query.is_featured;
 
-    const data = await productServices.getSearchSuggestions(query, filter);
+    const data = await productServices.getSearchSuggestions(query, filter, is_featured);
     res.status(200).json(data);
 }
 

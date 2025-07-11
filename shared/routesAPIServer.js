@@ -59,7 +59,7 @@ const API_ROUTES = {
         },
         price_page: `${PRODUCT_BASE}/price_page`,
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
-        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
+        search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
         count: `${PRODUCT_BASE}/count`
     },
     project: {
@@ -79,7 +79,7 @@ const API_ROUTES = {
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
-        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
+        search_suggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
         count: `${PROJECT_BASE}/count`
     },
     news: {
@@ -99,7 +99,7 @@ const API_ROUTES = {
             getAll: `${NEWS_BASE}/news_contents`,   
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
-        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
+        search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
         count: `${NEWS_BASE}/count`
     },
     recruitment: {
