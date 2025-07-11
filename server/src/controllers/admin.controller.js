@@ -12,4 +12,16 @@ const activity_logs = {
     }
 }
 
-export default { count, activity_logs};
+const manager = {
+    getAll: async(req, res) => {
+        const data = await adminServices.manager.getAll();
+        res.status(200).json(data);
+    },
+    getOne: async (req, res) => {
+        const username = req.params.username;
+        const data = await adminServices.manager.getOne(username);
+        res.status(200).json(data);
+    }
+}
+
+export default { count, activity_logs, manager};

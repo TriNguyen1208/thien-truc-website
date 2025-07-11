@@ -43,4 +43,34 @@ const activity_logs = {
     }
 }
 
-export default { count, activity_logs };
+const manager = {
+    getAll: async() => {
+        const data = (await pool.query(`
+            SELECT *
+            FROM admin.accounts
+            WHERE role = 'manager'
+            ORDER BY username ASC
+        `)).rows;
+
+        if (!data) {
+            throw new Error("Can't get accounts");
+        }
+
+        return data;
+    },
+    getOne: async(username) => {
+        const data = (await pool.query(`
+            SELECT *
+            FROM admin.accounts
+            WHERE role = 'manager' AND username = $1
+        `, [username])).rows[0];
+
+        if (!data) {
+            throw new Error("Can't get accounts");
+        }
+
+        return data;
+    }
+}
+
+export default { count, activity_logs, manager };

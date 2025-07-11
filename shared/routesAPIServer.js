@@ -16,7 +16,15 @@ const API_ROUTES = {
     admin: {
         base: ADMIN_BASE,
         count: `${ADMIN_BASE}/count`,
-        activity_logs: `${ADMIN_BASE}/activity_logs`
+        activity_logs: `${ADMIN_BASE}/activity_logs`,
+        manager: {
+            // get
+            getAll: `${ADMIN_BASE}/managers`,
+            getOne: (username) => `${ADMIN_BASE}/managers/${username}`,
+            // post
+            // patch
+            // delete
+        }
     },
     home: {
         base: HOME_BASE,
@@ -32,7 +40,7 @@ const API_ROUTES = {
         products: {
             // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
-            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
+            getListByCategosry: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/product/products`,
