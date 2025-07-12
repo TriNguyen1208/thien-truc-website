@@ -90,7 +90,10 @@ const SearchBar = ({data}) => {
     //Call API khi debounced query
     const {data: suggestions = [], isLoading} = handleSearchSuggestion(
         debouncedQuery,
-        category != null ? (category == categories[0] ? '' : category) : null,
+        category != null ? (category == categories[0] ? '' : category) : null, 
+        (displayMap !== null || display == null || display === displays[0])
+            ? null
+            : ((display === "Đã xuất bản" || display === "Trưng bày") ? true : false)
     );
     //Cap nhat displaySuggestion
     const stableSuggestion = useMemo(()=>{
@@ -144,7 +147,7 @@ const SearchBar = ({data}) => {
     }
     return (
             <div ref={wrapperRef} className={`flex flex-row gap-4 justify-between w-full rounded-md h-10`}>
-                <div className={`relative flex flex-row items-center rounded-md gap-3 px-4 w-full bg-[#F9FAFB] ${(hasButtonCategory || hasButtonDisplay) ? "" : "flex-1"} ${isFocus ? "border border-gray-500" : ""}`}>
+                <div className={`relative flex flex-row items-center rounded-md gap-3 px-4 w-full bg-[#F9FAFB] border border-gray-200 ${(hasButtonCategory || hasButtonDisplay) ? "" : "flex-1"} ${isFocus ? "border border-gray-300" : ""}`}>
                     <SearchIcon/>
                     <input
                         type='text'
@@ -184,7 +187,7 @@ const SearchBar = ({data}) => {
                     {/* Hien thi goi y */}
                     { 
                         showSuggestions && debouncedQuery && (
-                            <ul className='absolute z-10 left-0 top-full w-full bg-white shadow-md max-h-64 overflow-y-auto border border-gray-500'>
+                            <ul className='absolute z-10 left-0 top-full w-full bg-white shadow-md max-h-64 overflow-y-auto border border-gray-300'>
                                 {displaySuggestion.map((item, index) => (
                                     <li
                                         key={index}
@@ -233,7 +236,7 @@ const SearchBar = ({data}) => {
                         <div className='flex flex-row gap-4 justify-between'>
                             {hasButtonCategory && (<div className='relative h-full rounded-sm flex flex-row'>
                                 <button
-                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer'
+                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer border border-gray-200'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setDropDownOpenCategory(!dropdownOpenCategory);
@@ -268,7 +271,7 @@ const SearchBar = ({data}) => {
                             </div>)}
                             {hasButtonDisplay && (<div className='relative h-full rounded-sm flex flex-row'>
                                 <button
-                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer'
+                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer border border-gray-200'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setDropDownOpenDisplay(!dropdownOpenDisplay);

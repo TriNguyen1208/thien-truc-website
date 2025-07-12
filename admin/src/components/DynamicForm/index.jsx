@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Modal } from 'antd';
 import SimpleForm from "../SimpleForm"
 import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
@@ -57,6 +57,9 @@ const DynamicForm = ({ data, config }) => {
     }, [data]);
 
     const [formData, setFormData] = useState(initialValues);
+    useEffect(() => {
+        setFormData(initialValues);
+    }, [initialValues]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
