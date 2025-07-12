@@ -1,28 +1,35 @@
 import EditBanner from '../../components/EditBanner'
-import {useLayout} from "@/layouts/LayoutContext"
-import {useEffect} from "react"
+import { useLayout } from "@/layouts/LayoutContext"
+import { useEffect } from "react"
 const ContactPageContent = () => {
-  const {setLayoutProps} = useLayout()
+  const { setLayoutProps } = useLayout()
   useEffect(() => {
     setLayoutProps({
       title: "Nội dung Trang liên hệ",
-      description: "Quản lí nội dung hiển trị trên trang liên hệ",
+      description: "Quản lý nội dung hiển trị trên trang liên hệ",
+      hasButton: false,
     })
-  })
-  const props = {
+  }, []);
+  const configAboutUsBanner = {
     title: "Banner Trang liên hệ",
-    description: "Chỉnh sửa tiêu đề và mô tả trang chủ",
+    description: "Chỉnh sửa tiêu đề và mô tả banner",
     listInput: [
-    { label: "Tiêu đề Banner", placeholder: "Vui lòng nhập nội dung tiêu đề", contentCurrent: "Thiên Trúc là một cái gì đó" },
-    { label: "Mô tả Banner", placeholder: "Vui lòng nhập nội dung mô tả" },
+      { label: 'Tiêu đề banner', placeholder: 'Nhập nội dung banner...', contentCurrent: 'Thiên trúc được thành lập vào năm 2025', isRequire: true },
+      { label: 'Mô tả banner', placeholder: 'Nhập nội dung mô tả...', contentCurrent: 'Thiên trúc được thành lập vào năm 2025', isRequire: true },
     ],
-    saveButton: (arr) => { console.log(arr) },
+    handleSave: (values) => {
+      console.log('Giá trị đã lưu:', values);
+      // Gửi dữ liệu lên server hoặc cập nhật state
+    }
   }
   return (
     <>
-      <div className='w-full h-fit '>
-        <EditBanner {...props} />
-      </div>
+      <EditBanner
+        title={configAboutUsBanner.title}
+        description={configAboutUsBanner.description}
+        listInput={configAboutUsBanner.listInput}
+        saveButton={configAboutUsBanner.handleSave}
+      />
     </>
   )
 }

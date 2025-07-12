@@ -25,6 +25,51 @@ const products = {
         const id = req.params.id
         const data = await productServices.products.getOne(id);
         res.status(200).json(data);
+    },
+    updateFeatureOne: async (req, res) => {
+        const { id, status } = req.params;
+        try {
+            const result = await productServices.products.updateFeatureOne(id, status);
+            if (result.rowCount == 0) {
+                return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+            }
+            return res.status(200).json({ message: 'Cập nhật sản phẩm thành công' });
+        } catch (error) {
+            console.error('Lỗi cập nhật sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    createOne: async (req, res) => {
+        try {
+            await productServices.products.createOne(req.body);
+            res.status(200).json({ message: 'Tạo sản phẩm thành công'});
+        } catch (error) {
+            console.error('Lỗi tạo sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    updateOne: async (req, res) => {
+        const id = req.params.id;
+        try {
+            await productServices.products.updateOne(req.body, id);
+            res.status(200).json({ message: 'Cập nhật sản phẩm thành công' });
+        } catch (error) {
+            console.error('Lỗi cập nhật sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    deleteOne: async (req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            const result = await productServices.products.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+            }
+            return res.status(200).json({ message: result}); //'Product deleted successfully' });
+        } catch (error) {
+            console.error('Lỗi xóa sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
     }
 }
 
@@ -37,6 +82,38 @@ const product_categories = {
         const id = req.params.id
         const data = await productServices.product_categories.getOne(id);
         res.status(200).json(data);
+    },
+    createOne: async (req, res) => {
+        try {
+            await productServices.product_categories.createOne(req.body);
+            res.status(200).json({ message: 'Tạo loại sản phẩm thành công'});
+        } catch (error) {
+            console.error('Lỗi tạo loại sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    updateOne: async (req, res) => {
+        const id = req.params.id;
+        try {
+            await productServices.product_categories.updateOne(req.body, id);
+            res.status(200).json({ message: 'Cập nhật loại sản phẩm thành công'});
+        } catch (error) {
+            console.error('Lỗi cập nhat loại sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    deleteOne: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const result = await productServices.product_categories.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({ message: 'PKhông tìm thấy loại sản phẩm' });
+            }
+            return res.status(200).json({ message: 'Xóa loại sản phẩm thành công' });
+        } catch (error) {
+            console.error('Lỗi xóa loại sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
     }
 }
 
@@ -66,8 +143,9 @@ const getHighlightProducts = async (req, res) => {
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
+    const is_featured = req.query.is_featured;
 
-    const data = await productServices.getSearchSuggestions(query, filter);
+    const data = await productServices.getSearchSuggestions(query, filter, is_featured);
     res.status(200).json(data);
 }
 

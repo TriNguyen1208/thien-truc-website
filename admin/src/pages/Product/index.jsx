@@ -11,7 +11,7 @@ import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
-import ProductImageCell from './ProductImageCell'
+import ProductImageCell from '../../components/ProductImageCell'
 const Product = () => {
   const [isModalOpenAddProduct, setIsModalOpenAddProduct] = useState(false);
   const [isModalOpenEditProduct, setIsModalOpenEditProduct] = useState(false);
@@ -32,7 +32,7 @@ const Product = () => {
     { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
     { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
     { name: 'avatarImage', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
-    { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12, }
+    { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
   ]
   const dataEditProduct = [
     { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true, value: "12 tháng" },
@@ -155,3 +155,33 @@ const Product = () => {
 }
 
 export default Product
+
+/*
+    configAddHighlightNews: {
+      title: "Thêm tin tức nổi bật",
+      description: "Điền thông tin thành tựu nổi bật của công ty",
+      contentCancelButton: "Hủy",
+      contentSubmitButton: "Thêm mới",
+      widthModal: 550,
+      isModalOpenSimple: isModalOpenAddHighlightNews,
+      handleSubmitButton: handleSubmitButtonAddHighlightNews,
+      handleCancelButton: handleCancelButtonAddHighlightNews,
+      setIsModalOpenSimple: setIsModalOpenAddHighlightNews,
+      dataSearchBar: {
+        hasButtonCategory: true,
+        categories: ["Tất cả danh mục", "Điện thoại", "Sản phẩm"],
+        currentCategory: "Tất cả danh mục",
+        placeholder: "Nhập mã hoặc tên tin tức",
+        handleEnter: (id) => {
+          console.log("Kết quả chọn:", id);
+        },
+        onSearch: (query, category, display) => {
+          console.log(query, category, display)
+        },
+        handleSearchSuggestion: (query) => {
+          return useProjects.getSearchSuggestions(query);
+        }
+
+      }
+    },
+*/

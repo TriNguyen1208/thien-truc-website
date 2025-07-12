@@ -21,8 +21,14 @@ const SimpleForm = ({ data, config }) => {
     const initialValues = useMemo(() => {
         const result = {};
         data.forEach(field => {
-            const { name, value } = field;
-            result[name] = value !== undefined ? value : '';
+            const { name, type, value } = field;
+            if (type === 'checkbox') {
+                result[name] = value !== undefined ? value : false;
+            }
+            else {
+
+                result[name] = value !== undefined ? value : '';
+            }
         });
         return result;
     }, [data]);
@@ -46,11 +52,23 @@ const SimpleForm = ({ data, config }) => {
     }
     const renderInput = (item) => {
         let nameColumn = item.name || defaultField.name;
-        let type = item.type || defaultField.type;
         let value = formData[nameColumn] || defaultField.value;
+        const isFocused = focusedFields[nameColumn] || false;
+        if (item.customInput) {
+            const CustomComponent = item.customInput;
+            return (
+                <CustomComponent
+                    value={value}
+                    onChange={(e) => handleChange({ target: { name: nameColumn, value: e?.target?.value ?? e } })}
+                    onFocus={() => setFocusedFields(prev => ({ ...prev, [nameColumn]: true }))}
+                    onBlur={() => setFocusedFields(prev => ({ ...prev, [nameColumn]: false }))}
+                />
+            );
+        }
+
+        let type = item.type || defaultField.type;
         const maxLength = item.maxLength || Infinity;
         const isInvalid = maxLength !== undefined && value.length >= maxLength;
-        const isFocused = focusedFields[nameColumn] || false;
         const commonProps = {
             name: nameColumn,
             id: nameColumn,
@@ -74,14 +92,30 @@ const SimpleForm = ({ data, config }) => {
                         : '1px solid #D1D5DB'
             }
         };
+        switch (type) {
+            case 'checkbox':
+                return (
+                    <input
+                        {...commonProps}
+                        type="checkbox"
+                        checked={!!formData[nameColumn]}
+                        style={{
+                            display: 'inline-block',
+                            marginRight: '0.5rem' // tương đương với Tailwind `mr-2`
+                        }}
+                        className="accent-black"
+                    />
+                );
+            default:
+                return <input
+                    {...commonProps}
+                    type={type}
+                    value={value}
+                    placeholder={item.placeholder || defaultField.placeholder}
+                    maxLength={item.maxLength || undefined}
+                />;
+        }
 
-        return <
-            input {...commonProps}
-            type={type}
-            value={value}
-            placeholder={item.placeholder || defaultField.placeholder}
-            maxLength={item.maxLength || undefined}
-        />;
     }
     return (
         <>
@@ -101,13 +135,27 @@ const SimpleForm = ({ data, config }) => {
                                 const nameColumn = item.name || defaultField.name;
                                 return (
                                     <div key={index} style={{ gridColumn: `span ${item.width}` }}>
+
                                         {item.type !== 'checkbox' && (
-                                            <label htmlFor={nameColumn} className="block font-[700] mb-2">
-                                                {item.label || defaultField.label}
-                                                {item.isRequired && <span className="text-red-500 ml-1">*</span>}
-                                            </label>
+                                            <>
+                                                <label htmlFor={nameColumn} className="block font-[700] mb-2">
+                                                    {item.label || defaultField.label}
+                                                    {item.isRequired && <span className="text-red-500 ml-1">*</span>}
+                                                </label>
+                                                {renderInput(item, index)}
+                                            </>
                                         )}
-                                        {renderInput(item, index)}
+                                        {item.type === 'checkbox' && (
+                                            <>
+                                                <div className="flex items-center">
+
+                                                    {renderInput(item, index)}
+                                                    <label htmlFor={nameColumn} className="ml-2">
+                                                        {item.label}
+                                                    </label>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 )
                             })}

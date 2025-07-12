@@ -236,8 +236,20 @@ export const UploadIcon = () => (
 );
 
 export const AddIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10 4.167V15.833" stroke="#FFFF" strokeWidth="1.66667" strokeLinecap="round" />
-    <path d="M4.167 10H15.833" stroke="#FFFF" strokeWidth="1.66667" strokeLinecap="round" />
-  </svg>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 4.167V15.833" stroke="#FFFF" strokeWidth="1.66667" strokeLinecap="round" />
+        <path d="M4.167 10H15.833" stroke="#FFFF" strokeWidth="1.66667" strokeLinecap="round" />
+    </svg>
 );
+
+export const ArrowUpIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up-icon lucide-chevron-up text-gray-500"><path d="m18 15-6-6-6 6"/></svg>
+)
+
+export const ArrowDownIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down text-gray-500"><path d="m6 9 6 6 6-6"/></svg>
+)
+
+export const SubtractIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus"><path d="M5 12h14"/></svg>
+)

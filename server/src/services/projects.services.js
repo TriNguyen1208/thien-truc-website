@@ -320,25 +320,42 @@ const getHighlightProjects = async () => {
     }
 }
 
-const getSearchSuggestions = async (query, filter) => {
-    const cleanedQuery = query.trim().replaceAll(`'`, ``);
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+const getSearchSuggestions = async (query, filter, is_featured) => {
+    query = query.trim().replaceAll(`'`, ``);
+    filter = filter.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
+
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(P.title::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(P.title::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(P.title::text), unaccent('${query}'::text)) DESC`);
+    }
+    if (filter != '') {
+        where.push(`unaccent(R.name) ILIKE unaccent('${filter}')`);
+    }
+    if (is_featured == 'false' || is_featured == 'true') {
+        where.push(`P.is_featured = ${is_featured}`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+    
 
     const sql = `
         SELECT P.title, P.id, P.main_img
         FROM project.projects P
         JOIN project.project_regions R ON P.region_id = R.id
-        WHERE
-            ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            (unaccent(P.title::text) ILIKE '%' || unaccent($1::text) || '%' OR
-            similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
-        ORDER BY
-            similarity(unaccent(P.title::text), unaccent($1::text)) DESC
-        LIMIT 5
+        ${where}
+        ${order}
+        ${limit}
     `;
-    const values = [cleanedQuery, cleanedFilter];
     try {
-        const result = await pool.query(sql, values);
+        const result = await pool.query(sql);
         return result.rows.map(row => ({
             query: row.title,
             id: row.id,

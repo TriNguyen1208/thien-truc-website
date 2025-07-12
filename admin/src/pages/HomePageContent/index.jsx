@@ -2,9 +2,14 @@ import React from 'react'
 import EditBanner from "../../components/EditBanner"
 import FeatureCard from '../../components/FeatureCard';
 import Button from '@/components/Button'
-import { AddIcon, EditIcon, DeleteIcon } from '../../components/Icon';
+import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon } from '../../components/Icon';
 import SimpleForm from '../../components/SimpleForm'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { CancelPopup } from '../../components/Popup'
+import useProjects from '../../hooks/useProjects';
+import Table from "../../components/Table"
+import SearchBar from '../../components/Search'
+import ProductImageCell from '../../components/ProductImageCell'
 const HomePageContent = () => {
 
 
@@ -41,7 +46,8 @@ const HomePageContent = () => {
   // ===================== HIGHLIGHT FEATURE =================== 
   const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
   const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
-  
+  const [isOpenCancelHighlightFeature, setIsOpenCancelHighlightFeature] = useState(false);
+
   const [dataEditHighlightFeature, setDataEditHighlightFeature] = useState([
     { name: 'figures', label: 'Số liệu', type: 'text', width: 12, isRequired: false, placeholder: "VD: 100+" },
     { name: 'achievementName', label: 'Tên thành tựu', type: 'text', width: 12, isRequired: false, placeholder: "VD: dự án hoàn thành" },
@@ -77,7 +83,6 @@ const HomePageContent = () => {
       { title: "500+", description: "Dự án hoàn thành" },
       { title: "10+", description: "Năm kinh nghiệm" },
       { title: "1000+", description: "Khách hàng tin tưởng" },
-      { title: "500+", description: "Dự án hoàn thành" },
     ],
     configAddHighlightFeature: {
       title: "Thêm thông số mới",
@@ -105,6 +110,13 @@ const HomePageContent = () => {
       handleCancelButton: handleCancelButtonEditHighlightFeature,
       setIsModalOpenSimple: setIsModalOpenEditHighlightFeature,
     },
+    cancelPopub: {
+      open: isOpenCancelHighlightFeature,
+      setOpen: setIsOpenCancelHighlightFeature,
+      notification: "Xác nhận xóa",
+      subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
+      buttonAction2: () => { setIsOpenCancelHighlightFeature(false) },
+    }
   }
   const handleEditButton = (item) => {
 
@@ -117,9 +129,120 @@ const HomePageContent = () => {
     console.log(dataEditHighlightFeature);
   }
   const handleDeleteButton = (item) => {
+    setIsOpenCancelHighlightFeature(true);
     console.log(item);
   }
 
+  // ===================== HIGHLIGHT NEWS =================== 
+  const [isModalOpenAddHighlightNews, setIsModalOpenAddHighlightNews] = useState(false);
+  const handleSubmitButtonAddHighlightNews = (valueForm) => {
+    console.log('Day la button submit', valueForm)
+    setIsModalOpenAddHighlightNews(false)
+  }
+  const handleCancelButtonAddHighlightNews = () => {
+    console.log('Day la button cancle')
+    setIsModalOpenAddHighlightNews(false)
+  }
+  const configHighlightNews = {
+    title: "Danh sách tin tức nổi bật",
+    description: "4 tin tức",
+    propsAddButton: {
+      Icon: AddIcon,
+      text: "Thêm tin tức",
+      colorText: "#ffffff",
+      colorBackground: "#000000",
+       padding: 8,
+
+    },
+    propsSaveButton: {
+      Icon: SaveIcon,
+      text: "Lưu tin tức nổi bật",
+      colorText: "#ffffff",
+      colorBackground: "#000000",
+      padding: 9,
+    },
+      configAddHighlightNews: {
+      title: "Thêm tin tức nổi bật",
+      description: "Điền thông tin thành tựu nổi bật của công ty",
+      contentCancelButton: "Hủy",
+      contentSubmitButton: "Thêm mới",
+      widthModal: 700,
+      isModalOpenSimple: isModalOpenAddHighlightNews,
+      handleSubmitButton: handleSubmitButtonAddHighlightNews,
+      handleCancelButton: handleCancelButtonAddHighlightNews,
+      setIsModalOpenSimple: setIsModalOpenAddHighlightNews,
+    },
+    dataAddHighlightNews: [
+      {
+        name: 'search',
+        label: 'Tìm kiếm sản phẩm',
+        width: 12,
+        customInput: ({ value }) => (
+          <SearchBar
+            data={{
+              hasButtonCategory: true,
+              categories: ["Tất cả danh mục", "Điện thoại", "Sản phẩm"],
+              currentCategory: "Tất cả danh mục",
+              placeholder: "Tìm kiếm...",
+              currentQuery: value,
+              handleEnter: (id) => {
+                console.log("Kết quả chọn:", id);
+              },
+              onSearch: (query, category, display) => {
+                console.log(query, category, display)
+              },
+              handleSearchSuggestion: (query) => {
+                return useProjects.getSearchSuggestions(query);
+              }
+            }}
+          />
+        )
+      },
+      { name: 'putOnTop', label: 'Đặt lên đầu', type: 'checkbox', width: 12 }
+    ],
+    table: {
+      columns: ["Thứ tự", "Mã tin tức", "Ảnh", "Tiêu đề", "Loại tin tức", "Ngày xuất bản", "Thao tác"],
+      data: [
+        [
+          {
+            type: "component", component: <div className='flex flex-col gap-2'>
+              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowUpIcon className="text-gray-300" /></button>
+              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowDownIcon className="text-gray-300" /></button>
+            </div>
+          },
+          { type: "text", content: "1" },
+          { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> },
+          { type: "text", content: "Ra mắt sản phẩm Iphone 15 promax" },
+          { type: "text", content: "Công ty" },
+          { type: "text", content: "15/01/2024" },
+          {
+            type: "array-components", components: [
+              <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => console.log("123")}    >      <EditIcon />    </button>,
+              <button className="px-2 py-2 border  border-gray-300 rounded-md cursor-pointer">      <SubtractIcon />    </button>,
+            ]
+          }],
+        [
+          {
+            type: "component", component: <div className='flex flex-col gap-2'>
+              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowUpIcon className="text-gray-300" /></button>
+              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowDownIcon className="text-gray-300" /></button>
+            </div>
+          },
+          { type: "text", content: "1" },
+          { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> },
+          { type: "text", content: "Ra mắt sản phẩm Iphone 15 promax" },
+          { type: "text", content: "Công ty" },
+          { type: "text", content: "15/01/2024" },
+          {
+            type: "array-components", components: [
+              <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => console.log("123")}    >      <EditIcon />    </button>,
+              <button className="px-2 py-2 border  border-gray-300 rounded-md cursor-pointer">      <SubtractIcon />    </button>,
+            ]
+          }]
+      ]
+    }
+
+  }
 
   return (
     <>
@@ -139,7 +262,6 @@ const HomePageContent = () => {
       <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
         <div className='flex items-center justify-between'>
           <div>
-
             <div className="mb-[4px]">
               <h1 className="text-[24px] text-black font-semibold">
                 {configHighlightFeature.title}
@@ -167,7 +289,7 @@ const HomePageContent = () => {
                 }
                 buttonDelete={
                   <button onClick={() => handleDeleteButton(item)}>
-                    <DeleteIcon />
+                    <SubtractIcon />
                   </button>
                 }
               />
@@ -175,8 +297,46 @@ const HomePageContent = () => {
 
         </div>
       </div>
+      <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
+        <div className='flex items-center justify-between mb-[30px]'>
+          <div>
+            <div className="mb-[4px]">
+              <h1 className="text-[24px] text-black font-semibold">
+                {configHighlightNews.title}
+              </h1>
+            </div>
+            <div className="mb-[24px]">
+              <p className="text-[14px] text-[#71717A] font-regular">
+                {configHighlightNews.description}
+              </p>
+            </div>
+          </div>
+          <div className='w-[160px] h-[40px]'>
+            <button type="submit" className='w-[155px]' onClick={() => setIsModalOpenAddHighlightNews(true)}> <Button {...configHighlightNews.propsAddButton} /></button>
+          </div>
+
+        </div>
+        <div className='mb-[30px]'>
+          <Table columns={configHighlightNews.table.columns} data={configHighlightNews.table.data} isSetting={false} />
+        </div>
+        <div className='mb-[30px]'>
+          Thời gian chuyển giữa các tin tức
+          <input type='number' />
+        </div>
+        <div className='w-[145px] h-[40px]'>
+          <button type="submit" className='w-[190px]' onClick={() => console.log("Luu tin tuc noi bat")}> <Button {...configHighlightNews.propsSaveButton} /></button>
+        </div>
+      </div>
       <SimpleForm data={configHighlightFeature.dataAddHighlightFeature} config={configHighlightFeature.configAddHighlightFeature} />
       <SimpleForm data={dataEditHighlightFeature} config={configHighlightFeature.configEditHighlightFeature} />
+      <SimpleForm data={configHighlightNews.dataAddHighlightNews} config={configHighlightNews.configAddHighlightNews} />
+      <CancelPopup
+        open={configHighlightFeature.cancelPopub.open}
+        setOpen={configHighlightFeature.cancelPopub.setOpen}
+        notification={configHighlightFeature.cancelPopub.notification}
+        subTitle={configHighlightFeature.cancelPopub.subTitle}
+        buttonAction2={configHighlightFeature.cancelPopub.buttonAction2}
+      />
     </>
   );
 }

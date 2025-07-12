@@ -55,8 +55,9 @@ const getHighlightProjects = async (req, res) => {
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
+    const is_featured = req.query.is_featured;
 
-    const data = await projectsServices.getSearchSuggestions(query, filter);
+    const data = await projectsServices.getSearchSuggestions(query, filter, is_featured);
     res.status(200).json(data);
 }
 

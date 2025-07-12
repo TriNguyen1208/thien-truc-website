@@ -30,13 +30,28 @@ const API_ROUTES = {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
         products: {
+            // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
+            // post
+            createOne: `${PRODUCT_BASE}/product/products`,
+            // patch
+            updateOne: (id) => `${PRODUCT_BASE}/product/products/:id`,
+            updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
+            // delete
+            deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
         },
         product_categories: {
+            // get
             getAll: `${PRODUCT_BASE}/product_categories`,
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
+            // post
+            createOne: `${PRODUCT_BASE}/product_categories`,
+            // patch
+            updateOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
+            // delete
+            deleteOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`
         },
         product_prices: {
             getAll: (query, filter) => `${PRODUCT_BASE}/product_prices?query=${uri(query)}&filter=${uri(filter)}`,
@@ -44,7 +59,7 @@ const API_ROUTES = {
         },
         price_page: `${PRODUCT_BASE}/price_page`,
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
-        search_suggestions: (query='', filter='') => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
+        search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
         count: `${PRODUCT_BASE}/count`
     },
     project: {
@@ -64,7 +79,7 @@ const API_ROUTES = {
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
-        search_suggestions: (query='', filter='') => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
+        search_suggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
         count: `${PROJECT_BASE}/count`
     },
     news: {
@@ -79,12 +94,12 @@ const API_ROUTES = {
         news_categories: {
             getAll: `${NEWS_BASE}/news_categories`,
             getOne: (id) => `${NEWS_BASE}/news_categories/${id}`,
-        },
+        },  
         news_contents: {
-            getAll: `${NEWS_BASE}/news_contents`,
+            getAll: `${NEWS_BASE}/news_contents`,   
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
-        search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
+        search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
         count: `${NEWS_BASE}/count`
     },
     recruitment: {
