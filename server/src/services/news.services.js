@@ -158,6 +158,98 @@ const news = {
             };
         else return [...results];
     },
+    getListByCategory: async (query = '', filter = '', sort_by = 'date_desc', is_published, item_limit) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        const limit = item_limit || 100;
+
+        if (query != '') {
+            where.push(
+                `(unaccent(n.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(n.title::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(n.title), unaccent('${query}')) DESC`
+            );
+        }
+
+        if (filter != '') {
+            where.push(
+                `unaccent(n_cate.name) ILIKE unaccent('${filter}')`
+            );
+            
+            let order_option = 'n.public_date DESC';
+            if (sort_by == 'popular')
+                order_option = 'n.num_readers DESC';
+            order.push(order_option);
+        }
+
+        if (is_published == 'true' || is_published == 'false') {
+            where.push(`n.is_published = ${is_published}`);
+        }
+        
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+
+        const sql = `
+            SELECT 
+                n.id AS news_id,
+                n.title,
+                n.public_date,
+                n.measure_time,
+                n.num_readers,
+                n.main_img,
+                n.main_content,
+
+                n_cate.id AS category_id,
+                n_cate.name,
+                n_cate.rgb_color
+            FROM news.news n
+            JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+            WHERE n.id IN (
+                SELECT id FROM (
+                    SELECT 
+                        n.id,
+                        ROW_NUMBER() OVER (PARTITION BY n.category_id ORDER BY n.title) AS rn
+                    FROM news.news n   
+                    ${where}
+                    ${order}
+                ) sub
+                WHERE rn <= ${limit}
+            )
+        `;
+        const { rows } = await pool.query(sql);
+
+        const groupedResults = {};
+        for (const row of rows) {
+            const categoryName = row.name;
+            if (!groupedResults[categoryName]) {
+                groupedResults[categoryName] = [];
+            }
+
+            groupedResults[categoryName].push({
+                id: row.news_id,
+                title: row.title,
+                public_date: row.public_date,
+                measure_time: row.measure_time,
+                num_readers: row.num_readers,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                category: {
+                    id: row.category_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            });
+        }
+
+        return groupedResults;
+    },
     getOne: async (id) => {
         const query = `
             select 

@@ -16,7 +16,18 @@ const API_ROUTES = {
     admin: {
         base: ADMIN_BASE,
         count: `${ADMIN_BASE}/count`,
-        activity_logs: `${ADMIN_BASE}/activity_logs`
+        activity_logs: `${ADMIN_BASE}/activity_logs`,
+        manager: {
+            // get
+            getAll: `${ADMIN_BASE}/managers`,
+            getOne: (username) => `${ADMIN_BASE}/managers/${username}`,
+            // post
+            createOne: `${ADMIN_BASE}/managers`,
+            // patch
+            updateOne: (username) => `${ADMIN_BASE}/managers/${username}`,
+            // delete
+            deleteOne: (username) => `${ADMIN_BASE}/managers/${username}`
+        }
     },
     home: {
         base: HOME_BASE,
@@ -29,10 +40,11 @@ const API_ROUTES = {
     product: {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
+        update_product_page: `${PRODUCT_BASE}/product_page`, // patch
         products: {
             // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
-            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
+            getListByCategosry: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/product/products`,
@@ -58,6 +70,7 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
+        update_price_page: `${PRODUCT_BASE}/price_page`, // patch
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
         count: `${PRODUCT_BASE}/count`

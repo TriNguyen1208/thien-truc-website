@@ -64,6 +64,22 @@ const getProductPage = async () => {
     }
 }
 
+const updateProductPage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE product.product_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
+}
+
 const products = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
@@ -161,7 +177,8 @@ const products = {
 
         let where = [];
         let order = [];
-
+        const limit = item_limit || 100;
+        
         if (query != '') {
             where.push(
                 `(unaccent(prd.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
@@ -214,7 +231,7 @@ const products = {
                     ${where}
                     ${order}
                 ) sub
-                WHERE rn <= ${item_limit}
+                WHERE rn <= ${limit}
             )
         `;
 
@@ -489,6 +506,22 @@ const getPricePage = async () => {
         throw new Error("Can't get price_page");
     }
     return price_page;
+}
+
+const updatePricePage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE product.price_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
 }
 
 const product_prices = {
@@ -807,4 +840,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };

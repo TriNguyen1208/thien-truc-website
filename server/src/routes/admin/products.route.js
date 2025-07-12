@@ -20,6 +20,8 @@ router.get('/count', productController.count);
 router.post('/products', productController.products.createOne);
 router.post('/product_categories', productController.product_categories.createOne);
 
+router.patch('/product_page', productController.updateProductPage);
+router.patch('/price_page', productController.updatePricePage);
 router.patch('/products/:id', productController.products.updateOne);
 router.patch('/products/is_featured/:id/:status', productController.products.updateFeatureOne);
 router.patch('/product_categories/:id', productController.product_categories.updateOne);

@@ -10,6 +10,16 @@ const getProductPage = async (req, res) => {
     res.status(200).json(data);
 }
 
+const updateProductPage = async (req, res) => {
+    try {
+        await productServices.updateProductPage(req.body);
+        return res.status(200).json({ message: 'Cập nhật trang sản phẩm thành công' });
+    } catch (error) {
+        console.error('Lỗi cập nhật trang sản phẩm: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
+
 const products = {
     getList: async (req, res) => {
         const {query ='', filter = '', page, is_featured, limit} = req.query;
@@ -122,6 +132,16 @@ const getPricePage = async (req, res) => {
     res.status(200).json(data);
 }
 
+const updatePricePage = async (req, res) => {
+    try {
+        await productServices.updatePricePage(req.body);
+        return res.status(200).json({ message: 'Cập nhật trang bảng giá thành công' });
+    } catch (error) {
+        console.error('Lỗi cập nhật trang bảng giá: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
+
 const product_prices = {
     getAll: async (req, res) => {
         const {query ='', filter = ''} = req.query;
@@ -154,4 +174,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
