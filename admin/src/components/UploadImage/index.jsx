@@ -6,15 +6,15 @@ const UploadImage = ({
     setForm,
 }) => {
     const inputRef = useRef();
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState(false);
     const handleButtonClick = () => {
         inputRef.current.click();
     }
     const handleChange= (e) => {
         const file = e.target.files[0];
         if(file){
-            setFile(file.name)
-            setForm((prev) => ({ ...prev, "link_image": file.name }));
+            setFile(file)
+            setForm((prev) => ({ ...prev, "image": file }));
         }
     }
     return (
@@ -50,7 +50,7 @@ const UploadImage = ({
                     >
                         <span className='font-medium'>Nhập từ thiết bị</span>
                     </CustomButton>
-                    <span className={`${file == null ? "hidden": ""}`}>{file != null && file.slice(0, 25)}</span>
+                    <span className={`${file == null ? "hidden": ""}`}>{file != false && file.name.slice(0, 25)}</span>
                 </div>
             </div> 
         </div>
