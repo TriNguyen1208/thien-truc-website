@@ -1,45 +1,58 @@
-import React from 'react'
-import { useEffect } from 'react';
-import { useContext } from 'react';
-import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom'
-import {Modal} from 'antd'
-const useNavigationGuard = (shouldWarn) => {
-  const location = useLocation();
-  const navigator = useContext(UNSAFE_NavigationContext).navigator;
+import { useEffect, useContext, useRef } from 'react';
+import { UNSAFE_NavigationContext } from 'react-router-dom';
+import useConfirmModal from './useConfirmModal';
 
-  //Cảnh báo khi rời khỏi hoăc reload trang
+const useNavigationGuard = (shouldWarn) => {
+  const navigator = useContext(UNSAFE_NavigationContext).navigator;
+  const { confirm, modal } = useConfirmModal();
+  // Cảnh báo khi reload hoặc đóng tab
+  const shouldWarnRef = useRef(shouldWarn);
+  const patchedRef = useRef(false);
+
+  // Luôn cập nhật shouldWarn mới nhất vào ref
   useEffect(() => {
-      const handleBeforeSave = (e) => {
-          if(!shouldWarn) return;
-          e.preventDefault();
-          e.returnValue = '';
-      }
-      window.addEventListener('beforeunload', handleBeforeSave);
-      return () => window.removeEventListener('beforeunload', handleBeforeSave);
-  }, [shouldWarn])
+    shouldWarnRef.current = shouldWarn;
+  }, [shouldWarn]);
+
   useEffect(() => {
-      if(!shouldWarn) return;
-      const originalPush = navigator.push;
-      const originalReplace = navigator.replace;
-      const showConfirm = (method, ...args) => {
-        Modal.confirm({
-          title: 'Rời khỏi trang?',
-          content: 'Bạn có chắc chắn muốn rời khỏi? Dữ liệu chưa lưu sẽ bị mất.',
-          okText: 'Rời đi',
-          cancelText: 'Ở lại',
-          onOk: () => {
-            navigator.push = originalPush;
-            navigator.replace = originalReplace;
-            method(...args); // tiếp tục chuyển route
-          },
-      })};
-      navigator.push = (...args) => showConfirm(originalPush, ...args);
-      navigator.replace = (...args) => showConfirm(originalReplace, ...args);
-  
-      return () => {
+    const handleBeforeUnload = (e) => {
+      if (!shouldWarnRef.current) return;
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []); // ✅ chỉ gắn 1 lần duy nhất
+
+  // Chặn điều hướng nội bộ
+  useEffect(() => {
+    if (patchedRef.current) return;
+    const originalPush = navigator.push;
+    const originalReplace = navigator.replace;
+    const showConfirm = async (method, ...args) => {
+      if (!shouldWarnRef.current) return method(...args);
+      const result = await confirm();
+      if (result) {
         navigator.push = originalPush;
         navigator.replace = originalReplace;
-      };
-  }, [shouldWarn, navigator, location])
-}
-export default useNavigationGuard
+        method(...args);
+      }
+    };
+
+    navigator.push = (...args) => showConfirm(originalPush, ...args);
+    navigator.replace = (...args) => showConfirm(originalReplace, ...args);
+
+    patchedRef.current = true;
+
+    return () => {
+      navigator.push = originalPush;
+      navigator.replace = originalReplace;
+      patchedRef.current = false;
+    };
+  }, [confirm, navigator]);
+
+  return modal; // Render modal ở component chính
+};
+
+export default useNavigationGuard;

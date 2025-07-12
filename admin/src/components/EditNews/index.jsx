@@ -1,26 +1,17 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react'
 import CustomButton from '../ButtonLayout'
 import { PlusIcon, OpenIcon, SaveIcon } from '../Icon'
+import UploadImage from '../UploadImage';
+import SaveEdit from '../SaveEdit';
 const EditNews = ({
     categories,
     displays,
-    currentCategory,
-    currentDisplay,
     form,
-    setForm
+    setForm,
+    onSave,
+    onDelete
 }) => {
-    const inputRef = useRef();
-    const handleButtonClick = () => {
-        inputRef.current.click();
-    }
-    const handleChange= (e) => {
-        const file = e.target.files[0];
-        if(file){
-            setFile(file.name)
-            setForm((prev) => ({ ...prev, "link_image": file.name }));
-        }
-    }
-    const [file, setFile] = useState(null);
+    
     const [dropdownOpenCategory, setDropDownOpenCategory] = useState(false);
     const [dropdownOpenDisplay, setDropDownOpenDisplay] = useState(false);
     // const [category, setCategory] = useState(currentCategory);
@@ -64,9 +55,7 @@ const EditNews = ({
         document.addEventListener('mousedown', handleClickOutside); //lang nghe du kien click chuot
         return () => document.removeEventListener('mousedown', handleClickOutside); //go bo su kien event listener. Tranh lap lai nhieu lan
     })
-    const handleButton = () => {
-        console.log(form)
-    }
+    
     return (
         <div className='flex flex-col flex-1 gap-6 max-w-[25%]'>
             <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden overflow-y-hidden h-[40%]'>
@@ -172,62 +161,8 @@ const EditNews = ({
                     </div>
                 </div>
             </div>  
-            <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden '>
-                <h3 className='text-2xl font-semibold text-[#09090B]'>Ảnh đại diện</h3>
-                <div className='flex flex-col gap-4'>
-                    <input 
-                        type="text" 
-                        required 
-                        className='px-4 h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none'
-                        placeholder='Nhập link ảnh'
-                        value={form.link_image}
-                        onChange={(e) => setForm((prev) => ({ ...prev, ["link_image"]: e.target.value }))}
-                    />
-                    <span className='text-center'>Hoặc</span>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        ref={inputRef}
-                        onChange={handleChange}
-                        hidden
-                    />
-                    <CustomButton
-                        backgroundColor="white"
-                        borderColor="#e4e4e7"
-                        hoverBackgroundColor="#f3f4f6"
-                        textColor="#364153"
-                        hoverTextColor="#364153"
-                        paddingX={16}
-                        height={45}
-                        onClick={handleButtonClick}
-                    >
-                        <span className='font-medium'>Nhập từ thiết bị</span>
-                    </CustomButton>
-                    <span className={`${file == null ? "hidden": ""}`}>{file != null && file.slice(0, 25)}</span>
-                </div>
-            </div>  
-            <div className='flex flex-col gap-2'>
-                <CustomButton
-                    onClick={handleButton}
-                >
-                    <div className='flex gap-4 items-center'>
-                        <SaveIcon/>
-                        <span>Lưu tin tức</span>
-                        <span></span>
-                    </div>
-                </CustomButton>
-                <CustomButton
-                    backgroundColor="white"
-                    borderColor="#e4e4e7"
-                    hoverBackgroundColor="#f3f4f6"
-                    textColor="#364153"
-                    hoverTextColor="#364153"
-                    paddingX={16}
-                    height={45}
-                >
-                    <span>Hủy</span>
-                </CustomButton>
-            </div>
+            <UploadImage form={form} setForm={setForm}/>
+            <SaveEdit form={form} onSave={onSave} onDelete={onDelete}/>
         </div>
     )
 }

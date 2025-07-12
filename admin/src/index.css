@@ -22,3 +22,6 @@ body .tox-editor-header{
 body .tox .tox-edit-area::before{
   border: 1px solid #d1d5dc !important
 }
+.ant-modal-root {
+  z-index: 9999 !important;
+}
