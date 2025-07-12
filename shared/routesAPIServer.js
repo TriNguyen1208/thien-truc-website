@@ -85,6 +85,7 @@ const API_ROUTES = {
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
         search_suggestions: (query='', filter='') => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}`,
+        search_categories_suggestions: (query='') => `${NEWS_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${NEWS_BASE}/count`
     },
     recruitment: {

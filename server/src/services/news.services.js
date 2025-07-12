@@ -315,6 +315,28 @@ const news_contents = {
     }
 }
 
+const getSearchCategoriesSuggestions = async (query) => {
+    const cleanedQuery = query.trim().replaceAll(`'`, ``);
+    const sql = `
+        SELECT C.name, C.id, C.rgb_color
+        FROM news.news_categories C
+        WHERE similarity(unaccent(C.name::text), unaccent($1::text)) > 0
+        ORDER BY similarity(unaccent(C.name::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [cleanedQuery];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id,
+            rgb_color: row.rgb_color
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+}
+
 const getSearchSuggestions = async (query, filter) => {
     const cleanedQuery = query.trim().replaceAll(`'`, ``);
     const cleanedFilter = filter.trim().replaceAll(`'`, ``);
@@ -366,4 +388,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count};
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchCategoriesSuggestions, getSearchSuggestions, count};

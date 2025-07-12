@@ -78,6 +78,14 @@ const news_contents = {
         })
     }
 }
+function useGetSearchCategoriesSuggest(query){
+    return useQuery({
+        queryKey: ['admin_news-categories-suggestions', query],
+        queryFn: () => newsServices.getSearchCategoriesSuggestions(query),
+        staleTime: 5 * 60 * 1000,
+    })
+}
+
 function useSearchSuggest(query, filter){
     return useQuery({
         queryKey: ['admin_news-suggestions', query, filter],
@@ -101,5 +109,6 @@ export default {
         getAll: news_contents.useGetAll,
         getOne: news_contents.useGetOne,
     },
+    getSearchCategoriesSuggestions: useGetSearchCategoriesSuggest,
     getSearchSuggestions: useSearchSuggest,
 };
