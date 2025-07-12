@@ -77,10 +77,10 @@ function useGetHighlightProjects(){
     })
 }
 
-function useSearchSuggest(query, filter){
+function useSearchSuggest(query, filter, is_feature){
     return useQuery({
-        queryKey: ['admin_project-suggestions', query, filter],
-        queryFn: () => projectsServices.getSearchSuggestions(query, filter),
+        queryKey: ['admin_project-suggestions', query, filter, is_feature],
+        queryFn: () => projectsServices.getSearchSuggestions(query, filter, is_feature),
         staleTime: 5 * 60 * 1000,
     })
 }
