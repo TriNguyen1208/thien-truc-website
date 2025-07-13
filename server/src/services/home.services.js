@@ -63,6 +63,65 @@ const highlight_stats_about_us = {
             throw new Error("Can't get highlight_stats_about_us");
         }    
         return highlight_stat_with_id;
+    },
+
+    createOne: async (data) => {
+        const { figures, achievementName } = data;
+
+        // Kiểm tra số lượng thông số có đủ 3 chưa (giới hạn 3)
+        const rowCount = (await pool.query('SELECT count(*) FROM home.highlight_stats_about_us')).rows[0].count;
+        if (rowCount == 3)
+            return {
+                status: 409,
+                message: "Không thể thêm tạo Thông Số Nổi Bật vì đã đủ số lượng (3)"
+            }
+        
+        await pool.query(`
+            INSERT INTO home.highlight_stats_about_us (number_text, label)
+            VALUES ($1, $2)    
+        `, [figures, achievementName]);
+
+        return {
+            status: 200,
+            message: 'Tạo Thông Số Nổi Bật thành công'
+        }
+    },
+
+    updateOne: async (data, id) => {
+        const { figures, achievementName } = data;
+
+        const rowCount = (await pool.query(`
+            UPDATE home.highlight_stats_about_us
+            SET
+                number_text = $1,
+                label = $2
+            WHERE
+                id = $3
+        `, [figures, achievementName, id])).rowCount;
+        
+        if (rowCount > 0) return {
+            status: 200,
+            message: "Cập nhật Thông Số Nổi Bật thành công"
+        }
+        else return {
+            status: 404,
+            message: "Không tìm thấy Thông Số Nổi Bật"
+        }
+    },
+
+    deleteOne: async (id) => {
+        const rowCount = (await pool.query(`
+            DELETE FROM home.highlight_stats_about_us WHERE id = $1
+        `, [id])).rowCount;
+
+        if (rowCount > 0) return {
+            status: 200,
+            message: "Xóa Thông Số Nổi Bật thành công"
+        }
+        else return {
+            status: 404,
+            message: "Không tìm thấy Thông Số Nổi Bật"
+        }
     }
 }
 export default { getAllTables, getHomePage, updateHomePage, highlight_stats_about_us };
