@@ -32,9 +32,17 @@ const API_ROUTES = {
     home: {
         base: HOME_BASE,
         home_page: `${HOME_BASE}/home_page`,
+        updateHomePage: {
+            // patch
+            banner: `${HOME_BASE}/home_page/banner`,
+            aboutUs: `${HOME_BASE}/home_page/about_us`,
+        },
         highlight_stats_about_us: {
             getAll: `${HOME_BASE}/highlight_stats_about_us`,
             getOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
+            createOne: `${HOME_BASE}/home_page/highlight_stats_about_us`,
+            updateOne: (id) => `${HOME_BASE}/home_page/highlight_stats_about_us/${id}`,
+            deleteOne: (id) => `${HOME_BASE}/home_page/highlight_stats_about_us/${id}`,
         },
     },
     product: {
@@ -44,12 +52,12 @@ const API_ROUTES = {
         products: {
             // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
-            getListByCategosry: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
+            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/product/products`,
             // patch
-            updateOne: (id) => `${PRODUCT_BASE}/product/products/:id`,
+            updateOne: (id) => `${PRODUCT_BASE}/product/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
             // delete
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
