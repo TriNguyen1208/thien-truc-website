@@ -51,4 +51,4 @@ api.interceptors.response.use(
     }
 );
 
-export { axiosInstance, api };
+export default { axiosInstance, api };
