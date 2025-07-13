@@ -17,4 +17,4 @@ values (
 	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/13.jpg.aspx?width=542&height=400',
 	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/3.jpg.aspx?width=572&height=391',
 	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/4.jpg.aspx?width=570&height=473'
-);
+);  

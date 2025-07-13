@@ -32,6 +32,11 @@ const API_ROUTES = {
     home: {
         base: HOME_BASE,
         home_page: `${HOME_BASE}/home_page`,
+        update_home_page: {
+            // patch
+            banner: `${HOME_BASE}/home_page/banner`,
+            about_us: `${HOME_BASE}/home_page/about_us`,
+        },
         highlight_stats_about_us: {
             getAll: `${HOME_BASE}/highlight_stats_about_us`,
             getOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
