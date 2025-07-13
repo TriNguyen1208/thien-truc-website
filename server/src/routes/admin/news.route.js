@@ -13,6 +13,7 @@ router.get('/news_categories/:id', newsController.news_categories.getOne);
 router.get('/news_contents', newsController.news_contents.getAll);
 router.get('/news_contents/:id', newsController.news_contents.getOne);
 router.get('/search_suggestions', newsController.getSearchSuggestions);
+router.get('/search_categories_suggestions', newsController.getSearchCategoriesSuggestions);
 router.get('/count', newsController.count);
 router.get('/featured_news', newsController.featured_news.getAll);
 

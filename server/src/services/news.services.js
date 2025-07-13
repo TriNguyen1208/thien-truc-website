@@ -144,6 +144,7 @@ const news = {
             num_readers: row.num_readers,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_published: row.is_published,
             category: {
                 id: row.category_id,
                 name: row.name,
@@ -413,6 +414,29 @@ const news_contents = {
     }
 }
 
+const getSearchCategoriesSuggestions = async (query) => {
+    const cleanedQuery = query.trim().replaceAll(`'`, ``);
+    const sql = `
+        SELECT *
+        FROM news.news_categories C
+        WHERE similarity(unaccent(C.name::text), unaccent($1::text)) > 0
+        ORDER BY similarity(unaccent(C.name::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [cleanedQuery];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id,
+            rgb_color: row.rgb_color,
+            item_count: row.item_count || 0
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+}
+
 const getSearchSuggestions = async (query, filter, is_published) => {
     query = query.trim().replaceAll(`'`, ``);
     filter = filter.trim().replaceAll(`'`, ``);
@@ -540,4 +564,4 @@ const featured_news = {
 }
 
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, featured_news};
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};

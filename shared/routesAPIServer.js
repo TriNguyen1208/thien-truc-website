@@ -101,6 +101,7 @@ const API_ROUTES = {
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
         search_suggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
+        search_categories_suggestions: (query='') => `${PROJECT_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${PROJECT_BASE}/count`
     },
     news: {
@@ -122,6 +123,7 @@ const API_ROUTES = {
         },
         updateFeaturedNews: `${NEWS_BASE}/featured_news`, // patch
         search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
+        search_categories_suggestions: (query='') => `${NEWS_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${NEWS_BASE}/count`
     },
     recruitment: {

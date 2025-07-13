@@ -57,6 +57,12 @@ const news_contents = {
     }
 }
 
+const getSearchCategoriesSuggestions = async (req, res) => {
+    const query = req.query.query || '';
+    const data = await newsServices.getSearchCategoriesSuggestions(query);
+    res.status(200).json(data);
+}
+
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
@@ -86,4 +92,4 @@ const featured_news = {
         }
     }
 }
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, featured_news};
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news};

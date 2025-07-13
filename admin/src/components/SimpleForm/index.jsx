@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Modal } from 'antd';
+import { ChromePicker } from "react-color";
+
 const SimpleForm = ({ data, config }) => {
     const [focusedFields, setFocusedFields] = useState({});
     const defaultField = {
@@ -72,14 +74,74 @@ const SimpleForm = ({ data, config }) => {
                         : '1px solid #D1D5DB'
             }
         };
+        
+        switch (type) {
+            case 'color': {
+                const [showColorPicker, setShowColorPicker] = useState(false);
 
-        return <
-            input {...commonProps}
-            type={type}
-            value={value}
-            placeholder={item.placeholder || defaultField.placeholder}
-            maxLength={item.maxLength || undefined}
-        />;
+                useEffect(() => {
+                    const handleClickOutside = (e) => {
+                        if (!e.target.closest(`#color-picker-${nameColumn}`)) {
+                            setShowColorPicker(false);
+                        }
+                    };
+                    document.addEventListener("mousedown", handleClickOutside);
+                    return () => {
+                        document.removeEventListener("mousedown", handleClickOutside);
+                    };
+                }, []);
+
+                return (
+                    <div className="relative" id={`color-picker-${nameColumn}`}>
+                        <div
+                            className="flex items-center space-x-3 mb-2 cursor-pointer border border-gray-300 rounded p-2"
+                            onClick={() => setShowColorPicker(!showColorPicker)}
+                        >
+                            <div
+                                className="w-6 h-6 rounded border"
+                                style={{ backgroundColor: value }}
+                            />
+                            <input
+                                type="text"
+                                value={value}
+                                onChange={(e) => {
+                                    const newColor = e.target.value;
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        [nameColumn]: newColor
+                                    }));
+                                }}
+                                className="w-full text-gray-800 text-[15px] font-normal outline-none bg-transparent"
+                                placeholder={item.placeholder || "#ffffff"}
+                            />
+                        </div>
+
+                        {showColorPicker && (
+                            <div className="absolute z-50 mt-2 shadow-lg" style={{ top: '100%', left: 0 }}>
+                                <ChromePicker
+                                    color={value}
+                                    onChange={(color) => {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            [nameColumn]: color.hex
+                                        }));
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            default:
+                return <
+                    input {...commonProps}
+                    type={type}
+                    value={value}
+                    placeholder={item.placeholder || defaultField.placeholder}
+                    maxLength={item.maxLength || undefined}
+                />;
+            }
     }
     return (
         <>
