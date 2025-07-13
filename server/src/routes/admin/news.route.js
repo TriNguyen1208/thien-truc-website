@@ -14,6 +14,8 @@ router.get('/news_contents', newsController.news_contents.getAll);
 router.get('/news_contents/:id', newsController.news_contents.getOne);
 router.get('/search_suggestions', newsController.getSearchSuggestions);
 router.get('/count', newsController.count);
+router.get('/featured_news', newsController.featured_news.getAll);
 
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
+router.patch('/featured_news', newsController.featured_news.updateAll);
 export default router;

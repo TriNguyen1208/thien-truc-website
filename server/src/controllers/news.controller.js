@@ -70,4 +70,20 @@ const count = async (req, res) => {
     const data = await newsServices.count();
     res.status(200).json(data);
 }
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count};
+
+const featured_news = {
+    getAll: async (req, res) => {
+        const data = await newsServices.featured_news.getAll();
+        res.status(200).json(data);
+    },
+    updateAll: async (req, res) => {
+        try {
+            const { status, message } = await newsServices.featured_news.updateAll(req.body);
+            res.status(status).json({ message: message });
+        } catch(error) {
+            console.error('Lỗi cập nhật Tin Tức Nổi Bật: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    }
+}
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, featured_news};
