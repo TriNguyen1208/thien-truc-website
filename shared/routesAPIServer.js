@@ -139,6 +139,9 @@ const API_ROUTES = {
         support_agents: {
             getAll: `${CONTACT_BASE}/support_agents`,
             getOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
+            createOne: `${CONTACT_BASE}/support_agents/`,
+            updateOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
+            deleteOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
         contact_messages: `${CONTACT_BASE}/contact_messages`,
         count: `${CONTACT_BASE}/count`,
