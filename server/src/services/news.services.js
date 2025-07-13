@@ -122,6 +122,7 @@ const news = {
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id AS category_id,
                 n_cate.name,
@@ -137,11 +138,13 @@ const news = {
         const results = rows.map(row => ({
             id: row.news_id,
             title: row.title,
-            public_date: row.public_date,
+            is_published: row.is_published,
+            public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
             measure_time: row.measure_time,
             num_readers: row.num_readers,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_published: row.is_published,
             category: {
                 id: row.category_id,
                 name: row.name,
@@ -158,11 +161,106 @@ const news = {
             };
         else return [...results];
     },
+    getListByCategory: async (query = '', filter = '', sort_by = 'date_desc', is_published, item_limit) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        const limit = item_limit || 100;
+
+        if (query != '') {
+            where.push(
+                `(unaccent(n.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(n.title::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(n.title), unaccent('${query}')) DESC`
+            );
+        }
+
+        if (filter != '') {
+            where.push(
+                `unaccent(n_cate.name) ILIKE unaccent('${filter}')`
+            );
+            
+            let order_option = 'n.public_date DESC';
+            if (sort_by == 'popular')
+                order_option = 'n.num_readers DESC';
+            order.push(order_option);
+        }
+
+        if (is_published == 'true' || is_published == 'false') {
+            where.push(`n.is_published = ${is_published}`);
+        }
+        
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+
+        const sql = `
+            SELECT 
+                n.id AS news_id,
+                n.title,
+                n.is_published,
+                n.public_date,
+                n.measure_time,
+                n.num_readers,
+                n.main_img,
+                n.main_content,
+
+                n_cate.id AS category_id,
+                n_cate.name,
+                n_cate.rgb_color
+            FROM news.news n
+            JOIN news.news_categories n_cate ON n.category_id = n_cate.id
+            WHERE n.id IN (
+                SELECT id FROM (
+                    SELECT 
+                        n.id,
+                        ROW_NUMBER() OVER (PARTITION BY n.category_id ORDER BY n.title) AS rn
+                    FROM news.news n   
+                    ${where}
+                    ${order}
+                ) sub
+                WHERE rn <= ${limit}
+            )
+        `;
+        const { rows } = await pool.query(sql);
+
+        const groupedResults = {};
+        for (const row of rows) {
+            const categoryName = row.name;
+            if (!groupedResults[categoryName]) {
+                groupedResults[categoryName] = [];
+            }
+
+            groupedResults[categoryName].push({
+                id: row.news_id,
+                title: row.title,
+                is_published: row.is_published,
+                public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
+                measure_time: row.measure_time,
+                num_readers: row.num_readers,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                category: {
+                    id: row.category_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                }
+            });
+        }
+
+        return groupedResults;
+    },
     getOne: async (id) => {
         const query = `
             select 
                 n.id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
@@ -180,7 +278,8 @@ const news = {
         const news = {
             id: row.id,
             title: row.title,
-            public_date: row.public_date,
+            is_published: row.is_published,
+            public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
             measure_time: row.measure_time,
             num_readers: row.num_readers,
             main_img: row.main_img,
@@ -234,6 +333,7 @@ const news_contents = {
 
                 n.id as news_id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
@@ -254,7 +354,8 @@ const news_contents = {
             news: {
               id: row.news_id,
               title: row.title,
-              public_date: row.public_date,
+              is_published: row.is_published,
+              public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
               measure_time: row.measure_time,
               num_readers: row.num_readers,
               main_img: row.main_img,
@@ -313,24 +414,65 @@ const news_contents = {
     }
 }
 
-const getSearchSuggestions = async (query, filter) => {
+const getSearchCategoriesSuggestions = async (query) => {
     const cleanedQuery = query.trim().replaceAll(`'`, ``);
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+    const sql = `
+        SELECT *
+        FROM news.news_categories C
+        WHERE similarity(unaccent(C.name::text), unaccent($1::text)) > 0
+        ORDER BY similarity(unaccent(C.name::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [cleanedQuery];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id,
+            rgb_color: row.rgb_color,
+            item_count: row.item_count || 0
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+}
+
+const getSearchSuggestions = async (query, filter, is_published) => {
+    query = query.trim().replaceAll(`'`, ``);
+    filter = filter.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
+
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(N.title::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(N.title::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(N.title::text), unaccent('${query}')) DESC`);
+    }
+    if (filter != '') {
+        where.push(`unaccent(C.name::text) ILIKE unaccent('${filter}')`);
+    }
+    if (is_published == 'false' || is_published == 'true') {
+        where.push(`N.is_published = ${is_published}`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
 
     const sql = `
         SELECT N.title, N.id, N.main_img
         FROM news.news N
         JOIN news.news_categories C ON N.category_id = C.id
-        WHERE 
-            ($2 = '' OR unaccent(C.name) ILIKE unaccent($2)) AND
-            similarity(unaccent(N.title::text), unaccent($1::text)) > 0
-        ORDER BY
-            similarity(unaccent(N.title::text), unaccent($1::text)) DESC
-        LIMIT 5
+        ${where}
+        ${order}
+        ${limit}
     `;
-    const values = [cleanedQuery, cleanedFilter];
+
     try {
-        const result = await pool.query(sql, values);
+        const result = await pool.query(sql);
         return result.rows.map(row => ({
             query: row.title,
             id: row.id,
@@ -364,4 +506,62 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count};
+const featured_news = {
+    getAll: async () => {
+        const news_rows = (await pool.query(`
+            SELECT
+                FN.sort,
+                FN.news_id,
+                N.main_img,
+                N.title,
+                C.name,
+                N.public_date
+            FROM
+                news.featured_news FN
+                JOIN news.news N ON FN.news_id = N.id
+                JOIN news.news_categories C ON N.category_id = C.id
+            ORDER BY FN.sort ASC 
+        `)).rows;
+        
+        const switch_time = (await pool.query(`
+            SELECT news_switch_time
+            FROM home.home_page    
+        `)).rows[0].news_switch_time;
+
+        const news = news_rows.map(row => ({
+            sort: row.sort,
+            id: row.id,
+            img: row.main_img,
+            title: row.title,
+            name: row.name,
+            date: (new Date(row.public_date)).toLocaleDateString('vi-VN')
+        }));
+
+        return {
+            switch_time: switch_time,
+            featured_news: [...news]
+        };
+    },
+    updateAll: async (data) => {
+        const {
+            news_ids,
+            switch_time
+        } = data
+
+        await pool.query('DELETE FROM news.featured_news');
+
+        for (let sort = 1; sort <= news_ids.length; sort++) {
+            await pool.query('INSERT INTO news.featured_news (news_id, sort) VALUES ($1, $2)', [news_ids[sort - 1], sort]);
+        }
+        
+        await pool.query('UPDATE home.home_page SET news_switch_time = $1', [switch_time]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Tin Tức Nổi Bật thành công"
+        }
+    }
+}
+
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};
