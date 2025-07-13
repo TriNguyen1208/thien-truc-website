@@ -55,7 +55,7 @@ const API_ROUTES = {
             getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
-            createOne: `${PRODUCT_BASE}/product/products`,
+            createOne: `${PRODUCT_BASE}/products`,
             // patch
             updateOne: (id) => `${PRODUCT_BASE}/product/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
