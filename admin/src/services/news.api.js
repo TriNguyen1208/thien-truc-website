@@ -46,7 +46,11 @@ const new_contents = {
         return res.data;
     },
     postOne: async (data) => {
-        const res = await axios.post(API_ROUTES.news.news_contents.postOne, data);
+        const res = await axios.post(API_ROUTES.news.news_contents.postOne, data, {
+            headers: {
+            'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     }
 }

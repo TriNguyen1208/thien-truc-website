@@ -1,5 +1,6 @@
 import pool from '#@/config/db.js'
-
+import upload from '#@/middlewares/upload.middleware.js';
+import uploadImage from '#@/utils/uploadImage.js';
 const getAllTables = async () => {
     const _news_page = await getNewsPage();
     const _news = await news.getList();
@@ -402,6 +403,23 @@ const news_contents = {
             }
           };
           return news_content;
+    },
+    postOne: async (body, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            console.log("huhu");
+            const mainImageUrl = await uploadImage(files.main_image[0], 'news');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        if(files?.images?.length){
+            for(const img of files.images){
+                const url = await uploadImage(img, 'news');
+                imageUrls.push(url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        
     }
 }
 

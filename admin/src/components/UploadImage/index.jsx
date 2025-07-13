@@ -14,7 +14,7 @@ const UploadImage = ({
         const file = e.target.files[0];
         if(file){
             setFile(file)
-            setForm((prev) => ({ ...prev, "image": file }));
+            setForm((prev) => ({ ...prev, "main_image": file }));
         }
     }
     return (

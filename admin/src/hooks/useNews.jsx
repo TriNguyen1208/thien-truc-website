@@ -77,9 +77,13 @@ const news_contents = {
             staleTime: 5 * 60 * 1000,
         })
     },
-    usePostOne: (data) => {
+    usePostOne: ({onSuccess, onError}) => {
         return useMutation({
-            mutationFn: () => newsServices.news_contents.postOne(data)
+            mutationFn: (data) => {
+                return newsServices.new_contents.postOne(data)
+            },
+            onSuccess,
+            onError
         })
     }
 }
@@ -105,6 +109,7 @@ export default {
     news_contents:{
         getAll: news_contents.useGetAll,
         getOne: news_contents.useGetOne,
+        postOne: news_contents.usePostOne
     },
     getSearchSuggestions: useSearchSuggest,
 };
