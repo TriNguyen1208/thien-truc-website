@@ -12,4 +12,6 @@ router.get('/support_agents/:id', contactController.support_agents.getOne);
 router.get('/count', contactController.count);
 
 router.post('/contact_messages', validateForm.validateContact, contactController.postContactMessage);
+
+router.patch('/company_info', contactController.updateCompanyInfo);
 export default router;

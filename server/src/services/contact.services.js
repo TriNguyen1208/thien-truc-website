@@ -39,6 +39,37 @@ const getCompanyInfo = async () => {
     return company_info;
 }
 
+const updateCompanyInfo = async (data) => {
+    let {
+        office_address,
+        main_office_id,
+        googlemaps_embed_url,
+        working_hours,
+        company_mail,
+        company_phone,
+        fanpage_url
+    } = data
+    
+    office_address = office_address.map(element => JSON.stringify(element));
+
+    await pool.query(`
+        UPDATE contact.company_info
+        SET
+            office_address = $1,
+            main_office_id = $2,
+            googlemaps_embed_url = $3,
+            working_hours = $4,
+            company_email = $5,
+            company_phone = $6,
+            fanpage_url = $7            
+    `, [office_address, main_office_id, googlemaps_embed_url, working_hours, company_mail, company_phone, fanpage_url]);
+
+    return {
+        status: 200,
+        message: 'Cập nhật Thông Tin Công Ty thành công'
+    }
+}
+
 const support_agents = {
     getAll: async () => {
         const support_agents = (await pool.query("SELECT * FROM contact.support_agents")).rows;
@@ -102,4 +133,4 @@ const count = async () => {
 
     return data;
 }
-export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage, count };
+export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count };
