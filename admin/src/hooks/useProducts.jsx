@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery,  useMutation, useQueryClient  } from "@tanstack/react-query";
 import productsServices from "@/services/products.api.js";
 
 function useGetProductPage(){
@@ -8,7 +8,19 @@ function useGetProductPage(){
         staleTime: 5 * 60 * 1000,
     })
 }
+function usePatchProductPage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (updatedPage)=> productsServices.patchProductPage(updatedPage),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["product_page"] });
+    },
+  });
+}
 
 export default {
     getProductPage: useGetProductPage,
+    patchProductPage: usePatchProductPage,
+
   };

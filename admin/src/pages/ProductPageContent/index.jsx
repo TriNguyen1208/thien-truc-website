@@ -7,6 +7,7 @@ const ProductPageContent = () => {
 
   const {setLayoutProps} = useLayout()
   const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
+  const { mutate: updateProductPage, isPending } = useProducts.patchProductPage();
     useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang sản phẩm",
@@ -20,7 +21,21 @@ const ProductPageContent = () => {
   }
   
   const handleSave = (data)=>{
-    console.log(data)
+      updateProductPage({
+          "title": data['Tiêu đề Banner'],
+          "description": data['Mô tả Banner']
+  }, 
+   {
+      onSuccess: (res) => {
+        alert(" Thành công", res);
+        // hiện popup thành công hoặc toast
+      },
+      onError: (err) => {
+        alert(" Thất bại", err);
+        // hiện popup lỗi hoặc thông báo thất bại
+      },
+    }
+);
   }
   const bannerProps = {
       title: "Banner Trang sản phẩm",
