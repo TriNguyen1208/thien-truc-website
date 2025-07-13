@@ -57,7 +57,7 @@ const API_ROUTES = {
             // post
             createOne: `${PRODUCT_BASE}/products`,
             // patch
-            updateOne: (id) => `${PRODUCT_BASE}/product/products/${id}`,
+            updateOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
             // delete
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
