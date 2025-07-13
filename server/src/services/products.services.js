@@ -279,6 +279,7 @@ const products = {
                 prd.warranty_period,
                 prd.product_features,
                 prd.highlight_features,
+                prd.is_featured,
 
                 pp.price as price,
                 prd_cate.id as category_id,
@@ -304,7 +305,9 @@ const products = {
                 category: {
                     id: row.category_id,
                     name: row.category_name
-                }
+                },
+
+                is_featured: row.is_featured
             };
         return product
     },
