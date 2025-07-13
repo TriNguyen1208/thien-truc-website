@@ -5,7 +5,7 @@ import authUtil from '#@/utils/auth.js'
 const router = express.Router();
 
 router.post('/login', authController.login);
-router.post('/refresh-token', authController.refreshTokenHandler);
+router.post('/refresh-token', authController.refreshToken);
 
 // Test --------------------------------------------------------------
 import authMiddleware from '#@/middlewares/auth.middleware.js';

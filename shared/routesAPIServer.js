@@ -8,6 +8,7 @@ const RECRUITMENT_BASE = `${BASE_API}/recruitment`;
 const CONTACT_BASE = `${BASE_API}/contact`;
 const ABOUT_US_BASE = `${BASE_API}/about_us`;
 const ADMIN_BASE = `${BASE_API}/admin`;
+const AUTH_BASE = `${BASE_API}/auth`;
 
 const uri = encodeURIComponent;
 
@@ -158,6 +159,11 @@ const API_ROUTES = {
             getOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`,
         },
     },
+    auth: {
+        // post
+        login: `${AUTH_BASE}/login`,
+        refreshToken: `${AUTH_BASE}/refresh-token`
+    }
 };
 
 export default API_ROUTES;

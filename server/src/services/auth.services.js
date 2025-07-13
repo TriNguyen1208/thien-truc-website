@@ -59,7 +59,7 @@ const login = async (loginData) => {
     }
 };
 
-const refreshTokenHandler = async (tokenData) => {
+const refreshToken = async (tokenData) => {
     const { refreshToken } = tokenData;
 
     if (!refreshToken) {
@@ -92,4 +92,4 @@ const refreshTokenHandler = async (tokenData) => {
 };
 
 
-export default { login, refreshTokenHandler };
+export default { login, refreshToken };

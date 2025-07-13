@@ -11,9 +11,9 @@ const login = async (req, res) => {
     }
 };
 
-const refreshTokenHandler = async (req, res) => {
+const refreshToken = async (req, res) => {
     try {
-        const { status, message, accessToken } = await authServices.refreshTokenHandler(req.body);
+        const { status, message, accessToken } = await authServices.refreshToken(req.body);
         res.status(status).json({ message: message, accessToken });
     } catch (error) {
         console.log('Lỗi đăng nhập: ', error);
@@ -21,4 +21,4 @@ const refreshTokenHandler = async (req, res) => {
     }
 };
 
-export default { login, refreshTokenHandler };
+export default { login, refreshToken };
