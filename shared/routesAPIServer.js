@@ -135,12 +135,13 @@ const API_ROUTES = {
         base: CONTACT_BASE,
         contact_page: `${CONTACT_BASE}/contact_page`,
         company_info: `${CONTACT_BASE}/company_info`,
+        updateCompanyInfo: `${CONTACT_BASE}/company_info`, // patch        
         support_agents: {
             getAll: `${CONTACT_BASE}/support_agents`,
             getOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
         contact_messages: `${CONTACT_BASE}/contact_messages`,
-        count: `${CONTACT_BASE}/count`
+        count: `${CONTACT_BASE}/count`,
     },
     about_us: {
         base: ABOUT_US_BASE,
