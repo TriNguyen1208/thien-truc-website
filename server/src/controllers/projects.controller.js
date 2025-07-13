@@ -16,6 +16,11 @@ const projects = {
         const data = await projectsServices.projects.getList(query, filter, parseInt(page), is_featured, parseInt(limit));
         res.status(200).json(data);
     },
+    getListByRegion: async (req, res) => {
+        const { query = '', filter = '', is_featured, limit } = req.query;
+        const data = await projectsServices.projects.getListByRegion(query, filter, is_featured, parseInt(limit));
+        res.status(200).json(data);
+    },
     getOne: async (req, res) => {
         const id = req.params.id;
         const data = await projectsServices.projects.getOne(id);
@@ -55,8 +60,9 @@ const getHighlightProjects = async (req, res) => {
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
+    const is_featured = req.query.is_featured;
 
-    const data = await projectsServices.getSearchSuggestions(query, filter);
+    const data = await projectsServices.getSearchSuggestions(query, filter, is_featured);
     res.status(200).json(data);
 }
 

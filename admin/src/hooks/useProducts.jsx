@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import productsServices from "@/services/products.api.js";
 
 function useGetPricePage(){
@@ -8,6 +8,18 @@ function useGetPricePage(){
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function usePatchPricePage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data) => productsServices.patchPricePage(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_price_page"] });
+    },
+  });
+}
 export default{
-    getPricePage: useGetPricePage
+    getPricePage: useGetPricePage,
+    patchPricePage: usePatchPricePage
 }

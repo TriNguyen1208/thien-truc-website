@@ -4,7 +4,8 @@ import useProducts from '@/hooks/useProducts'
 import EditBanner from '@/components/EditBanner'
 const PricePageContent = () => {
   const {setLayoutProps} = useLayout()
- const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
+  const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
+  const { mutate: updatePricePage, isPending } = useProducts.patchPricePage();
     useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang bảng giá",
@@ -17,9 +18,22 @@ const PricePageContent = () => {
     return(<div> Dang load</div>)
   }
   
-  const handleSave = (data)=>{
-    console.log(data)
-  }
+   const handleSave = (data)=>{
+      updatePricePage({
+          "title": data['Tiêu đề Banner'],
+          "description": data['Mô tả Banner']
+  }, 
+   {
+      onSuccess: (res) => {
+        alert(" Thành công", res);
+        // hiện popup thành công hoặc toast
+      },
+      onError: (err) => {
+        alert(" Thất bại", err);
+        // hiện popup lỗi hoặc thông báo thất bại
+      },
+    });
+   }
   const bannerProps = {
       title: "Banner Trang bảng giá",
       description: "Chỉnh sửa tiêu đề và mô tả banner", 
