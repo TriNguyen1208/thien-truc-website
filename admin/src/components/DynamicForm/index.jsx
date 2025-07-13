@@ -190,6 +190,7 @@ const DynamicForm = ({ data, config }) => {
 
             required: item.isRequired || defaultField.isRequired,
             maxLength: maxLength || undefined,
+            readOnly: item.isReadOnly || false,
             style: {
                 padding: '8px 12px',
                 display: 'block',

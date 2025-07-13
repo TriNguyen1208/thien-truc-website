@@ -182,7 +182,7 @@ const Manager = () => {
     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 5, maxLength: 500},
   ]
    const dataEdit = [
-    { name: 'username', label: 'Tên đăng nhập', type: 'text',value: (managers[pendingItemEdit] || []).username , width: 6, isRequired: true, placeholder: "VD: minhtri1503", maxLength: 20},
+    { name: 'username', label: 'Tên đăng nhập (Không thể chỉnh sửa)',isReadOnly: true, type: 'text',value: (managers[pendingItemEdit] || []).username , width: 6, isRequired: true, placeholder: "VD: minhtri1503", maxLength: 20},
     { name: 'password', label: 'Mật khẩu', type: 'password', value: (managers[pendingItemEdit] || []).password , width: 6, isRequired: true},
     { name: 'name', label: 'Họ tên', type: 'text', value: (managers[pendingItemEdit] || []).fullname ,  width: 12, isRequired: true ,placeholder: "VD: Đỗ Nguyễn Minh Trí" , maxLength: 100},
     { name: 'phone', label: 'Số điện thoại', type: 'text', value: (managers[pendingItemEdit] || []).phone ,  width: 6, isRequired: false ,placeholder: "0123456789", maxLength: 20 },
