@@ -33,16 +33,19 @@ const AddNews = () => {
     useEffect(() => {
         setLayoutProps({
             title: "Thêm tin tức mới",
-            description: "Tạo bài viết tin tức mới"
+            description: "Tạo bài viết tin tức mới",
+            hasButtonBack: true,
         })
     }, [])
     const initialForm = useMemo(() => ({
         title: "",
         main_content: "",
         content: "",
-        category_name: "Chọn loại tin tức",
+        category_name: "Công Ty",
         isPublished: "Bản nháp",
         main_image: "",
+        link_image: "",
+        countWord: 0
     }), []);
     const [form, setForm] = useState(initialForm);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
@@ -53,7 +56,16 @@ const AddNews = () => {
     if(isLoadingCategories){
         return <></>
     }
+    console.log(form);
     const handleSave = async () => {
+        if(form.isPublished == "Trưng bày" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
+            alert("Chưa nhập những nội dung bắt buộc")
+            return;
+        }
+        if(form == initialForm){
+            alert("❌ Chưa có sự thay đổi nào");
+            return;
+        }
         //Them bai viet, call database
         const {formData, doc} = await extractBlobImage(form.content);
         const finalHTML = doc.body.innerHTML;
@@ -67,28 +79,27 @@ const AddNews = () => {
                 formData.append(key, form[key]);
             }
         }
-        postNews.mutate(formData);
-        console.log(form);
-        console.log([...formData.entries()]);        
+        postNews.mutate(formData);     
         setForm(initialForm);
     }
     const handleDelete = () => {
         //Xoa bai viet hien tai
+    }
+    const handleRecover = () => {
         setForm(initialForm)
     }
     const props = {
         categories: [
-            "Chọn loại tin tức",
             ...(categories ?? []).map(item => item.name)
         ],
         displays: [
             "Bản nháp",
             "Trưng bày"
         ],
-        currentCategory: "Chọn loại tin tức",
+        currentCategory: "Công Ty",
         currentDisplay: "Bản nháp",
         onSave: handleSave,
-        onDelete: handleDelete
+        onRecover: handleRecover
     }
     return (
         <>
@@ -113,7 +124,6 @@ const AddNews = () => {
                 <EditNews {...props} form={form} setForm={setForm}/>
             </div>
         </>
-        
     )
 }
 

@@ -26,21 +26,31 @@ const ContentManagement = ({
                         type="text" 
                         name="title"
                         value={form.title}
-                        onChange={handleChangeDataForm}
-                        className='px-4 h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none'
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (value.length <= 100) {
+                                setForm((prev) => ({ ...prev, title: value }));
+                            }
+                        }}
+                        className={`px-4 h-10 text-sm rounded-md border focus:border-gray-300 outline-none ${
+                            form.title.length >= 100 ? 'border-red-500 focus:border-red-500' : 'border-[#E4E4E7]'
+                        }`}
                         placeholder={`Nhập tiêu đề ${type}...`}
-
                     />
                 </div>
                 <div className='flex flex-col gap-3'>
-                    <label htmlFor="" className='text-[#09090b] font-medium'>Nội dung tóm tắt {type}</label>
-                    <input 
-                        type="text"  
+                    <label htmlFor="" className='text-[#09090b] font-medium'>Nội dung tóm tắt {type} <span style={{color: "red"}}>*</span></label>
+                    <textarea 
+                        type="text" 
                         name="main_content"
                         value={form.main_content}
                         onChange={handleChangeDataForm}
-                        className='px-4 h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none'
+                        className={`px-4 text-sm rounded-md py-3 border focus:border-gray-300 outline-none ${
+                            form.main_content.length >= 200 ? 'border-red-500 focus:border-red-500' : 'border-[#E4E4E7]'
+                        }`}
                         placeholder={`Nhập nội dung tóm tắt ${type}...`}
+                        maxLength={200}
+                        rows={2}
                     />
                 </div>
                 <div className='flex flex-col gap-3'>

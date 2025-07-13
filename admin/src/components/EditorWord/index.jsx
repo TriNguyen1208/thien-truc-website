@@ -13,11 +13,12 @@ const EditorWord = ({ form, setForm }) => {
         setForm((prevForm) => ({
           ...prevForm,
           content: newContent,
+          countWord: newContent.replace(/<[^>]+>/g, '').trim().length
         }));
       }}
       init={{
         license_key: 'gpl',
-        height: 500,
+        height: 800,
         menubar: true,
         plugins: [
           'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',

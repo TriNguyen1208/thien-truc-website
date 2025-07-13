@@ -21,6 +21,7 @@ import ControlPanel from "../pages/ControlPanel"
 import TestComponents from "../pages/TestComponents"
 import AddNews from "../pages/AddNews"
 import AddProject from "../pages/AddProject"
+import EditNewsPage from "../pages/EditNews"
 export const routes = [
     {
         path: "/",
@@ -109,6 +110,10 @@ export const routes = [
             {
                 path: "/quan-ly-du-an/them-du-an",
                 element: <AddProject/>
+            },
+            {
+                path: "/quan-ly-tin-tuc/chinh-sua-tin-tuc/:id",
+                element: <EditNewsPage/>
             }
         ]
     },

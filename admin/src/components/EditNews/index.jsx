@@ -9,7 +9,8 @@ const EditNews = ({
     form,
     setForm,
     onSave,
-    onDelete
+    onDelete = null,
+    onRecover,
 }) => {
     
     const [dropdownOpenCategory, setDropDownOpenCategory] = useState(false);
@@ -83,7 +84,7 @@ const EditNews = ({
                                     <OpenIcon/>
                                     {
                                         dropdownOpenCategory && (
-                                            <ul className="absolute z-10 left-0 py-2 top-8 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
+                                            <ul className="absolute z-10 left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
                                                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                             >
                                                 {categories.map((item, index) => (
@@ -137,7 +138,7 @@ const EditNews = ({
                                 <OpenIcon/>
                                 {
                                     dropdownOpenDisplay && (
-                                        <ul className="absolute z-10 left-0 py-2 top-8 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
+                                        <ul className="absolute z-10 left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
                                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                         >
                                             {displays.map((item, index) => (
@@ -162,7 +163,7 @@ const EditNews = ({
                 </div>
             </div>  
             <UploadImage form={form} setForm={setForm}/>
-            <SaveEdit form={form} onSave={onSave} onDelete={onDelete}/>
+            <SaveEdit form={form} onSave={onSave} onDelete={onDelete} onRecover={onRecover}/>
         </div>
     )
 }

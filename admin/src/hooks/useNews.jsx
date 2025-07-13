@@ -3,29 +3,29 @@ import newsServices from "@/services/news.api.js";
 
 function useGetAll(){
     return useQuery({
-        queryKey: ["news"],
+        queryKey: ["admin_news"],
         queryFn: newsServices.getAll,
         staleTime: 5 * 60 * 1000,
     })
 }
 function useGetNewsPage(){
     return useQuery({
-        queryKey: ["news_page"],
+        queryKey: ["admin_news_page"],
         queryFn: newsServices.getNewsPage,
         staleTime: 5 * 60 * 1000,
     })
 }
 const news = {
-    useGetList: (query = '', filter = '', sort_by = '', page = 1) => {
+    useGetList: (query = '', filter = '', is_published, sort_by = '', page = undefined, limit) => {
         return useQuery({
-            queryKey: ["news_list", query, filter, sort_by, page],
-            queryFn: () => newsServices.news.getList(query, filter, sort_by, page),
+            queryKey: ["admin_news_list", query, filter, is_published, sort_by, page, limit],
+            queryFn: () => newsServices.news.getList(query, filter, is_published, sort_by, page, limit),
             staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["news", id],
+            queryKey: ["admin_news", id],
             queryFn: () => newsServices.news.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
@@ -37,7 +37,7 @@ const news = {
             onSuccess: () => {
             // ✅ Invalidate tất cả danh sách đã từng được query
             queryClient.invalidateQueries({
-                queryKey: ["news_list"], // match theo prefix
+                queryKey: ["admin_news_list"], // match theo prefix
                 exact: false,            // cho phép match tất cả ["news_list", ...]
             });
         }
@@ -48,14 +48,14 @@ const news = {
 const news_categories = {
     useGetAll: () => {
         return useQuery({
-            queryKey: ["news_categories"],
+            queryKey: ["admin_news_categories"],
             queryFn: newsServices.new_categories.getAll,
             staleTime: 5 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["news_category", id],
+            queryKey: ["admin_news_category", id],
             queryFn: () => newsServices.new_categories.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
@@ -65,7 +65,7 @@ const news_categories = {
 const news_contents = {
     useGetAll: () => {
         return useQuery({
-            queryKey: ["news_contents"],
+            queryKey: ["admin_news_contents"],
             queryFn: newsServices.new_contents.getAll,
             staleTime: 5 * 60 * 1000,
         })
@@ -87,9 +87,17 @@ const news_contents = {
         })
     }
 }
+function useGetSearchCategoriesSuggest(query){
+    return useQuery({
+        queryKey: ['admin_news-categories-suggestions', query],
+        queryFn: () => newsServices.getSearchCategoriesSuggestions(query),
+        staleTime: 5 * 60 * 1000,
+    })
+}
+
 function useSearchSuggest(query, filter){
     return useQuery({
-        queryKey: ['news-suggestions', query, filter],
+        queryKey: ['admin_news-suggestions', query, filter],
         queryFn: () => newsServices.getSearchSuggestions(query, filter),
         staleTime: 5 * 60 * 1000,
     })
@@ -111,5 +119,6 @@ export default {
         getOne: news_contents.useGetOne,
         postOne: news_contents.usePostOne
     },
+    getSearchCategoriesSuggestions: useGetSearchCategoriesSuggest,
     getSearchSuggestions: useSearchSuggest,
 };

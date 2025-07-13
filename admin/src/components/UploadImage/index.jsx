@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {useState, useRef} from 'react'
 import CustomButton from '../ButtonLayout'
 const UploadImage = ({
@@ -17,6 +17,50 @@ const UploadImage = ({
             setForm((prev) => ({ ...prev, "main_image": file }));
         }
     }
+    useEffect(() => {
+        if (form.main_image !== "" && form.link_image !== "") {
+            setFile(false);
+            setForm((prev) => ({ ...prev, main_image: "" }));
+        }
+    }, [form.link_image]);
+
+    useEffect(() => {
+        if(form.main_image == ""){
+            setFile(false);
+        }
+        if (form.main_image !== "" && form.link_image !== "") {
+            setForm((prev) => ({ ...prev, link_image: "" }));
+        }
+    }, [form.main_image]);
+
+    const handleOnBlurLinkImage = async () => {
+        // Chuyển đổi link Google Drive nếu cần
+        if(form.link_image == "")
+            return;
+        const convertGoogleDriveLink = (url) => {
+            const match = url.match(/\/d\/([^/]+)\//);
+            if (!match) return url;
+            return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        };
+
+        // Check link ảnh
+        const checkImageUrlValid = (url) => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        };
+
+        const convertedUrl = convertGoogleDriveLink(form.link_image);
+        const isValid = await checkImageUrlValid(convertedUrl);
+
+        if (!isValid) {
+            alert("❌ Link ảnh không hợp lệ hoặc không truy cập được!");
+            setForm((prev) => ({ ...prev, link_image: "" }));
+        }
+    }
     return (
         <div>
             <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden '>
@@ -29,6 +73,7 @@ const UploadImage = ({
                         placeholder='Nhập link ảnh'
                         value={form.link_image}
                         onChange={(e) => setForm((prev) => ({ ...prev, ["link_image"]: e.target.value }))}
+                        onBlur={handleOnBlurLinkImage}
                     />
                     <span className='text-center'>Hoặc</span>
                     <input
