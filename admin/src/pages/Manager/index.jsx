@@ -7,6 +7,7 @@ import DynamicForm from '../../components/DynamicForm'
 import { CancelPopup } from '../../components/Popup'
 import { Modal, Result } from 'antd';
 import { CheckCircleFilled } from '@ant-design/icons';
+import useAdmin from '../../hooks/useAdmin'
 function SuccessPopup({ open, setOpen, notification, subTitle}) {
 
   const handleOk = () => setOpen(false);
@@ -43,17 +44,48 @@ function SuccessPopup({ open, setOpen, notification, subTitle}) {
 };
 
 const Manager = () => {
+
+  const { data: managers, isLoading: isLoadingManagers } = useAdmin.manager.getAll();
+  const { mutate: createManager } = useAdmin.manager.createOne();
+  const { mutate: updateManager } = useAdmin.manager.updateOne();
+  const { mutate: deleteManager } = useAdmin.manager.deleteOne();
+
   const {setLayoutProps} = useLayout();
   const [listManagers , setListManagers] = useState([])
   const [isModalOpenAdd,setIsModalOpenAdd] = useState(false)
   const [isModalOpenEdit,setIsModalOpenEdit] = useState(false)
   const [pendingItemDel, setPendingItemDel] = useState(null)
+  const [pendingItemEdit, setPendingItemEdit] = useState(null)
   const [isOpenCancelPopup, setIsOpenCancelPopup] = useState(false)
   const [isOpenSuccesPopup, setIsOpenSuccesPopup] = useState(false)
 
+   useEffect(()=>{
+    setLayoutProps({
+      title: "Quản lý Manager",
+      description: "Quản lý tài khoản của các Manager",
+      hasButton: true,
+      buttonLabel: "Thêm Manager",
+      buttonAction:()=>{
+          setIsModalOpenAdd(true)
+
+      }
+    })
+  },[])
+  useEffect(() => {
+  if (managers) {
+    setListManagers(managers);
+  }
+}, [managers]);
+  
+  if(isLoadingManagers)
+  {
+    return(<div>Loading</div>)
+  }
+  
   const handleConfirmPopup = ()=>{
     setIsOpenCancelPopup(false)
      setListManagers(prev => prev.filter(mgr => prev.indexOf(mgr) !== pendingItemDel))
+     deleteManager(managers[pendingItemDel].username)
 
   }
   const handleCanclePopup = ()=>{
@@ -80,14 +112,43 @@ const Manager = () => {
  
   //====================================================Start Form=========================================================
    const handleSubmitButtonAdd = (valueForm) => {
-    console.log('Day la button submit', valueForm)
+    
+    createManager( {
+      "username": valueForm.username,
+      "password": valueForm.password,
+      "fullname": valueForm.name,
+      "phone": valueForm.phone,
+      "email": valueForm.email,
+      "position": valueForm.position,
+      "description": valueForm.description
+      },
+      {
+        onSuccess: ()=> {setIsOpenSuccesPopup(true)}
+
+      }
+    )
     setIsModalOpenAdd(false)
-    setIsOpenSuccesPopup(true)
+    
   }
    const handleSubmitButtonEdit = (valueForm) => {
-    console.log('Day la button submit', valueForm)
+    updateManager( {
+      "username": valueForm.username,
+      "password": valueForm.password,
+      "fullname": valueForm.name,
+      "phone": valueForm.phone,
+      "email": valueForm.email,
+      "position": valueForm.position,
+      "description": valueForm.description
+      },
+      {
+        onSuccess: ()=> {setIsOpenSuccesPopup(true)},
+        onError:()=>
+        {
+          alert("thatbai")
+        }
+      }
+    )
     setIsModalOpenEdit(false)
-    setIsOpenSuccesPopup(true)
 
   }
   const configAdd = {
@@ -111,14 +172,23 @@ const Manager = () => {
     handleSubmitButton: handleSubmitButtonEdit,
     setIsModalOpen: setIsModalOpenEdit
   }
-  const data = [
+  const dataAdd = [
     { name: 'username', label: 'Tên đăng nhập', type: 'text', width: 6, isRequired: true, placeholder: "VD: minhtri1503", maxLength: 20},
     { name: 'password', label: 'Mật khẩu', type: 'password', width: 6, isRequired: true},
     { name: 'name', label: 'Họ tên', type: 'text', width: 12, isRequired: true ,placeholder: "VD: Đỗ Nguyễn Minh Trí" , maxLength: 100},
     { name: 'phone', label: 'Số điện thoại', type: 'text', width: 6, isRequired: false ,placeholder: "0123456789", maxLength: 20 },
     { name: 'email', label: 'Email', type: 'email', width: 6, placeholder: "VD: minhtri@gmail.com", maxLength: 100},
     { name: 'position', label: 'Vị trí công việc', type: 'text', width: 12, placeholder: "VD: Trưởng phòng kinh doanh", maxLength: 500  },
-     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 5, maxLength: 500},
+    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 5, maxLength: 500},
+  ]
+   const dataEdit = [
+    { name: 'username', label: 'Tên đăng nhập', type: 'text',value: (managers[pendingItemEdit] || []).username , width: 6, isRequired: true, placeholder: "VD: minhtri1503", maxLength: 20},
+    { name: 'password', label: 'Mật khẩu', type: 'password', value: (managers[pendingItemEdit] || []).password , width: 6, isRequired: true},
+    { name: 'name', label: 'Họ tên', type: 'text', value: (managers[pendingItemEdit] || []).fullname ,  width: 12, isRequired: true ,placeholder: "VD: Đỗ Nguyễn Minh Trí" , maxLength: 100},
+    { name: 'phone', label: 'Số điện thoại', type: 'text', value: (managers[pendingItemEdit] || []).phone ,  width: 6, isRequired: false ,placeholder: "0123456789", maxLength: 20 },
+    { name: 'email', label: 'Email', type: 'email', value: (managers[pendingItemEdit] || []).email ,  width: 6, placeholder: "VD: minhtri@gmail.com", maxLength: 100},
+    { name: 'position', label: 'Vị trí công việc', type: 'text', value: (managers[pendingItemEdit] || []).position ,  width: 12, placeholder: "VD: Trưởng phòng kinh doanh", maxLength: 500  },
+    { name: 'description', label: 'Mô tả', type: 'textarea',value: (managers[pendingItemEdit] || []).description ,  width: 12, isRequired: false, numberRows: 5, maxLength: 500},
   ]
   //====================================================End Form=========================================================
   const handleDelItem = (e)=> {
@@ -140,80 +210,39 @@ const Manager = () => {
     padding: 4,
     handleButton: (e)=>{
       const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
+      setPendingItemEdit(index)
       setIsModalOpenEdit(true)
       
     }
   }
-  const managers = [ 
-    {
-    username: "manager1", 
-    fullname: "Nguyễn Văn A",
-    phone:"0123456789", 
-    email: "nguyen@gmail.com",
-    position :"Nhân viên",
-    description: "Miền nam"
-    },
-    {username: "manager2", 
-    fullname: "Nguyễn Văn A",
-     phone:"0123456789", 
-    email: "nguyen@gmail.com",
-    position :"Nhân viên",
-     description: "Miền nam"
-    },
-     {username: "manager3", 
-    fullname: "Nguyễn Văn A",
-     phone:"0123456789", 
-    email: "nguyen@gmail.com",
-    position :"Nhân viên",
-     description: "Miền nam"
-    },
-  ]
- const dataTable = listManagers.map((manager, index)=>{
-        return([ {type: "text",content: manager.username}, 
-      {type: "text", content: manager.fullname},
-      {type: "text", content: manager.phone}, 
-      {type: "text", content: manager.email},
-      {type: "text", content: manager.position},
-      {type: "text", content: manager.description},
-      {type: "array-components", components: [ <div data-key={index} className='w-[44px] h-[40px]'><Button {...editButton} /></div>, <div data-key={index} className='w-[44px] h-[40px]'><Button {...delButton} /></div> ]}
+   const dataTable = (listManagers || []).map((manager, index)=>{
+        return([ 
+        {type: "text",content: manager.username}, 
+        {type: "text", content: manager.fullname},
+        {type: "text", content: manager.phone}, 
+        {type: "text", content: manager.email},
+        {type: "text", content: manager.position},
+        {type: "text", content: manager.description},
+        {type: "array-components", components: [ <div data-key={index} className='w-[44px] h-[40px]'><Button {...editButton} /></div>, <div data-key={index} className='w-[44px] h-[40px]'><Button {...delButton} /></div> ]}
         
     ])
  })
-
-
- 
-
-  useEffect(()=>{
-    setLayoutProps({
-      title: "Quản lý Manager",
-      description: "Quản lý tài khoản của các Manager",
-      hasButton: true,
-      buttonLabel: "Thêm Manager",
-      buttonAction:()=>{
-          setIsModalOpenAdd(true)
-      }
-    })
-  },[])
-  useEffect(()=>{
-    setListManagers(managers)
-  },[])
-  
  
   const tableProps = {
     columns:["Tên đăng nhập", "Họ tên", "Số điện thoại", "Email", "Vị trí", "Mô tả", "Thao tác"],
     data: dataTable ,
     isSetting: false
   }
-  
+  console.log(listManagers)
   return (
     <div className='bg-white border border-gray-300 rounded-[8px] p-[24px]'> 
       <h1 className='text-black text-[24px] font-semibold my-[12px]'>Danh sách Manager</h1>
-      <p className='text-[#71717A] text-[14px] font-regular  my-[12px]'> Tổng cộng {listManagers.length} Manager</p>
+      <p className='text-[#71717A] text-[14px] font-regular  my-[12px]'> Tổng cộng {(listManagers || []).length} Manager</p>
       <div>
           <Table {...tableProps}/>
       </div>
-      <DynamicForm data={data} config={configAdd}/>
-      <DynamicForm data={data} config={configEdit}/>
+      <DynamicForm data={dataAdd} config={configAdd}/>
+      <DynamicForm data={dataEdit} config={configEdit}/>
       <CancelPopup {...cancelProps}/>
       <SuccessPopup {...succesProps}/>
     </div>

@@ -16,6 +16,11 @@ const news = {
         const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page), is_published, parseInt(limit));
         res.status(200).json(data);
     },
+    getListByCategory: async (req, res) => {
+        const {query = '', filter = '', sort_by = 'popular', is_published, limit} = req.query;
+        const data = await newsServices.news.getListByCategory(query, filter, sort_by, is_published, parseInt(limit));
+        res.status(200).json(data);
+    },
     getOne: async (req, res) => {
         const id = req.params.id;
         const data = await newsServices.news.getOne(id);
@@ -55,8 +60,9 @@ const news_contents = {
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
+    const is_published = req.query.is_published;
 
-    const data = await newsServices.getSearchSuggestions(query, filter);
+    const data = await newsServices.getSearchSuggestions(query, filter, is_published);
     res.status(200).json(data);
 }
 
