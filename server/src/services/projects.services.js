@@ -113,6 +113,8 @@ const projects = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
+                
                 prj_reg.id AS reg_id,
                 prj_reg.name,
                 prj_reg.rgb_color
@@ -135,7 +137,8 @@ const projects = {
                 id: row.reg_id,
                 name: row.name,
                 rgb_color: row.rgb_color
-            }
+            },
+            is_featured: row.is_featured
         }));
         if (page)
             return {
@@ -188,9 +191,11 @@ const projects = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
+
                 prj_reg.id AS reg_id,
                 prj_reg.name,
-                prj_reg.rgb_color
+                prj_reg.rgb_color,
             FROM project.projects prj
             JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
             WHERE prj.id IN (
@@ -225,7 +230,8 @@ const projects = {
                     id: row.reg_id,
                     name: row.name,
                     rgb_color: row.rgb_color
-                }
+                },
+                is_featured: row.is_featured
             });
         }
 
@@ -240,6 +246,7 @@ const projects = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
@@ -260,7 +267,8 @@ const projects = {
                 id: row.reg_id,
                 name: row.name,
                 rgb_color: row.rgb_color
-            }
+            },
+            is_featured: row.is_featured
         };
         return project;
     }
@@ -296,6 +304,7 @@ const project_contents = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
@@ -319,7 +328,8 @@ const project_contents = {
                     id: row.reg_id,
                     name: row.name,
                     rgb_color: row.rgb_color
-                }
+                },
+                is_featured: row.is_featured
             }}));
         return project_contents
     },
@@ -335,6 +345,7 @@ const project_contents = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
@@ -359,7 +370,8 @@ const project_contents = {
                     id: row.reg_id,
                     name: row.name,
                     rgb_color: row.rgb_color
-                }
+                },
+                is_featured: row.is_featured
             }};
         return project_content;
     }
