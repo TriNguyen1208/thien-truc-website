@@ -1,19 +1,27 @@
-import React from 'react'
-import { useEffect } from 'react';
+import { useEffect, useState} from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom'; 
 import { useLayout } from '@/layouts/layoutcontext';
-import { useSearchParams } from 'react-router-dom'; 
-import { useNavigate } from 'react-router-dom';
-import useNews from '@/hooks/useNews';
+import { CancelPopup } from '@/components/Popup';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import SearchBar from '@/components/Search';
+import useNews from '@/hooks/useNews';
 
-function normalizeNewsData(data) {
-  if (Array.isArray(data)) return data;
-  return data?.results ?? [];
-}
-
+// Còn api xóa tin tức
 export default function News() {
 
+  // Thông tin của popup xác nhận hủy
+    const [cancelOpen, setCancelOpen] = useState(false);
+    const cancelPopupData = {
+      open: cancelOpen,
+      setOpen: setCancelOpen,
+      notification: 'Bạn có chắc chắn muốn xóa tin tức này?',
+      subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+      buttonLabel1: 'Hủy',
+      buttonLabel2: 'Xóa',
+      buttonAction2: () => setCancelOpen(false),
+    };
+
+  // Set prop cho trang
   const navigate = useNavigate();
   const { setLayoutProps } = useLayout();
   useEffect(() => {
@@ -23,111 +31,118 @@ export default function News() {
       hasButton: true,
       buttonLabel: 'Thêm tin tức',
       buttonAction: () => {
-        console.log('Thêm sản phẩm mới');
+        navigate('/quan-ly-tin-tuc/them-tin-tuc');
       },
     })
   }, [setLayoutProps]);
 
+  // Loading data theo URL
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
-  const is_published = searchParams.get('is_published') || '';
+  const filter = searchParams.get('filter') || 'Tất cả thể loại';
+  const is_published = searchParams.get('is_published') || 'Tất cả trạng thái';
+  const id = searchParams.get('id') || '';
+  let news = null;
+  let isLoadingNews = false;
 
-  const { data: newsfilter, isLoading: isLoadingfilter } = useNews.news_categories.getAll();
-  const newsCategory = [
+  if (id === '') {
+    const result = useNews.news.getList(
+      query,
+      filter === "Tất cả thể loại" ? undefined : filter,
+      is_published === 'Đã xuất bản' ? true : (is_published === 'Bản nháp' ? false : undefined),
+    );
+    news = result.data;
+    isLoadingNews = result.isLoading;
+  } else {
+    const result = useNews.news.getOne(id);
+    news = result.data;
+    isLoadingNews = result.isLoading;
+  }
+
+  const newsList = Array.isArray(news) ? news : news?.results ?? (news ? [news] : []);
+  const newsPage = newsList.reduce((acc, item) => {
+    const category = item.category || { id: 'unknown', name: 'Không xác định' };
+    if (!acc[category.id]) {
+      acc[category.id] = {
+        category: category,
+        news: []
+      };
+    }
+    acc[category.id].news.push(item);
+    return acc;
+  }, {});
+
+  const {data: newsCategories, isLoading: isLoadingNewsCategories} = useNews.news_categories.getAll();
+  const categories = [
     'Tất cả thể loại',
-    ...(newsfilter?.map((filter) => filter.name) ?? []),
+    ...(newsCategories?.map((category) => category.name) ?? []),
   ]
-  const rawFilter = searchParams.get('filter');
-  const categories = newsfilter?.map((filter) => filter.name) ?? [];
-  const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Tất cả thể loại";
-  const { data: rawnewsPage, isLoading: isLoadingNewsPage } = useNews.news.getList(query, filter === "Tất cả thể loại" ? undefined : filter, is_published);
+  const display = ['Tất cả trạng thái', 'Đã xuất bản', 'Bản nháp'];
 
-  if (isLoadingNewsPage || isLoadingfilter) return <div>Loading...</div>;
+  if (isLoadingNews || isLoadingNewsCategories) 
+    return <div>Loading...</div>;
 
-  const updateParam = (key, value) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set(key, value);
-    if (key !== 'page') newParams.set('page', '1');
-    setSearchParams(newParams);
-  };
-
-  const handleButton = (query, filter) => {
+  
+  // Handler
+  const onSearch = (query, filter, is_published) => {
     const newParams = new URLSearchParams();
     newParams.set('query', query);
     newParams.set('filter', filter);
     newParams.set('is_published', is_published);
-    setSearchParams(newParams);
+    navigate(`/quan-ly-tin-tuc?${newParams.toString()}`);
   }
 
-  const handleSearchSuggestion = (query, category) => {
-    return useNews.news.getList(
-      query,
-      category === "Tất cả thể loại" ? undefined : category,
-      is_published
-    );
+  const handleEnter = (item) => {
+    navigate(`/quan-ly-tin-tuc?id=${item.id}`);
+  }
+
+  const handleSearchSuggestion = (query, filter, is_published) => {
+    return useNews.getSearchSuggestions(query, filter === 'Tất cả thể loại' ? undefined : filter, is_published);
   };
 
-  const rawResults = Array.isArray(rawnewsPage)
-  ? rawnewsPage
-  : (rawnewsPage?.results ?? []);
 
-  const newsPage = rawResults.reduce((acc, item) => {
-  const categoryId = item.category?.id;
-  if (!categoryId) return acc;
-
-  if (!acc[categoryId]) {
-    acc[categoryId] = {
-      category: item.category,
-      news: []
-    };
-  }
-    acc[categoryId].news.push(item);
-    return acc;
-  }, {});
-
+  // Render
   return (
     <div>
       <div className="flex flex-wrap gap-5 mt-3 mb-4">
         <div className = "bg-white w-[32%] pl-6 py-3 border border-gray-200 rounded-lg shadow-md justify-left">
           <h1 className="text-xl font-semibold text-gray-1300 mt-2">Tổng tin tức</h1>
-          <p className="text-[25px] font-bold text-gray-900 pl-1 mt-1">{rawnewsPage.length}</p>
+          <p className="text-[25px] font-bold text-gray-900 pl-1 mt-1">{newsList.length}</p>
           <p className="text-[14px] text-gray-500 mb-2">Bài viết</p>
         </div>
 
         <div className = "bg-white w-[32%] pl-6 py-3 border border-gray-200 rounded-lg shadow-md justify-left">
           <h1 className="text-xl font-semibold text-gray-1300 mt-2">Đã xuất bản</h1>
-          <p className="text-[25px] font-bold text-green-600 pl-1 mt-1">{rawnewsPage?.filter(item => item.is_published === true).length ?? 0}</p>
+          <p className="text-[25px] font-bold text-green-600 pl-1 mt-1">{newsList?.filter(item => item.is_published === true).length ?? 0}</p>
           <p className="text-[14px] text-gray-500 mb-2">Bài viết</p>
         </div>
 
         <div className = "bg-white w-[32%] pl-6 py-3 border border-gray-200 rounded-lg shadow-md justify-left">
           <h1 className="text-xl font-semibold text-gray-1300 mt-2">Bản nháp</h1>
-          <p className="text-[25px] font-bold text-red-500 pl-1 mt-1">{rawnewsPage?.filter(item => item.is_published === false).length ?? 0}</p>
+          <p className="text-[25px] font-bold text-red-500 pl-1 mt-1">{newsList?.filter(item => item.is_published === false).length ?? 0}</p>
           <p className="text-[14px] text-gray-500 mb-2">Bài viết</p>
         </div>
       </div>
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-md mb-6">
+      <div className="bg-white p-5 border border-gray-200 rounded-lg shadow-md mb-10 mt-10">
       <SearchBar
         data={{
           hasButtonCategory: true,
-          hasButtonDisplay: false,
+          hasButtonDisplay: true,
           placeholder: "Tìm kiếm tin tức...",
-          handleEnter: (item) => {
-            navigate(`/admin/news/${item.id}`);
-          },
-          onSearch: handleButton,  // ✅ chính là hàm update URL param
-          categories: newsCategory,
+          categories: categories,
+          displays: display,
           currentQuery: query,
           currentCategory: filter,
-          currentDisplay: null,
-          handleSearchSuggestion,
-          displayMap: null
+          currentDisplay: is_published,
+          onSearch: onSearch,
+          handleEnter: handleEnter,
+          handleSearchSuggestion: handleSearchSuggestion,
         }}
       />
       </div>
 
       <div>
-      {Object.values(newsPage).map(({ category, news }) => (
+      {Object.values(newsPage).map(({category, news }) => (
           <div key={category.id} className="mb-6 bg-white p-6 border border-md border-gray-200 rounded-lg shadow-md">
             <h2 className="text-[23px] font-bold text-gray-900 mb-1">{category.name}</h2>
             <p className="text-[14px] text-gray-500">{news.length} tin tức</p>
@@ -163,7 +178,7 @@ export default function News() {
                     <div className="flex items-center gap-2">
                     <button
                       className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
-                      onClick={() => navigate(`/admin/news/${item.id}`)}
+                      onClick={() => navigate(`/quan-ly-tin-tuc/chinh-sua-tic-tuc/${item.id}`)}
                     >
                       <EditIcon />
                     </button>
@@ -171,10 +186,7 @@ export default function News() {
                     <button
                       className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
                       onClick={() => {
-                        if (window.confirm('Bạn có chắc chắn muốn xóa tin tức này?')) {
-                          // Xử lý xóa tin tức
-                          console.log(`Xóa tin tức với ID: ${item.id}`);
-                        }
+                        setCancelOpen(true);
                       }}
                     >
                       <DeleteIcon />
@@ -188,6 +200,7 @@ export default function News() {
           </div>
         ))}
     </div>
+    <CancelPopup {...cancelPopupData} />
     </div>
   )
 }
