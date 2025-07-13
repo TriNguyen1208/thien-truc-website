@@ -134,6 +134,7 @@ const products = {
                 prd.product_specifications,
                 prd.product_features,
                 prd.highlight_features,
+                prd.is_featured,
             
                 pp.price AS price,
                 pc.id AS category_id,
@@ -160,7 +161,8 @@ const products = {
             category: {
                 id: row.category_id,
                 name: row.category_name
-            }
+            },
+            is_featured: row.is_featured
         }));
         if (page)
             return {
@@ -215,6 +217,7 @@ const products = {
                 prd.warranty_period,
                 prd.product_features,
                 prd.highlight_features,
+                prd.is_featured,
 
                 pp.price AS price,
                 pc.id AS category_id,
@@ -255,11 +258,11 @@ const products = {
                 warranty_period: row.warranty_period,
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
-                
                 category: {
                     id: row.category_id,
                     name: row.category_name
-                }
+                },
+                is_featured: row.is_featured
             });
         }
 
@@ -276,6 +279,7 @@ const products = {
                 prd.warranty_period,
                 prd.product_features,
                 prd.highlight_features,
+                prd.is_featured,
 
                 pp.price as price,
                 prd_cate.id as category_id,
@@ -301,7 +305,9 @@ const products = {
                 category: {
                     id: row.category_id,
                     name: row.category_name
-                }
+                },
+
+                is_featured: row.is_featured
             };
         return product
     },
