@@ -113,6 +113,7 @@ const projects = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
                 prj_reg.id AS reg_id,
                 prj_reg.name,
                 prj_reg.rgb_color
@@ -131,6 +132,7 @@ const projects = {
             complete_time: row.complete_time,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_featured: row.is_featured,
             region: {
                 id: row.reg_id,
                 name: row.name,
@@ -240,6 +242,7 @@ const projects = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
@@ -254,6 +257,7 @@ const projects = {
             title: row.title,
             province: row.province,
             complete_time: row.complete_time,
+            is_featured: row.is_featured,
             main_img: row.main_img,
             main_content: row.main_content,
             region: {
@@ -450,6 +454,29 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     }
 };
 
+const getSearchCategoriesSuggestions = async (query) => {
+    query = query.trim().replaceAll(`'`, ``);
+    const sql = `
+        SELECT * 
+        FROM project.project_regions R
+        WHERE similarity(unaccent(R.name::text), unaccent($1::text)) > 0
+        ORDER BY similarity(unaccent(R.name::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [query];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id,
+            rgb_color: row.rgb_color,
+            item_count: row.item_count || 0
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+}
+
 const count = async () => {
     const project_count = (await pool.query(`
         SELECT COUNT(*)::int AS project_count
@@ -473,4 +500,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, count};
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};

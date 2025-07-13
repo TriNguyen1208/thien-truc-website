@@ -410,7 +410,7 @@ const news_contents = {
 const getSearchCategoriesSuggestions = async (query) => {
     const cleanedQuery = query.trim().replaceAll(`'`, ``);
     const sql = `
-        SELECT C.name, C.id, C.rgb_color
+        SELECT *
         FROM news.news_categories C
         WHERE similarity(unaccent(C.name::text), unaccent($1::text)) > 0
         ORDER BY similarity(unaccent(C.name::text), unaccent($1::text)) DESC
@@ -422,7 +422,8 @@ const getSearchCategoriesSuggestions = async (query) => {
         return result.rows.map(row => ({
             query: row.name,
             id: row.id,
-            rgb_color: row.rgb_color
+            rgb_color: row.rgb_color,
+            item_count: row.item_count || 0
         }));
     } catch (err) {
         throw new Error(`DB error: ${err.message}`);

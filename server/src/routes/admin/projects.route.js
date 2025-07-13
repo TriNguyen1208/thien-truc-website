@@ -14,6 +14,7 @@ router.get('/project_contents', projectsController.project_contents.getAll);
 router.get('/project_contents/:id', projectsController.project_contents.getOne);
 
 router.get('/highlight_projects', projectsController.getHighlightProjects);
+router.get('/search_categories_suggestions', projectsController.getSearchCategoriesSuggestions);
 router.get('/search_suggestions', projectsController.getSearchSuggestions);
 
 router.get('/count', projectsController.count);
