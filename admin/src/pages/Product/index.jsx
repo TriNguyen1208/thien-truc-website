@@ -1,88 +1,19 @@
 import React from 'react'
 import EditBanner from '../../components/EditBanner'
 import { useLayout } from "@/layouts/LayoutContext"
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import DynamicForm from '../../components/DynamicForm'
 import SearchBar from '../../components/Search'
 import { useState } from 'react';
 import { Button, Modal } from 'antd';
-import useProjects from '../../hooks/useProjects';
+import useProducts from '../../hooks/useProducts';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
 import ProductImageCell from '../../components/ProductImageCell'
 const Product = () => {
-  const [isModalOpenAddProduct, setIsModalOpenAddProduct] = useState(false);
-  const [isModalOpenEditProduct, setIsModalOpenEditProduct] = useState(false);
-  const [openCancel, setOpenCancel] = useState(false);
-
-  const dataProductCategories = [
-    { value: 'Chọn loại sản phẩm', label: 'Chọn loại sản phẩm' },
-    { value: 'Iphone', label: 'IPhone' },
-    { value: 'Apple', label: 'Apple' },
-
-  ]
-  const dataAddProduct = [
-    { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
-    { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: dataProductCategories },
-    { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
-    { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
-    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
-    { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
-    { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
-    { name: 'avatarImage', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
-    { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
-  ]
-  const dataEditProduct = [
-    { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true, value: "12 tháng" },
-    { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: dataProductCategories, value: "IPhone" },
-    { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)", value: "30000" },
-    { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', value: "12" },
-    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, value: "Day la mo ta ngan gon nhat" },
-    { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12, value: { "Toi la": "ABC", "Mot la ai": "Hai ba ra" } },
-    { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true, value: [{ value: 'To la ABC', isCheckbox: true }] },
-    { name: 'avatarImage', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false, value: "URL" },
-    { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12, value: true }
-  ]
-  const handleSubmitButtonAddProduct = (valueForm) => {
-    console.log('Day la button submit', valueForm)
-    setIsModalOpenAddProduct(false)
-  }
-  const handleCancelButtonAddProduct = () => {
-    console.log('Day la button cancle')
-    setIsModalOpenAddProduct(false)
-  }
-  const handleSubmitButtonEditProduct = (valueForm) => {
-    console.log('Day la button submit', valueForm)
-    setIsModalOpenEditProduct(false)
-  }
-  const handleCancelButtonEditProduct = () => {
-    console.log('Day la button cancle')
-    setIsModalOpenEditProduct(false)
-  }
-  const configAddProduct = {
-    title: "Thêm sản phẩm mới",
-    description: "Điền thông tin để thêm sản phẩm mới",
-    contentCancelButton: "Hủy",
-    contentSubmitButton: "Thêm mới",
-    widthModal: 800,
-    isModalOpen: isModalOpenAddProduct,
-    handleSubmitButton: handleSubmitButtonAddProduct,
-    handleCancelButton: handleCancelButtonAddProduct,
-    setIsModalOpen: setIsModalOpenAddProduct,
-  };
-  const configEditProduct = {
-    title: "Thêm sản phẩm mới",
-    description: "Điền thông tin để thêm sản phẩm mới",
-    contentCancelButton: "Hủy",
-    contentSubmitButton: "Thêm mới",
-    widthModal: 800,
-    isModalOpen: isModalOpenEditProduct,
-    handleSubmitButton: handleSubmitButtonEditProduct,
-    handleCancelButton: handleCancelButtonEditProduct,
-    setIsModalOpen: setIsModalOpenEditProduct,
-  };
   const { setLayoutProps } = useLayout()
   useEffect(() => {
     setLayoutProps({
@@ -96,59 +27,314 @@ const Product = () => {
       }
     })
   }, []);
+
+  // ================ PRODUCT =============================== 
+
+  const [productToDelete, setProductToDelete] = useState(null);
+  const displays = ["Tất cả trạng thái", "Trưng bày", "Không trưng bày"];
+  const [categoriesObject, setCategoriesObject] = useState([]);
+  const [isModalOpenAddProduct, setIsModalOpenAddProduct] = useState(false);
+  const [isModalOpenEditProduct, setIsModalOpenEditProduct] = useState(false);
+  const [dataEditProduct, setDataEditProduct] = useState([
+    { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
+    { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: categoriesObject },
+    { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
+    { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
+    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
+    { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
+    { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
+    { name: 'avatarImage', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
+    { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
+  ]);
+  const [openCancel, setOpenCancel] = useState(false);
+
+  const handleCancelButtonAddProduct = () => {
+    console.log('Day la button cancle')
+    setIsModalOpenAddProduct(false)
+  }
+  const handleSubmitButtonEditProduct = (valueForm) => {
+    console.log('Day la button submit', valueForm)
+    setIsModalOpenEditProduct(false)
+  }
+  const handleCancelButtonEditProduct = () => {
+    console.log('Day la button cancle')
+    setIsModalOpenEditProduct(false)
+  }
+  const categoriesDefault = "Tẩt cả sản phẩm";
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  // Lay params
+  const filter = searchParams.get('filter') || undefined;
+  var query = searchParams.get('query') || undefined;
+  const is_featured = searchParams.get('is_featured') || undefined;
+  var bool_featured = undefined;
+  if (is_featured) {
+    if (is_featured === displays[1]) {
+      bool_featured = true;
+    }
+    else if (is_featured === displays[2]) {
+      bool_featured = false;
+    }
+    else {
+      bool_featured = undefined
+    }
+  }
+  const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(query, filter === categoriesDefault ? undefined : filter, bool_featured);
+  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
+  const { mutate: updateFeatureProduct, isLoading: isLoadingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
+  const { mutate: deleteOneProduct, isLoading: isLoadingDeleteOneProduct } = useProducts.products.deleteOne();
+  const { mutate: createOneProduct, isLoading: isLoadingCreateOneProduct } = useProducts.products.createOne();
+  const categories = useMemo(() => {
+    if (!productCategoriesData) return [categoriesDefault];
+    return [categoriesDefault, ...productCategoriesData.map(item => item.name)];
+  }, [productCategoriesData]);
+
+  useEffect(() => {
+    const object = categories.map(item => ({
+      label: item,
+      value: item
+    }));
+
+    setCategoriesObject(object);
+    setDataEditProduct([
+      { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
+      { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: object },
+      { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
+      { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
+      { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
+      { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
+      { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
+      { name: 'avatarImage', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
+      { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
+    ])
+  }, [categories]);
+  if (isLoadingProductData || isLoadingProductCategoriesData || isLoadingUpdateFeatureOne || isLoadingDeleteOneProduct || isLoadingCreateOneProduct) {
+    return (
+      <>
+        Dang loading...
+      </>
+    )
+  }
+  console.log(categories);
+  console.log(categoriesObject);
+
+  const idCurrentCategories = filter ? (categories || []).findIndex(item => item === filter) : 0;
+  console.log(idCurrentCategories);
+  // const dataProductCategories = [
+  //   ...categoriesData.map(name => ({
+  //     value: name,
+  //     label: name
+  //   }))
+  // ];
+    const handleSubmitButtonAddProduct = (valueForm) => {
+    console.log(valueForm);
+    createOneProduct(valueForm);
+    console.log('Day la button submit', valueForm)
+    setIsModalOpenAddProduct(false)
+  }
+
+
+  const configProduct = {
+    title: "Điện thoại",
+    description: "4 sản phẩm",
+    form: {
+      configAddProduct: {
+        title: "Thêm sản phẩm mới",
+        description: "Điền thông tin để thêm sản phẩm mới",
+        contentCancelButton: "Hủy",
+        contentSubmitButton: "Thêm mới",
+        widthModal: 800,
+        isModalOpen: isModalOpenAddProduct,
+        handleSubmitButton: handleSubmitButtonAddProduct,
+        handleCancelButton: handleCancelButtonAddProduct,
+        setIsModalOpen: setIsModalOpenAddProduct,
+      },
+      configEditProduct: {
+        title: "Thêm sản phẩm mới",
+        description: "Điền thông tin để thêm sản phẩm mới",
+        contentCancelButton: "Hủy",
+        contentSubmitButton: "Thêm mới",
+        widthModal: 800,
+        isModalOpen: isModalOpenEditProduct,
+        handleSubmitButton: handleSubmitButtonEditProduct,
+        handleCancelButton: handleCancelButtonEditProduct,
+        setIsModalOpen: setIsModalOpenEditProduct,
+      },
+      dataAddProduct: [
+        { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
+        { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: categoriesObject },
+        { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
+        { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
+        { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
+        { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
+        { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
+        { name: 'avatarImage', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
+        { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
+      ],
+    },
+
+    dataProduct: productData,
+    table: {
+      columns: ["Mã SP", "Hình ảnh", "Tên sản phẩm", "Giá", "Bảo hành", "Trưng bày", "Thao tác"],
+    },
+
+
+  }
+
+  const handleEditButton = (item) => {
+
+    const updatedForm = [
+      { ...dataEditProduct[0], value: item.name },
+      { ...dataEditProduct[1], value: item.category.name },
+      { ...dataEditProduct[2], value: item.price },
+      { ...dataEditProduct[3], value: item.warranty_period },
+      { ...dataEditProduct[4], value: item.description },
+      { ...dataEditProduct[5], value: item.product_specifications },
+      { ...dataEditProduct[6], value: item.product_features },
+      { ...dataEditProduct[7], value: item.product_img },
+      { ...dataEditProduct[8], value: item.is_featured },
+
+    ];
+    setDataEditProduct(updatedForm);
+    setIsModalOpenEditProduct(true);
+    console.log(dataEditProduct);
+  }
+
+  const convertProductListToTableData = (productList) => {
+    return productList.map((product, index) => {
+      return [
+        { type: "text", content: `${index + 1}` }, // STT
+        {
+          type: "component",
+          component: (
+            <ProductImageCell
+              imageUrl={product.product_img || ""}
+              productName={product.name}
+            />
+          ),
+        },
+        { type: "text", content: product.name },
+        { type: "text", content: `${product.price.toLocaleString("vi-VN")} ₫` },
+        { type: "text", content: `${product.warranty_period} tháng` },
+        {
+          type: "component",
+          component: (
+            <div className="ml-[30px]">
+              <input
+                type="checkbox"
+                className="w-5 h-5 accent-black "
+                checked={product.is_featured}
+                onChange={() => {
+                  updateFeatureProduct({
+                    id: product.id,
+                    status: !product.is_featured,
+                  });
+                }}
+                disabled={isLoadingUpdateFeatureOne}
+              />
+              {/* {isPending ? "Đang cập nhật..." : "Đổi trạng thái"} */}
+            </div>
+          ),
+        },
+        {
+          type: "array-components",
+          components: [
+            <button
+              className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
+              onClick={() => handleEditButton(product)}
+            >
+              <EditIcon />
+            </button>,
+            <button
+              className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
+              onClick={() => {
+                setProductToDelete(product);
+                setOpenCancel(true)
+              }
+              }
+            >
+              <DeleteIcon />
+            </button>,
+          ],
+        },
+      ];
+    });
+  };
+
+
   const handleEnter = (id) => {
+    // TODO: fix 
     console.log(id);
   }
-  const categories = ["Tất cả danh mục", "Điện thoại", "Máy tính", "Phụ kiện"];
-  const displays = ["Tất cả trạng thái", "Đang hoạt động", "Ngừng kinh doanh"];
-  const handleSearch = (query, category, display) => {
-    console.log(query, category, display)
+  const handleSearch = (query, filter, is_featured) => {
+    const newParams = new URLSearchParams();
+    newParams.set("query", query);
+    newParams.set("filter", filter);
+    newParams.set("is_featured", is_featured);
+    setSearchParams(newParams);
   }
-  const handleSearchSuggestion = (query) => {
-    return useProjects.getSearchSuggestions(query);
+
+  const handleSearchSuggestion = (query, category, display) => {
+    console.log(query, category, display);
+    return useProducts.getSearchSuggestions(query, category, display);
   }
   const dataSearch = {
     hasButtonCategory: true,
     hasButtonDisplay: true,
-    categories: categories,
+    categories: categories || [],
     displays: displays,
-    currentCategory: categories[0],
+    currentCategory: categories[idCurrentCategories],
     currentDisplay: displays[0],
+    currentQuery: query,
     placeholder: "Tìm kiếm theo tên sản phẩm hoặc mã sản phẩm",
     handleEnter: handleEnter,
     onSearch: handleSearch,
+
     handleSearchSuggestion: handleSearchSuggestion, //co 3 tham so la query, category = null, display = null,
   }
-  const columns = ["Mã SP","Hình ảnh","Tên sản phẩm","Giá","Bảo hành","Trưng bày","Thao tác"]
-  const dataTable = [
-    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setOpenCancel(true)}    >      <DeleteIcon />    </button>,] }],
-    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setOpenCancel(true)}    >      <DeleteIcon />    </button>,] }],
-    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 (tháng)" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">      <DeleteIcon />    </button>,] }],
-    [{ type: "text", content: "1" }, { type: "component", component: <ProductImageCell productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">      <DeleteIcon />    </button>,] }]
-  ]
+
   return (
     <>
       <div className="bg-white px-6 py-6 rounded-lg shadow-sm border border-gray-200  mb-[25px]">
         <SearchBar data={dataSearch} />
       </div>
-      <div className="bg-white px-6 py-6 rounded-lg shadow-sm border border-gray-200  mb-[25px]">
-        <div className='text-[30px] font-[600] mb-[5px]'>
-          Điện thoại
-        </div>
-        <div className='text-gray-600 mb-[30px]'>
-          4 sản phẩm
-        </div>
-        <Table columns={columns} data={dataTable} isSetting={false} />
+      {
+        Object.entries(configProduct.dataProduct).map(([categoryName, productList]) => {
+          const dataTable = convertProductListToTableData(productList);
 
-      </div>
-      <DynamicForm data={dataEditProduct} config={configEditProduct} />
-      <DynamicForm data={dataAddProduct} config={configAddProduct} />
-      <CancelPopup 
-        open={openCancel} 
-        setOpen={setOpenCancel} 
+          return (
+            <div
+              key={categoryName}
+              className="bg-white px-6 py-6 rounded-lg shadow-sm border border-gray-200 mb-[25px]"
+            >
+              <div className="text-[30px] font-[600] mb-[5px]">{categoryName}</div>
+              <div className="text-gray-600 mb-[30px]">
+                {productList.length} sản phẩm
+              </div>
+              <Table
+                columns={configProduct.table.columns}
+                data={dataTable}
+                isSetting={false}
+              />
+            </div>
+          );
+        })
+      }
+
+
+      <DynamicForm data={dataEditProduct} config={configProduct.form.configEditProduct} />
+      <DynamicForm data={configProduct.form.dataAddProduct} config={configProduct.form.configAddProduct} />
+      <CancelPopup
+        open={openCancel}
+        setOpen={setOpenCancel}
         notification="Xác nhận xóa"
-        subTitle = "Bạn có chắc chắc muốn xóa sản phẩm này ? "
-        buttonAction2 = {() => {console.log("123"); setOpenCancel(false)}}
+        subTitle={`Bạn có chắc muốn xoá sản phẩm "${productToDelete?.name}" không?`}
+        buttonAction2={() => {
+          if (productToDelete) {
+            deleteOneProduct(productToDelete.id);
+            setOpenCancel(false);
+          }
+        }}
       />
     </>
   )
@@ -185,3 +371,116 @@ export default Product
       }
     },
 */
+
+// dataProduct:
+// {
+//   "CABLE": [
+//     {
+//       "id": 1,
+//       "name": "CABLE MẠNG STS CAT5E305IA(305m)",
+//       "description": "Thùng 305m, cat5",
+//       "product_img": null,
+//       "price": 780000,
+//       "product_specifications": {
+//         "Thương hiệu": "Thiên Trúc",
+//         "Xuất xứ": "Việt Nam",
+//         "Công suất": "45W"
+//       },
+//       "warranty_period": 0,
+//       "product_features": [],
+//       "highlight_features": [],
+//       "category": {
+//         "id": 1,
+//         "name": "CABLE"
+//       }
+//     },
+//     {
+//       "id": 2,
+//       "name": "Cable COMMSCOPE (THÙNG 305M) Cat 5 (6-219590-2)",
+//       "description": "Thùng 305m, cat5",
+//       "product_img": null,
+//       "price": 2650000,
+//       "product_specifications": {
+//         "Thương hiệu": "Thiên Trúc",
+//         "Xuất xứ": "Việt Nam",
+//         "Công suất": "45W"
+//       },
+//       "warranty_period": 0,
+//       "product_features": [
+//         { value: "Chống nước", isCheckbox: false },
+//         { value: "Bền pin", isCheckbox: true }
+//       ],
+//       "highlight_features": [],
+//       "category": {
+//         "id": 1,
+//         "name": "CABLE"
+//       }
+//     },
+//   ],
+//   "PHẦN MỀM DIỆT VIRUS": [
+//     {
+//       "id": 10,
+//       "name": "Kaspersky STANDARD (1PC)- Bản quyền 01 năm",
+//       "description": "",
+//       "product_img": null,
+//       "price": 210000,
+//       "product_specifications": {
+//         "Thương hiệu": "Thiên Trúc",
+//         "Xuất xứ": "Việt Nam",
+//         "Công suất": "45W"
+//       },
+//       "warranty_period": 12,
+//       "product_features": [],
+//       "highlight_features": [],
+//       "category": {
+//         "id": 2,
+//         "name": "PHẦN MỀM DIỆT VIRUS"
+//       }
+//     },
+//     {
+//       "id": 11,
+//       "name": "Kaspersky STANDARD 3pcs - Bản quyền 01 năm",
+//       "description": "",
+//       "product_img": null,
+//       "price": 350000,
+//       "product_specifications": {
+//         "Thương hiệu": "Thiên Trúc",
+//         "Xuất xứ": "Việt Nam",
+//         "Công suất": "45W"
+//       },
+//       "warranty_period": 12,
+//       "product_features": [],
+//       "highlight_features": [],
+//       "category": {
+//         "id": 2,
+//         "name": "PHẦN MỀM DIỆT VIRUS"
+//       }
+//     },
+//   ],
+// },
+
+
+
+
+// const dataTable = [
+//   [
+//     { type: "text", content: "1" },
+//     { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> },
+//     { type: "text", content: "Iphone 16 pro max" },
+//     { type: "text", content: "3" },
+//     { type: "text", content: "12 tháng" },
+//     { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> },
+//     {
+//       type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>,
+//       <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setOpenCancel(true)}    >      <DeleteIcon />    </button>,]
+//     }],
+//   [
+//     { type: "text", content: "1" },
+//     { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setOpenCancel(true)}    >      <DeleteIcon />    </button>,] }],
+//   [
+//     { type: "text", content: "1" },
+//     { type: "component", component: <ProductImageCell productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 (tháng)" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">      <DeleteIcon />    </button>,] }],
+//   [
+//     { type: "text", content: "1" },
+//     { type: "component", component: <ProductImageCell productName="iPhone 15 Pro Max"></ProductImageCell> }, { type: "text", content: "Iphone 16 pro max" }, { type: "text", content: "3" }, { type: "text", content: "12 tháng" }, { type: "component", component: <div className='ml-[30px]'>      <input type="checkbox" className="w-5 h-5 accent-black" />    </div> }, { type: "array-components", components: [<button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => setIsModalOpenEditProduct(true)}    >      <EditIcon />    </button>, <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">      <DeleteIcon />    </button>,] }]
+// ]

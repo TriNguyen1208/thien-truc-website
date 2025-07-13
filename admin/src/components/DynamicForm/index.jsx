@@ -35,30 +35,28 @@ const DynamicForm = ({ data, config }) => {
             const { name, type, value, isSingleColumn, options } = field;
 
             if (type === 'dynamicFields') {
-                if (value !== undefined) {
-                    if (isSingleColumn) {
-                        if (field.isCheckbox) {
-                            // Trường hợp có checkbox → giữ nguyên cấu trúc object
-                            result[name] = [...value];
-                        } else {
-                            // Trường hợp chỉ là mảng đơn
-                            result[name] = [...value];
-                        }
+                if (isSingleColumn) {
+                    if (field.isCheckbox) {
+                        result[name] =
+                            Array.isArray(value) && value.length > 0
+                                ? value.map(item => ({
+                                    value: item.value || '',
+                                    isCheckbox: !!item.isCheckbox
+                                }))
+                                : [{ value: '', isCheckbox: false }];
                     } else {
-                        // Trường hợp 2 cột
-                        result[name] = Object.entries(value).map(([k, v]) => ({ name: k, value: v }));
+                        result[name] =
+                            Array.isArray(value) && value.length > 0
+                                ? value.map(v => v || '')
+                                : [''];
                     }
                 } else {
-                    if (isSingleColumn) {
-                        if (field.isCheckbox) {
-                            result[name] = [{ value: '', isCheckbox: false }];
-                        } else {
-                            result[name] = [''];
-                        }
-                    } else {
-                        result[name] = [{ name: '', value: '' }];
-                    }
+                    result[name] =
+                        value && typeof value === 'object' && Object.keys(value).length > 0
+                            ? Object.entries(value).map(([k, v]) => ({ name: k, value: v }))
+                            : [{ name: '', value: '' }];
                 }
+
             }
             else if (type === 'checkbox') {
                 result[name] = value !== undefined ? value : false;
@@ -241,6 +239,7 @@ const DynamicForm = ({ data, config }) => {
 
             required: item.isRequired || defaultField.isRequired,
             maxLength: maxLength || undefined,
+            readOnly: item.isReadOnly || false, 
             style: {
                 padding: '8px 12px',
                 display: 'block',
@@ -389,6 +388,7 @@ const DynamicForm = ({ data, config }) => {
                         {specs.map((entry, index) => (
                             <div key={index} className="flex gap-2 mb-2">
                                 {!isSingle && (
+
                                     <input
                                         type="text"
                                         value={entry.name || ''}
@@ -405,6 +405,7 @@ const DynamicForm = ({ data, config }) => {
                                         className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
                                         placeholder={item.placeholder?.[0] ?? defaultField.placeholder}
                                     />
+
                                 )}
                                 <input
                                     type="text"
@@ -427,10 +428,12 @@ const DynamicForm = ({ data, config }) => {
                                         )
                                     }
                                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                    placeholder={isSingle ? item.placeholder : item.placeholder?.[1]}
+                                    placeholder={isSingle ? item.placeholder : item.placeholder?.[1] || defaultField.placeholder}
+
                                 />
 
                                 {item.isCheckbox && (
+
                                     <input
                                         type="checkbox"
                                         checked={typeof entry === 'object' && entry !== null ? entry.isCheckbox : false}
