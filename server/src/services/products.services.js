@@ -319,17 +319,20 @@ const products = {
         return result;
     },
     createOne: async (data) => {
-        const {
+        let {
             avatarImage,
             characteristic,
             description,
             isDisplayHomePage,
-            price,
+            price, // int
             productCategories,
             productName,
             technicalDetails,
-            warranty
+            warranty // int
         } = data;
+
+        if (price == "") price = null;
+        warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
@@ -363,7 +366,7 @@ const products = {
             avatarImage,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
-            parseInt(warranty),
+            warranty,
             product_features,
             highlight_feature_ids,
             isDisplayHomePage
@@ -385,7 +388,7 @@ const products = {
         );
     },
     updateOne: async (data, id) => {
-        const {
+        let {
             avatarImage,
             characteristic,
             description,
@@ -396,6 +399,9 @@ const products = {
             technicalDetails,
             warranty
         } = data;
+
+        if (price == "") price = null;
+        warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
@@ -435,7 +441,7 @@ const products = {
             avatarImage,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
-            parseInt(warranty),
+            warranty,
             product_features,
             highlight_feature_ids,
             isDisplayHomePage
