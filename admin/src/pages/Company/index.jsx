@@ -75,9 +75,15 @@ const Company = () => {
 
     const { setLayoutProps } = useLayout();
     const {data: companyInfo, isLoading: isLoadingCompanyInfo} = useContact.getCompanyInfo()
+    const {mutate: updateCompanyInfo} = useContact.patchCompanyInfo()
+
     const [companyAddressList , setCompanyAddressList] = useState([])
     const [companyHourList , setCompanyHourList] = useState([])
     const [companyPhoneList , setCompanyPhoneList] = useState([])
+    const [companyFanpageUrl ,setCompanyFanpageUrl] = useState (null)
+    const [companyEmail, setCompanyEmail] = useState(null)
+    const [companyEmbedUrl, setCompanyEmbedUrl] = useState(null)
+
     const [nextHourId, setNextHourId] = useState(0);
     const [nextPhoneId, setNextPhoneId] = useState(0);
     const [nextAddressId, setNextAddressId] = useState(0);
@@ -99,8 +105,8 @@ const Company = () => {
     useEffect(()=>{
         if(companyInfo?.office_address ) 
         {
-           setCompanyAddressList(companyInfo.office_address)
-           const maxId = Math.max(...companyInfo.office_address.map(h => h.id), 0);
+          setCompanyAddressList(companyInfo.office_address)
+          const maxId = Math.max(...companyInfo.office_address.map(h => h.id), 0);
           setNextAddressId(maxId + 1);
 
 
@@ -123,11 +129,19 @@ const Company = () => {
           
           setSelectedAddressId(companyInfo.main_office.id)
         }
+        if(companyInfo)
+        {
+          setCompanyFanpageUrl(companyInfo.fanpage_url)
+          setCompanyEmail(companyInfo.company_email)
+          setCompanyEmbedUrl(companyInfo.googlemaps_embed_url)
+        }
     },[companyInfo])
     if(isLoadingCompanyInfo)
     {
       return(<div> Loading</div>)
     }
+
+    
     const handleCanclePopup = ()=>{
         setOpenCancelPopup(false)
   
@@ -152,7 +166,37 @@ const Company = () => {
     }
     const handleSubmit = (e)=>{
         e.preventDefault()
-        setOpenSuccesPopup(true)
+        updateCompanyInfo(
+            {
+              "office_address":companyAddressList.map((address, index) =>{
+                return({
+                  "id" : address.id,
+                  "address" : address.address,
+                  "googlemaps_url" : address.googlemaps_url
+                })
+              }),
+              "main_office_id": 1,
+              "googlemaps_embed_url": companyEmbedUrl,
+              "working_hours": companyHourList.map((hour, index) =>{
+                return(hour.data)
+              }),
+              "company_email": companyEmail,
+              "company_phone": companyPhoneList.map((phone, index) =>{
+                return(phone.data)
+              }),
+              "fanpage_url": companyFanpageUrl
+          
+        },
+          {
+            onSuccess: ()=>{
+            setOpenSuccesPopup(true)
+          },
+          onError:(error)=>{
+            console.error("Update thất bại:", error.response?.data || error.message);
+            alert("that bai")
+          }
+          }
+        )
      
       }
      
@@ -328,7 +372,8 @@ const handleSelectMainAddress = (id) => {
         <div className=' flex flex-col gap-[8px]'>
          <label htmlFor="" className='text-[16px] text-black font-medium'>Link nhúng Google Maps của chi nhánh chính</label>
           <textarea type="text" 
-            defaultValue={companyInfo.googlemaps_embed_url}
+            value={companyEmbedUrl || ""}
+            onChange={(e)=>{setCompanyEmbedUrl(e.target.value)}}
             rows={6}
            className='focus:outline-none border resize-none border-gray-300 rounded-[8px] p-[12px] '
             placeholder=' Vd: <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9366.370348283874!2d107.03071395806015!3d11.989540521698338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31731332eb101045%3A0xab2bf64704fbfea5!2sH%C3%A3ng%20Thu%20%C3%82m%20Lil%20Ruby%20Records!5e0!3m2!1sen!2s!4v1752097400688!5m2!1sen!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>' />
@@ -368,7 +413,8 @@ const handleSelectMainAddress = (id) => {
                 </h2>
 
           <input type="email"
-          defaultValue={companyInfo.company_email}
+          value={companyEmail || ""}
+          onChange={(e)=>{setCompanyEmail(e.target.value)}}
            maxLength={50} 
           required className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
           placeholder='Vd: Minhtri@gmail.com' />
@@ -392,7 +438,7 @@ const handleSelectMainAddress = (id) => {
                       <div key={index} data-index = {phone.id} className='flex flex-row gap-[4px] items-center'>
                     <input type="text" required 
                   value={phone.data}
-                 onChange={(e) => handlePhoneChange(phone.id, e.target.value)} 
+                  onChange={(e) => handlePhoneChange(phone.id, e.target.value)} 
                   className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] w-full'
                   placeholder='Vd: 8h-17h' />
                   {companyPhoneList.length >= 2 && <div className=' w-[44px] h-[40px] top-[12px] right-[12px]'><Button Icon = {DeleteIcon} colorText = {"#000000"} colorBackground = "#FFFFFF" handleButton = {handleDeletePhone}/></div>}
@@ -400,6 +446,17 @@ const handleSelectMainAddress = (id) => {
               })
             }
             </div>
+        </div>
+        <div className='flex flex-col gap-[12px]'>
+                <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
+                  Fanpage<span className="text-red-500 ml-1">*</span>
+                </h2>
+
+          <input type="url"
+          value={companyFanpageUrl || ""}
+          onChange = {(e)=>{setCompanyFanpageUrl(e.target.value)}}
+          required className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
+          placeholder='Vd: Minhtri@gmail.com' />
         </div>
         <button type = 'submit'>
             <Button {...submitButton} />
