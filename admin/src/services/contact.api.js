@@ -1,7 +1,6 @@
-import axiosService from "@/services/axiosInstance.js"
+import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
 
-const axios = axiosService.axiosInstance
 const support_agents =  {
     getAll: async () => {
         const res = await axios.get(API_ROUTES.contact.support_agents.getAll);
