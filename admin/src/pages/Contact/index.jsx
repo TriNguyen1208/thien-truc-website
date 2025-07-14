@@ -7,7 +7,7 @@ import DynamicForm from '../../components/DynamicForm'
 import { CancelPopup } from '../../components/Popup'
 import { Modal, Result } from 'antd'
 import { CheckCircleFilled } from '@ant-design/icons';
-
+import useContact from '@/hooks/useContact';
 
 function SuccessPopup ({ open, setOpen, notification, subTitle}) {
 
@@ -50,10 +50,16 @@ const Contact = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
   const [pendingItemDel, setPendingItemDel] = useState(null)
+  const [pendingItemEdit, setPendingItemEdit] = useState(null)
   const [isOpenDeletePopup, setIsOpenDeletePopup] = useState(false)
   const [isOpenSuccesPopup, setIsOpenSuccesPopup] = useState(false)
 
- const handleAddContact= ()=>
+  const {data: supportAgents, isLoading: isLoadingSupportAgent} = useContact.support_agents.getAll()
+  const {mutate: addAgent} = useContact.support_agents.createOne()
+  const {mutate: deleteAgent} = useContact.support_agents.deleteOne()
+  const {mutate: updateAgent} = useContact.support_agents.updateOne()
+ 
+const handleAddContact= ()=>
   {
     setIsModalOpenAdd(true)
   }
@@ -67,6 +73,18 @@ const Contact = () => {
     })
 
   },[])
+  useEffect(()=>{
+    if(supportAgents)
+    {
+      setListContacts(supportAgents)
+    }
+  },[supportAgents])
+  
+  if(isLoadingSupportAgent)
+  {
+    return(<div>loading</div>)
+  }
+  
   const succesProps = {
     open:isOpenSuccesPopup, 
     setOpen:setIsOpenSuccesPopup, 
@@ -75,14 +93,51 @@ const Contact = () => {
   }
   //====================================================Start Form=========================================================
    const handleSubmitButtonAdd = (valueForm) => {
-    console.log('Day la button submit', valueForm)
+    addAgent(
+      {
+          "avatar_img": valueForm.img,
+          "name": valueForm.fullName,
+          "role": valueForm.position,
+          "phone_number": valueForm.phone,
+          "facebook_url": valueForm.facebook
+        }
+      ,
+      {
+        onSuccess: ()=>{
+          setIsOpenSuccesPopup(true)
+        },
+        onError: ()=>{
+          alert("that bai")
+        }
+      }
+    )
     setIsModalOpenAdd(false)
-    setIsOpenSuccesPopup(true)
   }
    const handleSubmitButtonEdit = (valueForm) => {
-    console.log('Day la button submit', valueForm)
+    console.log(valueForm)
+    updateAgent(
+      {
+        id: listContacts[pendingItemEdit].id,
+        updatedsupport_agents: {
+          "avatar_img": valueForm.img,
+          "name": valueForm.fullName,
+          "role": valueForm.position,
+          "phone_number": valueForm.phone,
+          "facebook_url": valueForm.facebook
+        }
+      }
+      ,
+      {
+        onSuccess: ()=>{
+          setIsOpenSuccesPopup(true)
+        },
+        onError: (error)=>{
+          if(error) console.error()
+          alert("that bai")
+        }
+      }
+    )
     setIsModalOpenEdit(false)
-    setIsOpenSuccesPopup(true)
 
   }
  
@@ -107,24 +162,35 @@ const Contact = () => {
     handleSubmitButton: handleSubmitButtonEdit,
     setIsModalOpen: setIsModalOpenEdit
   }
-  const data = [
+  const dataAdd = [
     { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
     { name: 'position', label: 'Vị trí', type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
     { name: 'phone', label: 'Số điện thoại', type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
     { name: 'facebook', label: 'Facebook', type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
-    { name: 'Trine123', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+    { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+  ]
+   const dataEdit = [
+    { name: 'fullName', label: 'Họ Tên', value: (listContacts[pendingItemEdit] || []).name, type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
+    { name: 'position', label: 'Vị trí', value: (listContacts[pendingItemEdit] || []).role, type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
+    { name: 'phone', label: 'Số điện thoại',  value: (listContacts[pendingItemEdit] || []).phone_number, type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
+    { name: 'facebook', label: 'Facebook',  value: (listContacts[pendingItemEdit] || []).facebook_url ,type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
+    { name: 'img', label: 'Ảnh đại diện', value: (listContacts[pendingItemEdit] || []).avatar_img, type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]
   //====================================================End Form=========================================================
   //====================================================Start Table=======================================================
  
  const handleConfirmDeletePopup = ()=>{
+    deleteAgent(listContacts[pendingItemDel].id,
+      {
+        onError: ()=>{
+          alert("That bai")
+        }
+      }
+    )
     setIsOpenDeletePopup(false)
-    setListContacts(prev => prev.filter(ct => prev.indexOf(ct) !== pendingItemDel))
-
   }
   const handleCancelDeletePopup = ()=>{
     setIsOpenDeletePopup(false)
-
   }
   
   const deleteProps={
@@ -156,55 +222,26 @@ const Contact = () => {
     padding: 4,
     handleButton: (e)=>{
       const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
-      
+      setPendingItemEdit(index)
       setIsModalOpenEdit(true)
     
     }
     
   }
   
-  const contacts = [ 
-    {
-    
-    image: null, 
-    fullname: "Nguyễn Văn A",
-    position :"Trưởng phòng kinh doanh",
-    phone:"0123456789", 
-    facebook: "http/...",
-    },
-    {
-   
-    image: null, 
-    fullname: "Nguyễn Văn A",
-    position :"Trưởng phòng kinh doanh",
-    phone:"0123456789", 
-    facebook: "http/...",
-    },
-    {
- 
-    image: null, 
-    fullname: "Nguyễn Văn A",
-    position :"Trưởng phòng kinh doanh",
-    phone:"0123456789", 
-    facebook: "http/...",
-    },
-  ]
  const dataTable = listContacts.map((contact, index)=>{
         return([ {type: "text",content: index+1}, 
-      {type: "img", path: "https://haycafe.vn/wp-content/uploads/2022/02/Tai-anh-girl-gai-dep-de-thuong-ve-may.jpg"},
-      {type: "text", content: contact.fullname}, 
-      {type: "text", content: contact.position},
-      {type: "text", content: contact.phone},
-      {type: "text", content: contact.facebook},
+      {type: "img", path: contact.avatar_img},
+      {type: "text", content: contact.name}, 
+      {type: "text", content: contact.role},
+      {type: "text", content: contact.phone_number},
+      {type: "text", content: contact.facebook_url},
       {type: "array-components", components: [ <div data-key={index} className='w-[44px] h-[40px]'><Button {...editButton} /></div>, <div data-key={index} className='w-[44px] h-[40px]'><Button {...delButton} /></div> ]}
         
     ])
  })
 
 
-  useEffect(()=>{
-    setListContacts(contacts)
-  },[])
   
  
   const tableProps = {
@@ -223,8 +260,8 @@ const Contact = () => {
           <Table {...tableProps}/>
       </div> 
 
-      <DynamicForm data={data} config={configAdd} />
-      <DynamicForm data={data} config={configEdit} />
+      <DynamicForm data={dataAdd} config={configAdd} />
+      <DynamicForm data={dataEdit} config={configEdit} />
      
       <CancelPopup {...deleteProps}/>
       <SuccessPopup {...succesProps}/>
