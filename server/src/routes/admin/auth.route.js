@@ -1,15 +1,17 @@
 import express from 'express';
 import authController from '#@/controllers/auth.controller.js';
 import authUtil from '#@/utils/auth.js'
+import authMiddleware from '#@/middlewares/auth.middleware.js';
+const { authenticateToken } = authMiddleware;
 
 const router = express.Router();
+
+router.get('/login-result', authenticateToken, authController.getLoginResult);
 
 router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 
 // Test --------------------------------------------------------------
-import authMiddleware from '#@/middlewares/auth.middleware.js';
-const { authenticateToken } = authMiddleware;
 
 router.get('/hashpass/:password', async (req, res) => {
     const password = req.params.password;
@@ -17,7 +19,6 @@ router.get('/hashpass/:password', async (req, res) => {
     res.json({hashedPassword});
 })
 
-router.get('/login-result', authenticateToken, authController.getLoginResult);
 // -------------------------------------------------------------------
 
 export default router;

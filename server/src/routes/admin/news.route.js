@@ -1,5 +1,7 @@
 import express from 'express'
 import newsController from '#@/controllers/news.controller.js';
+import authMiddleware from '#@/middlewares/auth.middleware.js';
+const { authenticateToken } = authMiddleware;
 
 const router = express.Router();
 
@@ -18,5 +20,6 @@ router.get('/count', newsController.count);
 router.get('/featured_news', newsController.featured_news.getAll);
 
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
-router.patch('/featured_news', newsController.featured_news.updateAll);
+router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
+
 export default router;
