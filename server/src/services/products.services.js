@@ -454,10 +454,28 @@ const products = {
         );
     },
     deleteOne: async (id) => {
+        // 1. Get category_id
+        const categoryRes = await pool.query(
+            `SELECT category_id FROM product.products WHERE id = $1`,
+            [id]
+        );
+        if (categoryRes.rowCount === 0) {
+            return categoryRes;
+        }
+        const category_id = categoryRes.rows[0].category_id;
+
+        // 2. Delete product & product prices
         const query = `
             DELETE FROM product.product_prices WHERE product_id = ${id};
             DELETE FROM product.products WHERE id = ${id};
         `;
+
+        // 3. Decrease item_count in product category
+        await pool.query(
+            `UPDATE product.product_categories SET item_count = item_count - 1 WHERE id = $1`,
+            [category_id]
+        );
+
         const result = await pool.query(query);
         return result[1];
     }

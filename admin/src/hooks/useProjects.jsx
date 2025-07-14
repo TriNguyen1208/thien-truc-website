@@ -16,10 +16,10 @@ function useGetProjectPage(){
     })
 }
 const projects = {
-    useGetList: (query = '', filter = '', page = '') => {
+    useGetList: (query = '', filter = '', is_featured, page = undefined, limit) => {
         return useQuery({
-            queryKey: ["admin_projects_list", query, filter, page],
-            queryFn: () => projectsServices.projects.getList(query, filter, page),
+            queryKey: ["admin_projects_list", query, filter, is_featured, page, limit],
+            queryFn: () => projectsServices.projects.getList(query, filter, is_featured, page, limit),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -72,13 +72,22 @@ function useGetHighlightProjects(){
     })
 }
 
-function useSearchSuggest(query, filter, is_feature){
+function useSearchSuggest(query, filter, is_featured){
     return useQuery({
-        queryKey: ['admin_project-suggestions', query, filter, is_feature],
-        queryFn: () => projectsServices.getSearchSuggestions(query, filter, is_feature),
+        queryKey: ['admin_project-suggestions', query, filter, is_featured],
+        queryFn: () => projectsServices.getSearchSuggestions(query, filter, is_featured),
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function useSearchCategoriesSuggest(query){
+    return useQuery({
+        queryKey: ['admin_project-categories-suggestions', query],
+        queryFn: () => projectsServices.getSearchCategoriesSuggestions(query),
+        staleTime: 5 * 60 * 1000,
+    })
+}
+
 export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
@@ -96,4 +105,5 @@ export default {
     },
     getHighlightProjects: useGetHighlightProjects,
     getSearchSuggestions: useSearchSuggest,
+    getSearchCategoriesSuggestions: useSearchCategoriesSuggest
 };
