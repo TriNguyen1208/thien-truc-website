@@ -82,6 +82,7 @@ const API_ROUTES = {
         update_price_page: `${PRODUCT_BASE}/price_page`, // patch
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
+        search_categories_suggestions: (query='') => `${PRODUCT_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${PRODUCT_BASE}/count`
     },
     project: {

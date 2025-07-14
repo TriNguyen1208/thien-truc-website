@@ -170,9 +170,16 @@ const getSearchSuggestions = async (req, res) => {
     res.status(200).json(data);
 }
 
+const getSearchCategoriesSuggestions = async (req, res) => {
+    const query = req.query.query || '';
+
+    const data = await productServices.getSearchCategoriesSuggestions(query);
+    res.status(200).json(data);
+}
+
 const count = async (req, res) => {
     const data = await productServices.count();
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count };
