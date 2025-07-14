@@ -1,15 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon } from '../../components/Icon'
 import ButtonLayout from "../../components/ButtonLayout"
+import useAuth from '../../hooks/useAuth'
+import {useNavigate} from 'react-router-dom'
 const Login = () => {
-    const handleSubmit = () => {
-        console.log("hello world")
-    }
+    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const [isFocusedUser, setIsFocusedUser] = useState(false);
     const [isFocusedPassword, setIsFocusedPassword] = useState(false);
     const [visible, setIsVisible] = useState(false);
+
     const wrapperUserRef = useRef();
     const wrapperPasswordRef = useRef();
+    const loginMutation = useAuth.login({
+        onSuccess: () => {
+            navigate('/');
+        },
+        onError: () => {
+            alert('Đăng nhập thất bại');
+        }
+    });
+    const handleSubmit = (e) => {
+        console.log(username, password)
+        e.preventDefault();
+        loginMutation.mutate({username, password})
+    }
     useEffect(()=>{
         const handleClickOutside = (e) => {
             if(wrapperUserRef.current && !wrapperUserRef.current.contains(e.target)){
@@ -50,9 +66,11 @@ const Login = () => {
                                 type="text" 
                                 id='username' 
                                 className='w-full outline-none text-sm'
+                                value={username}
                                 onFocus={() => {
                                     setIsFocusedUser(true);
                                 }}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                     </div>
@@ -64,9 +82,11 @@ const Login = () => {
                                 type={`${visible ? "text": "password"}`} 
                                 id='password' 
                                 className='w-full outline-none text-sm'
+                                value={password}
                                 onFocus={() => {
                                     setIsFocusedPassword(true);
                                 }}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                             <span
                                 onClick={() => setIsVisible(!visible)}

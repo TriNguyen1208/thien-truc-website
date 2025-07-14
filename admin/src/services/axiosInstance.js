@@ -1,11 +1,7 @@
 import axios from "axios";
 
-const axiosInstance = axios.create({
-    headers: { "Content-Type": "application/json" }
-});
-
 const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3001",
     headers: { "Content-Type": "application/json" }
 });
 
@@ -32,7 +28,7 @@ api.interceptors.response.use(
 
             try {
                 const refreshToken = localStorage.getItem('refreshToken');
-                const res = await axios.post('http://localhost:3000/refresh-token', { refreshToken });
+                const res = await axios.post('http://localhost:3001/refresh-token', { refreshToken });
 
                 if (res.status === 200) {
                     const newAccessToken = res.data.accessToken;
@@ -51,4 +47,4 @@ api.interceptors.response.use(
     }
 );
 
-export default { axiosInstance, api };
+export default api;

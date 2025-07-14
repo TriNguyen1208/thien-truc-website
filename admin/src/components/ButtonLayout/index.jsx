@@ -23,8 +23,8 @@ const CustomButton = ({
     <Button
       type={type}
       icon={icon}
+      htmlType={htmlType}
       style={{
-        htmlType,
         height,
         backgroundColor: hovered ? hoverBackgroundColor : backgroundColor,
         borderColor,
