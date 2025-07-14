@@ -1,11 +1,8 @@
 import axios from "axios";
-
-const axiosInstance = axios.create({
-    headers: { "Content-Type": "application/json" }
-});
+import API_ROUTES from "../../../shared/routesAPIServer";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3001",
     headers: { "Content-Type": "application/json" }
 });
 
@@ -32,7 +29,7 @@ api.interceptors.response.use(
 
             try {
                 const refreshToken = localStorage.getItem('refreshToken');
-                const res = await axios.post('http://localhost:3000/refresh-token', { refreshToken });
+                const res = await axios.post(API_ROUTES.auth.refreshToken, { refreshToken });
 
                 if (res.status === 200) {
                     const newAccessToken = res.data.accessToken;
@@ -40,10 +37,10 @@ api.interceptors.response.use(
                     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return api(originalRequest);
                 }
-            } catch (refreshError) {
+            } catch{
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
-                window.location.href = '/login'; // hoặc xử lý theo app bạn
+                window.location.href = '/dang-nhap'; // hoặc xử lý theo app bạn
             }
         }
 
@@ -51,4 +48,4 @@ api.interceptors.response.use(
     }
 );
 
-export default { axiosInstance, api };
+export default api;

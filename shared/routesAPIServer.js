@@ -150,19 +150,31 @@ const API_ROUTES = {
     about_us: {
         base: ABOUT_US_BASE,
         about_us_page: `${ABOUT_US_BASE}/about_us_page`,
+        updateAboutUsPage: {
+            // patch
+            banner: `${ABOUT_US_BASE}/about_us_page/banner`,
+            ourStory: `${ABOUT_US_BASE}/about_us_page/our_story`,
+        },
         company_services: {
             getAll: `${ABOUT_US_BASE}/company_services`,
             getOne: (id) => `${ABOUT_US_BASE}/company_services/${id}`,
+            createOne: `${ABOUT_US_BASE}/company_services`, // post
+            updateOne: (id) => `${ABOUT_US_BASE}/company_services/${id}`, // patch
+            deleteOne: (id) => `${ABOUT_US_BASE}/company_services/${id}`, // delete
         },
         why_choose_us: {
             getAll: `${ABOUT_US_BASE}/why_choose_us`,
             getOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`,
+            createOne: `${ABOUT_US_BASE}/why_choose_us`, // post
+            updateOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`, // patch
+            deleteOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`, // delete
         },
     },
     auth: {
         // post
         login: `${AUTH_BASE}/login`,
-        refreshToken: `${AUTH_BASE}/refresh-token`
+        refreshToken: `${AUTH_BASE}/refresh-token`,
+        verifyLogin: `${AUTH_BASE}/login-result`
     }
 };
 

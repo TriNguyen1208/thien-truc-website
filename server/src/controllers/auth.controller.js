@@ -21,4 +21,13 @@ const refreshToken = async (req, res) => {
     }
 };
 
-export default { login, refreshToken };
+const getLoginResult = async (req, res) => {
+    res.status(200).json({
+        message: 'Đăng nhập thành công', 
+        user: {
+            username: req.user.username,
+            role: req.user.role
+        }
+    });
+}
+export default { login, refreshToken, getLoginResult };
