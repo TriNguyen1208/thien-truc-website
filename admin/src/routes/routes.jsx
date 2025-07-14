@@ -19,10 +19,14 @@ import ProjectPageContent from "../pages/ProjectPageContent"
 import RecruitmentPageContent from "../pages/RecruitmentPageContent"
 import ControlPanel from "../pages/ControlPanel"
 import TestComponents from "../pages/TestComponents"
+import Login from "../pages/Login"
+import ProtectedRoute from "./ProtectedRoute"
 export const routes = [
     {
         path: "/",
-        element: <DefaultLayout />,
+        element: <ProtectedRoute>
+                    <DefaultLayout/>
+                </ProtectedRoute>,
         children: [
             {
                 path: "/",
@@ -101,6 +105,10 @@ export const routes = [
                 element: <TestComponents/>
             }
         ]
+    },
+    {
+        path: "/dang-nhap",
+        element: <Login/>
     },
     {
         path: "*",

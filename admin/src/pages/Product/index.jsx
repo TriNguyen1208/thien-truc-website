@@ -37,8 +37,8 @@ const Product = () => {
   const [dataEditProduct, setDataEditProduct] = useState([
     { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
     { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: categoriesObject },
-    { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
-    { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
+    { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500000)", isOnlyNumber: true },
+    { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
     { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
     { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
@@ -100,8 +100,8 @@ const Product = () => {
     setDataEditProduct([
       { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
       { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: object },
-      { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
-      { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
+      { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500000)", isOnlyNumber: true },
+      { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
       { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
       { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
       { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
@@ -161,8 +161,8 @@ const Product = () => {
       dataAddProduct: [
         { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
         { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: true, options: categoriesObject },
-        { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
-        { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
+        { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500000)", isOnlyNumber: true},
+        { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
         { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
         { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
         { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
@@ -212,7 +212,7 @@ const Product = () => {
           ),
         },
         { type: "text", content: product.name },
-        { type: "text", content: `${product.price.toLocaleString("vi-VN")} ₫` },
+        { type: "text", content: `${product.price != null ? Number(product.price).toLocaleString() : ''} ₫` },
         { type: "text", content: `${product.warranty_period} tháng` },
         {
           type: "component",

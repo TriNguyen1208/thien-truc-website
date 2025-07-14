@@ -117,12 +117,18 @@ const DynamicForm = ({ data, config }) => {
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
+        const field = data.find(f => f.name === name); // Tìm field đang thao tác
         let newValue = value;
         if (type === 'checkbox') {
             newValue = checked;
         } else if (type === 'file') {
             newValue = files[0];
         }
+        // ✅ Nếu trường chỉ cho nhập số
+        if (field?.isOnlyNumber && !/^\d*$/.test(newValue)) {
+            return; // không setState nếu nhập không phải số
+        }
+
         setFormData((prev) => ({
             ...prev,
             [name]: newValue
@@ -277,7 +283,7 @@ const DynamicForm = ({ data, config }) => {
                             {(item.options || defaultField.options).map((opt, idx) => (
                                 <option key={idx} value={opt.value} className="text-center">{opt.label}</option>
                             ))}
-                        
+
                         </select>
                         <button
                             type="button"

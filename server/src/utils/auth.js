@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 async function hashPassword(password) {
     const saltRounds = 10;
