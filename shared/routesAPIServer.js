@@ -65,7 +65,7 @@ const API_ROUTES = {
         },
         product_categories: {
             // get
-            getAll: `${PRODUCT_BASE}/product_categories`,
+            getList: (query) => `${PRODUCT_BASE}/product_categories?query=${uri(query)}`,
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/product_categories`,

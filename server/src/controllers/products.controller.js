@@ -84,8 +84,9 @@ const products = {
 }
 
 const product_categories = {
-    getAll: async (req, res) => {
-        const data = await productServices.product_categories.getAll();
+    getList: async (req, res) => {
+        const {query =''} = req.query;
+        const data = await productServices.product_categories.getList(query);
         res.status(200).json(data);
     },
     getOne: async (req, res) => {

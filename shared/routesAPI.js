@@ -29,7 +29,7 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
         },
         product_categories: {
-            getAll: `${PRODUCT_BASE}/product_categories`,
+            getList: (query) => `${PRODUCT_BASE}/product_categories?query=${uri(query)}`,
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
         },
         product_prices: {

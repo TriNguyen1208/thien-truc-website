@@ -488,8 +488,42 @@ const products = {
 }
 
 const product_categories = {
-    getAll: async () => {
-        const product_categories = (await pool.query("SELECT * FROM product.product_categories")).rows;
+    // getAll: async () => {
+    //     const product_categories = (await pool.query("SELECT * FROM product.product_categories")).rows;
+    //     if(!product_categories){
+    //         throw new Error("Can't get product_categories");
+    //     }
+    //     return product_categories
+    // },
+    getList: async (query) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        
+        if (query != '') {
+            where.push(
+                `(unaccent(C.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(C.name::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(C.name), unaccent('${query}')) DESC`
+            );
+        }
+
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+
+        const product_categories = (await pool.query(`
+            SELECT * 
+            FROM product.product_categories C
+            ${where}
+            ${order}
+
+        `)).rows;
+
         if(!product_categories){
             throw new Error("Can't get product_categories");
         }
