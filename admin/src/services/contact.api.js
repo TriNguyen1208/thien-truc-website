@@ -1,6 +1,5 @@
 import API_ROUTES from "../../../shared/routesAPIServer";
-import axiosService from  "@/services/axiosInstance.js"
-const axios = axiosService.axiosInstance
+import axios from  "@/services/axiosInstance.js"
 const getCompanyInfo = async () => {
     const res = await axios.get(API_ROUTES.contact.company_info);
     return res.data;

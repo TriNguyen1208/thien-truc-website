@@ -141,7 +141,7 @@ const Company = () => {
       return(<div> Loading</div>)
     }
   
-    
+    console.log(companyInfo)
     const handleCanclePopup = ()=>{
         setOpenCancelPopup(false)
   
