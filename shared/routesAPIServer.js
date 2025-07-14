@@ -8,6 +8,7 @@ const RECRUITMENT_BASE = `${BASE_API}/recruitment`;
 const CONTACT_BASE = `${BASE_API}/contact`;
 const ABOUT_US_BASE = `${BASE_API}/about_us`;
 const ADMIN_BASE = `${BASE_API}/admin`;
+const AUTH_BASE = `${BASE_API}/auth`;
 
 const uri = encodeURIComponent;
 
@@ -52,12 +53,12 @@ const API_ROUTES = {
         products: {
             // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
-            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
+            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
-            createOne: `${PRODUCT_BASE}/product/products`,
+            createOne: `${PRODUCT_BASE}/products`,
             // patch
-            updateOne: (id) => `${PRODUCT_BASE}/product/products/${id}`,
+            updateOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
             // delete
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
@@ -88,7 +89,7 @@ const API_ROUTES = {
         project_page: `${PROJECT_BASE}/project_page`,
         projects: {
             getList: (query, filter, is_featured, page, limit) => `${PROJECT_BASE}/projects?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
-            getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
+            getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
         },
         project_regions: {
@@ -101,6 +102,7 @@ const API_ROUTES = {
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
         search_suggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
+        search_categories_suggestions: (query='') => `${PROJECT_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${PROJECT_BASE}/count`
     },
     news: {
@@ -108,7 +110,7 @@ const API_ROUTES = {
         news_page: `${NEWS_BASE}/news_page`,
         news: {
             getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
-            getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
+            getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&limit=${limit}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
             updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
         },
@@ -120,7 +122,9 @@ const API_ROUTES = {
             getAll: `${NEWS_BASE}/news_contents`,   
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
+        updateFeaturedNews: `${NEWS_BASE}/featured_news`, // patch
         search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
+        search_categories_suggestions: (query='') => `${NEWS_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${NEWS_BASE}/count`
     },
     recruitment: {
@@ -132,25 +136,46 @@ const API_ROUTES = {
         base: CONTACT_BASE,
         contact_page: `${CONTACT_BASE}/contact_page`,
         company_info: `${CONTACT_BASE}/company_info`,
+        updateCompanyInfo: `${CONTACT_BASE}/company_info`, // patch        
         support_agents: {
             getAll: `${CONTACT_BASE}/support_agents`,
             getOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
+            createOne: `${CONTACT_BASE}/support_agents/`,
+            updateOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
+            deleteOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
         contact_messages: `${CONTACT_BASE}/contact_messages`,
-        count: `${CONTACT_BASE}/count`
+        count: `${CONTACT_BASE}/count`,
     },
     about_us: {
         base: ABOUT_US_BASE,
         about_us_page: `${ABOUT_US_BASE}/about_us_page`,
+        updateAboutUsPage: {
+            // patch
+            banner: `${ABOUT_US_BASE}/about_us_page/banner`,
+            ourStory: `${ABOUT_US_BASE}/about_us_page/our_story`,
+        },
         company_services: {
             getAll: `${ABOUT_US_BASE}/company_services`,
             getOne: (id) => `${ABOUT_US_BASE}/company_services/${id}`,
+            createOne: `${ABOUT_US_BASE}/company_services`, // post
+            updateOne: (id) => `${ABOUT_US_BASE}/company_services/${id}`, // patch
+            deleteOne: (id) => `${ABOUT_US_BASE}/company_services/${id}`, // delete
         },
         why_choose_us: {
             getAll: `${ABOUT_US_BASE}/why_choose_us`,
             getOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`,
+            createOne: `${ABOUT_US_BASE}/why_choose_us`, // post
+            updateOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`, // patch
+            deleteOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`, // delete
         },
     },
+    auth: {
+        // post
+        login: `${AUTH_BASE}/login`,
+        refreshToken: `${AUTH_BASE}/refresh-token`,
+        verifyLogin: `${AUTH_BASE}/login-result`
+    }
 };
 
 export default API_ROUTES;

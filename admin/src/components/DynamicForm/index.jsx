@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Modal } from 'antd';
 import SimpleForm from "../SimpleForm"
+import { ChromePicker } from 'react-color';
 import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
@@ -413,7 +414,6 @@ const DynamicForm = ({ data, config }) => {
                     </div>
                 );
             }
-
             default:
                 return <input
                     {...commonProps}

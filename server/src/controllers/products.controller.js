@@ -75,7 +75,7 @@ const products = {
             if (result.rowCount == 0) {
                 return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
             }
-            return res.status(200).json({ message: result}); //'Product deleted successfully' });
+            return res.status(200).json({ message: 'Xóa sản phẩm thành công' });
         } catch (error) {
             console.error('Lỗi xóa sản phẩm: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
