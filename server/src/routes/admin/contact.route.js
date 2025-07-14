@@ -9,5 +9,13 @@ router.get('/contact_page', contactController.getContactPage);
 router.get('/company_info', contactController.getCompanyInfo);
 router.get('/support_agents', contactController.support_agents.getAll);
 router.get('/support_agents/:id', contactController.support_agents.getOne);
+router.get('/count', contactController.count);
+
 router.post('/contact_messages', validateForm.validateContact, contactController.postContactMessage);
+router.post('/support_agents', contactController.support_agents.createOne);
+
+router.patch('/company_info', contactController.updateCompanyInfo);
+router.patch('/support_agents/:id', contactController.support_agents.updateOne);
+
+router.delete('/support_agents/:id', contactController.support_agents.deleteOne);
 export default router;

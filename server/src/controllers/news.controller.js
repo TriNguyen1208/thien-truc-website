@@ -12,8 +12,13 @@ const getNewsPage = async (req, res) => {
 
 const news = {
     getList: async (req, res) => {
-        const {query = '', filter = '', sort_by = 'popular', page, is_published} = req.query;
-        const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page), is_published);
+        const {query = '', filter = '', sort_by = 'popular', page, is_published, limit} = req.query;
+        const data = await newsServices.news.getList(query, filter, sort_by, parseInt(page), is_published, parseInt(limit));
+        res.status(200).json(data);
+    },
+    getListByCategory: async (req, res) => {
+        const {query = '', filter = '', sort_by = 'popular', is_published, limit} = req.query;
+        const data = await newsServices.news.getListByCategory(query, filter, sort_by, is_published, parseInt(limit));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
@@ -52,11 +57,39 @@ const news_contents = {
     }
 }
 
+const getSearchCategoriesSuggestions = async (req, res) => {
+    const query = req.query.query || '';
+    const data = await newsServices.getSearchCategoriesSuggestions(query);
+    res.status(200).json(data);
+}
+
 const getSearchSuggestions = async (req, res) => {
     const query = req.query.query || '';
     const filter = req.query.filter || '';
+    const is_published = req.query.is_published;
 
-    const data = await newsServices.getSearchSuggestions(query, filter);
+    const data = await newsServices.getSearchSuggestions(query, filter, is_published);
     res.status(200).json(data);
 }
-export default { getAllTables, getNewsPage, news, news_categories, news_contents,getSearchSuggestions};
+
+const count = async (req, res) => {
+    const data = await newsServices.count();
+    res.status(200).json(data);
+}
+
+const featured_news = {
+    getAll: async (req, res) => {
+        const data = await newsServices.featured_news.getAll();
+        res.status(200).json(data);
+    },
+    updateAll: async (req, res) => {
+        try {
+            const { status, message } = await newsServices.featured_news.updateAll(req.body);
+            res.status(status).json({ message: message });
+        } catch(error) {
+            console.error('Lỗi cập nhật Tin Tức Nổi Bật: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    }
+}
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news};

@@ -5,15 +5,20 @@ import aboutUsRouter from '#@/routes/admin/aboutus.route.js'
 import newsRouter from '#@/routes/admin/news.route.js'
 import projectsRouter from '#@/routes/admin/projects.route.js'
 import productRouter from '#@/routes/admin/products.route.js'
+import adminRouter from '#@/routes/admin/admin.route.js'
+import authRouter from '#@/routes/admin/auth.route.js'
 
 const registerRoutes = (app) => {
     app.use('/api/admin/home', homeRouter);
-    app.use('/api/recruitment', recruitmentRouter);
-    app.use('/api/contact', contactRouter);
-    app.use('/api/about_us', aboutUsRouter);
+    app.use('/api/admin/recruitment', recruitmentRouter);
+    app.use('/api/admin/contact', contactRouter);
+    app.use('/api/admin/about_us', aboutUsRouter);
     app.use('/api/admin/project', projectsRouter);
-    app.use('/api/news', newsRouter);
-    app.use('/api/product', productRouter);
+    app.use('/api/admin/news', newsRouter);
+    app.use('/api/admin/product', productRouter);
+    app.use('/api/admin/admin', adminRouter);
+
+    app.use('/api/auth/', authRouter);
 };
 
 export default registerRoutes;
