@@ -62,10 +62,10 @@ const getProjectPage = async () => {
 }
 
 const projects = {
-    getList: async (query = '', filter = '', page, is_featured) => {
+    getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = 9;
+        const pageSize = item_limit || 9;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
@@ -113,6 +113,8 @@ const projects = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
+                
                 prj_reg.id AS reg_id,
                 prj_reg.name,
                 prj_reg.rgb_color
@@ -131,11 +133,13 @@ const projects = {
             complete_time: row.complete_time,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_featured: row.is_featured,
             region: {
                 id: row.reg_id,
                 name: row.name,
                 rgb_color: row.rgb_color
-            }
+            },
+            is_featured: row.is_featured
         }));
         if (page)
             return {
@@ -147,6 +151,93 @@ const projects = {
         else
             return [...results];
     },
+    getListByRegion: async (query = '', filter = '', is_featured, item_limit) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        let limit = item_limit || 100;
+
+        if (query != '') {
+            where.push(
+                `(unaccent(prj.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(prj.title::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(prj.title), unaccent('${query}')) DESC`
+            );
+        }
+
+        if (filter != '') {
+            where.push(
+                `unaccent(prj_reg.name) ILIKE unaccent('${filter}')`
+            );
+        }
+
+        if (is_featured == 'true' || is_featured == 'false') {
+            where.push(`prj.is_featured = ${is_featured}`);
+        }
+        
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+        
+        const sql = `
+            SELECT 
+                prj.id AS prj_id,
+                prj.title,
+                prj.province,
+                prj.complete_time,
+                prj.main_img,
+                prj.main_content,
+                prj.is_featured,
+
+                prj_reg.id AS reg_id,
+                prj_reg.name,
+                prj_reg.rgb_color,
+            FROM project.projects prj
+            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+            WHERE prj.id IN (
+                SELECT id FROM (
+                    SELECT 
+                        prj.id,
+                        ROW_NUMBER() OVER (PARTITION BY prj.region_id ORDER BY prj.title) AS rn
+                    FROM project.projects prj 
+                    ${where}
+                    ${order}
+                ) sub
+                WHERE rn <= ${limit}
+            )
+        `;
+        
+        const { rows } = await pool.query(sql);
+        const groupedResults = {};
+        for (const row of rows) {
+            const regionName = row.name;
+            if (!groupedResults[regionName]) {
+                groupedResults[regionName] = [];
+            }
+
+            groupedResults[regionName].push({
+                id: row.prj_id,
+                title: row.title,
+                province: row.province,
+                complete_time: row.complete_time,
+                main_img: row.main_img,
+                main_content: row.main_content,
+                region: {
+                    id: row.reg_id,
+                    name: row.name,
+                    rgb_color: row.rgb_color
+                },
+                is_featured: row.is_featured
+            });
+        }
+
+        return groupedResults;
+    },
     getOne: async (id) => {
         const query = `
             select 
@@ -156,6 +247,7 @@ const projects = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
@@ -170,13 +262,15 @@ const projects = {
             title: row.title,
             province: row.province,
             complete_time: row.complete_time,
+            is_featured: row.is_featured,
             main_img: row.main_img,
             main_content: row.main_content,
             region: {
                 id: row.reg_id,
                 name: row.name,
                 rgb_color: row.rgb_color
-            }
+            },
+            is_featured: row.is_featured
         };
         return project;
     }
@@ -212,6 +306,7 @@ const project_contents = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
@@ -235,7 +330,8 @@ const project_contents = {
                     id: row.reg_id,
                     name: row.name,
                     rgb_color: row.rgb_color
-                }
+                },
+                is_featured: row.is_featured
             }}));
         return project_contents
     },
@@ -251,6 +347,7 @@ const project_contents = {
                 prj.complete_time,
                 prj.main_img,
                 prj.main_content,
+                prj.is_featured,
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
@@ -275,7 +372,8 @@ const project_contents = {
                     id: row.reg_id,
                     name: row.name,
                     rgb_color: row.rgb_color
-                }
+                },
+                is_featured: row.is_featured
             }};
         return project_content;
     }
@@ -320,25 +418,42 @@ const getHighlightProjects = async () => {
     }
 }
 
-const getSearchSuggestions = async (query, filter) => {
-    const cleanedQuery = query.trim().replaceAll(`'`, ``);
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+const getSearchSuggestions = async (query, filter, is_featured) => {
+    query = query.trim().replaceAll(`'`, ``);
+    filter = filter.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
+
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(P.title::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(P.title::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(P.title::text), unaccent('${query}'::text)) DESC`);
+    }
+    if (filter != '') {
+        where.push(`unaccent(R.name) ILIKE unaccent('${filter}')`);
+    }
+    if (is_featured == 'false' || is_featured == 'true') {
+        where.push(`P.is_featured = ${is_featured}`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+    
 
     const sql = `
         SELECT P.title, P.id, P.main_img
         FROM project.projects P
         JOIN project.project_regions R ON P.region_id = R.id
-        WHERE
-            ($2 = '' OR unaccent(R.name) ILIKE unaccent($2)) AND
-            (unaccent(P.title::text) ILIKE '%' || unaccent($1::text) || '%' OR
-            similarity(unaccent(P.title::text), unaccent($1::text)) > 0)
-        ORDER BY
-            similarity(unaccent(P.title::text), unaccent($1::text)) DESC
-        LIMIT 5
+        ${where}
+        ${order}
+        ${limit}
     `;
-    const values = [cleanedQuery, cleanedFilter];
     try {
-        const result = await pool.query(sql, values);
+        const result = await pool.query(sql);
         return result.rows.map(row => ({
             query: row.title,
             id: row.id,
@@ -348,6 +463,29 @@ const getSearchSuggestions = async (query, filter) => {
         throw new Error(`DB error: ${err.message}`);
     }
 };
+
+const getSearchCategoriesSuggestions = async (query) => {
+    query = query.trim().replaceAll(`'`, ``);
+    const sql = `
+        SELECT * 
+        FROM project.project_regions R
+        WHERE similarity(unaccent(R.name::text), unaccent($1::text)) > 0
+        ORDER BY similarity(unaccent(R.name::text), unaccent($1::text)) DESC
+        LIMIT 5
+    `;
+    const values = [query];
+    try {
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id,
+            rgb_color: row.rgb_color,
+            item_count: row.item_count || 0
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+}
 
 const count = async () => {
     const project_count = (await pool.query(`
@@ -372,4 +510,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, count};
+export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};

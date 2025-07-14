@@ -64,11 +64,27 @@ const getProductPage = async () => {
     }
 }
 
+const updateProductPage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE product.product_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
+}
+
 const products = {
-    getList: async (query = '', filter = '', page, is_featured) => {
+    getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = 12;
+        const pageSize = item_limit || 12;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
@@ -118,6 +134,7 @@ const products = {
                 prd.product_specifications,
                 prd.product_features,
                 prd.highlight_features,
+                prd.is_featured,
             
                 pp.price AS price,
                 pc.id AS category_id,
@@ -144,7 +161,8 @@ const products = {
             category: {
                 id: row.category_id,
                 name: row.category_name
-            }
+            },
+            is_featured: row.is_featured
         }));
         if (page)
             return {
@@ -154,6 +172,101 @@ const products = {
                 results
             };
         else return [...results];
+    },
+    getListByCategory: async (query = '', filter = '', is_featured, item_limit) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+        filter = filter.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        const limit = item_limit || 100;
+        
+        if (query != '') {
+            where.push(
+                `(unaccent(prd.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(prd.name::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(prd.name), unaccent('${query}')) DESC`
+            );
+        }
+
+        if (filter != '') {
+            where.push(
+                `unaccent(pc.name) ILIKE unaccent('${filter}')`
+            );
+        }
+
+        if (is_featured == 'true' || is_featured == 'false') {
+            where.push(`prd.is_featured = ${is_featured}`);
+        }
+
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+
+        // ✅ SQL giữ nguyên where/order/limit — nhưng thêm phần row_number cho mỗi category
+        const sql = `
+            SELECT 
+                prd.id AS product_id,
+                prd.name AS product_name,
+                prd.description,
+                prd.product_img,
+                prd.product_specifications,
+                prd.warranty_period,
+                prd.product_features,
+                prd.highlight_features,
+                prd.is_featured,
+
+                pp.price AS price,
+                pc.id AS category_id,
+                pc.name AS category_name
+            FROM product.products prd
+            JOIN product.product_categories pc   ON prd.category_id = pc.id
+            JOIN product.product_prices pp ON prd.id = pp.product_id
+            WHERE prd.id IN (
+                SELECT id FROM (
+                    SELECT 
+                        prd.id,
+                        ROW_NUMBER() OVER (PARTITION BY prd.category_id ORDER BY prd.name) AS rn
+                    FROM product.products prd   
+                    ${where}
+                    ${order}
+                ) sub
+                WHERE rn <= ${limit}
+            )
+        `;
+
+        const { rows } = await pool.query(sql);
+        
+        // ✅ Group theo category_name
+        const groupedResults = {};
+        for (const row of rows) {
+            const categoryName = row.category_name;
+            if (!groupedResults[categoryName]) {
+                groupedResults[categoryName] = [];
+            }
+
+            groupedResults[categoryName].push({
+                id: row.product_id,
+                name: row.product_name,
+                description: row.description,
+                product_img: row.product_img,
+                price: row.price,
+                product_specifications: JSON.parse(row.product_specifications || '{}'),
+                warranty_period: row.warranty_period,
+                product_features: row.product_features || [],
+                highlight_features: row.highlight_features || [],
+                category: {
+                    id: row.category_id,
+                    name: row.category_name
+                },
+                is_featured: row.is_featured
+            });
+        }
+
+        return groupedResults;
     },
     getOne: async (id) => {
         const query = `
@@ -166,6 +279,7 @@ const products = {
                 prd.warranty_period,
                 prd.product_features,
                 prd.highlight_features,
+                prd.is_featured,
 
                 pp.price as price,
                 prd_cate.id as category_id,
@@ -191,9 +305,179 @@ const products = {
                 category: {
                     id: row.category_id,
                     name: row.category_name
-                }
+                },
+
+                is_featured: row.is_featured
             };
         return product
+    },
+    updateFeatureOne: async (id, status) => {
+        const query = `
+            UPDATE product.products SET is_featured = ${status} WHERE id = ${id};
+        `
+        const result = await pool.query(query);
+        return result;
+    },
+    createOne: async (data) => {
+        const {
+            avatarImage,
+            characteristic,
+            description,
+            isDisplayHomePage,
+            price,
+            productCategories,
+            productName,
+            technicalDetails,
+            warranty
+        } = data;
+
+        // 1. Get category_id
+        const categoryRes = await pool.query(
+            `SELECT id FROM product.product_categories WHERE name ILIKE $1`,
+            [productCategories]
+        );
+        if (categoryRes.rowCount === 0) {
+            throw new Error('Category not found');
+        }
+        const category_id = categoryRes.rows[0].id;
+
+        // 2. Prepare features
+        const product_features = characteristic.map(c => c.value);
+        const highlight_feature_ids = characteristic
+            .map((c, index) => (c.isCheckbox ? index : -1))
+            .filter(index => index !== -1);
+
+        // 3. Insert into products
+        const insertSql = `
+            INSERT INTO product.products (
+            name, description, product_img, category_id,
+            product_specifications, warranty_period,
+            product_features, highlight_features, is_featured
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING id;
+        `;
+
+        const insertValues = [
+            productName,
+            description,
+            avatarImage,
+            category_id,
+            JSON.stringify(technicalDetails), // in case it's an object
+            parseInt(warranty),
+            product_features,
+            highlight_feature_ids,
+            isDisplayHomePage
+        ];
+
+        const productInsertResult = await pool.query(insertSql, insertValues);
+
+        // 4. Update product prices
+        const product_id = productInsertResult.rows[0].id;
+        await pool.query(
+            `INSERT INTO product.product_prices (product_id, price) VALUES ($1, $2)`,
+            [product_id, price]
+        ); 
+
+        // 5. Update item_count
+        await pool.query(
+            `UPDATE product.product_categories SET item_count = item_count + 1 WHERE id = $1`,
+            [category_id]
+        );
+    },
+    updateOne: async (data, id) => {
+        const {
+            avatarImage,
+            characteristic,
+            description,
+            isDisplayHomePage,
+            price,
+            productCategories,
+            productName,
+            technicalDetails,
+            warranty
+        } = data;
+
+        // 1. Get category_id
+        const categoryRes = await pool.query(
+            `SELECT id FROM product.product_categories WHERE name ILIKE $1`,
+            [productCategories]
+        );
+        if (categoryRes.rowCount === 0) {
+            throw new Error('Category not found');
+        }
+        const category_id = categoryRes.rows[0].id;
+
+        // 2. Prepare features
+        const product_features = characteristic.map(c => c.value);
+        const highlight_feature_ids = characteristic
+            .map((c, index) => (c.isCheckbox ? index : -1))
+            .filter(index => index !== -1);
+
+        // 3. Insert into products
+        const insertSql = `
+            UPDATE product.products 
+            SET
+                name = $1,
+                description = $2,
+                product_img = $3,
+                category_id = $4,
+                product_specifications = $5,
+                warranty_period = $6,
+                product_features = $7,
+                highlight_features = $8,
+                is_featured = $9
+            WHERE id = ${id}
+        `;
+
+        const insertValues = [
+            productName,
+            description,
+            avatarImage,
+            category_id,
+            JSON.stringify(technicalDetails), // in case it's an object
+            parseInt(warranty),
+            product_features,
+            highlight_feature_ids,
+            isDisplayHomePage
+        ];
+
+        const productInsertResult = await pool.query(insertSql, insertValues);
+
+        // 4. Update product prices
+        await pool.query(
+            `
+                UPDATE product.product_prices
+                SET price = $2
+                WHERE product_id = $1
+            `,
+            [id, price]
+        );
+    },
+    deleteOne: async (id) => {
+        // 1. Get category_id
+        const categoryRes = await pool.query(
+            `SELECT category_id FROM product.products WHERE id = $1`,
+            [id]
+        );
+        if (categoryRes.rowCount === 0) {
+            return categoryRes;
+        }
+        const category_id = categoryRes.rows[0].category_id;
+
+        // 2. Delete product & product prices
+        const query = `
+            DELETE FROM product.product_prices WHERE product_id = ${id};
+            DELETE FROM product.products WHERE id = ${id};
+        `;
+
+        // 3. Decrease item_count in product category
+        await pool.query(
+            `UPDATE product.product_categories SET item_count = item_count - 1 WHERE id = $1`,
+            [category_id]
+        );
+
+        const result = await pool.query(query);
+        return result[1];
     }
 }
 
@@ -211,6 +495,31 @@ const product_categories = {
             throw new Error("Can't get product_categories");
         }
         return product_category
+    },
+    createOne: async (data) => {
+        const { productNameCategories } = data;
+        await pool.query(
+            `INSERT INTO product.product_categories (name, item_count) VALUES ($1, 0)`,
+            [productNameCategories]
+        );
+    },
+    updateOne: async (data, id) => {
+        const { productNameCategories } = data;
+        await pool.query(
+            `UPDATE product.product_categories
+            SET name = $1
+            WHERE id = $2`,
+            [productNameCategories, id]
+        );
+    },
+    deleteOne: async (id) => {
+        const query = `
+            DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = ${id});
+            DELETE FROM product.products WHERE category_id = ${id};
+            DELETE FROM product.product_categories WHERE id = ${id};
+        `;
+        const result = await pool.query(query);
+        return result[2];
     }
 }
 
@@ -221,6 +530,22 @@ const getPricePage = async () => {
         throw new Error("Can't get price_page");
     }
     return price_page;
+}
+
+const updatePricePage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE product.price_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
 }
 
 const product_prices = {
@@ -470,25 +795,42 @@ const getHighlightProducts = async () => {
     }
 }
 
-const getSearchSuggestions = async (query, filter) => {
-    const cleanedQuery = query.trim().replaceAll(`'`, ``);
-    const cleanedFilter = filter.trim().replaceAll(`'`, ``);
+const getSearchSuggestions = async (query, filter, is_featured) => {
+    query = query.trim().replaceAll(`'`, ``);
+    filter = filter.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
 
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(P.name::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(P.name::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(P.name::text), unaccent('${query}'::text)) DESC`);
+    }
+    if (filter != '') {
+        where.push(`unaccent(C.name) ILIKE unaccent('${filter}')`);
+    }
+    if (is_featured == 'false' || is_featured == 'true') {
+        where.push(`P.is_featured = ${is_featured}`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+    
     const sql = `
         SELECT P.name, P.id, P.product_img
         FROM product.products P
         JOIN product.product_categories C ON P.category_id = C.id
-        WHERE 
-            $2 = '' OR unaccent(C.name) ILIKE unaccent($2) AND
-            (unaccent(P.name::text) ILIKE '%' || unaccent($1::text) || '%' OR
-            similarity(unaccent(P.name::text), unaccent($1::text)) > 0)
-        ORDER BY
-            similarity(unaccent(P.name::text), unaccent($1::text)) DESC
-        LIMIT 5
+        ${where}
+        ${order}
+        ${limit}
     `;
-    const values = [cleanedQuery, cleanedFilter];
+
     try {
-        const result = await pool.query(sql, values);
+        const result = await pool.query(sql);
         return result.rows.map(row => ({
             query: row.name,
             id: row.id,
@@ -522,4 +864,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProductPage, products, product_categories, getPricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
