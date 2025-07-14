@@ -173,7 +173,8 @@ const API_ROUTES = {
     auth: {
         // post
         login: `${AUTH_BASE}/login`,
-        refreshToken: `${AUTH_BASE}/refresh-token`
+        refreshToken: `${AUTH_BASE}/refresh-token`,
+        verifyLogin: `${AUTH_BASE}/login-result`
     }
 };
 
