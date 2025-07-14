@@ -8,6 +8,7 @@ const RECRUITMENT_BASE = `${BASE_API}/recruitment`;
 const CONTACT_BASE = `${BASE_API}/contact`;
 const ABOUT_US_BASE = `${BASE_API}/about_us`;
 const ADMIN_BASE = `${BASE_API}/admin`;
+const AUTH_BASE = `${BASE_API}/auth`;
 
 const uri = encodeURIComponent;
 
@@ -55,9 +56,9 @@ const API_ROUTES = {
             getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
-            createOne: `${PRODUCT_BASE}/product/products`,
+            createOne: `${PRODUCT_BASE}/products`,
             // patch
-            updateOne: (id) => `${PRODUCT_BASE}/product/products/${id}`,
+            updateOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
             // delete
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
@@ -139,6 +140,9 @@ const API_ROUTES = {
         support_agents: {
             getAll: `${CONTACT_BASE}/support_agents`,
             getOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
+            createOne: `${CONTACT_BASE}/support_agents/`,
+            updateOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
+            deleteOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
         contact_messages: `${CONTACT_BASE}/contact_messages`,
         count: `${CONTACT_BASE}/count`,
@@ -155,6 +159,11 @@ const API_ROUTES = {
             getOne: (id) => `${ABOUT_US_BASE}/why_choose_us/${id}`,
         },
     },
+    auth: {
+        // post
+        login: `${AUTH_BASE}/login`,
+        refreshToken: `${AUTH_BASE}/refresh-token`
+    }
 };
 
 export default API_ROUTES;

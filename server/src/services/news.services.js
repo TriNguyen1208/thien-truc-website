@@ -382,6 +382,7 @@ const news_contents = {
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id as category_id,
                 n_cate.name,
@@ -398,6 +399,7 @@ const news_contents = {
             news: {
               id: row.news_id,
               title: row.title,
+              is_published: row.is_published,
               public_date: row.public_date,
               measure_time: row.measure_time,
               num_readers: row.num_readers,

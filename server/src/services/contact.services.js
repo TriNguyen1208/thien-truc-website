@@ -45,7 +45,7 @@ const updateCompanyInfo = async (data) => {
         main_office_id,
         googlemaps_embed_url,
         working_hours,
-        company_mail,
+        company_email,
         company_phone,
         fanpage_url
     } = data
@@ -62,7 +62,7 @@ const updateCompanyInfo = async (data) => {
             company_email = $5,
             company_phone = $6,
             fanpage_url = $7            
-    `, [office_address, main_office_id, googlemaps_embed_url, working_hours, company_mail, company_phone, fanpage_url]);
+    `, [office_address, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, fanpage_url]);
 
     return {
         status: 200,
@@ -84,7 +84,76 @@ const support_agents = {
             throw new Error("Can't get support_agents");
         }
         return support_agent_with_id;
+    },
+    createOne: async (data) => {
+        const {
+            avatar_img,
+            name,
+            role,
+            phone_number,
+            facebook_url
+        } = data
+
+        const result = await pool.query(`
+            INSERT INTO contact.support_agents (avatar_img, name, role, phone_number, facebook_url)
+            VALUES ($1, $2, $3, $4, $5);
+        `, [avatar_img, name, role, phone_number, facebook_url]);
+
+        if (result.rowCount == 0) return {
+            status: 500,
+            message: "Không thể tạo Người Liên Hệ"
+        }; else if (result.rowCount > 0) return {
+            status: 200,
+            message: "Tạo Người Liên Hệ thành công"
+        } 
+    },
+    updateOne: async (data, id) => {
+        const idCount = (await pool.query('SELECT COUNT(*)::int FROM contact.support_agents WHERE id = $1', [id])).rows[0].count;
+        if (idCount == 0) return {
+            status: 404,
+            message: "Không tìm thấy Người Liên Hệ"
+        }
+
+        const {
+            avatar_img,
+            name,
+            role,
+            phone_number,
+            facebook_url
+        } = data
+
+        const result = await pool.query(`
+            UPDATE contact.support_agents
+            SET 
+                avatar_img = $1,
+                name = $2,
+                role = $3,
+                phone_number = $4,
+                facebook_url = $5
+            WHERE
+                id = $6
+        `, [avatar_img, name, role, phone_number, facebook_url, id]);
+
+        if (result.rowCount == 0) return {
+            status: 500,
+            message: "Không thể cập nhật Người Liên Hệ"
+        }; else if (result.rowCount > 0) return {
+            status: 200,
+            message: "Cập nhật Người Liên Hệ thành công"
+        } 
+    },
+    deleteOne: async (id) => {
+        const result = await pool.query('DELETE FROM contact.support_agents WHERE id = $1', [id]);
+
+        if (result.rowCount == 0) return {
+            status: 500,
+            message: "Không tìm thấy Người Liên Hệ"
+        }; else if (result.rowCount > 0) return {
+            status: 200,
+            message: "Xóa Người Liên Hệ thành công"
+        } 
     }
+    
 }
 
 const postContactMessage = async (applicationData) => {
