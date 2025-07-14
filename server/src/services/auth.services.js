@@ -40,7 +40,7 @@ const login = async (loginData) => {
 
     // Tạo access token
     const accessToken = jwt.sign(
-        { role: user.role },
+        { username: user.username, role: user.role },
         ACCESS_SECRET,
         { expiresIn: '15m' }
     );
