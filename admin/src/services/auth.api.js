@@ -1,6 +1,6 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
-import { setCredentials, logout } from '../slices/auth.slice';
+import { setCredentials, logout, setLoading } from '../slices/auth.slice';
 
 export const loginUser = (username, password) => async (dispatch) => {
     try {
@@ -16,9 +16,20 @@ export const loginUser = (username, password) => async (dispatch) => {
         // Chuyển hướng sang trang chính sau khi login
     } catch (err) {
         console.error('Đăng nhập thất bại:', err);
-        throw err
+        throw err;
     }
 };
 export const verifyFromToken = () => async (dispatch) => {
-    
+    dispatch(setLoading(true));
+    try{
+        await axios.get(API_ROUTES.auth.verifyLogin);
+        dispatch(setCredentials({
+            accessToken: localStorage.getItem('accessToken'),
+            refreshToken: localStorage.getItem('refreshToken'),
+        }));
+    }catch{
+        dispatch(logout());
+    }finally{
+        dispatch(setLoading(false))
+    }
 }

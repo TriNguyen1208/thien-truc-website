@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon } from '../../components/Icon'
 import ButtonLayout from "../../components/ButtonLayout"
-import useAuth from '../../hooks/useAuth'
-import {useNavigate} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { loginUser } from '../../services/auth.api';
+import { toast } from 'react-toastify';
 const Login = () => {
+    const location = useLocation();
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -13,19 +16,18 @@ const Login = () => {
 
     const wrapperUserRef = useRef();
     const wrapperPasswordRef = useRef();
-    const loginMutation = useAuth.login({
-        onSuccess: () => {
-            navigate('/');
-        },
-        onError: () => {
-            alert('Đăng nhập thất bại');
-        }
-    });
-    const handleSubmit = (e) => {
-        console.log(username, password)
+    const dispatch = useDispatch();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        loginMutation.mutate({username, password})
-    }
+        try {
+            await dispatch(loginUser(username, password));
+            toast.success("Đăng nhập thành công!");
+            navigate(location.state?.from?.pathname || '/');
+        } catch{
+            toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+        }
+    };
     useEffect(()=>{
         const handleClickOutside = (e) => {
             if(wrapperUserRef.current && !wrapperUserRef.current.contains(e.target)){
@@ -90,7 +92,7 @@ const Login = () => {
                             />
                             <span
                                 onClick={() => setIsVisible(!visible)}
-                                className='flex items-center'
+                                className='flex items-center cursor-pointer'
                             >
                                 {visible ? <EyeOffIcon/> : <EyeIcon/>}
                             </span>
