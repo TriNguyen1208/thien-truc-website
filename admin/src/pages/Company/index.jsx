@@ -140,7 +140,7 @@ const Company = () => {
     {
       return(<div> Loading</div>)
     }
-
+  
     
     const handleCanclePopup = ()=>{
         setOpenCancelPopup(false)
@@ -175,7 +175,7 @@ const Company = () => {
                   "googlemaps_url" : address.googlemaps_url
                 })
               }),
-              "main_office_id": 1,
+              "main_office_id": selectedAddressId,
               "googlemaps_embed_url": companyEmbedUrl,
               "working_hours": companyHourList.map((hour, index) =>{
                 return(hour.data)
