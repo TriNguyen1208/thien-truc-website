@@ -78,6 +78,7 @@ const Product = () => {
       bool_featured = undefined
     }
   }
+  const { mutate: updateOneProduct, isLoading: isLoadingUpdateOneProduct } = useProducts.products.updateOne();
   const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(query, filter === categoriesDefault ? undefined : filter, bool_featured);
   const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
   const { mutate: updateFeatureProduct, isLoading: isLoadingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
@@ -109,7 +110,7 @@ const Product = () => {
       { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
     ])
   }, [categories]);
-  if (isLoadingProductData || isLoadingProductCategoriesData || isLoadingUpdateFeatureOne || isLoadingDeleteOneProduct || isLoadingCreateOneProduct) {
+  if (isLoadingProductData || isLoadingProductCategoriesData || isLoadingUpdateFeatureOne || isLoadingDeleteOneProduct || isLoadingCreateOneProduct  || isLoadingUpdateOneProduct) {
     return (
       <>
         Dang loading...
@@ -194,6 +195,7 @@ const Product = () => {
 
     ];
     setDataEditProduct(updatedForm);
+    updateOneProduct(item.id, item)
     setIsModalOpenEditProduct(true);
     console.log(dataEditProduct);
   }
