@@ -45,7 +45,7 @@ const updateCompanyInfo = async (data) => {
         main_office_id,
         googlemaps_embed_url,
         working_hours,
-        company_mail,
+        company_email,
         company_phone,
         fanpage_url
     } = data
@@ -62,7 +62,7 @@ const updateCompanyInfo = async (data) => {
             company_email = $5,
             company_phone = $6,
             fanpage_url = $7            
-    `, [office_address, main_office_id, googlemaps_embed_url, working_hours, company_mail, company_phone, fanpage_url]);
+    `, [office_address, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, fanpage_url]);
 
     return {
         status: 200,
