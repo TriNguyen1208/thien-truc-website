@@ -150,19 +150,19 @@ const products = {
         const { rows } = await pool.query(sql);
         const results = rows.map(row => ({
             id: row.product_id,
-            name: row.product_name,
-            description: row.description,
-            product_img: row.product_img,
-            price: row.price,
+            name: row.product_name || "",
+            description: row.description || "",
+            product_img: row.product_img || "",
+            price: row.price || "",
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: row.warranty_period,
+            warranty_period: row.warranty_period || "",
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
                 id: row.category_id,
                 name: row.category_name
             },
-            is_featured: row.is_featured
+            is_featured: row.is_featured || false
         }));
         if (page)
             return {
@@ -250,19 +250,19 @@ const products = {
 
             groupedResults[categoryName].push({
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                price: row.price,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                price: row.price || "",
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
-                warranty_period: row.warranty_period,
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
                 },
-                is_featured: row.is_featured
+                is_featured: row.is_featured || false
             });
         }
 
@@ -293,12 +293,12 @@ const products = {
         const row = (await pool.query(query)).rows[0];
         const product = {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                price: row.price,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                price: row.price || "",
                 product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
-                warranty_period: row.warranty_period,
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
 
@@ -307,7 +307,7 @@ const products = {
                     name: row.category_name
                 },
 
-                is_featured: row.is_featured
+                is_featured: row.is_featured || false
             };
         return product
     },
@@ -535,7 +535,7 @@ const getPricePage = async () => {
     if(!price_page){
         throw new Error("Can't get price_page");
     }
-    return price_page;
+    return price_page || "";
 }
 
 const updatePricePage = async (data) => {
@@ -596,14 +596,14 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedQuery, cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -645,14 +645,14 @@ const product_prices = {
         const { rows } = await pool.query(sql);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -691,14 +691,14 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -735,14 +735,14 @@ const product_prices = {
         const row = (await pool.query(query)).rows[0];
         const product_price = {
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
             
@@ -782,12 +782,12 @@ const getHighlightProducts = async () => {
         const { rows } = await pool.query(sql);
         const results = rows.map(row => ({
             id: row.product_id,
-            name: row.product_name,
-            product_img: row.product_img,
-            description: row.description,
-            price: row.price,
+            name: row.product_name || "",
+            product_img: row.product_img || "",
+            description: row.description || "",
+            price: row.price || "",
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: row.warranty_period,
+            warranty_period: row.warranty_period || "",
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
