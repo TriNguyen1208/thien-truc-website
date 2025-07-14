@@ -18,7 +18,7 @@ const registerRoutes = (app) => {
     app.use('/api/admin/product', productRouter);
     app.use('/api/admin/admin', adminRouter);
 
-    app.use('/api/auth/', authRouter);
+    app.use('/api/admin/auth/', authRouter);
 };
 
 export default registerRoutes;

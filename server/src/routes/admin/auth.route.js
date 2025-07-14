@@ -17,9 +17,7 @@ router.get('/hashpass/:password', async (req, res) => {
     res.json({hashedPassword});
 })
 
-router.get('/login-result', authenticateToken, async (req, res) => {
-    res.json({message: 'Đăng nhập thành công'});
-})
+router.get('/login-result', authenticateToken, authController.getLoginResult);
 // -------------------------------------------------------------------
 
 export default router;
