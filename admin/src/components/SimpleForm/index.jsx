@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Modal } from 'antd';
+import { ChromePicker } from "react-color";
+
 const SimpleForm = ({ data, config }) => {
     const [focusedFields, setFocusedFields] = useState({});
     const defaultField = {

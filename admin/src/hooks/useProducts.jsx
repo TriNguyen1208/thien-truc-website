@@ -84,7 +84,7 @@ const products = {
     return useMutation({
       mutationFn: (data) => productsServices.products.createOne(data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["admin_product_list"] });
+        queryClient.invalidateQueries({ queryKey: ["admin_product_by_category"] });
       },
     });
   },

@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Modal } from 'antd';
 import SimpleForm from "../SimpleForm"
+import { ChromePicker } from 'react-color';
 import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
@@ -239,7 +240,7 @@ const DynamicForm = ({ data, config }) => {
 
             required: item.isRequired || defaultField.isRequired,
             maxLength: maxLength || undefined,
-            readOnly: item.isReadOnly || false, 
+            readOnly: item.isReadOnly || false,
             style: {
                 padding: '8px 12px',
                 display: 'block',
@@ -265,6 +266,7 @@ const DynamicForm = ({ data, config }) => {
                     />
                 );
             case 'select':
+
                 return (
                     <div className="flex gap-2 mb-2">
                         <select
@@ -275,6 +277,7 @@ const DynamicForm = ({ data, config }) => {
                             {(item.options || defaultField.options).map((opt, idx) => (
                                 <option key={idx} value={opt.value} className="text-center">{opt.label}</option>
                             ))}
+                        
                         </select>
                         <button
                             type="button"
@@ -498,7 +501,6 @@ const DynamicForm = ({ data, config }) => {
                     </div>
                 );
             }
-
             default:
                 return <input
                     {...commonProps}

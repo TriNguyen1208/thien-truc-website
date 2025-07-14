@@ -40,6 +40,35 @@ const highlight_stats_about_us = {
         const id = req.params.id;
         const data = await homeServices.highlight_stats_about_us.getOne(id);
         res.status(200).json(data);
-    }
+    },
+    createOne: async (req, res) => {
+        try {
+            const { status, message } = await homeServices.highlight_stats_about_us.createOne (req.body);
+            return res.status(status).json({ message: message });
+        } catch (error) {
+            console.error('Lỗi tạo Thông Số Nổi Bật của Trang Chủ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
+    },
+    updateOne: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const { status, message } = await homeServices.highlight_stats_about_us.updateOne(req.body, id);
+            return res.status(status).json({ message: message});
+        } catch (error) {
+            console.error('Lỗi cập nhật Thông Số Nổi Bật của Trang Chủ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
+    },
+    deleteOne: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const { status, message } = await homeServices.highlight_stats_about_us.deleteOne(id);
+            return res.status(status).json({ message: message });
+        } catch (error) {
+            console.error('Lỗi xóa Thông Số Nổi Bật của Trang Chủ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
+    },
 }
 export default { getAllTables, getHomePage, updateHomePage, highlight_stats_about_us };

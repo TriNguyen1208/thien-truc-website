@@ -22,7 +22,6 @@ const Product = () => {
       hasButton: true,
       buttonLabel: "Thêm sản phẩm",
       buttonAction: () => {
-        console.log("Open button")
         setIsModalOpenAddProduct(true);
       }
     })
@@ -90,10 +89,12 @@ const Product = () => {
   }, [productCategoriesData]);
 
   useEffect(() => {
-    const object = categories.map(item => ({
+    const object = [
+      ...categories.map(item => ({
       label: item,
       value: item
-    }));
+    }))];
+    object[0].value = "";
 
     setCategoriesObject(object);
     setDataEditProduct([
@@ -115,11 +116,8 @@ const Product = () => {
       </>
     )
   }
-  console.log(categories);
-  console.log(categoriesObject);
 
   const idCurrentCategories = filter ? (categories || []).findIndex(item => item === filter) : 0;
-  console.log(idCurrentCategories);
   // const dataProductCategories = [
   //   ...categoriesData.map(name => ({
   //     value: name,
@@ -162,7 +160,7 @@ const Product = () => {
       },
       dataAddProduct: [
         { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
-        { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: categoriesObject },
+        { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: true, options: categoriesObject },
         { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500.000)" },
         { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)' },
         { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
@@ -275,7 +273,6 @@ const Product = () => {
   }
 
   const handleSearchSuggestion = (query, category, display) => {
-    console.log(query, category, display);
     return useProducts.getSearchSuggestions(query, category, display);
   }
   const dataSearch = {
