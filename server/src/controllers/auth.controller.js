@@ -25,7 +25,7 @@ const getLoginResult = async (req, res) => {
     res.status(200).json({
         message: 'Đăng nhập thành công', 
         user: {
-            username: req.user.usernames,
+            username: req.user.username,
             role: req.user.role
         }
     });
