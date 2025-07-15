@@ -6,6 +6,8 @@ import CustomButton from "@/components/ButtonLayout";
 import { PlusOutlined, ArrowLeftOutlined} from "@ant-design/icons";
 import { useLayout } from "@/layouts/layoutcontext";
 import { useNavigate } from "react-router-dom";
+import { useNavigationGuardContext } from "../NavigatorProvider";
+import useNavigationGuard from "../../hooks/useNavigationGuard";
 
 export default function DefaultLayout({ children }) {
 
@@ -19,7 +21,8 @@ const {
   buttonAction = () => {},
 } = layoutProps ?? {};
   const navigate = useNavigate();
-
+  const {shouldWarn} = useNavigationGuardContext() ?? {};
+  const modal = useNavigationGuard(shouldWarn);
   return (
     <div className="flex h-screen overflow-hidden">
       {/* SIDER */}
@@ -67,6 +70,7 @@ const {
         </main>
         {/* <Footer /> nếu cần */}
       </div>
+      {modal}
     </div>
   );
 }

@@ -9,4 +9,9 @@ const patchPricePage = async (updatedPage)=>{
     const res = await axios.patch(API_ROUTES.product.update_price_page, updatedPage)
     return res.data
 }
-export default {getPricePage, patchPricePage };
+
+const getQuantity = async()=>{
+    const res = await axios.get(API_ROUTES.product.count)
+    return res.data
+}
+export default {  getQuantity, getPricePage, patchPricePage  };

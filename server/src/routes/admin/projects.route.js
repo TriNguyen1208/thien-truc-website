@@ -1,5 +1,6 @@
 import express from 'express'
 import projectsController from '#@/controllers/projects.controller.js';
+import upload from '#@/middlewares/upload.middleware.js'
 
 const router = express.Router();
 
@@ -18,4 +19,15 @@ router.get('/search_categories_suggestions', projectsController.getSearchCategor
 router.get('/search_suggestions', projectsController.getSearchSuggestions);
 
 router.get('/count', projectsController.count);
+
+router.post('/project_contents/',  upload.fields([
+    { name: 'main_image', maxCount: 1 },
+    { name: 'images', maxCount: 20 }])
+, projectsController.project_contents.postOne);
+
+router.patch('/project_contents/:id',  upload.fields([
+    { name: 'main_image', maxCount: 1 },
+    { name: 'images', maxCount: 20 },
+])
+, projectsController.project_contents.updateOne);
 export default router;

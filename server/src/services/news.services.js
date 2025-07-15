@@ -1,5 +1,6 @@
 import pool from '#@/config/db.js'
-
+import upload from '#@/middlewares/upload.middleware.js';
+import { uploadImage, deleteImage } from '#@/utils/image.js';
 const getAllTables = async () => {
     const _news_page = await getNewsPage();
     const _news = await news.getList();
@@ -266,6 +267,7 @@ const news = {
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id as category_id,
                 n_cate.name,
@@ -284,6 +286,7 @@ const news = {
             num_readers: row.num_readers,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_published: row.is_published,
             category: {
                 id: row.category_id,
                 name: row.name,
@@ -339,6 +342,7 @@ const news_contents = {
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id as category_id,
                 n_cate.name,
@@ -360,6 +364,7 @@ const news_contents = {
               num_readers: row.num_readers,
               main_img: row.main_img,
               main_content: row.main_content,
+              is_published: row.is_published,
               category: {
                 id: row.category_id,
                 name: row.name,
@@ -405,6 +410,7 @@ const news_contents = {
               num_readers: row.num_readers,
               main_img: row.main_img,
               main_content: row.main_content,
+              is_published: row.is_published,
               category: {
                 id: row.category_id,
                 name: row.name,
@@ -413,9 +419,169 @@ const news_contents = {
             }
           };
           return news_content;
-    }
-}
+    },
+    postOne: async (data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'news');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'news');
+                imageUrls.push(url);
 
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        const {
+            title,
+            main_content,
+            category_name,
+            isPublished,
+            countWord,
+            link_image
+        } = data;
+
+        //Get news_categories id
+        const categoryRes = await pool.query(
+            `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
+            [category_name]
+        );
+        const category_id = categoryRes.rows.length > 0 ? categoryRes.rows[0].id : null;
+        //Insert news
+        const insertNewsSql = `
+            INSERT INTO news.news (
+            category_id, title, is_published, public_date,
+            measure_time, num_readers,
+            main_img, main_content
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING id;
+        `;
+        const measure_time = Math.ceil(countWord / 1000);
+
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+        const insertValues = [
+            category_id,
+            title,
+            isPublished == "Trưng bày" ? true: false,
+            new Date(),
+            measure_time, // in case it's an object
+            0,
+            main_image,
+            main_content
+        ];
+        const newsResult = await pool.query(insertNewsSql, insertValues);
+        console.log(newsResult.rows[0])
+        const news_id = newsResult.rows[0].id;
+        const insertNewsContentSql = `
+            INSERT INTO news.news_contents (news_id, content)
+            values($1, $2)
+        `
+        const insertValuesNewsContent = [
+            news_id,
+            contentHTML
+        ]
+        await pool.query(insertNewsContentSql, insertValuesNewsContent);
+    },
+    updateOne: async (id, data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'news');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'news');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        let imagesToDelete = data.delete_images;
+        if (typeof imagesToDelete === 'string') {
+            imagesToDelete = [imagesToDelete];
+        }
+        if (Array.isArray(imagesToDelete) && imagesToDelete.length > 0) {
+            await deleteImage(imagesToDelete);
+        }
+        const {
+            title,
+            main_content,
+            category_name,
+            isPublished,
+            countWord,
+            link_image
+        } = data;
+
+        //Get news_categories id
+        const categoryRes = await pool.query(
+            `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
+            [category_name]
+        );
+        const category_id = categoryRes.rows.length > 0 ? categoryRes.rows[0].id : null;
+        
+        //Update news content
+        const updateNewsContentSql = `
+            update news.news_contents
+            set 
+                content = $1
+            where news_id = ${id}
+        `
+        await pool.query(updateNewsContentSql, [contentHTML]);
+        
+        //Insert updateNews
+        const updateNewsSql = `
+            update news.news
+            set 
+                category_id = $1,
+                title = $2, 
+                is_published = $3,
+                public_date = $4,
+                measure_time = $5, 
+                num_readers = $6, 
+                main_img = $7, 
+                main_content = $8
+            where id= ${id}
+        `
+        const measure_time = Math.ceil(countWord / 1000);
+
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+
+        const updateValues = [
+            category_id,
+            title,
+            isPublished === "Trưng bày",
+            new Date(),
+            measure_time,
+            0,
+            main_image,
+            main_content
+        ];
+
+        await pool.query(updateNewsSql, updateValues);
+    },
+}
 const getSearchCategoriesSuggestions = async (query) => {
     const cleanedQuery = query.trim().replaceAll(`'`, ``);
     const sql = `

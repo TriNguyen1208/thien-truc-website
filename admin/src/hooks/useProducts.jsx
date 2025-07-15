@@ -19,7 +19,17 @@ function usePatchPricePage() {
     },
   });
 }
-export default{
+
+function useGetQuantity()
+{
+    return useQuery({
+        queryKey: ['admin_product_quantity'],
+        queryFn: productsServices.getQuantity,
+        staleTime: 5 * 60 * 1000
+    })
+}
+export default {
+    getQuantity: useGetQuantity,
     getPricePage: useGetPricePage,
     patchPricePage: usePatchPricePage
-}
+};

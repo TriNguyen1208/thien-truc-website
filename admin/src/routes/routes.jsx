@@ -21,6 +21,10 @@ import ControlPanel from "../pages/ControlPanel"
 import TestComponents from "../pages/TestComponents"
 import Login from "../pages/Login"
 import ProtectedRoute from "./ProtectedRoute"
+import AddNews from "../pages/AddNews"
+import AddProject from "../pages/AddProject"
+import EditNews from "../pages/EditNews"
+import EditProject from "../pages/EditProject"
 export const routes = [
     {
         path: "/",
@@ -103,6 +107,22 @@ export const routes = [
             {
                 path: "/testcomponents",
                 element: <TestComponents/>
+            },
+            {
+                path: "/quan-ly-tin-tuc/them-tin-tuc",
+                element: <AddNews/>
+            },
+            {
+                path: "/quan-ly-du-an/them-du-an",
+                element: <AddProject/>
+            },
+            {
+                path: "/quan-ly-tin-tuc/chinh-sua-tin-tuc/:id",
+                element: <EditNews/>
+            },
+            {
+                path: "/quan-ly-du-an/chinh-sua-du-an/:id",
+                element: <EditProject/>
             }
         ]
     },

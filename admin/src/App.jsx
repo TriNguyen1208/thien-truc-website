@@ -8,6 +8,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
 import { ToastContainer } from 'react-toastify';
 
 const queryClient = new QueryClient();
+import { NavigationGuardProvider } from './layouts/NavigatorProvider';
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -15,14 +16,15 @@ export default function App() {
   }, [])
 
   return (
-    <BrowserRouter>
+    <NavigationGuardProvider>
+      <BrowserRouter>
         <QueryClientProvider client={queryClient}>
             <LayoutProvider>
                 <RoutesElement />
-                <ToastContainer/>
             </LayoutProvider>
         </QueryClientProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </NavigationGuardProvider>
   )
 }
   

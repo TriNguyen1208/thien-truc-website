@@ -1,5 +1,5 @@
 import { useState } from "react";
-export default function Button({Icon, text, colorText, colorBackground,padding = 0, handleButton})
+export default function Button({Icon, text, colorText, colorBackground, padding = 0, handleButton})
 {
     const [hoverStyle, setHoverStyle] = useState({});
 
