@@ -72,11 +72,11 @@ const company_services = {
         return company_service;
     },
     createOne: async (data) => {
-        const rowCount = (await pool.query(`SELECT COUNT(*)::int FROM about_us.company_services`)).rows[0].count;
-        if (rowCount >= 4) return {
-            status: 404,
-            message: "Không thể tạo mới vì đã đủ số lượng tối đa (4)"
-        }
+        // const rowCount = (await pool.query(`SELECT COUNT(*)::int FROM about_us.company_services`)).rows[0].count;
+        // if (rowCount >= 4) return {
+        //     status: 409,
+        //     message: "Không thể tạo mới vì đã đủ số lượng tối đa (4)"
+        // }
 
         const { 
             title,
@@ -150,11 +150,11 @@ const why_choose_us = {
         return why_choose_us;
     },
     createOne: async (data) => {
-        const rowCount = (await pool.query(`SELECT COUNT(*)::int FROM about_us.why_choose_us`)).rows[0].count;
-        if (rowCount >= 4) return {
-            status: 404,
-            message: "Không thể tạo mới vì đã đủ số lượng tối đa (4)"
-        }
+        // const rowCount = (await pool.query(`SELECT COUNT(*)::int FROM about_us.why_choose_us`)).rows[0].count;
+        // if (rowCount >= 4) return {
+        //     status: 404,
+        //     message: "Không thể tạo mới vì đã đủ số lượng tối đa (4)"
+        // }
 
         const { 
             title,
