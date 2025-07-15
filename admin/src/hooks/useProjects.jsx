@@ -37,6 +37,12 @@ const projects = {
             projectsServices.projects.updateFeatureOne(is_featured, id)
         })
     },
+    useUpdateRegion: () => {
+        return useMutation({
+            mutationFn: (changedItems) =>
+            projectsServices.projects.updateRegion(changedItems)
+        });
+    },
     useDeleteOne: (id) => {
         return useMutation({
             mutationFn: (id) => 
@@ -125,6 +131,7 @@ export default {
         getList: projects.useGetList,
         getOne: projects.useGetOne,
         updateFeatureOne: projects.useUpdateFeatureOne,
+        updateRegion: projects.useUpdateRegion,
         deleteOne: projects.useDeleteOne,
     },
     project_regions: {

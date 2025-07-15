@@ -11,6 +11,7 @@ const Setting = ({
     isOpen,
     onClose,
     content,
+    onSave,
     useData,
     useDataSuggestion,
     useDataCategories
@@ -80,12 +81,12 @@ const Setting = ({
     }, [data, filtersSearch.display, category])
     useEffect(() => {
         if (!datas) return;
-        const updatedMap = new Map(displayMap);
+        const updatedMap = new Map();
         const datasFetch = datas.map((item) => {
             const id = item.id;
             const name = item.name || item.title;
             const cat = item.region?.name || item.category?.name;
-            const displayVal = updatedMap.get(id) || (cat === category ? "Đã gán" : "Chưa gán");
+            const displayVal = cat === category ? "Đã gán" : "Chưa gán";
             updatedMap.set(id, displayVal);
             return {
                 id: id,
@@ -100,18 +101,11 @@ const Setting = ({
         });
 
         setFiltered(filteredDisplay);
+        setDisplay(datasFetch);  
         setDisplayMap(updatedMap)
         setSelectedId([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datas, filtersSearch.display, category]);
-    useEffect(() => {
-        const updatedMap = new Map(displayMap);
-        display.forEach(({ id, display }) => {
-            updatedMap.set(id, display);
-        });
-        setDisplayMap(updatedMap);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [display]);
     
     useEffect(() => {
         const allDisplay = filtered.map(item => ({
@@ -206,8 +200,12 @@ const Setting = ({
 
     const handleSave = () => {
         //Ở đây có 1 lệnh post gửi lên API sau đó thoát ra luôn
-        onClose()
-        console.log("hello world");
+        const changedItems = display.filter(item => {
+        const original = displayMap.get(item.id);
+        return original !== item.display;
+        });
+        onSave(changedItems);  // truyền ra cho parent xử lý
+        onClose();
     };
 
     //Truyền vào props thì dùng ở đây
@@ -337,7 +335,8 @@ const Setting = ({
                         >Hủy</button>
                         <button 
                             className='px-4 py-2 bg-[#18181b] text-white rounded-md cursor-pointer'
-                            onClick={handleSave}
+                            onClick={
+                                handleSave}
                         >Lưu thay đổi</button>
                     </div>
                 </div>

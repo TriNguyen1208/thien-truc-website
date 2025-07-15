@@ -37,6 +37,17 @@ const projects = {
             res.status(500).json({message: 'Loi may chu'});
         }
     },
+    updateRegion: async (req, res) => {
+        console.log("Body received at controller:", req.body);
+        const { changedItems } = req.body; 
+        try {
+            await projectsServices.projects.updateRegion(changedItems);
+            res.status(200).json({message: 'Cập nhật vùng thành công'});
+        } catch (error) {
+            console.log('Error:', error);
+            res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
+        }
+    },
     deleteOne: async (req, res) => {
         const id = parseInt(req.params.id);
         try {

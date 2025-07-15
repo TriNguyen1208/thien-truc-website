@@ -26,6 +26,13 @@ const projects = {
         });
         return res.data;
     },
+    updateRegion: async ({changedItems}) => {
+        console.log("🚀 Gửi PATCH updateRegion với changedItems:", changedItems)
+        const res = await axios.patch(API_ROUTES.project.projects.updateRegion, {
+            changedItems,
+        });
+        return res.data;
+    },
     deleteOne: async (id) => {
         const res = await axios.delete(API_ROUTES.project.projects.deleteOne(id));
         return res.data;

@@ -26,6 +26,7 @@ router.post('/project_regions', projectsController.project_regions.createOne);
 // patch
 router.patch('/project_regions/:id', projectsController.project_regions.updateOne);
 router.patch('/projects/:id', projectsController.projects.updateFeatureOne);
+router.patch('/projects/update_region', projectsController.projects.updateRegion);
 
 // delete
 router.delete('/projects/:id', projectsController.projects.deleteOne);

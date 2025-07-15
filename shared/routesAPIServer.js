@@ -94,6 +94,7 @@ const API_ROUTES = {
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
             
             updateFeatureOne: (id) => `${PROJECT_BASE}/projects/${id}`,
+            updateRegion: `${PROJECT_BASE}/projects/update_region`, // post
             // delete
             deleteOne: (id) => `${PROJECT_BASE}/projects/${id}`,
         },
