@@ -94,7 +94,7 @@ const products = {
     return useMutation({
       mutationFn: ({ id, data }) => productsServices.products.updateOne(id, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["admin_product_list"] });
+        queryClient.invalidateQueries({ queryKey: ["admin_product_by_category"] });
       },
     });
   },
@@ -123,17 +123,17 @@ const products = {
 
 // ==== Product Categories ====
 const product_categories = {
-  useGetAll: () => {
+  useGetList: (query) => {
     return useQuery({
-      queryKey: ["admin_product_categories"],
-      queryFn: productsServices.product_categories.getAll,
+      queryKey: ["admin_product_categories_list", query],
+      queryFn: () => productsServices.product_categories.getList(query),
       staleTime: 5 * 60 * 1000,
     });
   },
 
   useGetOne: (id) => {
     return useQuery({
-      queryKey: ["admin_product_category", id],
+      queryKey: ["admin_product_by_category", id],
       queryFn: () => productsServices.product_categories.getOne(id),
       staleTime: 5 * 60 * 1000,
     });
@@ -144,7 +144,7 @@ const product_categories = {
     return useMutation({
       mutationFn: (data) => productsServices.product_categories.createOne(data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["admin_product_categories"] });
+        queryClient.invalidateQueries({ queryKey: ["admin_product_categories_list"] });
       },
     });
   },
@@ -154,7 +154,7 @@ const product_categories = {
     return useMutation({
       mutationFn: ({ id, data }) => productsServices.product_categories.updateOne(id, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["admin_product_categories"] });
+        queryClient.invalidateQueries({ queryKey: ["admin_product_categories_list"] });
       },
     });
   },
@@ -164,7 +164,7 @@ const product_categories = {
     return useMutation({
       mutationFn: (id) => productsServices.product_categories.deleteOne(id),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["admin_product_categories"] });
+        queryClient.invalidateQueries({ queryKey: ["admin_product_categories_list"] });
       },
     });
   },
@@ -207,7 +207,7 @@ export default {
     deleteOne: products.useDeleteOne,
   },
   product_categories: {
-    getAll: product_categories.useGetAll,
+    getList: product_categories.useGetList,
     getOne: product_categories.useGetOne,
     createOne: product_categories.useCreateOne,
     updateOne: product_categories.useUpdateOne,

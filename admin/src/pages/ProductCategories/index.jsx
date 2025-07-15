@@ -6,72 +6,14 @@ import SimpleForm from '../../components/SimpleForm'
 import SearchBar from '../../components/Search'
 import { useState } from 'react';
 import { Button, Modal } from 'antd';
-import useProjects from '../../hooks/useProjects';
+import useProduct from "../../hooks/useProducts";
 import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, SettingIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
 import Setting from '../../components/Setting';
-const ProductPageContent = () => {
-  const [isModalOpenAddProductCategories, setIsModalOpenAddProductCategories] = useState(false);
-  const [isModalOpenEditProductCategories, setIsModalOpenEditProductCategories] = useState(false);
-  const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
-  const [openCancel, setOpenCancel] = useState(false);
-  const contentSetting = {
-    title: `Quản lý danh sách dự án thuộc loại "Miền Bắc"`,
-    description: `Chọn các dự án muốn thêm hoặc xóa khỏi loại "Miền Bắc"`,
-    type: "dự án",
-    category: "Miền Bắc",
-    header: [
-      "Mã dự án",
-      "Tên dự án",
-      "Khu vực",
-    ]
-  };
-  const dataAddProductCategories = [
-    { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true },
-  ]
-  const dataEditProductCategories = [
-    { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true, value: "Điện thoại" },
-  ]
-  const handleSubmitButtonAddProductCategories = (valueForm) => {
-    console.log('Day la button submit', valueForm)
-    setIsModalOpenAddProductCategories(false)
-  }
-  const handleCancelButtonAddProductCategories = () => {
-    console.log('Day la button cancle')
-    setIsModalOpenAddProductCategories(false)
-  }
-  const handleSubmitButtonEditProductCategories = (valueForm) => {
-    console.log('Day la button submit', valueForm)
-    setIsModalOpenEditProductCategories(false)
-  }
-  const handleCancelButtonEditProductCategories = () => {
-    console.log('Day la button cancle')
-    setIsModalOpenEditProductCategories(false)
-  }
-  const configAddProductCategories = {
-    title: "Tạo loại sản phẩm mới",
-    description: "Thêm loại sản phẩm mới",
-    contentCancelButton: "Hủy",
-    contentSubmitButton: "Thêm mới",
-    widthModal: 550,
-    isModalOpenSimple: isModalOpenAddProductCategories,
-    handleSubmitButton: handleSubmitButtonAddProductCategories,
-    handleCancelButton: handleCancelButtonAddProductCategories,
-    setIsModalOpenSimple: setIsModalOpenAddProductCategories,
-  };
-  const configEditProductCategories = {
-    title: "Tạo loại sản phẩm mới",
-    description: "Thêm loại sản phẩm mới",
-    contentCancelButton: "Hủy",
-    contentSubmitButton: "Thêm mới",
-    widthModal: 550,
-    isModalOpenSimple: isModalOpenEditProductCategories,
-    handleSubmitButton: handleSubmitButtonEditProductCategories,
-    handleCancelButton: handleCancelButtonEditProductCategories,
-    setIsModalOpenSimple: setIsModalOpenEditProductCategories,
-  };
+import useProducts from '../../hooks/useProducts';
+const ProductCategories = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
     setLayoutProps({
@@ -85,6 +27,99 @@ const ProductPageContent = () => {
       }
     })
   }, []);
+
+  // ========= PRODUCT CATEGORIES ================= 
+  const [productCategoriesToDelete, setProductCategoriesToDelete] = useState(null);
+  const [isModalOpenAddProductCategories, setIsModalOpenAddProductCategories] = useState(false);
+  const [isModalOpenEditProductCategories, setIsModalOpenEditProductCategories] = useState(false);
+  const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
+  const [idCurrentEditProductCategories, setIdCurrentEditProductCategories] = useState(null);
+  const [openCancel, setOpenCancel] = useState(false);
+  const [dataEditProductCategories, setDataEditProductCategories] = useState([
+    { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true },
+  ]);
+  const contentSetting = {
+    title: `Quản lý danh sách dự án thuộc loại "Miền Bắc"`,
+    description: `Chọn các dự án muốn thêm hoặc xóa khỏi loại "Miền Bắc"`,
+    type: "dự án",
+    category: "Miền Bắc",
+    header: [
+      "Mã dự án",
+      "Tên dự án",
+      "Khu vực",
+    ]
+  };
+  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getList();
+  const { mutate: updateOneProductCategories, isLoading: isLoadingUpdateProductCategories } = useProducts.product_categories.updateOne();
+  const { mutate: createOneProductCategories, isLoading: isLoadingCreateOneProductCategories } = useProducts.product_categories.createOne();
+  const { mutate: deleteOneProductCategories, isLoading: isLoadingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
+  if (isLoadingProductCategoriesData || isLoadingUpdateProductCategories || isLoadingCreateOneProductCategories || isLoadingDeleteOneProductCategories) {
+    return (
+      <>
+        is loading
+      </>
+    )
+  }
+  console.log(productCategoriesData);
+
+  const handleSubmitButtonAddProductCategories = (valueForm) => {
+    console.log('Day la button submit', valueForm)
+    createOneProductCategories(valueForm);
+    setIsModalOpenAddProductCategories(false)
+  }
+  const handleCancelButtonAddProductCategories = () => {
+    console.log('Day la button cancle')
+    setIsModalOpenAddProductCategories(false)
+  }
+  const handleSubmitButtonEditProductCategories = (valueForm) => {
+    console.log('Day la button submit', valueForm)
+    updateOneProductCategories({
+      id: idCurrentEditProductCategories,
+      data: valueForm
+    })
+    setIsModalOpenEditProductCategories(false)
+  }
+  const handleCancelButtonEditProductCategories = () => {
+    console.log('Day la button cancle')
+    setIsModalOpenEditProductCategories(false)
+  }
+  const configProductCategories = {
+    title: "Danh sách loại sản phẩm",
+    description: `Tổng cộng ${productCategoriesData.length} loại sản phẩm`, 
+    form: {
+      configAdd: {
+        title: "Tạo loại sản phẩm mới",
+        description: "Thêm loại sản phẩm mới",
+        contentCancelButton: "Hủy",
+        contentSubmitButton: "Thêm mới",
+        widthModal: 550,
+        isModalOpenSimple: isModalOpenAddProductCategories,
+        handleSubmitButton: handleSubmitButtonAddProductCategories,
+        handleCancelButton: handleCancelButtonAddProductCategories,
+        setIsModalOpenSimple: setIsModalOpenAddProductCategories,
+      },
+      configEdit: {
+        title: "Cập nhật loại sản phẩm",
+        description: "Cập nhật loại sản phẩm ",
+        contentCancelButton: "Hủy",
+        contentSubmitButton: "Cập nhật",
+        widthModal: 550,
+        isModalOpenSimple: isModalOpenEditProductCategories,
+        handleSubmitButton: handleSubmitButtonEditProductCategories,
+        handleCancelButton: handleCancelButtonEditProductCategories,
+        setIsModalOpenSimple: setIsModalOpenEditProductCategories,
+      },
+      dataAdd: [
+        { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true },
+      ],
+    },
+    data: productCategoriesData,
+    table: {
+      columns: ["Số TT", "Tên loại sản phẩm", "Số lượng", "Thao tác"]
+    }
+  }
+
+
   const handleEnter = (id) => {
     console.log(id);
   }
@@ -94,7 +129,7 @@ const ProductPageContent = () => {
     console.log(query, category, display)
   }
   const handleSearchSuggestion = (query) => {
-    return useProjects.getSearchSuggestions(query);
+    return useProduct.getSearchSuggestions(query);
   }
   const dataSearch = {
     hasButtonCategory: false,
@@ -108,163 +143,65 @@ const ProductPageContent = () => {
     onSearch: handleSearch,
     handleSearchSuggestion: handleSearchSuggestion, //co 3 tham so la query, category = null, display = null,
   }
-  const columns = [
-    "Số TT",
-    "Tên loại sản phẩm",
-    "Số lượng",
-    "Thao tác",
-  ]
-  const dataTable = [
-    [
-      {
-        type: "text",
-        content: "1"
-      },
 
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() =>  setIsModalOpenSetting(true)}
-          >
-            <SettingIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setOpenCancel(true)}
-          >
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ],
-    [
-      {
-        type: "text",
-        content: "1"
-      },
 
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => {
-              setIsModalOpenSetting(true);
+  const convertProductCategoriesListToTableData = (productCategoriesList) => {
+    return productCategoriesList.map((productCategories, index) => {
+      return [
+        { type: "text", content: `${index + 1}` }, // STT
+        {
+          type: "text",
+          content: `${productCategories.name}`
+        },
+        {
+          type: "text",
+          content: `${productCategories.item_count}`
+        },
+        {
+          type: "array-components",
+          components: [
+            <button
+              className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
+              onClick={() => setIsModalOpenSetting(true)}
+            >
+              <SettingIcon />
+            </button>,
+            <button
+              className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
+              onClick={() => handleEditButton(productCategories)}
+            >
+              <EditIcon />
+            </button>,
+            <button
+              className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
+              onClick={() => {
+                setProductCategoriesToDelete(productCategories);
+                setOpenCancel(true)
+              }
+              }
+            >
+              <DeleteIcon />
+            </button>,
+          ],
+        },
+      ];
+    });
+  };
 
-            }}
-          >
-            <SettingIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setOpenCancel(true)}
-          >
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ],
-    [
-      {
-        type: "text",
-        content: "1"
-      },
+  const handleEditButton = (item) => {
 
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
+    const updatedForm = [
+      { ...dataEditProductCategories[0], value: item.name },
 
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
-          >
-            <SettingIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ],
-    [
-      {
-        type: "text",
-        content: "1"
-      },
-      {
-        type: "text",
-        content: "Iphone 16 pro max"
-      },
-      {
-        type: "text",
-        content: "3"
-      },
-      {
-        type: "array-components",
-        components: [
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
-          >
-            <SettingIcon />
-          </button>,
-          <button
-            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpenEditProductCategories(true)}
-          >
-            <EditIcon />
-          </button>,
-          <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer">
-            <DeleteIcon />
-          </button>,
-        ]
-      }
-    ]
-  ]
+    ];
+    setDataEditProductCategories(updatedForm);
+    console.log(item.id, item, updatedForm);
+    setIdCurrentEditProductCategories(item.id);
+    setIsModalOpenEditProductCategories(true);
+    console.log(dataEditProductCategories);
+  }
+  const dataTable = convertProductCategoriesListToTableData(configProductCategories.data);
+
   return (
     <>
       <div className="bg-white px-6 py-6 rounded-lg shadow-sm border border-gray-200  mb-[25px]">
@@ -272,22 +209,29 @@ const ProductPageContent = () => {
       </div>
       <div className="bg-white px-6 py-6 rounded-lg shadow-sm border border-gray-200  mb-[25px]">
         <div className='text-[30px] font-[600] mb-[5px]'>
-          Danh sách loại sản phẩm
+          {configProductCategories.title}
         </div>
         <div className='text-gray-600 mb-[30px]'>
-          Tổng cộng 3 loại sản phẩm
+          {configProductCategories.description}
         </div>
-        <Table columns={columns} data={dataTable} isSetting={false} />
+        <Table columns={configProductCategories.table.columns} data={dataTable} isSetting={false} />
 
       </div>
-      <SimpleForm data={dataEditProductCategories} config={configEditProductCategories} />
-      <SimpleForm data={dataAddProductCategories} config={configAddProductCategories} />
+
+
+      <SimpleForm data={dataEditProductCategories} config={configProductCategories.form.configEdit} />
+      <SimpleForm data={configProductCategories.form.dataAdd} config={configProductCategories.form.configAdd} />
       <CancelPopup
         open={openCancel}
         setOpen={setOpenCancel}
         notification="Xác nhận xóa"
-        subTitle="Bạn có chắc chắc muốn xóa loại sản phẩm này ? "
-        buttonAction2={() => { console.log("123"); setOpenCancel(false) }}
+        subTitle={`Bạn có chắc muốn xoá loại sản phẩm "${productCategoriesToDelete?.name}" không?`}
+        buttonAction2={() => {
+          if (productCategoriesToDelete) {
+            deleteOneProductCategories(productCategoriesToDelete.id);
+            setOpenCancel(false);
+          }
+        }}
       />
       <Setting
         isOpen={isModalOpenSetting}
@@ -301,4 +245,4 @@ const ProductPageContent = () => {
   )
 }
 
-export default ProductPageContent
+export default ProductCategories

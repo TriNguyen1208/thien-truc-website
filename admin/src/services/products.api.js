@@ -58,8 +58,8 @@ const products = {
 
 // ==== Product Categories ====
 const product_categories = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.product.product_categories.getAll);
+     getList: async (query = '') => {
+        const res = await axios.get(API_ROUTES.product.product_categories.getList(query));
         return res.data;
     },
 
