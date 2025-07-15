@@ -20,6 +20,15 @@ router.get('/count', newsController.count);
 router.get('/featured_news', newsController.featured_news.getAll);
 
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
-router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
+// post
+router.post('/news_categories', newsController.news_categories.createOne);
+
+// patch
+router.patch('/news_categories/:id', newsController.news_categories.updateOne);
+
+// delete
+router.delete('/news/:id', newsController.news.deleteOne);
+router.delete('/news_categories/:id', newsController.news_categories.deleteOne);
+router.patch('/featured_news', newsController.featured_news.updateAll);
 export default router;
