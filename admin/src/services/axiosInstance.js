@@ -2,8 +2,8 @@ import axios from "axios";
 import API_ROUTES from "../../../shared/routesAPIServer";
 
 const api = axios.create({
-    baseURL: "http://localhost:3001",
-    headers: { "Content-Type": "application/json" }
+    baseURL: "http://localhost:5000",
+    headers: { "Content-Type": "application/json" } 
 });
 
 // Gắn accessToken vào mỗi request nếu có
