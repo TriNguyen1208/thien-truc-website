@@ -83,13 +83,13 @@ const products = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (data) => productsServices.products.createOne(data),
-      onSuccess: () => {
-        toast.success("Tạo sản phẩm thành công!");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_by_category"] });
       },
-      onError: () => {
-        toast.error("Tạo sản phẩm thất bại!");
-      },
+      onError: (error) => {
+        toast.error(error.message);
+      }
     });
   },
 
@@ -97,12 +97,12 @@ const products = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: ({ id, data }) => productsServices.products.updateOne(id, data),
-      onSuccess: () => {
-        toast.success("Cập nhật sản phẩm thành công!");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_by_category"] });
       },
-      onError: () => {
-        toast.error("Cập nhật sản phẩm thất bại!");
+      onError: (error) => {
+        toast.error(error.message);
       }
     });
   },
@@ -122,12 +122,12 @@ const products = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (id) => productsServices.products.deleteOne(id),
-      onSuccess: () => {
-        toast.success("Xoá sản phẩm thành công!");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_by_category"] });
       },
-      onError: () => {
-        toast.success("Xoá sản phẩm không thành công!");
+      onError: (error) => {
+        toast.error(error.message);
       }
     });
   },
@@ -155,12 +155,14 @@ const product_categories = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (data) => productsServices.product_categories.createOne(data),
-      onSuccess: () => {
-        toast.success("Tạo loại sản phẩm thành công!");
+
+
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_categories_list"] });
       },
-      onError: () => {
-        toast.error("Tạo loại sản phẩm thất bại!");
+      onError: (error) => {
+        toast.error(error.message);
       }
     });
   },
@@ -169,12 +171,12 @@ const product_categories = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: ({ id, data }) => productsServices.product_categories.updateOne(id, data),
-      onSuccess: () => {
-        toast.success("Cập nhật loại sản phẩm thành công!");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_categories_list"] });
       },
-       onError: () => {
-        toast.error("Cập nhật loại sản phẩm thất bại!");
+      onError: (error) => {
+        toast.error(error.message);
       }
     });
   },
@@ -183,12 +185,12 @@ const product_categories = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (id) => productsServices.product_categories.deleteOne(id),
-      onSuccess: () => {
-        toast.success("Xoá loại sản phẩm thành công!");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_categories_list"] });
       },
-         onError: () => {
-        toast.error("XpoasF loại sản phẩm thất bại!");
+      onError: (error) => {
+        toast.error(error.message);
       }
     });
   },

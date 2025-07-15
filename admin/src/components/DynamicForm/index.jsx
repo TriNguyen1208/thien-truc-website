@@ -158,6 +158,7 @@ const DynamicForm = ({ data, config }) => {
 
     const handleImageUpload = (fieldName, file) => {
         if (file) {
+            console.log(file);
             const imageUrl = URL.createObjectURL(file);
             setFormData((prev) => ({
                 ...prev,

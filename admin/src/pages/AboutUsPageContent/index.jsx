@@ -8,6 +8,7 @@ import DynamicForm from '../../components/DynamicForm'
 import { useState } from 'react';
 import Button from '@/components/Button'
 import useAboutUs from '../../hooks/useAboutUs';
+import { CancelPopup } from '../../components/Popup'
 const AboutUsPageContent = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -29,35 +30,46 @@ const AboutUsPageContent = () => {
     }
   }
 
+
   // ================= DUTY AND RESPONSIBILITY =================== 
 
   const [isModalOpenAddDutyAndResponsibility, setIsModalOpenAddDutyAndResponsibility] = useState(false);
   const [isModalOpenEditDutyAndResponsibility, setIsModalOpenEditDutyAndResponsibility] = useState(false);
+  const [isOpenCancelDutyAndResponsibility, setIsOpenCancelDutyAndResponsibility] = useState(false);
   const [dataEditDutyAndResponsibility, setDataEditDutyAndResponsibility] = useState([
     { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
-    { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowdetails: 5 },
+    { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
   ]);
 
 
-  const [isModalOpenAddWhyAboutUs, setIsModalOpenAddWhyAboutUs] = useState(false);
-  const [isModalOpenEditWhyAboutUs, setIsModalOpenEditWhyAboutUs] = useState(false);
-  const [dataEditWhyAboutUs, setDataEditWhyAboutUs] = useState([
+  const [isModalOpenAddWhyChooseUs, setIsModalOpenAddWhyChooseUs] = useState(false);
+  const [isModalOpenEditWhyChooseUs, setIsModalOpenEditWhyChooseUs] = useState(false);
+  const [isOpenCancelWhyChooseUs, setIsOpenCancelWhyChooseUs] = useState(false);
+  const [dataEditWhyChooseUs, setDataEditWhyChooseUs] = useState([
     { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
-    { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowdetails: 5 },
+    { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
   ]);
-  const [dataCurrent, setDateCurrent] = useState(null);
+  const [dataCurrent, setDataCurrent] = useState(null);
 
   const { data: dutyAndResponsibilityData, isLoading: isLoadingDutyAndResponsibility } = useAboutUs.company_services.getAll();
   const { mutate: updateDutyAndResponsibility, isLoading: isLoadingUpdateDutyAndResponsibility } = useAboutUs.company_services.updateOne();
-    const { mutate: createDutyAndResponsibility, isLoading: isLoadingCreateDutyAndResponsibility } = useAboutUs.company_services.createOne();
-    const { mutate: deleteDutyAndResponsibility, isLoading: isLoadingDeleteDutyAndResponsibility } = useAboutUs.company_services.deleteOne();
-  
-  if (isLoadingDutyAndResponsibility){
+  const { mutate: createDutyAndResponsibility, isLoading: isLoadingCreateDutyAndResponsibility } = useAboutUs.company_services.createOne();
+  const { mutate: deleteDutyAndResponsibility, isLoading: isLoadingDeleteDutyAndResponsibility } = useAboutUs.company_services.deleteOne();
+
+
+  const { data: whyChooseUsData, isLoading: isLoadingWhyChooseUs } = useAboutUs.why_choose_us.getAll();
+  const { mutate: updateWhyChooseUs, isLoading: isLoadingUpdateWhyChooseUs } = useAboutUs.why_choose_us.updateOne();
+  const { mutate: createWhyChooseUs, isLoading: isLoadingCreateWhyChooseUs } = useAboutUs.why_choose_us.createOne();
+  const { mutate: deleteWhyChooseUs, isLoading: isLoadingDeleteWhyChooseUs } = useAboutUs.why_choose_us.deleteOne();
+
+  if (isLoadingDutyAndResponsibility || isLoadingCreateDutyAndResponsibility || isLoadingUpdateDutyAndResponsibility || isLoadingDeleteDutyAndResponsibility
+    || isLoadingCreateWhyChooseUs || isLoadingDeleteWhyChooseUs || isLoadingUpdateWhyChooseUs || isLoadingWhyChooseUs
+  ) {
     return (
       <>
-      is loading....
+        is loading....
       </>
     )
   }
@@ -73,6 +85,10 @@ const AboutUsPageContent = () => {
   }
   const handleSubmitButtonEditDutyAndResponsibility = (valueForm) => {
     console.log('Day la button submit', valueForm)
+    updateDutyAndResponsibility({
+      id: dataCurrent.id,
+      data: valueForm,
+    })
     setIsModalOpenEditDutyAndResponsibility(false)
   }
   const handleCancelButtonEditDutyAndResponsibility = () => {
@@ -116,7 +132,7 @@ const AboutUsPageContent = () => {
     dataAddDutyAndResponsibility: [
       { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
       { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
-      { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowdetails: 5 },
+      { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
     ],
     card: dutyAndResponsibilityData,
     handleEditButton: (item) => {
@@ -128,30 +144,57 @@ const AboutUsPageContent = () => {
       ];
       setDataEditDutyAndResponsibility(updatedForm);
       setIsModalOpenEditDutyAndResponsibility(true);
+      setDataCurrent(item);
       console.log(dataEditDutyAndResponsibility);
+    },
+    handleDeleteButton: (item) => {
+      setIsOpenCancelDutyAndResponsibility(true);
+      setDataCurrent(item);
+      console.log(item);
+    },
+    cancelPopub: {
+      open: isOpenCancelDutyAndResponsibility,
+      setOpen: setIsOpenCancelDutyAndResponsibility,
+      notification: "Xác nhận xóa",
+      subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
+      buttonAction2: () => {
+        if (dataCurrent) {
+          deleteDutyAndResponsibility(dataCurrent.id);
+          setIsOpenCancelDutyAndResponsibility(false);
+        }
+      },
     }
+
   }
 
   // ================= WHY ABOUT US =================== 
 
-  const handleSubmitButtonAddWhyAboutUs = (valueForm) => {
+
+  console.log(whyChooseUsData);
+
+  const handleSubmitButtonAddWhyChooseUs = (valueForm) => {
     console.log('Day la button submit', valueForm)
-    setIsModalOpenAddWhyAboutUs(false)
+    createWhyChooseUs(valueForm);
+    setIsModalOpenAddWhyChooseUs(false)
   }
-  const handleCancelButtonAddWhyAboutUs = () => {
+  const handleCancelButtonAddWhyChooseUs = () => {
     console.log('Day la button cancle')
-    setIsModalOpenAddWhyAboutUs(false)
+    setIsModalOpenAddWhyChooseUs(false)
   }
-  const handleSubmitButtonEditWhyAboutUs = (valueForm) => {
+  const handleSubmitButtonEditWhyChooseUs = (valueForm) => {
     console.log('Day la button submit', valueForm)
-    setIsModalOpenEditWhyAboutUs(false)
+    updateWhyChooseUs({
+      id: dataCurrent.id,
+      data: valueForm,
+    })
+    setIsModalOpenEditWhyChooseUs(false)
   }
-  const handleCancelButtonEditWhyAboutUs = () => {
+  const handleCancelButtonEditWhyChooseUs = () => {
     console.log('Day la button cancle')
-    setIsModalOpenEditWhyAboutUs(false)
+    setIsModalOpenEditWhyChooseUs(false)
   }
 
-  const configWhyAboutUs = {
+  const configWhyChooseUs = {
     title: "\"Tại sao chọn Thiên Trúc\"",
     description: "Quản lý các lợi thế cạnh tranh của công ty",
     propsAddButton: {
@@ -161,56 +204,64 @@ const AboutUsPageContent = () => {
       colorBackground: "#000000",
       padding: 8,
     },
-  
-    configAddWhyAboutUs: {
+
+    configAddWhyChooseUs: {
       title: "Thêm nhiệm vụ mới",
-      description: "Điền thông tin nhiệm vụ và mô tả chí tiết (tối đa 5 dòng)",
+      description: "Điền thông tin nhiệm vụ và mô tả chi tiết (tối đa 5 dòng)",
       contentCancelButton: "Hủy",
       contentSubmitButton: "Thêm mới",
       widthModal: 650,
-      isModalOpen: isModalOpenAddWhyAboutUs,
-      handleSubmitButton: handleSubmitButtonAddWhyAboutUs,
-      handleCancelButton: handleCancelButtonAddWhyAboutUs,
-      setIsModalOpen: setIsModalOpenAddWhyAboutUs,
+      isModalOpen: isModalOpenAddWhyChooseUs,
+      handleSubmitButton: handleSubmitButtonAddWhyChooseUs,
+      handleCancelButton: handleCancelButtonAddWhyChooseUs,
+      setIsModalOpen: setIsModalOpenAddWhyChooseUs,
     },
-    configEditWhyAboutUs: {
+    configEditWhyChooseUs: {
       title: "Chỉnh sửa nhiệm vụ",
       description: "Điền thông tin nhiệm vụ và mô tả chi tiết (tối đa 5 dòng)",
       contentCancelButton: "Hủy",
       contentSubmitButton: "Cập nhật",
       widthModal: 650,
-      isModalOpen: isModalOpenEditWhyAboutUs,
-      handleSubmitButton: handleSubmitButtonEditWhyAboutUs,
-      handleCancelButton: handleCancelButtonEditWhyAboutUs,
-      setIsModalOpen: setIsModalOpenEditWhyAboutUs,
+      isModalOpen: isModalOpenEditWhyChooseUs,
+      handleSubmitButton: handleSubmitButtonEditWhyChooseUs,
+      handleCancelButton: handleCancelButtonEditWhyChooseUs,
+      setIsModalOpen: setIsModalOpenEditWhyChooseUs,
     },
-    dataAddWhyAboutUs: [
+    dataAddWhyChooseUs: [
       { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
       { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
-      { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowdetails: 5 },
+      { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
     ],
-    card: [
-      {
-        title: "Lắp đặt thiết bị",
-        description: "Cung cấp dịch vụ ",
-        details: ["Khảo sát và tư vấn miễn phí", "Lắp đặt tiêu chuẩn quốc tế", "123", "456", "789"]
-      },
-      {
-        title: "Bảo trì hệ thống",
-        description: "Dịch vụ bảo trì và vận hành hệ thống",
-        details: ["Khảo sát và tư vấn miễn phí", "Lắp đặt tiêu chuẩn quốc tế"]
-      },
-    ],
+    card: whyChooseUsData,
+
     handleEditButton: (item) => {
 
       const updatedForm = [
-        { ...dataEditWhyAboutUs[0], value: item.title },
-        { ...dataEditWhyAboutUs[1], value: item.description },
-        { ...dataEditWhyAboutUs[2], value: item.details }
+        { ...dataEditWhyChooseUs[0], value: item.title },
+        { ...dataEditWhyChooseUs[1], value: item.description },
+        { ...dataEditWhyChooseUs[2], value: item.details }
       ];
-      setDataEditWhyAboutUs(updatedForm);
-      setIsModalOpenEditWhyAboutUs(true);
-      console.log(dataEditWhyAboutUs);
+      setDataEditWhyChooseUs(updatedForm);
+      setIsModalOpenEditWhyChooseUs(true);
+      setDataCurrent(item);
+      console.log(dataEditWhyChooseUs);
+    },
+    handleDeleteButton: (item) => {
+      setIsOpenCancelWhyChooseUs(true);
+      setDataCurrent(item);
+      console.log(item);
+    },
+    cancelPopub: {
+      open: isOpenCancelWhyChooseUs,
+      setOpen: setIsOpenCancelWhyChooseUs,
+      notification: "Xác nhận xóa",
+      subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
+      buttonAction2: () => {
+        if (dataCurrent) {
+          deleteWhyChooseUs(dataCurrent.id);
+          setIsOpenCancelWhyChooseUs(false);
+        }
+      },
     }
   }
 
@@ -252,7 +303,7 @@ const AboutUsPageContent = () => {
                     </button>
                   }
                   buttonDelete={
-                    <button onClick={() => console.log("Delete")}>
+                    <button onClick={() => configDutyAndResponsibility.handleDeleteButton(item)}>
                       <DeleteIcon />
                     </button>
                   }
@@ -262,7 +313,7 @@ const AboutUsPageContent = () => {
             )
           })}
         </div>
-        
+
       </div>
       <DynamicForm data={configDutyAndResponsibility.dataAddDutyAndResponsibility} config={configDutyAndResponsibility.configAddDutyAndResponsibility} />
       <DynamicForm data={dataEditDutyAndResponsibility} config={configDutyAndResponsibility.configEditDutyAndResponsibility} />
@@ -272,32 +323,32 @@ const AboutUsPageContent = () => {
           <div>
             <div className="mb-[4px]">
               <h1 className="text-[24px] text-black font-semibold">
-                {configWhyAboutUs.title}
+                {configWhyChooseUs.title}
               </h1>
             </div>
             <div className="mb-[24px]">
               <p className="text-[14px] text-[#71717A] font-regular">
-                {configWhyAboutUs.description}
+                {configWhyChooseUs.description}
               </p>
             </div>
           </div>
           <div className='w-[160px] h-40[px] '>
-            <button type="submit" className='w-[170px]' onClick={() => setIsModalOpenAddWhyAboutUs(true)}> <Button {...configWhyAboutUs.propsAddButton} /></button>
+            <button type="submit" className='w-[170px]' onClick={() => setIsModalOpenAddWhyChooseUs(true)}> <Button {...configWhyChooseUs.propsAddButton} /></button>
           </div>
         </div>
         <div className='grid grid-cols-12 gap-6'>
-          {(configWhyAboutUs.card || []).map((item, index) => {
+          {(configWhyChooseUs.card || []).map((item, index) => {
             return (
               <div className='col-span-6' key={index}>
                 <CardList
                   {...item}
                   buttonEdit={
-                    <button onClick={() => configWhyAboutUs.handleEditButton(item)}>
+                    <button onClick={() => configWhyChooseUs.handleEditButton(item)}>
                       <EditIcon />
                     </button>
                   }
                   buttonDelete={
-                    <button onClick={() => console.log("Delete")}>
+                    <button onClick={() => configWhyChooseUs.handleDeleteButton(item)}>
                       <DeleteIcon />
                     </button>
                   }
@@ -307,10 +358,24 @@ const AboutUsPageContent = () => {
             )
           })}
         </div>
-       
+
       </div>
-      <DynamicForm data={configWhyAboutUs.dataAddWhyAboutUs} config={configWhyAboutUs.configAddWhyAboutUs} />
-      <DynamicForm data={dataEditWhyAboutUs} config={configWhyAboutUs.configEditWhyAboutUs} />
+      <DynamicForm data={configWhyChooseUs.dataAddWhyChooseUs} config={configWhyChooseUs.configAddWhyChooseUs} />
+      <DynamicForm data={dataEditWhyChooseUs} config={configWhyChooseUs.configEditWhyChooseUs} />
+      <CancelPopup
+        open={configDutyAndResponsibility.cancelPopub.open}
+        setOpen={configDutyAndResponsibility.cancelPopub.setOpen}
+        notification={configDutyAndResponsibility.cancelPopub.notification}
+        subTitle={configDutyAndResponsibility.cancelPopub.subTitle}
+        buttonAction2={configDutyAndResponsibility.cancelPopub.buttonAction2}
+      />
+      <CancelPopup
+        open={configWhyChooseUs.cancelPopub.open}
+        setOpen={configWhyChooseUs.cancelPopub.setOpen}
+        notification={configWhyChooseUs.cancelPopub.notification}
+        subTitle={configWhyChooseUs.cancelPopub.subTitle}
+        buttonAction2={configWhyChooseUs.cancelPopub.buttonAction2}
+      />
     </>
   )
 }

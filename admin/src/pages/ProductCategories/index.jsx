@@ -148,7 +148,6 @@ const ProductCategories = () => {
 
   const convertProductCategoriesListToTableData = (productCategoriesList) => {
     return productCategoriesList.map((productCategories, index) => {
-      console.log(productCategories);
       return [
         { type: "text", content: `${index + 1}` }, // STT
         {

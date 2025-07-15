@@ -70,6 +70,7 @@ const product_categories = {
 
     createOne: async (data) => {
         const res = await axios.post(API_ROUTES.product.product_categories.createOne, data);
+        console.log("Day la res", res );
         return res.data;
     },
 

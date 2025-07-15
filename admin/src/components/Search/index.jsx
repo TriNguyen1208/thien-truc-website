@@ -93,7 +93,7 @@ const SearchBar = ({data}) => {
         category != null ? (category == categories[0] ? '' : category) : null, 
         (displayMap !== null || display == null || display === displays[0])
             ? null
-            : ((display === "Đã xuất bản" || display === "Trưng bày") ? true : false)
+            : ((display === "Đã xuất bản" || display === "Trưng bày") ? true : false)
     );
     //Cap nhat displaySuggestion
     const stableSuggestion = useMemo(()=>{

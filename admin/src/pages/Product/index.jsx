@@ -276,6 +276,7 @@ const Product = () => {
   }
 
   const handleSearchSuggestion = (query, category, display) => {
+    console.log(query, category, display);
     return useProducts.getSearchSuggestions(query, category, display);
   }
   const dataSearch = {

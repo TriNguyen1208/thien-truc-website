@@ -1,11 +1,15 @@
- const ProductImageCell = ({ imageUrl, productName = "Sản phẩm" }) => {
+import { Image } from "antd";
+const ProductImageCell = ({ imageUrl, productName = "Sản phẩm", preview = true }) => {
   return (
     <div className="w-[70px] h-[45px] bg-gray-100 border border-gray-200 rounded-md overflow-hidden flex items-center justify-center">
       {imageUrl ? (
-        <img
+        <Image
+          width="100%"
+          height="100%"
           src={imageUrl}
           alt={productName}
-          className="w-full h-full object-cover"
+          style={{ objectFit: "cover" }}
+          preview={preview}
         />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
