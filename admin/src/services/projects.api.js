@@ -19,6 +19,16 @@ const projects = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.projects.getOne(id));
         return res.data;
+    },
+    updateFeatureOne: async (is_featured, id) => {
+        const res = await axios.patch(API_ROUTES.project.projects.updateFeatureOne(id), {
+            is_featured
+        });
+        return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.project.projects.deleteOne(id));
+        return res.data;
     }
 }
 const project_regions = {
@@ -28,6 +38,24 @@ const project_regions = {
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.project_regions.getOne(id));
+        return res.data;
+    },
+    createOne: async (name = '', rgb_color = '') => {
+        const res = await axios.post(API_ROUTES.project.project_regions.createOne, {
+        name,
+        rgb_color
+        })
+        return res.data;
+    },
+    updateOne: async (name = '', rgb_color = '', id) => {
+        const res = await axios.patch(API_ROUTES.project.project_regions.updateOne(id), {
+            name,
+            rgb_color
+        });
+        return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.project.project_regions.deleteOne(id));
         return res.data;
     }
 }

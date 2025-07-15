@@ -23,6 +23,10 @@ const news = {
     updateNumReaders: async (id) => {
         const res = await axios.patch(API_ROUTES.news.news.updateNumReaders(id));
         return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.news.news.deleteOne(id));
+        return res.data;
     }
 }
 const new_categories = {
@@ -32,6 +36,24 @@ const new_categories = {
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news_categories.getOne(id));
+        return res.data;
+    },
+    createOne: async (name = '', rgb_color = '') => {
+        const res = await axios.post(API_ROUTES.news.news_categories.createOne, {
+        name,
+        rgb_color
+        })
+        return res.data;
+    },
+    updateOne: async (name = '', rgb_color = '', id) => {
+        const res = await axios.patch(API_ROUTES.news.news_categories.updateOne(id), {
+            name,
+            rgb_color
+        });
+        return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.news.news_categories.deleteOne(id));
         return res.data;
     }
 }

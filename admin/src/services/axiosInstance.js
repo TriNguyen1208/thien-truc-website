@@ -2,7 +2,7 @@ import axios from "axios";
 import API_ROUTES from "../../../shared/routesAPIServer";
 
 const api = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: "http://localhost:3001",
     headers: { "Content-Type": "application/json" }
 });
 

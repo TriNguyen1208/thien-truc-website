@@ -30,6 +30,19 @@ const news = {
         const id = req.params.id;
         const data = await newsServices.news.updateNumReaders(id);
         res.status(200).json(data);
+    },
+    deleteOne: async (req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            const result = await newsServices.news.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({message: 'Không tìm thấy sản phẩm'});
+            }
+            return res.status(200).json({message: result});
+        } catch (error) {
+            console.log('Lỗi máy chủ', error);
+            return res.status(500).json({message: 'Lỗi máy chủ'});
+        }
     }
 }
 
@@ -42,6 +55,38 @@ const news_categories = {
         const id = req.params.id;
         const data = await newsServices.news_categories.getOne(id);
         res.status(200).json(data);
+    },
+    createOne: async(req, res) => {
+        try {
+            await newsServices.news_categories.createOne(req.body);
+            res.status(200).json({message: 'Thêm dự án thành công'});
+        } catch (error) {
+            console.log('Error: ', error);
+            res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
+        }
+    },
+    updateOne: async(req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            await newsServices.news_categories.updateOne(req.body, id); 
+            res.status(200).json({message: 'Cập nhật thông tin vùng thành công'});
+        } catch (error) {
+            console.log('Error:', error);
+            res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
+        }
+    },
+    deleteOne: async(req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            const result = await newsServices.news_categories.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({message: 'Không tìm thấy sản phẩm'});
+            }
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log('Error: ', error);
+            return res.status(500).json({message: 'Lỗi máy chủ'});
+        }
     }
 }
 

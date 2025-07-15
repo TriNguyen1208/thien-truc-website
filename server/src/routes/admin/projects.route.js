@@ -1,8 +1,11 @@
 import express from 'express'
 import projectsController from '#@/controllers/projects.controller.js';
+import authMiddleware from '#@/middlewares/auth.middleware.js';
+const { authenticateToken} = authMiddleware;
 
 const router = express.Router();
 
+// get
 router.get('/', projectsController.getAllTables);
 router.get('/project_page', projectsController.getProjectPage);
 router.get('/projects', projectsController.projects.getList);
@@ -18,4 +21,16 @@ router.get('/search_categories_suggestions', projectsController.getSearchCategor
 router.get('/search_suggestions', projectsController.getSearchSuggestions);
 
 router.get('/count', projectsController.count);
+
+// post
+router.post('/project_regions', authenticateToken, projectsController.project_regions.createOne);
+
+// patch
+router.patch('/project_regions/:id', authenticateToken, projectsController.project_regions.updateOne);
+router.patch('/projects/:id', authenticateToken, projectsController.projects.updateFeatureOne);
+
+// delete
+router.delete('/projects/:id', authenticateToken, projectsController.projects.deleteOne);
+router.delete('/project_regions/:id', authenticateToken, projectsController.project_regions.deleteOne);
+
 export default router;

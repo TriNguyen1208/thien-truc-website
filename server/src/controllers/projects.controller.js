@@ -25,6 +25,30 @@ const projects = {
         const id = req.params.id;
         const data = await projectsServices.projects.getOne(id);
         res.status(200).json(data);
+    },
+    updateFeatureOne: async (req, res) => {
+        const id = req.params.id;
+        const {is_featured} = req.body;
+        try {
+            await projectsServices.projects.updateFeatureOne(is_featured, id);
+            res.status(200).json({message: 'Update sucess'});
+        } catch (error) {
+            console.log('Error', error);
+            res.status(500).json({message: 'Loi may chu'});
+        }
+    },
+    deleteOne: async (req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            const result = await projectsServices.projects.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({message: 'Không tìm thấy sản phẩm'});
+            }
+            return res.status(200).json({message: result});
+        } catch (error) {
+            console.log('Lỗi máy chủ', error);
+            return res.status(500).json({message: 'Lỗi máy chủ'});
+        }
     }
 }
 
@@ -37,6 +61,38 @@ const project_regions = {
         const id = req.params.id;
         const data = await projectsServices.project_regions.getOne(id);
         res.status(200).json(data);
+    },
+    createOne: async(req, res) => {
+        try {
+            await projectsServices.project_regions.createOne(req.body);
+            res.status(200).json({message: 'Thêm dự án thành công'});
+        } catch (error) {
+            console.log('Error: ', error);
+            res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
+        }
+    },
+    updateOne: async(req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            await projectsServices.project_regions.updateOne(req.body, id); 
+            res.status(200).json({message: 'Cập nhật thông tin vùng thành công'});
+        } catch (error) {
+            console.log('Error:', error);
+            res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
+        }
+    },
+    deleteOne: async(req, res) => {
+        const id = parseInt(req.params.id);
+        try {
+            const result = await projectsServices.project_regions.deleteOne(id);
+            if (result.rowCount == 0) {
+                return res.status(404).json({message: 'Không tìm thấy sản phẩm'});
+            }
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log('Error: ', error);
+            return res.status(500).json({message: 'Lỗi máy chủ'});
+        }
     }
 }
 
