@@ -51,7 +51,7 @@ const products = {
     },
     createOne: async (req, res) => {
         try {
-            await productServices.products.createOne(req.body);
+            await productServices.products.createOne(req.body, req.file);
             res.status(200).json({ message: 'Tạo sản phẩm thành công'});
         } catch (error) {
             console.error('Lỗi tạo sản phẩm: ', error);
@@ -61,7 +61,7 @@ const products = {
     updateOne: async (req, res) => {
         const id = req.params.id;
         try {
-            await productServices.products.updateOne(req.body, id);
+            await productServices.products.updateOne(req.body, req.file, id);
             res.status(200).json({ message: 'Cập nhật sản phẩm thành công' });
         } catch (error) {
             console.error('Lỗi cập nhật sản phẩm: ', error);
