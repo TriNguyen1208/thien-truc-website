@@ -272,9 +272,9 @@ const news = {
                 n_cate.rgb_color
             from news.news n
             join news.news_categories n_cate on n_cate.id = n.category_id
-            where n.id = ${id}
+            where n.id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const news = {
             id: row.id,
             title: row.title,
@@ -316,7 +316,7 @@ const news_categories = {
         return news_categories
     },
     getOne: async (id) => {
-        const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = ${id}`)).rows[0];
+        const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = $1`, [id])).rows[0];
         if(!news_category){
             throw new Error("Can't get news_categories");
         }
@@ -390,9 +390,9 @@ const news_contents = {
             from news.news_contents n_cont
             join news.news n on n_cont.news_id = n.id
             join news.news_categories n_cate on n_cate.id = n.category_id
-            where n_cont.news_id = ${id}
+            where n_cont.news_id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const news_content = {
             id: row.content_id,
             content: row.content,
