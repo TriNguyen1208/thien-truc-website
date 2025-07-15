@@ -1,4 +1,4 @@
-export default function PasswordChangeModal({ open, onClose }) {
+export default function PasswordChangeModal({ open, onClose, role }) {
   if (!open) return null;
 
   return (
@@ -30,11 +30,13 @@ export default function PasswordChangeModal({ open, onClose }) {
               <input
                 type="text"
                 className="flex-1 px-3 py-2 border border-gray-300  rounded w-full text-sm"
-                defaultValue="Nhập mật khẩu cũ"
+                placeholder="Nhập mật khẩu cũ"
               />
+              {role === 'admin' && (
               <button className="px-3 py-2 text-sm border border-gray-200 shadow-md rounded hover:bg-gray-100 whitespace-nowrap">
                 Quên mật khẩu
               </button>
+          )} 
             </div>
           </div>
 
@@ -44,12 +46,12 @@ export default function PasswordChangeModal({ open, onClose }) {
             <input
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm mb-3"
-              defaultValue="Nhập mật khẩu mới"
+              placeholder="Nhập mật khẩu mới"
             />
             <input
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
-              defaultValue="Xác nhận mật khẩu mới"
+              placeholder="Xác nhận mật khẩu mới"
             />
           </div>
         </div>
