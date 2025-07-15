@@ -22,12 +22,16 @@ const refreshToken = async (req, res) => {
 };
 
 const getLoginResult = async (req, res) => {
-    res.status(200).json({
-        message: 'Đăng nhập thành công', 
-        user: {
-            username: req.user.username,
-            role: req.user.role
-        }
-    });
+    try {
+        const user = await authServices.getUserByUsername(username);
+        res.status(200).json({
+            message: 'Đăng nhập thành công', 
+            user
+        });
+    } catch (error) {
+        console.log('Lỗi lấy thông tin user: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});        
+    }
+    
 }
 export default { login, refreshToken, getLoginResult };
