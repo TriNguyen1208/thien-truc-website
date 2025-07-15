@@ -6,11 +6,41 @@ DROP TABLE IF EXISTS product.products CASCADE;
 DROP TABLE IF EXISTS product.product_categories CASCADE;
 DROP TABLE IF EXISTS product.highlight_products CASCADE;
 
+-- XÓA SEQUENCE CŨ
+DROP SEQUENCE IF EXISTS product.product_seq CASCADE;
+DROP SEQUENCE IF EXISTS product.category_seq CASCADE;
+
+-- TẠO SEQUENCE MỚI
+CREATE SEQUENCE product.product_seq START 1;
+CREATE SEQUENCE product.category_seq START 1;
+
 -- TẠO BẢNG BANNER TRANG GIÁ
 CREATE TABLE product.price_page (
     banner_title VARCHAR(200),
     banner_description VARCHAR(700)
 );
+
+-- HÀM TẠO ID CHO product_categories -> LS0001
+CREATE OR REPLACE FUNCTION product.gen_category_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id IS NULL THEN
+        NEW.id := 'LS' || LPAD(nextval('product.category_seq')::TEXT, 4, '0');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- HÀM TẠO ID CHO products -> SP0001
+CREATE OR REPLACE FUNCTION product.gen_product_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id IS NULL THEN
+        NEW.id := 'SP' || LPAD(nextval('product.product_seq')::TEXT, 4, '0');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 -- TẠO BẢNG BANNER TRANG SẢN PHẨM
 CREATE TABLE product.product_page (
@@ -20,18 +50,24 @@ CREATE TABLE product.product_page (
 
 -- TẠO BẢNG DANH MỤC SẢN PHẨM
 CREATE TABLE product.product_categories (
-    id SERIAL PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     name VARCHAR(300),
     item_count int
 );
 
+-- GẮN TRIGGER TẠO ID TỰ ĐỘNG CHO DANH MỤC
+CREATE TRIGGER trg_category_id
+    BEFORE INSERT ON product.product_categories
+    FOR EACH ROW
+    EXECUTE FUNCTION product.gen_category_id();
+
 -- TẠO BẢNG SẢN PHẨM
 CREATE TABLE product.products (
-    id SERIAL PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     name VARCHAR(500),
     description TEXT,
     product_img TEXT,
-    category_id INT REFERENCES product.product_categories(id),
+    category_id TEXT REFERENCES product.product_categories(id),
     product_specifications TEXT,
     warranty_period INT,
     product_features TEXT[],
@@ -39,17 +75,19 @@ CREATE TABLE product.products (
     is_featured boolean
 );
 
+-- GẮN TRIGGER TẠO ID TỰ ĐỘNG CHO SẢN PHẨM
+CREATE TRIGGER trg_product_id
+    BEFORE INSERT ON product.products
+    FOR EACH ROW
+    EXECUTE FUNCTION product.gen_product_id();
+
 -- TẠO BẢNG GIÁ SẢN PHẨM
 CREATE TABLE product.product_prices (
     id SERIAL,
-    product_id INT REFERENCES product.products(id),
+    product_id TEXT REFERENCES product.products(id),
     price FLOAT,
     note TEXT DEFAULT 'Mac dinh',
     PRIMARY KEY(id, product_id)
-);
-
-create table product.highlight_products (
-	highlight_product_ids int[]
 );
 	
 
@@ -75,74 +113,72 @@ INSERT INTO product.products (
     product_specifications, warranty_period,
     product_features, highlight_features, is_featured
 ) VALUES
-('CABLE MẠNG STS CAT5E305IA(305m)', 'Thùng 305m, cat5', NULL, 1,
+('CABLE MẠNG STS CAT5E305IA(305m)', 'Thùng 305m, cat5', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', true),
 
-('Cable COMMSCOPE (THÙNG 305M) Cat 5 (6-219590-2)', 'Thùng 305m, cat5', NULL, 1,
+('Cable COMMSCOPE (THÙNG 305M) Cat 5 (6-219590-2)', 'Thùng 305m, cat5', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false),
 
-('Cable LS (THÙNG 305M) Cat 6(UTP-G-C6G-E1VN-X 0.5X004P/BL', 'Thùng 305m, cat6', NULL, 1,
+('Cable LS (THÙNG 305M) Cat 6(UTP-G-C6G-E1VN-X 0.5X004P/BL', 'Thùng 305m, cat6', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false),
 
-('CÁP HDMI 1.5M UGREEN(60820)', 'cáp hdmi dài 1,5 mét', NULL, 1,
+('CÁP HDMI 1.5M UGREEN(60820)', 'cáp hdmi dài 1,5 mét', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false),
 
-('CÁP HDMI 3M UGREEN(10108)', 'cáp hdmi dài 3 mét', NULL, 1,
+('CÁP HDMI 3M UGREEN(10108)', 'cáp hdmi dài 3 mét', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false),
 
-('CÁP HDMI 5M UGREEN(10109)', 'cáp hdmi dài 5 mét', NULL, 1,
+('CÁP HDMI 5M UGREEN(10109)', 'cáp hdmi dài 5 mét', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false),
 
-('CÁP HDMI 10m UGREEN(10110)', 'cáp hdmi dài 10 mét', NULL, 1,
+('CÁP HDMI 10m UGREEN(10110)', 'cáp hdmi dài 10 mét', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false),
 
-('CÁP HDMI 15m UGREEN(10111)', 'cáp hdmi dài 15 mét', NULL, 1,
+('CÁP HDMI 15m UGREEN(10111)', 'cáp hdmi dài 15 mét', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false),
 
-('CÁP HDMI 20m UGREEN(10112)', 'cáp hdmi dài 20 mét', NULL, 1,
+('CÁP HDMI 20m UGREEN(10112)', 'cáp hdmi dài 20 mét', NULL, 'LS0001',
  '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}',
  0, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(1, 780000),
-(2, 2650000),
-(3, 2915000),
-(4, 100000),
-(5, 120000),
-(6, 200000),
-(7, 450000),
-(8, 700000),
-(9, 1000000);
-
-
+('SP0001', 780000),
+('SP0002', 2650000),
+('SP0003', 2915000),
+('SP0004', 100000),
+('SP0005', 120000),
+('SP0006', 200000),
+('SP0007', 450000),
+('SP0008', 700000),
+('SP0009', 1000000);
 
 
 -- INSERT PHẦN MỀM DIỆT VIRUS (2)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('Kaspersky STANDARD (1PC)- Bản quyền 01 năm', '', NULL, 2, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
-('Kaspersky STANDARD 3pcs - Bản quyền 01 năm', '', NULL, 2, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Kaspersky Plus 1pc - Bản quyền 01 năm', '', NULL, 2, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Kaspersky Plus 3pcs - Bản quyền 01 năm', '', NULL, 2, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Kaspersky Plus 5PC - Bản quyền 01 năm', '', NULL, 2, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Bkav Pro (1PC) - Bản quyền 01 năm', '', NULL, 2, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Trend micro internet Security 3pc -  Bản quyền 01 năm', '', NULL, 2, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
+('Kaspersky STANDARD (1PC)- Bản quyền 01 năm', '', NULL, 'LS0002', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
+('Kaspersky STANDARD 3pcs - Bản quyền 01 năm', '', NULL, 'LS0002', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Kaspersky Plus 1pc - Bản quyền 01 năm', '', NULL, 'LS0002', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Kaspersky Plus 3pcs - Bản quyền 01 năm', '', NULL, 'LS0002', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Kaspersky Plus 5PC - Bản quyền 01 năm', '', NULL, 'LS0002', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Bkav Pro (1PC) - Bản quyền 01 năm', '', NULL, 'LS0002', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Trend micro internet Security 3pc -  Bản quyền 01 năm', '', NULL, 'LS0002', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(10, 210000),
-(11, 350000),
-(12, 400000),
-(13, 650000),
-(14, 900000),
-(15, 240000),
-(16, 380000);
+('SP0010', 210000),
+('SP0011', 350000),
+('SP0012', 400000),
+('SP0013', 650000),
+('SP0014', 900000),
+('SP0015', 240000),
+('SP0016', 380000);
 
 
 
@@ -156,39 +192,38 @@ INSERT INTO product.products (name, description, product_img, category_id, produ
 ('MAINBOARD GIGABYTE H510M H', 'Socket: LGA1200 Hỗ trợ Intel Core i9 processors / Intel Core i7 processors / Intel Core i5 processors
 Cổng xuất hình: HDMI+VGA (CPU Intel đầu 10 sử dụng được cả 2 cổng, CPU Intel đầu 11 chỉ sử dụng được cổng HDMI)
 Kích thước: Micro ATX
-Khe cắm RAM: 2 khe (Tối đa 64 GB)', NULL, 4, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', true),
+Khe cắm RAM: 2 khe (Tối đa 64 GB)', NULL, 'LS0004', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', true),
 
 ('GIGABYTE H610M - H V3', 'Socket: LGA1700 hỗ trợ CPU Intel thế hệ thứ 12, 13 và 14
 Kích thước: Micro ATX
-Khe cắm RAM: 2 khe (Tối đa 64GB)', NULL, 4, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false);
+Khe cắm RAM: 2 khe (Tối đa 64GB)', NULL, 'LS0004', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(17, 1650000),
-(18, 1800000);
+('SP0017', 1650000),
+('SP0018', 1800000);
 
 
 
 -- INSERT CPU INTEL (5)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('CPU Intel Core i5-10400- Box(SK1200)', 'SK1200, chạy với H410, H510', NULL, 5, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', true),
-('CPU Intel Core i3-12100 - Box(SK1700)', 'SK1700, chạy với H610', NULL, 5, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false),
-('CPU Intel Core i5-12400- Box(SK1700)', 'SK1700, chạy với H610', NULL, 5, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false);
+('CPU Intel Core i5-10400- Box(SK1200)', 'SK1200, chạy với H410, H510', NULL, 'LS0005', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', true),
+('CPU Intel Core i3-12100 - Box(SK1700)', 'SK1700, chạy với H610', NULL, 'LS0005', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false),
+('CPU Intel Core i5-12400- Box(SK1700)', 'SK1700, chạy với H610', NULL, 'LS0005', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(19, 3450000),
-(20, 3150000),
-(21, 3650000);
-
+('SP0019', 3450000),
+('SP0020', 3150000),
+('SP0021', 3650000);
 
 
 -- INSERT RAM (6)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('DDRAM IV 8GB(3200) - Lexar', '', NULL, 6, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', true),
-('DDRAM IV 8Gb (2666) - KINGMAX', '', NULL, 6, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false);
+('DDRAM IV 8GB(3200) - Lexar', '', NULL, 'LS0006', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', true),
+('DDRAM IV 8Gb (2666) - KINGMAX', '', NULL, 'LS0006', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 36, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(22, 450000),
-(23, 660000);
+('SP0022', 450000),
+('SP0023', 660000);
 
 
 
@@ -201,15 +236,14 @@ INSERT INTO product.product_prices (product_id, price) VALUES
 
 -- INSERT HDD CHUYÊN DÙNG CHO ĐẦU GHI HÌNH CAMERA (😎
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('HDD Western 1TB - WD11PURZ', 'hoạt động 24/7', NULL, 8, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
-('HDD Western 2TB - WD23PURZ', 'hoạt động 24/7', NULL, 8, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('HDD Western 4TB - WD42PURU', 'hoạt động 24/7', NULL, 8, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
+('HDD Western 1TB - WD11PURZ', 'hoạt động 24/7', NULL, 'LS0008', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
+('HDD Western 2TB - WD23PURZ', 'hoạt động 24/7', NULL, 'LS0008', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('HDD Western 4TB - WD42PURU', 'hoạt động 24/7', NULL, 'LS0008', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(24, 1300000),
-(25, 1650000),
-(26, 2550000);
-
+('SP0024', 1300000),
+('SP0025', 1650000),
+('SP0026', 2550000);
 
 
 
@@ -227,16 +261,16 @@ INSERT INTO product.product_prices (product_id, price) VALUES
 
 -- INSERT POWER (12)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('NGUỒN 235W - eMASTER EV772BR', '', NULL, 12, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
-('NGUỒN 250W - eMASTER mini EM250W', '', NULL, 12, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('NGUỒN JETEK 350W ELITE V2', '', NULL, 12, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('NGUỒN JETEK 500W ELITE V2', '', NULL, 12, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
+('NGUỒN 235W - eMASTER EV772BR', '', NULL, 'LS0012', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
+('NGUỒN 250W - eMASTER mini EM250W', '', NULL, 'LS0012', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('NGUỒN JETEK 350W ELITE V2', '', NULL, 'LS0012', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('NGUỒN JETEK 500W ELITE V2', '', NULL, 'LS0012', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(27, 245000),
-(28, 300000),
-(29, 450000),
-(30, 600000);
+('SP0027', 245000),
+('SP0028', 300000),
+('SP0029', 450000),
+('SP0030', 600000);
 
 
 -- INSERT USB (13)
@@ -245,64 +279,60 @@ INSERT INTO product.product_prices (product_id, price) VALUES
 
 -- INSERT KEYBOARD (14)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('Keyboard A4Tech KK-3', 'USB', NULL, 14, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
-('Keyboard Dell 216(USB)', 'USB', NULL, 14, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12,'{}', '{}', false),
-('Keyboard LOGITECH K120', 'USB', NULL, 14, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
+('Keyboard A4Tech KK-3', 'USB', NULL, 'LS0014', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
+('Keyboard Dell 216(USB)', 'USB', NULL, 'LS0014', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12,'{}', '{}', false),
+('Keyboard LOGITECH K120', 'USB', NULL, 'LS0014', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(31, 160000),
-(32, 200000),
-(33, 160000);
-
+('SP0031', 160000),
+('SP0032', 200000),
+('SP0033', 160000);
 
 
 
 -- INSERT KEYBOARD KHÔNG DÂY (15)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('KEYBOARD COMBO LOGITECH MK235', 'Wireless, có phím số', NULL, 15, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
-('KEYBOARD COMBO LOGITECH MK240', 'Wireless, không phím số', NULL, 15, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('KVM SWITCH UGREEN 30357 (2PC dùng chung LCD + KB + M)', '2PC dùng chung LCD + KB + M)', NULL, 15, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
+('KEYBOARD COMBO LOGITECH MK235', 'Wireless, có phím số', NULL, 'LS0015', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
+('KEYBOARD COMBO LOGITECH MK240', 'Wireless, không phím số', NULL, 'LS0015', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('KVM SWITCH UGREEN 30357 (2PC dùng chung LCD + KB + M)', '2PC dùng chung LCD + KB + M)', NULL, 'LS0015', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(34, 530000),
-(35, 500000),
-(36, 400000);
+('SP0034', 530000),
+('SP0035', 500000),
+('SP0036', 400000);
 
 
 
 
 -- INSERT MOUSE QUANG CÓ DÂY (16)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('MOUSE DELL MS116(USB)', 'USB', NULL, 16, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
-('Mouse LOGITECH B100', 'USB', NULL, 16, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Mouse A4Tech OP-330(USB)', 'USB', NULL, 16, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
+('MOUSE DELL MS116(USB)', 'USB', NULL, 'LS0016', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
+('Mouse LOGITECH B100', 'USB', NULL, 'LS0016', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Mouse A4Tech OP-330(USB)', 'USB', NULL, 'LS0016', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(37, 120000),
-(38, 80000),
-(39, 80000);
+('SP0037', 120000),
+('SP0038', 80000),
+('SP0039', 80000);
 
 
 
 
 -- INSERT CAMERA XOAY, CỐ ĐỊNH (17)
 INSERT INTO product.products (name, description, product_img, category_id, product_specifications, warranty_period, product_features, highlight_features, is_featured) VALUES
-('CAMERA IMOU IPC-A32EP-L 3MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 17, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
-('CAMERA IMOU IPC-A52EP-L 5MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 17, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('CAMERA IMOU IPC-F32P-IMOU 3MP', 'Cố định, Không có màu đêm, có míc, không loa', NULL, 17, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('CAMERA EZVIZ CS-C6N-3MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 17, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('CAMERA EZVIZ CS-H6C-4MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 17, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Thẻ nhớ Kingston 64Gb class 10', '', NULL, 17, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
-('Thẻ nhớ Kingston 128Gb class 10', '', NULL, 17, '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
+('CAMERA IMOU IPC-A32EP-L 3MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 'LS0017', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', true),
+('CAMERA IMOU IPC-A52EP-L 5MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 'LS0017', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('CAMERA IMOU IPC-F32P-IMOU 3MP', 'Cố định, Không có màu đêm, có míc, không loa', NULL, 'LS0017', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('CAMERA EZVIZ CS-C6N-3MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 'LS0017', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('CAMERA EZVIZ CS-H6C-4MP', 'Xoay 360, Không màu đêm, có míc, có loa', NULL, 'LS0017', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Thẻ nhớ Kingston 64Gb class 10', '', NULL, 'LS0017', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false),
+('Thẻ nhớ Kingston 128Gb class 10', '', NULL, 'LS0017', '{"Thương hiệu": "Thiên Trúc", "Xuất xứ": "Việt Nam", "Công suất": "45W"}', 12, '{}', '{}', false);
 
 INSERT INTO product.product_prices (product_id, price) VALUES
-(40, 400000),
-(41, 550000),
-(42, 600000),
-(43, 425000),
-(44, 600000),
-(45, 115000),
-(46, 200000);
-
-insert into product.highlight_products(highlight_product_ids) values 
-	(ARRAY[2, 4, 6, 8, 10]);
+('SP0040', 400000),
+('SP0041', 550000),
+('SP0042', 600000),
+('SP0043', 425000),
+('SP0044', 600000),
+('SP0045', 115000),
+('SP0046', 200000);
