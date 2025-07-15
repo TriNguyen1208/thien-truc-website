@@ -1,7 +1,7 @@
 import express from 'express'
 import newsController from '#@/controllers/news.controller.js';
 import authMiddleware from '#@/middlewares/auth.middleware.js';
-const { authenticateToken } = authMiddleware;
+const { authenticateToken, authorizeAdmin } = authMiddleware;
 
 const router = express.Router();
 
@@ -22,13 +22,13 @@ router.get('/featured_news', newsController.featured_news.getAll);
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
 
 // post
-router.post('/news_categories', newsController.news_categories.createOne);
+router.post('/news_categories', authenticateToken, newsController.news_categories.createOne);
 
 // patch
-router.patch('/news_categories/:id', newsController.news_categories.updateOne);
+router.patch('/news_categories/:id', authenticateToken, newsController.news_categories.updateOne);
 
 // delete
-router.delete('/news/:id', newsController.news.deleteOne);
-router.delete('/news_categories/:id', newsController.news_categories.deleteOne);
-router.patch('/featured_news', newsController.featured_news.updateAll);
+router.delete('/news/:id', authenticateToken, newsController.news.deleteOne);
+router.delete('/news_categories/:id', authenticateToken, newsController.news_categories.deleteOne);
+router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 export default router;
