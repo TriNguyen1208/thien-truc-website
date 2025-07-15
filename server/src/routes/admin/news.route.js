@@ -17,4 +17,14 @@ router.get('/search_categories_suggestions', newsController.getSearchCategoriesS
 router.get('/count', newsController.count);
 
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
+
+// post
+router.post('/news_categories', newsController.news_categories.createOne);
+
+// patch
+router.patch('/news_categories/:id', newsController.news_categories.updateOne);
+
+// delete
+router.delete('/news/:id', newsController.news.deleteOne);
+router.delete('/news_categories/:id', newsController.news_categories.deleteOne);
 export default router;

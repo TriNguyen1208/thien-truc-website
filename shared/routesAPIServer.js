@@ -90,10 +90,23 @@ const API_ROUTES = {
             getList: (query, filter, is_featured, page, limit) => `${PROJECT_BASE}/projects?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
+            
+            updateFeatureOne: (id) => `${PROJECT_BASE}/projects/${id}`,
+            // delete
+            deleteOne: (id) => `${PROJECT_BASE}/projects/${id}`,
         },
         project_regions: {
             getAll: `${PROJECT_BASE}/project_regions`,
             getOne: (id) => `${PROJECT_BASE}/project_regions/${id}`,
+
+            // post
+            createOne: `${PROJECT_BASE}/project_regions`,
+            
+            // patch
+            updateOne: (id) => `${PROJECT_BASE}/project_regions/${id}`,
+
+            // delete
+            deleteOne: (id) => `${PROJECT_BASE}/project_regions/${id}`
         },
         project_contents: {
             getAll: `${PROJECT_BASE}/project_contents`,
@@ -111,11 +124,22 @@ const API_ROUTES = {
             getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
-            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
+            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`,
+            // delete
+            deleteOne: (id) => `${NEWS_BASE}/news/${id}`,
         },
         news_categories: {
             getAll: `${NEWS_BASE}/news_categories`,
             getOne: (id) => `${NEWS_BASE}/news_categories/${id}`,
+
+            // post
+            createOne: `${NEWS_BASE}/news_categories`,
+            
+            // patch
+            updateOne: (id) => `${NEWS_BASE}/news_categories/${id}`,
+
+            // delete
+            deleteOne: (id) => `${NEWS_BASE}/news_categories/${id}`
         },  
         news_contents: {
             getAll: `${NEWS_BASE}/news_contents`,   

@@ -299,7 +299,48 @@ const news = {
             num_readers: row.num_readers,
         }
         return res;
+    },
+
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            // Giảm item_count trong news_categories
+            await client.query(`
+            UPDATE news.news_categories
+            SET item_count = item_count - 1
+            WHERE id = (SELECT category_id FROM news.news WHERE id = $1)
+            `, [id]);
+
+            // Xoá nội dung dự án
+            await client.query(`
+            DELETE FROM news.news_contents
+            WHERE news_id = $1
+            `, [id]);
+            await client.query(`
+            DELETE FROM news.featured_news
+            WHERE news_id = $1
+            `, [id]);
+
+            // Xoá dự án
+            const result = await client.query(`
+            DELETE FROM news.news
+            WHERE id = $1
+            RETURNING *
+            `, [id]);
+
+            await client.query('COMMIT');
+            return result;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
     }
+
 }
 
 const news_categories = {
@@ -316,6 +357,71 @@ const news_categories = {
             throw new Error("Can't get news_categories");
         }
         return news_category;
+    },
+    createOne: async(data) => {
+            const {name, rgb_color} = data;
+            await pool.query(
+                `INSERT INTO news.news_categories (name, rgb_color, item_count)
+                 VALUES($1, $2, 0)`,
+                 [name, rgb_color]
+            );
+        },
+    updateOne: async(data, id) => {
+        const {name, rgb_color} = data;
+        await pool.query(
+            `UPDATE news.news_categories
+                SET name = $1, rgb_color = $2
+                WHERE id = $3`,
+                [name, rgb_color, id]
+        );
+    },
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+        try {
+            // Câu 1: Xoá news_contents
+            try {
+            await client.query(
+                'DELETE FROM news.news_contents WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá news_contents:", err.message);
+            }
+
+            try {
+            await client.query(
+                'DELETE FROM news.featured_news WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá news_featured:", err.message);
+            }
+
+            // Câu 2: Xoá news
+            try {
+            await client.query(
+                'DELETE FROM news.news WHERE category_id = $1',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá news:", err.message);
+            }
+
+            // Câu 3: Xoá news_categories
+            let result;
+            try {
+            result = await client.query(
+                'DELETE FROM news.news_categories WHERE id = $1 RETURNING *',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá news_categories:", err.message);
+            }
+
+            return result?.rows?.[0] || null;
+        } finally {
+            client.release();
+        }
     }
 }
 

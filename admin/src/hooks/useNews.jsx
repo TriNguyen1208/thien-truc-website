@@ -42,6 +42,12 @@ const news = {
             });
         }
         })
+    },
+    useDeleteOne: (id) => {
+        return useMutation({
+            mutationFn: (id) => 
+            newsServices.news.deleteOne(id)
+        })
     }
 }
 
@@ -58,6 +64,24 @@ const news_categories = {
             queryKey: ["admin_news_category", id],
             queryFn: () => newsServices.new_categories.getOne(id),
             staleTime: 5 * 60 * 1000,
+        })
+    },
+    useCreateOne: (name = "", rgb_color = "") => {
+        return useMutation({
+            mutationFn: ({ name, rgb_color }) => 
+            newsServices.new_categories.createOne(name, rgb_color)
+        })
+    },
+    useUpdateOne: (name = "", rgb_color = "", id) => {
+        return useMutation({
+            mutationFn: ({ name, rgb_color, id }) => 
+            newsServices.new_categories.updateOne(name, rgb_color, id)
+        })
+    },
+    useDeleteOne: (id) => {
+        return useMutation({
+            mutationFn: (id) => 
+            newsServices.new_categories.deleteOne(id)
         })
     }
 }
@@ -99,11 +123,15 @@ export default {
     news:{
         getList: news.useGetList,
         getOne: news.useGetOne,
-        updateNumReaders: news.useUpdateNumReaders
+        updateNumReaders: news.useUpdateNumReaders,
+        deleteOne: news.useDeleteOne,
     },
     news_categories:{
         getAll: news_categories.useGetAll,
         getOne: news_categories.useGetOne,
+        createOne: news_categories.useCreateOne,
+        updateOne: news_categories.useUpdateOne,
+        deleteOne: news_categories.useDeleteOne,
     },
     news_contents:{
         getAll: news_contents.useGetAll,
