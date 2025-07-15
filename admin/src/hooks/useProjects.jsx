@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import projectsServices from "@/services/projects.api.js";
 
 function useGetAll(){
@@ -62,7 +62,25 @@ const project_contents = {
             queryFn: () => projectsServices.project_contents.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
-    }
+    },
+    usePostOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: (data) => {
+                return projectsServices.project_contents.postOne(data)
+            },
+            onSuccess,
+            onError
+        })
+    },
+    useUpdateOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: ({id, formDataProject}) => {
+                return projectsServices.project_contents.updateOne(id, formDataProject)
+            },
+            onSuccess,
+            onError
+        })
+    },
 }
 function useGetHighlightProjects(){
     return useQuery({
@@ -110,6 +128,8 @@ export default {
     project_contents: {
         getAll: project_contents.useGetAll,
         getOne: project_contents.useGetOne,
+        postOne: project_contents.usePostOne,
+        updateOne: project_contents.useUpdateOne
     },
     getHighlightProjects: useGetHighlightProjects,
     getSearchSuggestions: useSearchSuggest,

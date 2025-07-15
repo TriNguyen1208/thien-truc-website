@@ -48,6 +48,22 @@ const new_contents = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news_contents.getOne(id));
         return res.data;
+    },
+    postOne: async (data) => {
+        const res = await axios.post(API_ROUTES.news.news_contents.postOne, data, {
+            headers: {
+            'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
+    },
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.news.news_contents.updateOne(id), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
     }
 }
 const getSearchCategoriesSuggestions = async (query) => {

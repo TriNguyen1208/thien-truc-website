@@ -44,7 +44,6 @@ const news = {
         return useMutation({
             mutationFn: () => newsServices.news.updateNumReaders(id),
             onSuccess: () => {
-            // ✅ Invalidate tất cả danh sách đã từng được query
             queryClient.invalidateQueries({
                 queryKey: ["admin_news_list"], // match theo prefix
                 exact: false,            // cho phép match tất cả ["news_list", ...]
@@ -81,9 +80,27 @@ const news_contents = {
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["admin_news_content", id],
+            queryKey: ["news_content", id],
             queryFn: () => newsServices.new_contents.getOne(id),
             staleTime: 5 * 60 * 1000,
+        })
+    },
+    usePostOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: (data) => {
+                return newsServices.new_contents.postOne(data)
+            },
+            onSuccess,
+            onError
+        })
+    },
+    useUpdateOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: ({id, formDataNews}) => {
+                return newsServices.new_contents.updateOne(id, formDataNews)
+            },
+            onSuccess,
+            onError
         })
     }
 }
@@ -118,6 +135,8 @@ export default {
     news_contents:{
         getAll: news_contents.useGetAll,
         getOne: news_contents.useGetOne,
+        postOne: news_contents.usePostOne,
+        updateOne: news_contents.useUpdateOne
     },
     getSearchCategoriesSuggestions: useGetSearchCategoriesSuggest,
     getSearchSuggestions: useSearchSuggest,

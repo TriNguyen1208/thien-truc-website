@@ -1,0 +1,183 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useLayout } from "@/layouts/layoutcontext";
+import {Editor} from "@tinymce/tinymce-react"
+import EditorWord from '../../components/EditorWord';
+import UploadImage from '../../components/UploadImage'
+import CustomButton from '../../components/ButtonLayout';
+import { PlusIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
+import ContentManagement from '../../components/ContentManagement';
+import PostSettings from '../../components/PostSettings';
+import useNews from '../../hooks/useNews';
+import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
+import {SuccessPopup, CancelPopup} from '@/components/Popup'
+import { extractBlogImages } from '../../utils/handleImage';
+const AddNews = () => {
+    //useState
+    const [openPopup, setOpenPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const [openErrorPopup, setOpenErrorPopup] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [form, setForm] = useState(null);
+    
+    //Call API
+    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
+    const postNews = useNews.news_contents.postOne({
+        onSuccess: (res) => {
+            setPopupMessage(res.message || 'Cập nhật thành công!');
+            setOpenPopup(true);
+        },
+        onError: (err) => {
+            const msg = err?.response?.data?.message || 'Cập nhật thất bại!';
+            setErrorMessage(msg);
+            setOpenErrorPopup(true);
+        }
+    })
+
+    //set layout 
+    const {setLayoutProps} = useLayout();
+    useEffect(() => {
+        setLayoutProps({
+            title: "Thêm tin tức mới",
+            description: "Tạo bài viết tin tức mới",
+            hasButtonBack: true,
+        })
+    }, [])
+
+    //check is change
+    const { setShouldWarn } = useNavigationGuardContext(); 
+    const initialForm = useMemo(() => {
+        if (isLoadingCategories) return null;
+        return {
+            title: "",
+            main_content: "",
+            content: "",
+            category_name: (categories?.[0]?.name) ?? '',
+            isPublished: "Bản nháp",
+            main_image: "",
+            link_image: "",
+            countWord: 0
+        }
+    }, [isLoadingCategories]);
+    useEffect(() => {
+        if (initialForm) {
+            setForm(initialForm);
+        }
+    }, [initialForm]);
+    useEffect(() => {
+        if(form == null || initialForm == null){
+            return;
+        }
+        function normalizeContent(content = '') {
+            return content
+                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+                .trim();
+        }
+        function normalizeForm(form) {
+            return {
+                ...form,
+                content: normalizeContent(form.content),
+                // nếu có nhiều field HTML thì thêm normalize ở đây
+            };
+        }
+        console.log(normalizeForm(form))
+        console.log(normalizeForm(initialForm))
+        const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
+        setShouldWarn(isDirty);
+    }, [form]);
+
+    //Helper function
+    const handleSave = async () => {
+        if(form.isPublished == "Trưng bày" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
+            alert("Chưa nhập những nội dung bắt buộc")
+            return;
+        }
+        if(form == initialForm){
+            alert("❌ Chưa có sự thay đổi nào");
+            return;
+        }
+        //Them bai viet, call database
+        const {formData, doc} = await extractBlogImages(form.content);
+        const finalHTML = doc.body.innerHTML;
+        // Duyệt qua tất cả key
+        for (const key in form) {
+            if (key === 'main_image' && form[key] instanceof File) {
+                formData.append('main_image', form[key]);
+            } else if (key === 'content') {
+                formData.append('content', finalHTML); // content đã thay blob thành filename
+            } else {
+                formData.append(key, form[key]);
+            }
+        }
+        for(let [key, value] of formData.entries()){
+            console.log(key, value)
+        }
+        postNews.mutate(formData);     
+        setForm(initialForm);
+    }
+    const handleRecover = () => {
+        setForm(initialForm)
+    }
+
+    //Prop setting
+    const props = {
+        categories: [
+            ...(categories ?? []).map(item => item.name)
+        ],
+        displays: [
+            "Bản nháp",
+            "Trưng bày"
+        ]
+    }
+    
+    //Loading
+    if(isLoadingCategories || form === null){
+        return <></>
+    }
+
+    return (
+        <>
+            <div className='flex flex-row gap-6'>
+                <ContentManagement type="tin tức" setForm={setForm} form={form}/>
+                <div className='flex flex-col flex-1 gap-6 max-w-[300px]'>
+                    <PostSettings {...props} form={form} setForm={setForm}/>
+                    <UploadImage form={form} setForm={setForm}/>
+                    <div className='flex flex-col gap-2'>
+                        <CustomButton
+                            onClick={handleSave}
+                        >
+                            <div className='flex gap-4 items-center'>
+                                <SaveIcon/>
+                                <span>Lưu thay đổi</span>
+                                <span></span>
+                            </div>
+                        </CustomButton>
+                        <CustomButton
+                            onClick={handleRecover}
+                        >
+                            <span>Khôi phục</span>
+                        </CustomButton>                    
+                    </div>
+                </div>
+            </div>
+            <SuccessPopup
+                open={openPopup}
+                setOpen={setOpenPopup}
+                notification={popupMessage}
+                subTitle="Cảm ơn bạn đã gửi"
+                buttonLabel1="Thoát"
+                buttonLabel2="Tiếp tục chỉnh sửa"
+            />
+            <CancelPopup
+                open={openErrorPopup}
+                setOpen={setOpenErrorPopup}
+                notification={errorMessage}
+                subTitle="Vui lòng thử lại hoặc liên hệ quản trị viên"
+                buttonLabel1="Đóng"
+                buttonLabel2="Thử lại"
+            />
+        </>
+    )
+}
+
+export default AddNews
