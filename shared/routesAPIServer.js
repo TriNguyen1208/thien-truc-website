@@ -41,9 +41,9 @@ const API_ROUTES = {
         highlight_stats_about_us: {
             getAll: `${HOME_BASE}/highlight_stats_about_us`,
             getOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
-            createOne: `${HOME_BASE}/home_page/highlight_stats_about_us`,
-            updateOne: (id) => `${HOME_BASE}/home_page/highlight_stats_about_us/${id}`,
-            deleteOne: (id) => `${HOME_BASE}/home_page/highlight_stats_about_us/${id}`,
+            createOne: `${HOME_BASE}/highlight_stats_about_us`,
+            updateOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
+            deleteOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
         },
     },
     product: {
