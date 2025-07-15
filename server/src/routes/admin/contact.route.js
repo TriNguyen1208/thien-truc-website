@@ -18,6 +18,7 @@ router.post('/support_agents', authenticateToken, contactController.support_agen
 
 router.patch('/company_info', authenticateToken, contactController.updateCompanyInfo);
 router.patch('/support_agents/:id', authenticateToken, contactController.support_agents.updateOne);
+router.patch('/contact_page/banner', contactController.updateContactPage.banner);
 
 router.delete('/support_agents/:id', authenticateToken, contactController.support_agents.deleteOne);
 export default router;
