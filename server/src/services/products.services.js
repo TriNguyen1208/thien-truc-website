@@ -150,19 +150,19 @@ const products = {
         const { rows } = await pool.query(sql);
         const results = rows.map(row => ({
             id: row.product_id,
-            name: row.product_name,
-            description: row.description,
-            product_img: row.product_img,
-            price: row.price,
+            name: row.product_name || "",
+            description: row.description || "",
+            product_img: row.product_img || "",
+            price: row.price || "",
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: row.warranty_period,
+            warranty_period: row.warranty_period || "",
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
                 id: row.category_id,
                 name: row.category_name
             },
-            is_featured: row.is_featured
+            is_featured: row.is_featured || false
         }));
         if (page)
             return {
@@ -250,19 +250,19 @@ const products = {
 
             groupedResults[categoryName].push({
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                price: row.price,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                price: row.price || "",
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
-                warranty_period: row.warranty_period,
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
                 },
-                is_featured: row.is_featured
+                is_featured: row.is_featured || false
             });
         }
 
@@ -293,12 +293,12 @@ const products = {
         const row = (await pool.query(query)).rows[0];
         const product = {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                price: row.price,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                price: row.price || "",
                 product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
-                warranty_period: row.warranty_period,
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
 
@@ -307,7 +307,7 @@ const products = {
                     name: row.category_name
                 },
 
-                is_featured: row.is_featured
+                is_featured: row.is_featured || false
             };
         return product
     },
@@ -319,17 +319,20 @@ const products = {
         return result;
     },
     createOne: async (data) => {
-        const {
+        let {
             avatarImage,
             characteristic,
             description,
             isDisplayHomePage,
-            price,
+            price, // int
             productCategories,
             productName,
             technicalDetails,
-            warranty
+            warranty // int
         } = data;
+
+        if (price == "") price = null;
+        warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
@@ -363,7 +366,7 @@ const products = {
             avatarImage,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
-            parseInt(warranty),
+            warranty,
             product_features,
             highlight_feature_ids,
             isDisplayHomePage
@@ -385,7 +388,7 @@ const products = {
         );
     },
     updateOne: async (data, id) => {
-        const {
+        let {
             avatarImage,
             characteristic,
             description,
@@ -396,6 +399,9 @@ const products = {
             technicalDetails,
             warranty
         } = data;
+
+        if (price == "") price = null;
+        warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
@@ -435,7 +441,7 @@ const products = {
             avatarImage,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
-            parseInt(warranty),
+            warranty,
             product_features,
             highlight_feature_ids,
             isDisplayHomePage
@@ -482,8 +488,42 @@ const products = {
 }
 
 const product_categories = {
-    getAll: async () => {
-        const product_categories = (await pool.query("SELECT * FROM product.product_categories")).rows;
+    // getAll: async () => {
+    //     const product_categories = (await pool.query("SELECT * FROM product.product_categories")).rows;
+    //     if(!product_categories){
+    //         throw new Error("Can't get product_categories");
+    //     }
+    //     return product_categories
+    // },
+    getList: async (query) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        
+        if (query != '') {
+            where.push(
+                `(unaccent(C.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(C.name::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(C.name), unaccent('${query}')) DESC`
+            );
+        }
+
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+
+        const product_categories = (await pool.query(`
+            SELECT * 
+            FROM product.product_categories C
+            ${where}
+            ${order}
+
+        `)).rows;
+
         if(!product_categories){
             throw new Error("Can't get product_categories");
         }
@@ -529,7 +569,7 @@ const getPricePage = async () => {
     if(!price_page){
         throw new Error("Can't get price_page");
     }
-    return price_page;
+    return price_page || "";
 }
 
 const updatePricePage = async (data) => {
@@ -590,14 +630,14 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedQuery, cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -639,14 +679,14 @@ const product_prices = {
         const { rows } = await pool.query(sql);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -685,14 +725,14 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -729,14 +769,14 @@ const product_prices = {
         const row = (await pool.query(query)).rows[0];
         const product_price = {
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
             
@@ -776,12 +816,12 @@ const getHighlightProducts = async () => {
         const { rows } = await pool.query(sql);
         const results = rows.map(row => ({
             id: row.product_id,
-            name: row.product_name,
-            product_img: row.product_img,
-            description: row.description,
-            price: row.price,
+            name: row.product_name || "",
+            product_img: row.product_img || "",
+            description: row.description || "",
+            price: row.price || "",
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: row.warranty_period,
+            warranty_period: row.warranty_period || "",
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
@@ -841,6 +881,42 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     }
 };
 
+const getSearchCategoriesSuggestions = async (query) => {
+    query = query.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(P.name::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(P.name::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(P.name::text), unaccent('${query}'::text)) DESC`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+    
+    const sql = `
+        SELECT P.name, P.id
+        FROM product.product_categories P
+        ${where}
+        ${order}
+        ${limit}
+    `;
+
+    try {
+        const result = await pool.query(sql);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+};
+
 const count = async () => {
     const product_count = (await pool.query(`
         SELECT COUNT(*)::int AS product_count
@@ -864,4 +940,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count };

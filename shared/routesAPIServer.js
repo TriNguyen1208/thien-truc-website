@@ -41,9 +41,9 @@ const API_ROUTES = {
         highlight_stats_about_us: {
             getAll: `${HOME_BASE}/highlight_stats_about_us`,
             getOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
-            createOne: `${HOME_BASE}/home_page/highlight_stats_about_us`,
-            updateOne: (id) => `${HOME_BASE}/home_page/highlight_stats_about_us/${id}`,
-            deleteOne: (id) => `${HOME_BASE}/home_page/highlight_stats_about_us/${id}`,
+            createOne: `${HOME_BASE}/highlight_stats_about_us`,
+            updateOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
+            deleteOne: (id) => `${HOME_BASE}/highlight_stats_about_us/${id}`,
         },
     },
     product: {
@@ -65,7 +65,7 @@ const API_ROUTES = {
         },
         product_categories: {
             // get
-            getAll: `${PRODUCT_BASE}/product_categories`,
+            getList: (query) => `${PRODUCT_BASE}/product_categories?query=${uri(query)}`,
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/product_categories`,
@@ -82,6 +82,7 @@ const API_ROUTES = {
         update_price_page: `${PRODUCT_BASE}/price_page`, // patch
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
+        search_categories_suggestions: (query='') => `${PRODUCT_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${PRODUCT_BASE}/count`
     },
     project: {
