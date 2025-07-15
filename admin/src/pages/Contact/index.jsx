@@ -1,8 +1,271 @@
-import React from 'react'
+import {useLayout} from '@/layouts/LayoutContext'
+import { useEffect,useState } from 'react'
+import Table from '../../components/Table'
+import Button from '../../components/Button'
+import { DeleteIcon, EditIcon } from '../../components/Icon'
+import DynamicForm from '../../components/DynamicForm'
+import { CancelPopup } from '../../components/Popup'
+import { Modal, Result } from 'antd'
+import { CheckCircleFilled } from '@ant-design/icons';
+import useContact from '@/hooks/useContact';
+
+function SuccessPopup ({ open, setOpen, notification, subTitle}) {
+
+  const handleOk = () => setOpen(false);
+
+  return (
+    <div className="p-6">
+
+      <Modal
+        open={open}
+        footer={null}
+        onCancel={handleOk}
+        centered
+        closable
+        width={550}
+      > 
+        <Result
+          status="success"
+          icon={<CheckCircleFilled style={{ color: '#52c41a', fontSize: 72 }} />}
+          title={
+            <div className="text-lg font-semibold">
+              {notification || 'Successfully Purchased Cloud Server ECS!'}
+            </div>
+          }
+          subTitle={
+            <div className="text-gray-500 text-sm">
+              {subTitle || 'Your order has been successfully processed. You can now manage your cloud server from the console.'}
+            </div>
+          }
+        
+        />
+      </Modal>
+    </div>
+  );
+};
 
 const Contact = () => {
+  const {setLayoutProps} = useLayout();
+  const [listContacts , setListContacts] = useState([])
+  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+  const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
+  const [pendingItemDel, setPendingItemDel] = useState(null)
+  const [pendingItemEdit, setPendingItemEdit] = useState(null)
+  const [isOpenDeletePopup, setIsOpenDeletePopup] = useState(false)
+  const [isOpenSuccesPopup, setIsOpenSuccesPopup] = useState(false)
+
+  const {data: supportAgents, isLoading: isLoadingSupportAgent} = useContact.support_agents.getAll()
+  const {mutate: addAgent} = useContact.support_agents.createOne()
+  const {mutate: deleteAgent} = useContact.support_agents.deleteOne()
+  const {mutate: updateAgent} = useContact.support_agents.updateOne()
+ 
+const handleAddContact= ()=>
+  {
+    setIsModalOpenAdd(true)
+  }
+  useEffect(()=>{
+    setLayoutProps({
+      title: "Quản lý đội ngũ liên lạc",
+      description: "Quản lý thông tin nhân viên liên lạc",
+      hasButton: true,
+      buttonLabel: "Thêm người liên lạc",
+      buttonAction: handleAddContact
+    })
+
+  },[])
+  useEffect(()=>{
+    if(supportAgents)
+    {
+      setListContacts(supportAgents)
+    }
+  },[supportAgents])
+  
+  if(isLoadingSupportAgent)
+  {
+    return(<div>loading</div>)
+  }
+  
+  const succesProps = {
+    open:isOpenSuccesPopup, 
+    setOpen:setIsOpenSuccesPopup, 
+    notification:"Lưu thành công!", 
+    subTitle:" "
+  }
+  //====================================================Start Form=========================================================
+   const handleSubmitButtonAdd = (valueForm) => {
+    addAgent(
+      {
+          "avatar_img": valueForm.img,
+          "name": valueForm.fullName,
+          "role": valueForm.position,
+          "phone_number": valueForm.phone,
+          "facebook_url": valueForm.facebook
+        }
+      ,
+      {
+        onSuccess: ()=>{
+          setIsOpenSuccesPopup(true)
+        },
+        onError: ()=>{
+          alert("that bai")
+        }
+      }
+    )
+    setIsModalOpenAdd(false)
+  }
+   const handleSubmitButtonEdit = (valueForm) => {
+    console.log(valueForm)
+    updateAgent(
+      {
+        id: listContacts[pendingItemEdit].id,
+        updatedsupport_agents: {
+          "avatar_img": valueForm.img,
+          "name": valueForm.fullName,
+          "role": valueForm.position,
+          "phone_number": valueForm.phone,
+          "facebook_url": valueForm.facebook
+        }
+      }
+      ,
+      {
+        onSuccess: ()=>{
+          setIsOpenSuccesPopup(true)
+        },
+        onError: (error)=>{
+          if(error) console.error()
+          alert("that bai")
+        }
+      }
+    )
+    setIsModalOpenEdit(false)
+
+  }
+ 
+  const configAdd = {
+    title: "Thêm người liên lạc mới",
+    description: "Điền thông tin để thêm người liên lạc mới",
+    widthModal: 700,
+    contentCancelButton: "Huỷ",
+    contentSubmitButton: "Tạo mới người liên lạc",
+    isModalOpen: isModalOpenAdd,
+    handleSubmitButton: handleSubmitButtonAdd,
+    setIsModalOpen: setIsModalOpenAdd
+  }
+
+  const configEdit = {
+    title: "Chỉnh sửa thông tin liên lạc",
+    description: "Cập nhật thông tin người liên lạc",
+    widthModal: 700,
+    contentCancelButton: "Huỷ",
+    contentSubmitButton: "Cập nhật",
+    isModalOpen: isModalOpenEdit,
+    handleSubmitButton: handleSubmitButtonEdit,
+    setIsModalOpen: setIsModalOpenEdit
+  }
+  const dataAdd = [
+    { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
+    { name: 'position', label: 'Vị trí', type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
+    { name: 'phone', label: 'Số điện thoại', type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
+    { name: 'facebook', label: 'Facebook', type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
+    { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+  ]
+   const dataEdit = [
+    { name: 'fullName', label: 'Họ Tên', value: (listContacts[pendingItemEdit] || []).name, type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
+    { name: 'position', label: 'Vị trí', value: (listContacts[pendingItemEdit] || []).role, type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
+    { name: 'phone', label: 'Số điện thoại',  value: (listContacts[pendingItemEdit] || []).phone_number, type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
+    { name: 'facebook', label: 'Facebook',  value: (listContacts[pendingItemEdit] || []).facebook_url ,type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
+    { name: 'img', label: 'Ảnh đại diện', value: (listContacts[pendingItemEdit] || []).avatar_img, type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+  ]
+  //====================================================End Form=========================================================
+  //====================================================Start Table=======================================================
+ 
+ const handleConfirmDeletePopup = ()=>{
+    deleteAgent(listContacts[pendingItemDel].id,
+      {
+        onError: ()=>{
+          alert("That bai")
+        }
+      }
+    )
+    setIsOpenDeletePopup(false)
+  }
+  const handleCancelDeletePopup = ()=>{
+    setIsOpenDeletePopup(false)
+  }
+  
+  const deleteProps={
+     open: isOpenDeletePopup, 
+     setOpen: setIsOpenDeletePopup, 
+     notification: "Xác nhận xóa nhân viên!", 
+     subTitle:"Bạn có chắc chắn muốn xóa nhân viên này.", 
+     buttonLabel1:"Hủy", 
+     buttonAction1:handleCancelDeletePopup, 
+     buttonLabel2: "Xác nhận xóa", 
+     buttonAction2: handleConfirmDeletePopup
+  }
+  
+  const handleDelItem = (e)=> {
+    
+    const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
+        setPendingItemDel(index)
+        setIsOpenDeletePopup(true)
+    }
+  const delButton = {
+    Icon: DeleteIcon, 
+    colorBackground:"#ffffff",
+    padding: 4,
+    handleButton: handleDelItem
+  }
+   const editButton = {
+    Icon: EditIcon, 
+    colorBackground:"#ffffff",
+    padding: 4,
+    handleButton: (e)=>{
+      const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
+      setPendingItemEdit(index)
+      setIsModalOpenEdit(true)
+    
+    }
+    
+  }
+  
+ const dataTable = listContacts.map((contact, index)=>{
+        return([ {type: "text",content: index+1}, 
+      {type: "img", path: contact.avatar_img},
+      {type: "text", content: contact.name}, 
+      {type: "text", content: contact.role},
+      {type: "text", content: contact.phone_number},
+      {type: "text", content: contact.facebook_url},
+      {type: "array-components", components: [ <div data-key={index} className='w-[44px] h-[40px]'><Button {...editButton} /></div>, <div data-key={index} className='w-[44px] h-[40px]'><Button {...delButton} /></div> ]}
+        
+    ])
+ })
+
+
+  
+ 
+  const tableProps = {
+    columns:["STT", "Ảnh đại diện", "Họ tên", "Vị trí","Số điện thoại", "Facebook", "Thao tác"],
+    data: dataTable ,
+    isSetting: false
+  }
+  //====================================================End Table=======================================================
+ 
+
   return (
-    <div>Day la noi dung trang Contact</div>
+    <div className='bg-white p-[24px] border border-gray-300 rounded-[8px] '> 
+      <h1 className='text-black text-[24px] font-semibold my-[12px]'>Danh sách đội ngũ liên lạc</h1>
+      <p className='text-[#71717A] text-[14px] font-regular  my-[12px]'> Tổng cộng {listContacts.length} người liên lạc</p>
+      <div>
+          <Table {...tableProps}/>
+      </div> 
+
+      <DynamicForm data={dataAdd} config={configAdd} />
+      <DynamicForm data={dataEdit} config={configEdit} />
+     
+      <CancelPopup {...deleteProps}/>
+      <SuccessPopup {...succesProps}/>
+    </div>
   )
 }
 
