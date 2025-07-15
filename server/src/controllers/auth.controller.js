@@ -23,7 +23,7 @@ const refreshToken = async (req, res) => {
 
 const getLoginResult = async (req, res) => {
     try {
-        const user = await authServices.getUserByUsername(username);
+        const user = await authServices.getUserByUsername(req.user.username);
         res.status(200).json({
             message: 'Đăng nhập thành công', 
             user
