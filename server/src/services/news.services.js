@@ -804,7 +804,7 @@ const featured_news = {
 
         const news = news_rows.map(row => ({
             sort: row.sort,
-            id: row.id,
+            id: row.news_id,
             img: row.main_img,
             title: row.title,
             name: row.name,
