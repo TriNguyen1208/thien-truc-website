@@ -138,7 +138,8 @@ const news = {
         const results = rows.map(row => ({
             id: row.news_id,
             title: row.title,
-            public_date: row.public_date,
+            is_published: row.is_published,
+            public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
             measure_time: row.measure_time,
             num_readers: row.num_readers,
             main_img: row.main_img,
@@ -202,6 +203,7 @@ const news = {
             SELECT 
                 n.id AS news_id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
@@ -237,7 +239,8 @@ const news = {
             groupedResults[categoryName].push({
                 id: row.news_id,
                 title: row.title,
-                public_date: row.public_date,
+                is_published: row.is_published,
+                public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
                 measure_time: row.measure_time,
                 num_readers: row.num_readers,
                 main_img: row.main_img,
@@ -257,6 +260,7 @@ const news = {
             select 
                 n.id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
@@ -274,7 +278,8 @@ const news = {
         const news = {
             id: row.id,
             title: row.title,
-            public_date: row.public_date,
+            is_published: row.is_published,
+            public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
             measure_time: row.measure_time,
             num_readers: row.num_readers,
             main_img: row.main_img,
@@ -434,6 +439,7 @@ const news_contents = {
 
                 n.id as news_id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
@@ -454,7 +460,8 @@ const news_contents = {
             news: {
               id: row.news_id,
               title: row.title,
-              public_date: row.public_date,
+              is_published: row.is_published,
+              public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
               measure_time: row.measure_time,
               num_readers: row.num_readers,
               main_img: row.main_img,
@@ -481,6 +488,7 @@ const news_contents = {
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id as category_id,
                 n_cate.name,
@@ -497,6 +505,7 @@ const news_contents = {
             news: {
               id: row.news_id,
               title: row.title,
+              is_published: row.is_published,
               public_date: row.public_date,
               measure_time: row.measure_time,
               num_readers: row.num_readers,
@@ -605,4 +614,62 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchCategoriesSuggestions, getSearchSuggestions, count};
+const featured_news = {
+    getAll: async () => {
+        const news_rows = (await pool.query(`
+            SELECT
+                FN.sort,
+                FN.news_id,
+                N.main_img,
+                N.title,
+                C.name,
+                N.public_date
+            FROM
+                news.featured_news FN
+                JOIN news.news N ON FN.news_id = N.id
+                JOIN news.news_categories C ON N.category_id = C.id
+            ORDER BY FN.sort ASC 
+        `)).rows;
+        
+        const switch_time = (await pool.query(`
+            SELECT news_switch_time
+            FROM home.home_page    
+        `)).rows[0].news_switch_time;
+
+        const news = news_rows.map(row => ({
+            sort: row.sort,
+            id: row.id,
+            img: row.main_img,
+            title: row.title,
+            name: row.name,
+            date: (new Date(row.public_date)).toLocaleDateString('vi-VN')
+        }));
+
+        return {
+            switch_time: switch_time,
+            featured_news: [...news]
+        };
+    },
+    updateAll: async (data) => {
+        const {
+            news_ids,
+            switch_time
+        } = data
+
+        await pool.query('DELETE FROM news.featured_news');
+
+        for (let sort = 1; sort <= news_ids.length; sort++) {
+            await pool.query('INSERT INTO news.featured_news (news_id, sort) VALUES ($1, $2)', [news_ids[sort - 1], sort]);
+        }
+        
+        await pool.query('UPDATE home.home_page SET news_switch_time = $1', [switch_time]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Tin Tức Nổi Bật thành công"
+        }
+    }
+}
+
+
+export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};
