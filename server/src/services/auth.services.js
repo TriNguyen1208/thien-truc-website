@@ -1,5 +1,6 @@
 import pool from '#@/config/db.js'
 import bcrypt from 'bcrypt';
+import { query } from 'express-validator';
 import jwt from 'jsonwebtoken';
 const { ACCESS_SECRET, REFRESH_SECRET } = process.env;
 
@@ -97,5 +98,70 @@ const refreshToken = async (tokenData) => {
     }
 };
 
+const updateManagerProfile = async (data, user) => {
+    const {
+        fullname,
+        phone,
+        email
+    } = data;
 
-export default { getUserByUsername, login, refreshToken };
+    await pool.query(`
+        UPDATE admin.accounts
+        SET
+            fullname = $1,
+            phone = $2,
+            email = $3
+        WHERE
+            username = $4
+    `, [fullname, phone, email, user.username]);
+
+    user.fullname = fullname;
+    user.phone = phone;
+    user.email = email;
+
+    return user;
+} 
+
+const updateUserProfile = async (data, user) => {
+    const {
+        fullname,
+    } = data;
+
+    await pool.query(`
+        UPDATE admin.accounts
+        SET
+            fullname = $1,
+        WHERE
+            username = $2
+    `, [fullname, user.username]);
+
+    user.fullname = fullname;
+
+    return user;
+} 
+
+const updateProfile = async (data, user) => {
+    if (user.role == 'manager') {
+        const updatedUser = await updateManagerProfile(data, user);
+        return {
+            status: 200,
+            message: 'Cập nhật thông tin Manager thành công',
+            user: updatedUser
+        }
+    } else if (user.role == 'admin') {
+        const updatedUser = await updateManagerProfile(data, user);
+        return {
+            status: 200,
+            message: 'Cập nhật thông tin Admin thành công',
+            user: updatedUser
+        }
+    } else {
+        return {
+            status: 409,
+            message: 'Role tài khoản không hợp lệ',
+            user: updatedUser
+        }
+    }
+}
+
+export default { getUserByUsername, login, refreshToken, updateProfile };
