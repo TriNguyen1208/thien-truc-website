@@ -50,14 +50,12 @@ const HomePageContent = () => {
   const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
   const [isOpenCancelHighlightFeature, setIsOpenCancelHighlightFeature] = useState(false);
   const [idCurrentEditHighlightFeature, setIdCurrentEditHighlightFeature] = useState(null);
+  const [highlightFeatureToDelete, setHighlightFeatureToDelete] = useState(null);
 
 
   const [isModalOpenAddHighlightNews, setIsModalOpenAddHighlightNews] = useState(false);
 
 
-  const { mutate: updateHighlightFeature, isLoading: isLoadingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
-  const { mutate: createHighlightFeature, isLoading: isLoadingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
-  const { mutate: deleteHighlightFeature, isLoading: isLoadingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
   const [dataEditHighlightFeature, setDataEditHighlightFeature] = useState([
     { name: 'figures', label: 'Số liệu', type: 'text', width: 12, isRequired: false, placeholder: "VD: 100+" },
@@ -65,15 +63,18 @@ const HomePageContent = () => {
   ]);
 
   const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
+  const { mutate: updateHighlightFeature, isLoading: isLoadingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
+  const { mutate: createHighlightFeature, isLoading: isLoadingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
+  const { mutate: deleteHighlightFeature, isLoading: isLoadingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
-  if (isLoadingHighlightFeature) {
+  if (isLoadingHighlightFeature || isLoadingUpdateHighlightFeature || isLoadingCreateHighlightFeature || isLoadingDeleteHighlightFeature) {
     return (
       <>
         is loading....
       </>
     )
   }
- 
+
   console.log(highlightFeatureData);
   const handleSubmitButtonAddHighlightFeature = (valueForm) => {
     console.log('Day la button submit', valueForm)
@@ -145,7 +146,12 @@ const HomePageContent = () => {
       setOpen: setIsOpenCancelHighlightFeature,
       notification: "Xác nhận xóa",
       subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
-      buttonAction2: () => { setIsOpenCancelHighlightFeature(false) },
+      buttonAction2: () => {
+        if (highlightFeatureToDelete) {
+          deleteHighlightFeature(highlightFeatureToDelete.id);
+          setIsOpenCancelHighlightFeature(false);
+        }
+      },
     }
   }
   const handleEditButton = (item) => {
@@ -161,6 +167,7 @@ const HomePageContent = () => {
   }
   const handleDeleteButton = (item) => {
     setIsOpenCancelHighlightFeature(true);
+    setHighlightFeatureToDelete(item);
     console.log(item);
   }
 
@@ -184,13 +191,6 @@ const HomePageContent = () => {
       colorBackground: "#000000",
       padding: 8,
 
-    },
-    propsSaveButton: {
-      Icon: SaveIcon,
-      text: "Lưu tin tức nổi bật",
-      colorText: "#ffffff",
-      colorBackground: "#000000",
-      padding: 9,
     },
     configAddHighlightNews: {
       title: "Thêm tin tức nổi bật",
@@ -308,7 +308,13 @@ const HomePageContent = () => {
             <button type="submit"
               className='w-[170px]'
               onClick={() => setIsModalOpenAddHighlightFeature(true)}
-              disabled={configHighlightFeature.arrayFeatureCard.length >= limitHighlightFeature}> <Button {...configHighlightFeature.propsAddButton} /></button>
+              disabled={configHighlightFeature.arrayFeatureCard.length >= limitHighlightFeature}>
+              <Button
+                {...configHighlightFeature.propsAddButton}
+                disable={configHighlightFeature.arrayFeatureCard.length >= limitHighlightFeature}
+              />
+
+            </button>
           </div>
         </div>
         <div className='grid grid-cols-12 gap-6 mb-[25px]'>
@@ -331,12 +337,7 @@ const HomePageContent = () => {
             </div>)}
 
         </div>
-        <div className='w-[160px] h-40[px]'>
-            <button type="submit"
-              className='w-[170px]'
-              onClick={() => setIsModalOpenAddHighlightFeature(true)}
-              disabled={configHighlightFeature.arrayFeatureCard.length >= limitHighlightFeature}> <Button {...configHighlightFeature.propsAddButton} /></button>
-          </div>
+
       </div>
       <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
         <div className='flex items-center justify-between mb-[30px]'>

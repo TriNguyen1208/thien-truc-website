@@ -1,4 +1,4 @@
-export default function CardList({ title, description, listDetailDescription, buttonEdit, buttonDelete}) {
+export default function CardList({ title, description, details, buttonEdit, buttonDelete}) {
     return (<div className="flex flex-col group relative w-full h-[270px] p-[24px] bg-white border border-[#E5E7EB] rounded-[8px] hover:bg-[#FdFdFd]">
         <h1 className="leading-none text-[20px] text-[#000000] font-bold mb-[10px]">
             {title}
@@ -15,7 +15,7 @@ export default function CardList({ title, description, listDetailDescription, bu
             </div>
         </div>
         <ul className={`list-disc marker:text-green-800 pl-5`}>
-            {(listDetailDescription || []).map((item, index) => (
+            {(details || []).map((item, index) => (
                 <li key = {index} >{item}</li>
             ))}
         </ul>

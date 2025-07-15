@@ -13,6 +13,7 @@ import { DeleteIcon, EditIcon, SettingIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
 import Setting from '../../components/Setting';
 import useProducts from '../../hooks/useProducts';
+import useProjects from '../../hooks/useProjects';
 const ProductCategories = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -147,6 +148,7 @@ const ProductCategories = () => {
 
   const convertProductCategoriesListToTableData = (productCategoriesList) => {
     return productCategoriesList.map((productCategories, index) => {
+      console.log(productCategories);
       return [
         { type: "text", content: `${index + 1}` }, // STT
         {
@@ -244,5 +246,6 @@ const ProductCategories = () => {
     </>
   )
 }
+
 
 export default ProductCategories

@@ -13,6 +13,7 @@ import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
 import ProductImageCell from '../../components/ProductImageCell'
+
 const Product = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -59,7 +60,6 @@ const Product = () => {
   }
   const categoriesDefault = "Tẩt cả sản phẩm";
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   // Lay params
   const filter = searchParams.get('filter') || undefined;
   var query = searchParams.get('query') || undefined;
@@ -117,12 +117,6 @@ const Product = () => {
   }
 
   const idCurrentCategories = filter ? (categories || []).findIndex(item => item === filter) : 0;
-  // const dataProductCategories = [
-  //   ...categoriesData.map(name => ({
-  //     value: name,
-  //     label: name
-  //   }))
-  // ];
   const handleSubmitButtonAddProduct = (valueForm) => {
     console.log(valueForm);
     createOneProduct(valueForm);
