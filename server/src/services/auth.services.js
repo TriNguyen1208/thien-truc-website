@@ -10,7 +10,7 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
 // Hàm lấy user theo username
 const getUserByUsername = async (username) => {
     const queryResult = await pool.query(
-        `SELECT role, password as hashedPassword, fullname, phone, email, position, description
+        `SELECT role, password as hashed_password, fullname, phone, email, position, description
         FROM admin.accounts WHERE username = $1`,
         [username]
     );
@@ -35,7 +35,9 @@ const login = async (loginData) => {
         message: 'Tài khoản không tồn tại'
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
+    console.log(user);
+
+    const isPasswordValid = await bcrypt.compare(password, user.hashed_password);
     if (!isPasswordValid) return {
         status: 401,
         message: 'Sai thông tin đăng nhập'
