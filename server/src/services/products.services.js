@@ -584,13 +584,64 @@ const product_categories = {
         );
     },
     deleteOne: async (id) => {
-        const query = `
-            DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = '${id}');
-            DELETE FROM product.products WHERE category_id = '${id}';
-            DELETE FROM product.product_categories WHERE id = '${id}';
-        `;
-        const result = await pool.query(query);
-        return result[2];
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // 1. Lấy tất cả ảnh sản phẩm
+            const productImagesRes = await client.query(
+                `SELECT product_img FROM product.products WHERE category_id = $1`,
+                [id]
+            );
+            const productImgs = productImagesRes.rows.map(row => row.product_img).filter(Boolean);
+
+            // 2. Xóa product_prices
+            await client.query(
+                `DELETE FROM product.product_prices 
+                WHERE product_id IN (
+                    SELECT id FROM product.products WHERE category_id = $1
+                )`,
+                [id]
+            );
+
+            // 3. Xóa products
+            await client.query(
+                `DELETE FROM product.products WHERE category_id = $1`,
+                [id]
+            );
+
+            // 4. Xóa category
+            const categoryDeleteRes = await client.query(
+                `DELETE FROM product.product_categories WHERE id = $1`,
+                [id]
+            );
+
+            if (categoryDeleteRes.rowCount === 0) {
+                await client.query('ROLLBACK');
+                client.release();
+                return { status: 404, message: "Không tìm thấy danh mục để xóa" };
+            }
+
+            await client.query('COMMIT');
+            client.release();
+
+            // 5. Xử lý ảnh Cloudinary
+            const cloudinaryImgs = productImgs.filter(isCloudinary);
+            if (cloudinaryImgs.length > 0) {
+                await deleteImage(cloudinaryImgs);
+            }
+
+            return {
+                status: 200,
+                message: "Xóa danh mục và toàn bộ sản phẩm thành công",
+                deletedImages: cloudinaryImgs
+            };
+        } catch (err) {
+            await client.query('ROLLBACK');
+            client.release();
+            console.error("Lỗi khi xóa danh mục:", err);
+            return { status: 500, message: "Đã xảy ra lỗi khi xóa danh mục" };
+        }
     }
 }
 
