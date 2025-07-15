@@ -10,7 +10,7 @@ export const loginUser = (username, password) => async (dispatch) => {
         });
         const { accessToken, refreshToken } = res.data.token;
         const user = res.data.user;
-
+        console.log(user);
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('user', JSON.stringify(user)); 
@@ -36,3 +36,42 @@ export const verifyFromToken = () => async (dispatch) => {
         dispatch(setLoading(false))
     }
 }
+export const updateProfile = (data) => async (dispatch) => {
+    try {
+        const res = await axios.patch(API_ROUTES.auth.updateProfile, data);
+        const user = res.data?.user;
+        
+        if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+        dispatch(setCredentials({ user }));
+        } else {
+        console.warn('API không trả về user mới');
+        }
+
+    } catch (err) {
+        console.error('Cập nhật thông tin người dùng thất bại:', err);
+        throw err;
+    } finally {
+        dispatch(setLoading(false));
+    }
+};
+export const updatePassword = (data) => async (dispatch) => {
+    try {
+        const res = await axios.patch(API_ROUTES.auth.updatePassword, data);
+        const user = res.data?.user;
+        
+        if (user?.fullname) {
+            console.log('Cập nhật thông tin người dùng thành công:', user);
+            localStorage.setItem('user', JSON.stringify(user));
+            dispatch(setCredentials({ user }));
+        } else {
+            console.warn('API không trả về user mới');
+        }
+        return res.data.message; // Trả về thông báo thành công
+    } catch (err) {
+        console.error('Cập nhật mật khẩu thất bại:', err);
+        throw err;
+    } finally {
+        dispatch(setLoading(false));
+    }
+};

@@ -61,8 +61,7 @@ const getSections = (role) => {
   ];
 
   // Role-based section
-  let roleSection = [];
-  console.log('Current role:', role); // Debugging line to check the role
+  let roleSection = []; // Debugging line to check the role
   if (role === 'admin') {
     roleSection.push({
       items: [

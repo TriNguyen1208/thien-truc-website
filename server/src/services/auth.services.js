@@ -9,10 +9,22 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
     throw new Error('Thiếu ACCESS_SECRET hoặc REFRESH_SECRET trong biến môi trường');
 }
 
+const isValidPassword = async (username, password) => {
+    const user = await pool.query(`
+        SELECT password as hashed_password
+        FROM admin.accounts WHERE username = $1
+    `, [username]);
+
+    if (user.rowCount === 0) return false;
+
+    const hashedPassword = user.rows[0].hashed_password;
+    return await bcrypt.compare(password, hashedPassword);
+}
+
 // Hàm lấy user theo username
 const getUserByUsername = async (username) => {
     const queryResult = await pool.query(
-        `SELECT role, password as hashed_password, fullname, phone, email, position, description
+        `SELECT role, fullname, phone, email, position, description
         FROM admin.accounts WHERE username = $1`,
         [username]
     );
@@ -39,7 +51,7 @@ const login = async (loginData) => {
 
     console.log(user);
 
-    const isPasswordValid = await bcrypt.compare(password, user.hashed_password);
+    const isPasswordValid = await isValidPassword(username, password);
     if (!isPasswordValid) return {
         status: 401,
         message: 'Sai thông tin đăng nhập'
@@ -172,7 +184,7 @@ const updatePassword = async (data, user) => {
         verify_password
     } = data;
     
-    const isOldPasswordValid = await bcrypt.compare(old_password, user.hashed_password);
+    const isOldPasswordValid = await isValidPassword(user.username, old_password);
     if (!isOldPasswordValid) return {
         status: 409,
         message: "Mật khẩu cũ không đúng"
@@ -183,7 +195,7 @@ const updatePassword = async (data, user) => {
         message: "Mật khẩu xác nhận chưa trùng khớp"
     }
 
-    const hashed_new_password = authUtil.hashPassword(new_password);
+    const hashed_new_password = await authUtil.hashPassword(new_password);
 
     await pool.query(`
         UPDATE admin.accounts
@@ -192,9 +204,7 @@ const updatePassword = async (data, user) => {
         WHERE
             username = $2    
     `, [hashed_new_password, user.username]);
-
-    user.hashed_password = hashed_new_password;
-
+    console.log(user);
     return {
         status: 200,
         message: "Cập nhật mật khẩu thành công",
@@ -202,4 +212,4 @@ const updatePassword = async (data, user) => {
     }
 }
 
-export default { getUserByUsername, login, refreshToken, updateProfile, updatePassword };
+export default { isValidPassword, getUserByUsername, login, refreshToken, updateProfile, updatePassword };

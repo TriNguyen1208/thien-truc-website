@@ -1,6 +1,24 @@
 import DisableTextBox from "@/components/DisabledTextBox";
+import React, { useState } from "react";
+import { updateProfile } from "@/services/auth.api";
+import { useDispatch } from "react-redux";
+import { message } from "antd";
+import { toast } from 'react-toastify';
 
 export default function AdminAccountModal({ open, onClose, onChangePassword, hideContent, user }) {
+  const [fullname, setFullName] = useState(user.fullname);
+  const dispatch = useDispatch();
+  const handleUpdate = async () => {
+    try {
+      const payload = {fullname}; // bổ sung field cần cập nhật
+      await dispatch(updateProfile(payload));
+      toast.success('Cập nhật thành công');
+      onClose(); // đóng modal nếu cần
+    } catch (err) {
+      console.error('Update failed:', err);
+      toast.error(err?.response?.data?.message || 'Lỗi cập nhật');
+    }
+  };
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/30 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       <div className={`bg-white rounded-lg shadow-lg w-[420px] p-6 relative animate-fade-in ${hideContent ? 'hidden' : ''}`}>
@@ -41,7 +59,8 @@ export default function AdminAccountModal({ open, onClose, onChangePassword, hid
             <input
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
-              defaultValue="Đỗ Thanh Tùng"
+              defaultValue={user.fullname}
+              onChange={(e) => setFullName(e.target.value)}
             />
           </div>
         </div>
@@ -54,7 +73,9 @@ export default function AdminAccountModal({ open, onClose, onChangePassword, hid
             Hủy
           </button>
           <button className="px-4 py-2 rounded bg-black text-white text-sm hover:bg-gray-800"
-            onClick={() => {}}>
+            onClick={() => {
+              handleUpdate();
+            }}>
             Cập nhật
           </button>
         </div>
@@ -65,6 +86,21 @@ export default function AdminAccountModal({ open, onClose, onChangePassword, hid
 
 
 export function ManagerAccountModal({ open, onClose, onChangePassword, hideContent, user }) {
+  const [fullname, setFullName] = useState(user.fullname);
+  const [phone, setPhone] = useState(user.phone);
+  const [email, setEmail] = useState(user.email);
+  const dispatch = useDispatch();
+  const handleUpdate = async () => {
+    try {
+      const payload = {fullname, phone, email}; // bổ sung field cần cập nhật
+      await dispatch(updateProfile(payload));
+      toast.success('Cập nhật thành công');
+      onClose(); // đóng modal nếu cần
+    } catch (err) {
+      console.error('Update failed:', err);
+      toast.error(err?.response?.data?.message || 'Lỗi cập nhật');
+    }
+  };
   return (
    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/30 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       <div className={`bg-white rounded-lg shadow-lg w-[610px] p-6 relative animate-fade-in ${hideContent ? 'hidden' : ''}`}>
@@ -107,6 +143,7 @@ export function ManagerAccountModal({ open, onClose, onChangePassword, hideConte
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
               defaultValue={user.fullname}
+              onChange={(e) => setFullName(e.target.value)}
             />
           </div>
 
@@ -117,6 +154,7 @@ export function ManagerAccountModal({ open, onClose, onChangePassword, hideConte
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
               defaultValue={user.phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
             </div>
             <div className="flex-1">
@@ -125,6 +163,7 @@ export function ManagerAccountModal({ open, onClose, onChangePassword, hideConte
               type="email"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
               defaultValue={user.email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             </div>
           </div>
@@ -157,7 +196,10 @@ export function ManagerAccountModal({ open, onClose, onChangePassword, hideConte
           >
             Hủy
           </button>
-          <button className="px-4 py-2 rounded bg-black text-white text-sm hover:bg-gray-800">
+          <button className="px-4 py-2 rounded bg-black text-white text-sm hover:bg-gray-800"
+            onClick={() => {
+              handleUpdate();
+            }}>
             Cập nhật
           </button>
         </div>
