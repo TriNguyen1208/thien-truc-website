@@ -10,16 +10,19 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
 // Hàm lấy user theo username
 const getUserByUsername = async (username) => {
     const queryResult = await pool.query(
-        'SELECT password, role FROM admin.accounts WHERE username = $1',
+        `SELECT role, password as hashedPassword, fullname, phone, email, position, description
+        FROM admin.accounts WHERE username = $1`,
         [username]
     );
 
     if (queryResult.rowCount === 0) return null;
 
-    const hashedPassword = queryResult.rows[0].password;
-    const role = queryResult.rows[0].role;
+    const user = queryResult.rows[0];
 
-    return { username, hashedPassword, role };
+    return { 
+        username,
+        ...user
+    };
 };
 
 // Hàm login
@@ -55,7 +58,8 @@ const login = async (loginData) => {
     return {
         status: 200,
         message: 'Đăng nhập thành công',
-        token: { accessToken, refreshToken }
+        token: { accessToken, refreshToken },
+        user: user
     }
 };
 
@@ -92,4 +96,4 @@ const refreshToken = async (tokenData) => {
 };
 
 
-export default { login, refreshToken };
+export default { getUserByUsername, login, refreshToken };
