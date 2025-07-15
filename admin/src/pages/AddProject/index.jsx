@@ -10,7 +10,7 @@ import PostSettings from '../../components/PostSettings';
 import useProjects from '../../hooks/useProjects';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {SuccessPopup, CancelPopup} from '@/components/Popup'
-import extractBlobImage from '../../utils/extractBlobImage';
+import {extractBlogImages} from '../../utils/handleImage';
 import ProjectSetting from '../../components/ProjectSetting';
 
 const AddProject = () => {
@@ -97,7 +97,7 @@ const AddProject = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlobImage(form.content);
+        const {formData, doc} = await extractBlogImages(form.content);
         const finalHTML = doc.body.innerHTML;
         // Duyệt qua tất cả key
         for (const key in form) {

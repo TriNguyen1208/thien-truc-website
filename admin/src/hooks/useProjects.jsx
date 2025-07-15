@@ -74,8 +74,8 @@ const project_contents = {
     },
     useUpdateOne: ({onSuccess, onError}) => {
         return useMutation({
-            mutationFn: ({id, data}) => {
-                return projectsServices.project_contents.updateOne(id, data)
+            mutationFn: ({id, formDataProject}) => {
+                return projectsServices.project_contents.updateOne(id, formDataProject)
             },
             onSuccess,
             onError

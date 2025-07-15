@@ -53,6 +53,11 @@ const project_contents = {
     postOne: async(req, res) => {
         await projectsServices.project_contents.postOne(req.body, req.files);
         res.status(200).json("Tạo dự án mới thành công");
+    },
+    updateOne: async(req, res) => {
+        const {id} = req.params;
+        await projectsServices.project_contents.updateOne(id, req.body, req.files)
+        res.status(200).json("Chỉnh sửa dự án thành công");
     }
 }
 

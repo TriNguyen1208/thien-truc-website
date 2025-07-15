@@ -535,6 +535,7 @@ const news_contents = {
             where news_id = ${id}
         `
         await pool.query(updateNewsContentSql, [contentHTML]);
+        
         //Insert updateNews
         const updateNewsSql = `
             update news.news

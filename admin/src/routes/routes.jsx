@@ -22,6 +22,7 @@ import TestComponents from "../pages/TestComponents"
 import AddNews from "../pages/AddNews"
 import AddProject from "../pages/AddProject"
 import EditNews from "../pages/EditNews"
+import EditProject from "../pages/EditProject"
 export const routes = [
     {
         path: "/",
@@ -114,6 +115,10 @@ export const routes = [
             {
                 path: "/quan-ly-tin-tuc/chinh-sua-tin-tuc/:id",
                 element: <EditNews/>
+            },
+            {
+                path: "/quan-ly-du-an/chinh-sua-du-an/:id",
+                element: <EditProject/>
             }
         ]
     },

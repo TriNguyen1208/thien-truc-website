@@ -11,9 +11,8 @@ import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {SuccessPopup, CancelPopup} from '@/components/Popup'
-import extractBlobImage, { addDeleteImage } from '../../utils/extractBlobImage';
+import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
-import {extractAllImages} from '../../utils/extractBlobImage'
 const EditNews = () => {
     //getID URL
     const {id: news_id} = useParams();
@@ -49,6 +48,7 @@ const EditNews = () => {
             hasButtonBack: true,
         })
     }, [])
+
     //check is change
     const { setShouldWarn } = useNavigationGuardContext();
     useEffect(() => {
@@ -102,7 +102,7 @@ const EditNews = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlobImage(form.content); //chac chan se gui cho backend de cap nhat
+        const {formData, doc} = await extractBlogImages(form.content); //chac chan se gui cho backend de cap nhat
 
         //Add delete image
         const formDataNews = addDeleteImage(initialForm.content, form.content, formData);

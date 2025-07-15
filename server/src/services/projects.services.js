@@ -412,6 +412,7 @@ const project_contents = {
             [region_name]
         );
         const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
+
         //Insert news
         const insertProjectSql = `
             INSERT INTO project.projects (
@@ -449,7 +450,7 @@ const project_contents = {
         ]
         await pool.query(insertProjectContentSql, insertValuesProjectContent);
     },
-    updateOne: async (data, files) => {
+    updateOne: async (id, data, files) => {
         const result = {};
         if(files?.main_image?.[0]){
             const mainImageUrl = await uploadImage(files.main_image[0], 'project');
@@ -492,14 +493,29 @@ const project_contents = {
             [region_name]
         );
         const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
-        //Insert news
-        const insertProjectSql = `
-            INSERT INTO project.projects (
-            region_id, title, province, complete_time,
-            main_img, main_content, is_featured
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING id;
-        `;
+
+        //Update project content
+        const updateProjectContentSql = `
+            update project.project_contents
+            set 
+                content = $1
+            where project_id = ${id}
+        `
+        await pool.query(updateProjectContentSql, [contentHTML]);
+        
+        //Insert updateNews
+        const updateProjectSql = `
+            update project.projects
+            set 
+                region_id = $1,
+                title = $2, 
+                province = $3,
+                complete_time = $4,
+                main_img = $5, 
+                main_content = $6, 
+                is_featured = $7
+            where id = ${id}
+        `
         let main_image = "";
         if(result.main_image){
             main_image = result.main_image;
@@ -507,7 +523,8 @@ const project_contents = {
         else if(link_image){
             main_image = link_image;
         }
-        const insertValues = [
+
+        const updateValues = [
             region_id,
             title,
             province,
@@ -516,18 +533,7 @@ const project_contents = {
             main_content,
             isFeatured
         ];
-        
-        const projectResult = await pool.query(insertProjectSql, insertValues);
-        const project_id = projectResult.rows[0].id;
-        const insertProjectContentSql = `
-            INSERT INTO project.project_contents (project_id, content)
-            values($1, $2)
-        `
-        const insertValuesProjectContent = [
-            project_id,
-            contentHTML
-        ]
-        await pool.query(insertProjectContentSql, insertValuesProjectContent);
+        await pool.query(updateProjectSql, updateValues);
     }
 }
 

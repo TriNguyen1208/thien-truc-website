@@ -10,8 +10,7 @@ import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {SuccessPopup, CancelPopup} from '@/components/Popup'
-import extractBlobImage from '../../utils/extractBlobImage';
-
+import { extractBlogImages } from '../../utils/handleImage';
 const AddNews = () => {
     //useState
     const [openPopup, setOpenPopup] = useState(false);
@@ -98,7 +97,7 @@ const AddNews = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlobImage(form.content);
+        const {formData, doc} = await extractBlogImages(form.content);
         const finalHTML = doc.body.innerHTML;
         // Duyệt qua tất cả key
         for (const key in form) {

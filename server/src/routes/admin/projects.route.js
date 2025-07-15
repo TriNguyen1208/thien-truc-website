@@ -25,10 +25,9 @@ router.post('/project_contents/',  upload.fields([
     { name: 'images', maxCount: 20 }])
 , projectsController.project_contents.postOne);
 
-// router.patch('/project_contents/',  upload.fields([
-//     { name: 'main_image', maxCount: 1 },
-//     { name: 'images', maxCount: 20 },
-//     { name: 'delete_images', maxCount: 20}
-// ])
-// , projectsController.project_contents.updateOne);
+router.patch('/project_contents/:id',  upload.fields([
+    { name: 'main_image', maxCount: 1 },
+    { name: 'images', maxCount: 20 },
+])
+, projectsController.project_contents.updateOne);
 export default router;
