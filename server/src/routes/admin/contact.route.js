@@ -18,7 +18,7 @@ router.post('/contact_messages', validateForm.validateContact, contactController
 router.post('/support_agents', authenticateToken, upload.single('local_avatar_img'), contactController.support_agents.createOne);
 
 router.patch('/company_info', authenticateToken, contactController.updateCompanyInfo);
-router.patch('/support_agents/:id', authenticateToken, contactController.support_agents.updateOne);
+router.patch('/support_agents/:id', authenticateToken, upload.single('local_avatar_img'), contactController.support_agents.updateOne);
 
 router.delete('/support_agents/:id', authenticateToken, contactController.support_agents.deleteOne);
 export default router;
