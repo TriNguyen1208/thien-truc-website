@@ -3,7 +3,7 @@ import React from 'react'
 const ItemTable = ({ data }) => {
     return (
         <>
-            {data.map((item, index) => (
+            {(data || []).map((item, index) => (
                 <td
                     key={index}
                     className="px-4 py-3 align-middle whitespace-nowrap overflow-hidden truncate max-w-[350px] relative"
