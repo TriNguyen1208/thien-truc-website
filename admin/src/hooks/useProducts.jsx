@@ -2,6 +2,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import productsServices from "@/services/products.api.js";
 import { toast } from 'react-toastify';
 
+
+function usePatchPricePage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data) => productsServices.patchPricePage(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_price_page"] });
+    },
+  });
+}
+
 function useGetQuantity()
 {
     return useQuery({
@@ -229,7 +241,6 @@ const product_prices = {
 export default {
   getAll: useGetAll,
   getProductPage: useGetProductPage,
-  getPricePage: useGetPricePage,
   getHighlightProducts: useGetHighlightProducts,
   getCount: useGetCount,
   getSearchSuggestions: useSearchSuggestions,
@@ -253,6 +264,7 @@ export default {
     getAll: product_prices.useGetAll,
     getOne: product_prices.useGetOne,
   },
-  getQuantity: useGetQuantity
+  getQuantity: useGetQuantity,
+  getPricePage: useGetPricePage,
+  patchPricePage: usePatchPricePage
 };
-
