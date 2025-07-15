@@ -55,7 +55,8 @@ const login = async (loginData) => {
     return {
         status: 200,
         message: 'Đăng nhập thành công',
-        token: { accessToken, refreshToken }
+        token: { accessToken, refreshToken },
+        role: user.role // Trả về role để lưu vào Redux
     }
 };
 
