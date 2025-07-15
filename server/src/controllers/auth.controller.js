@@ -31,7 +31,20 @@ const getLoginResult = async (req, res) => {
     } catch (error) {
         console.log('Lỗi lấy thông tin user: ', error);
         res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});        
-    }
-    
+    }    
 }
-export default { login, refreshToken, getLoginResult };
+
+const updateProfile = async (req, res) => {
+    try {
+        const { status, message, user } = await authServices.updateProfile(req.body, req.user.user);
+        res.status(status).json({
+            message,
+            user
+        });
+    } catch (error) {
+        console.log('Lỗi lấy thông tin tài khoản: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});              
+    }
+}
+
+export default { login, refreshToken, getLoginResult, updateProfile };
