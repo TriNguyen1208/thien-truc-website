@@ -1,4 +1,6 @@
 import pool from '#@/config/db.js'
+import authUtil from '#@/utils/auth.js'
+import { hash } from 'bcrypt';
 
 const count = async () => {
     const data = (await pool.query(`
@@ -88,10 +90,12 @@ const manager = {
             return checkUsernameResult;
         }
 
+        const hashed_password = await authUtil.hashPassword(password);
+
         const result = await pool.query(`
             INSERT INTO admin.accounts (username, role, password, fullname, phone, email, position, description)
             VALUES ($1, 'manager', $2, $3, $4 ,$5, $6, $7);
-        `, [username, password, fullname, phone, email, position, description]);
+        `, [username, hashed_password, fullname, phone, email, position, description]);
 
         return result;
     },
@@ -105,6 +109,8 @@ const manager = {
             position,
             description
         } = data
+        
+        const hashed_password = await authUtil.hashPassword(password);
 
         const result = await pool.query(`
             UPDATE admin.accounts
@@ -117,7 +123,7 @@ const manager = {
                 description = $7
             WHERE
                 username = $1
-        `,  [username, password, fullname, phone, email, position, description]);
+        `,  [username, hashed_password, fullname, phone, email, position, description]);
 
         return result;
     },

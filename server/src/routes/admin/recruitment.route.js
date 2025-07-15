@@ -7,4 +7,5 @@ const router = express.Router();
 router.get('/', recruitmentController.getAllTables);
 router.get('/recruitment_page', recruitmentController.getRecruitmentPage);
 router.post('/submit_application', validateForm.validateRecruitment, recruitmentController.postSubmitApplication);
+router.patch('/', recruitmentController.patchRecruitment);
 export default router;

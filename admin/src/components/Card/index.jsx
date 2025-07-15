@@ -1,8 +1,8 @@
 
 
-export default function Card({title, description,quanCategory, quanlity, icon})
+export default function Card({title, description,quanCategory, quanlity, icon, handleClick})
 {
-    return(<div className="flex flex-col relative w-full h-full p-[24px] bg-white border border-[#E5E7EB] rounded-[8px] hover:shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
+    return(<div onClick={handleClick} className="flex flex-col relative w-full h-full p-[24px] bg-white border border-[#E5E7EB] rounded-[8px] cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
         <div className="mb-[6px]">
             <h1  className = "text-[16px] font-semibold text-black">{title}</h1>
         </div>

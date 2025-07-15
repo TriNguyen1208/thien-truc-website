@@ -7,6 +7,7 @@ import { EditIcon, DeleteIcon } from '@/components/Icon';
 import SearchBar from '@/components/Search';
 import useNews from '@/hooks/useNews';
 
+// Còn api xóa tin tứcs
 export default function News() {
 
   const queryClient = useQueryClient();

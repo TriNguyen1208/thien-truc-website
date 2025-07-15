@@ -1,5 +1,7 @@
 import pool from '#@/config/db.js'
 import bcrypt from 'bcrypt';
+import authUtil from '#@/utils/auth.js'
+import { query } from 'express-validator';
 import jwt from 'jsonwebtoken';
 const { ACCESS_SECRET, REFRESH_SECRET } = process.env;
 
@@ -7,19 +9,34 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
     throw new Error('Thiếu ACCESS_SECRET hoặc REFRESH_SECRET trong biến môi trường');
 }
 
+const isValidPassword = async (username, password) => {
+    const user = await pool.query(`
+        SELECT password as hashed_password
+        FROM admin.accounts WHERE username = $1
+    `, [username]);
+
+    if (user.rowCount === 0) return false;
+
+    const hashedPassword = user.rows[0].hashed_password;
+    return await bcrypt.compare(password, hashedPassword);
+}
+
 // Hàm lấy user theo username
 const getUserByUsername = async (username) => {
     const queryResult = await pool.query(
-        'SELECT password, role FROM admin.accounts WHERE username = $1',
+        `SELECT role, fullname, phone, email, position, description
+        FROM admin.accounts WHERE username = $1`,
         [username]
     );
 
     if (queryResult.rowCount === 0) return null;
 
-    const hashedPassword = queryResult.rows[0].password;
-    const role = queryResult.rows[0].role;
+    const user = queryResult.rows[0];
 
-    return { username, hashedPassword, role };
+    return { 
+        username,
+        ...user
+    };
 };
 
 // Hàm login
@@ -32,7 +49,9 @@ const login = async (loginData) => {
         message: 'Tài khoản không tồn tại'
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
+    console.log(user);
+
+    const isPasswordValid = await isValidPassword(username, password);
     if (!isPasswordValid) return {
         status: 401,
         message: 'Sai thông tin đăng nhập'
@@ -55,7 +74,8 @@ const login = async (loginData) => {
     return {
         status: 200,
         message: 'Đăng nhập thành công',
-        token: { accessToken, refreshToken }
+        token: { accessToken, refreshToken },
+        user
     }
 };
 
@@ -91,5 +111,105 @@ const refreshToken = async (tokenData) => {
     }
 };
 
+const updateManagerProfile = async (data, user) => {
+    const {
+        fullname,
+        phone,
+        email
+    } = data;
 
-export default { login, refreshToken };
+    await pool.query(`
+        UPDATE admin.accounts
+        SET
+            fullname = $1,
+            phone = $2,
+            email = $3
+        WHERE
+            username = $4
+    `, [fullname, phone, email, user.username]);
+
+    user.fullname = fullname;
+    user.phone = phone;
+    user.email = email;
+
+    return user;
+} 
+
+const updateUserProfile = async (data, user) => {
+    const {
+        fullname,
+    } = data;
+
+    await pool.query(`
+        UPDATE admin.accounts
+        SET
+            fullname = $1,
+        WHERE
+            username = $2
+    `, [fullname, user.username]);
+
+    user.fullname = fullname;
+
+    return user;
+} 
+
+const updateProfile = async (data, user) => {
+    if (user.role == 'manager') {
+        const updatedUser = await updateManagerProfile(data, user);
+        return {
+            status: 200,
+            message: 'Cập nhật thông tin Manager thành công',
+            user: updatedUser
+        }
+    } else if (user.role == 'admin') {
+        const updatedUser = await updateManagerProfile(data, user);
+        return {
+            status: 200,
+            message: 'Cập nhật thông tin Admin thành công',
+            user: updatedUser
+        }
+    } else {
+        return {
+            status: 409,
+            message: 'Role tài khoản không hợp lệ',
+            user: updatedUser
+        }
+    }
+}
+
+const updatePassword = async (data, user) => {
+    const {
+        old_password,
+        new_password,
+        verify_password
+    } = data;
+    
+    const isOldPasswordValid = await isValidPassword(user.username, old_password);
+    if (!isOldPasswordValid) return {
+        status: 409,
+        message: "Mật khẩu cũ không đúng"
+    }
+
+    if (new_password != verify_password) return {
+        status: 409,
+        message: "Mật khẩu xác nhận chưa trùng khớp"
+    }
+
+    const hashed_new_password = await authUtil.hashPassword(new_password);
+
+    await pool.query(`
+        UPDATE admin.accounts
+        SET
+            password = $1
+        WHERE
+            username = $2    
+    `, [hashed_new_password, user.username]);
+    console.log(user);
+    return {
+        status: 200,
+        message: "Cập nhật mật khẩu thành công",
+        user
+    }
+}
+
+export default { isValidPassword, getUserByUsername, login, refreshToken, updateProfile, updatePassword };

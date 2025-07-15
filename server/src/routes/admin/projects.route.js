@@ -1,5 +1,8 @@
 import express from 'express'
 import projectsController from '#@/controllers/projects.controller.js';
+import upload from '#@/middlewares/upload.middleware.js'
+import authMiddleware from '#@/middlewares/auth.middleware.js';
+const { authenticateToken} = authMiddleware;
 
 const router = express.Router();
 
@@ -20,16 +23,26 @@ router.get('/search_suggestions', projectsController.getSearchSuggestions);
 
 router.get('/count', projectsController.count);
 
+router.post('/project_contents/',  upload.fields([
+    { name: 'main_image', maxCount: 1 },
+    { name: 'images', maxCount: 20 }])
+, projectsController.project_contents.postOne);
+
+router.patch('/project_contents/:id',  upload.fields([
+    { name: 'main_image', maxCount: 1 },
+    { name: 'images', maxCount: 20 },
+])
+, projectsController.project_contents.updateOne);
 // post
-router.post('/project_regions', projectsController.project_regions.createOne);
+router.post('/project_regions', authenticateToken, projectsController.project_regions.createOne);
 
 // patch
-router.patch('/project_regions/:id', projectsController.project_regions.updateOne);
-router.patch('/projects/:id', projectsController.projects.updateFeatureOne);
-router.patch('/projects/update_region', projectsController.projects.updateRegion);
+router.patch('/project_regions/:id', authenticateToken, projectsController.project_regions.updateOne);
+router.patch('/projects/:id', authenticateToken, projectsController.projects.updateFeatureOne);
+router.patch('/projects/update_region', authenticateToken, projectsController.projects.updateRegion);
 
 // delete
-router.delete('/projects/:id', projectsController.projects.deleteOne);
-router.delete('/project_regions/:id', projectsController.project_regions.deleteOne);
+router.delete('/projects/:id', authenticateToken, projectsController.projects.deleteOne);
+router.delete('/project_regions/:id', authenticateToken, projectsController.project_regions.deleteOne);
 
 export default router;

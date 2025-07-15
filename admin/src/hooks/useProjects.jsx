@@ -98,7 +98,25 @@ const project_contents = {
             queryFn: () => projectsServices.project_contents.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
-    }
+    },
+    usePostOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: (data) => {
+                return projectsServices.project_contents.postOne(data)
+            },
+            onSuccess,
+            onError
+        })
+    },
+    useUpdateOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: ({id, formDataProject}) => {
+                return projectsServices.project_contents.updateOne(id, formDataProject)
+            },
+            onSuccess,
+            onError
+        })
+    },
 }
 function useGetHighlightProjects(){
     return useQuery({
@@ -113,6 +131,14 @@ function useSearchSuggest(query, filter, is_featured){
         queryKey: ['admin_project-suggestions', query, filter, is_featured],
         queryFn: () => projectsServices.getSearchSuggestions(query, filter, is_featured),
         staleTime: 5 * 60 * 1000,
+    })
+}
+function useGetQuantity()
+{
+    return useQuery({
+        queryKey: ['admin_project_quantity'],
+        queryFn: projectsServices.getQuantity,
+        staleTime: 5 * 60 * 1000
     })
 }
 
@@ -144,8 +170,11 @@ export default {
     project_contents: {
         getAll: project_contents.useGetAll,
         getOne: project_contents.useGetOne,
+        postOne: project_contents.usePostOne,
+        updateOne: project_contents.useUpdateOne
     },
     getHighlightProjects: useGetHighlightProjects,
     getSearchSuggestions: useSearchSuggest,
+    getQuantity: useGetQuantity,
     getSearchCategoriesSuggestions: useSearchCategoriesSuggest
 };

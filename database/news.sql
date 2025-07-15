@@ -1,90 +1,139 @@
-drop table if exists news.news_page cascade;
-drop table if exists news.news_categories cascade;
-drop table if exists news.news cascade;
-drop table if exists news.news_contents cascade;
-drop table if exists news.featured_news cascade;
+DROP TABLE IF EXISTS news.news_page CASCADE;
+DROP TABLE IF EXISTS news.news_categories CASCADE;
+DROP TABLE IF EXISTS news.news CASCADE;
+DROP TABLE IF EXISTS news.news_contents CASCADE;
+DROP TABLE IF EXISTS news.featured_news CASCADE;
+
+-- Drop sequences if they exist
+DROP SEQUENCE IF EXISTS news.news_category_seq CASCADE;
+DROP SEQUENCE IF EXISTS news.news_seq CASCADE;
 
 CREATE SCHEMA IF NOT EXISTS news;
 
-create table news.news_page
+-- Tạo sequences trước
+CREATE SEQUENCE news.news_category_seq START 1;
+CREATE SEQUENCE news.news_seq START 1;
+
+--- Function tạo id cho categories -----------------------------
+CREATE OR REPLACE FUNCTION news.gen_category_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id IS NULL THEN
+        NEW.id := 'LT' || LPAD(nextval('news.news_category_seq')::TEXT, 4, '0');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+--- Function tạo id cho news -----------------------------
+CREATE OR REPLACE FUNCTION news.gen_news_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id IS NULL THEN
+        NEW.id := 'TT' || LPAD(nextval('news.news_seq')::TEXT, 4, '0');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+----------------------------------------------------------------------
+
+CREATE TABLE news.news_page
 (
-	banner_title varchar(100),
-	banner_description varchar(300)
+    banner_title VARCHAR(100),
+    banner_description VARCHAR(300)
 );
 
-create table news.news_categories
+--- Tạo bảng news_categories với id theo format "LT0000" -------------
+CREATE TABLE news.news_categories
 (
-	id serial primary key,
-	name varchar(50),
-	rgb_color char(7),
-	item_count int
+    id TEXT PRIMARY KEY,
+    name VARCHAR(50),
+    rgb_color CHAR(7),
+    item_count INT
 );
 
+CREATE TRIGGER trg_news_category_id
+    BEFORE INSERT ON news.news_categories
+    FOR EACH ROW
+    EXECUTE FUNCTION news.gen_category_id();
 
-create table news.news
+----------------------------------------------------------------------
+
+--- Tạo bảng news với id theo format "TT0000" ------------------------
+CREATE TABLE news.news
 (
-	id serial primary key,
-	category_id int references news.news_categories(id),
-	title varchar(100),
-	is_published boolean,
-	public_date date,
-	measure_time int,
-	num_readers int,
-	main_img text,
-	main_content varchar(200)
+    id TEXT PRIMARY KEY,
+    category_id TEXT REFERENCES news.news_categories(id),
+    title VARCHAR(100),
+    is_published BOOLEAN,
+    public_date DATE,
+    measure_time INT,
+    num_readers INT,
+    main_img TEXT,
+    main_content VARCHAR(200)
 );
 
-create table news.news_contents
+CREATE TRIGGER trg_news_id
+    BEFORE INSERT ON news.news
+    FOR EACH ROW
+    EXECUTE FUNCTION news.gen_news_id();
+
+----------------------------------------------------------------------
+
+CREATE TABLE news.news_contents
 (
-	news_id int primary key references news.news(id),
-	content text
+    news_id TEXT PRIMARY KEY REFERENCES news.news(id),
+    content TEXT
 );
 
-create table news.featured_news (
-	news_id int primary key references news.news(id),
-	sort int
+CREATE TABLE news.featured_news (
+    news_id TEXT PRIMARY KEY REFERENCES news.news(id),
+    sort INT
 );
 
-insert into news.news_page(banner_title, banner_description)
-	values('Những Thông Tin Mới Nhất Về Thiên Trúc', 'Cập nhật liên tục các tin tức về hoạt động, dự án mới, xu hướng công nghệ LED và giải pháp chiếu sáng hiện đại do Thiên Trúc thực hiện');
-	
-insert into news.news_categories(name, rgb_color, item_count)
-	values ('Công Ty', '#059669', 9),
-		   ('Dự Án', '#FF3B30', 2),
-		   ('Sự kiện', '#A855F7', 2),
-		   ('Tuyển Dụng', '#A2845E', 2),
-		   ('Thành Tựu', '#F59E0B', 2),
-		   ('Sản phẩm', '#3B82F6', 2);
+-- Insert data
+INSERT INTO news.news_page(banner_title, banner_description)
+VALUES('Những Thông Tin Mới Nhất Về Thiên Trúc', 'Cập nhật liên tục các tin tức về hoạt động, dự án mới, xu hướng công nghệ LED và giải pháp chiếu sáng hiện đại do Thiên Trúc thực hiện');
+
+INSERT INTO news.news_categories(name, rgb_color, item_count)
+VALUES 
+    ('Công Ty', '#059669', 9),
+    ('Dự Án', '#FF3B30', 2),
+    ('Sự kiện', '#A855F7', 2),
+    ('Tuyển Dụng', '#A2845E', 2),
+    ('Thành Tựu', '#F59E0B', 2),
+    ('Sản phẩm', '#3B82F6', 2);
 
 insert into news.news(category_id, title, is_published, public_date, measure_time, num_readers, main_img, main_content)
-	values(1, 'FPT vào Top 40 doanh nghiệp CNTT châu Á', true, '06/09/2008', 4, 122, null, 'FPT lần đầu vào Top 40 doanh nghiệp CNTT châu Á và là công ty công nghệ Việt Nam duy nhất trong danh sách này của Gartner.'),
-		  (2, 'Dự án gần 1 tỷ USD của Vinhomes tại Hải Phòng đủ điều kiện huy động vốn', true, '06/09/2025', 4, 4321, null, ''),
-		  (3, 'Dấu ấn Masterise Homes tại diễn đàn bất động sản hàng hiệu châu Á', true, '06/09/2024', 4, 2432, null, ''),
-		  (4, 'Bão đơn xin việc AI', true, '06/09/2023', 4, 12354, null, ''),
-		  (5, 'Thành tựu phát triển kinh tế - xã hội năm 2024 là rất ấn tượng và toàn diện', true, '06/09/2022', 4, 123, null, ''),
-		  (6, 'Liên doanh Vinamilk và Kido ra mắt nước giải khát tươi', true, '06/09/2021', 4, 1987, null, ''),
-		  (1, 'Doanh nghiệp thiệt hại lớn vẫn nỗ lực cứu trợ vùng bão lũ', true, '06/09/2020', 4, 1000, null, 'Dù cũng bị thiệt hại nặng nề, nhiều doanh nghiệp vẫn đang nỗ lực chung tay trợ giúp người dân vùng bão lụt bằng nhiều cách khác nhau.'),
-		  (2, '8 dự án giao thông trọng điểm sẽ khởi công trong năm', true, '06/09/2019', 4, 962, null, ''),
-		  (3, 'Sự kiện chăm sóc xe Hyundai hút nghìn người tham dự', true, '06/09/2018', 4, 2341, null, ''),
-		  (4, 'VietinBank thu hút nhân tài để thúc đẩy chuyển đổi số', true, '06/09/2017', 4, 2843, null, ''),
-		  (5, 'Agribank và 10 thành tựu nổi bật năm 2024', true, '06/09/2016', 4, 4512, null, ''),
-		  (6, 'Audemars Piguet giới thiệu phiên bản Royal Oak kích thước 34 mm', true, '06/09/2015', 4, 8153, null, ''),
-		  (1, 'Doanh nghiệp ngành gỗ đặt mục tiêu hoàn thiện chuỗi cung ứng', true, '06/09/2014', 4, 8547, null, 'Các doanh nghiệp nội thất Việt Nam đang thể hiện khả năng làm chủ chuỗi cung ứng khi sử dụng nguyên liệu bản địa, đầu tư thiết kế, sáng tạo và xây dựng thương hiệu.'),
-		  (1, 'Doanh nghiệp xuất khẩu lao động chui bị phạt 360 triệu đồng', false, null, 4, null, null, ''),
-		  (1, 'MobiFone vào top 50 doanh nghiệp sáng tạo, kinh doanh hiệu quả', false, null, 4, null, null, ''),
-		  (1, 'Phó tổng giám đốc Vietnam Airlines: Hãng hàng không phải giữ slot bay dù khách giảm', false, null, 4, null, null, ''),
-		  (1, 'Nhiều doanh nghiệp vận tải tăng giá cước', false, null, 4, null, null, ''),
-		  (1, 'Hơn 100.000 xe kinh doanh vận tải lắp camera giám sát', false, null, 4, null, null, ''),
-		  (1, 'Doanh nghiệp phụ trợ tìm cách tham gia chuỗi cung ứng', false, null, 4, null, null, '');
+	values('LT0001', 'FPT vào Top 40 doanh nghiệp CNTT châu Á', true, '06/09/2008', 4, 122, null, 'FPT lần đầu vào Top 40 doanh nghiệp CNTT châu Á và là công ty công nghệ Việt Nam duy nhất trong danh sách này của Gartner.'),
+		  ('LT0002', 'Dự án gần 1 tỷ USD của Vinhomes tại Hải Phòng đủ điều kiện huy động vốn', true, '06/09/2025', 4, 4321, null, ''),
+		  ('LT0003', 'Dấu ấn Masterise Homes tại diễn đàn bất động sản hàng hiệu châu Á', true, '06/09/2024', 4, 2432, null, ''),
+		  ('LT0004', 'Bão đơn xin việc AI', true, '06/09/2023', 4, 12354, null, ''),
+		  ('LT0005', 'Thành tựu phát triển kinh tế - xã hội năm 2024 là rất ấn tượng và toàn diện', true, '06/09/2022', 4, 123, null, ''),
+		  ('LT0006', 'Liên doanh Vinamilk và Kido ra mắt nước giải khát tươi', true, '06/09/2021', 4, 1987, null, ''),
+		  ('LT0001', 'Doanh nghiệp thiệt hại lớn vẫn nỗ lực cứu trợ vùng bão lũ', true, '06/09/2020', 4, 1000, null, 'Dù cũng bị thiệt hại nặng nề, nhiều doanh nghiệp vẫn đang nỗ lực chung tay trợ giúp người dân vùng bão lụt bằng nhiều cách khác nhau.'),
+		  ('LT0002', '8 dự án giao thông trọng điểm sẽ khởi công trong năm', true, '06/09/2019', 4, 962, null, ''),
+		  ('LT0003', 'Sự kiện chăm sóc xe Hyundai hút nghìn người tham dự', true, '06/09/2018', 4, 2341, null, ''),
+		  ('LT0004', 'VietinBank thu hút nhân tài để thúc đẩy chuyển đổi số', true, '06/09/2017', 4, 2843, null, ''),
+		  ('LT0005', 'Agribank và 10 thành tựu nổi bật năm 2024', true, '06/09/2016', 4, 4512, null, ''),
+		  ('LT0006', 'Audemars Piguet giới thiệu phiên bản Royal Oak kích thước 34 mm', true, '06/09/2015', 4, 8153, null, ''),
+		  ('LT0001', 'Doanh nghiệp ngành gỗ đặt mục tiêu hoàn thiện chuỗi cung ứng', true, '06/09/2014', 4, 8547, null, 'Các doanh nghiệp nội thất Việt Nam đang thể hiện khả năng làm chủ chuỗi cung ứng khi sử dụng nguyên liệu bản địa, đầu tư thiết kế, sáng tạo và xây dựng thương hiệu.'),
+		  ('LT0001', 'Doanh nghiệp xuất khẩu lao động chui bị phạt 360 triệu đồng', false, null, 4, null, null, ''),
+		  ('LT0001', 'MobiFone vào top 50 doanh nghiệp sáng tạo, kinh doanh hiệu quả', false, null, 4, null, null, ''),
+		  ('LT0001', 'Phó tổng giám đốc Vietnam Airlines: Hãng hàng không phải giữ slot bay dù khách giảm', false, null, 4, null, null, ''),
+		  ('LT0001', 'Nhiều doanh nghiệp vận tải tăng giá cước', false, null, 4, null, null, ''),
+		  ('LT0001', 'Hơn 100.000 xe kinh doanh vận tải lắp camera giám sát', false, null, 4, null, null, ''),
+		  ('LT0001', 'Doanh nghiệp phụ trợ tìm cách tham gia chuỗi cung ứng', false, null, 4, null, null, '');
 
 insert into news.featured_news (news_id, sort)
-	values(1, 1),
-		  (2, 2),
-		  (3, 3),
-		  (4, 4);
+	values('TT0001', 1),
+		  ('TT0002', 2),
+		  ('TT0003', 3),
+		  ('TT0004', 4);
 
 insert into news.news_contents(news_id, content)
-values(1, '
+values('TT0001', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -144,7 +193,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(2, '
+('TT0002', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -204,7 +253,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(3, '
+('TT0003', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -264,7 +313,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(4, '
+('TT0004', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -324,7 +373,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(5, '
+('TT0005', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -384,7 +433,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(6, '
+('TT0006', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -444,7 +493,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(7, '
+('TT0007', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -504,7 +553,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(8, '
+('TT0008', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -564,7 +613,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(9, '
+('TT0009', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -624,7 +673,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(10, '
+('TT0010', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -684,7 +733,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(11, '
+('TT0011', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -744,7 +793,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(12, '
+('TT0012', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -804,7 +853,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(13, '
+('TT0013', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -864,7 +913,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(14, '
+('TT0014', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -924,7 +973,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(15, '
+('TT0015', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -984,7 +1033,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(16, '
+('TT0016', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -1044,7 +1093,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(17, '
+('TT0017', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -1104,7 +1153,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(18, '
+('TT0018', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 
@@ -1164,7 +1213,7 @@ values(1, '
 <hr />
 <p style="text-align: right;">Ngày đăng: <strong>27/06/2025</strong></p>
 '),
-(19, '
+('TT0019', '
 <h1 style="text-align: center;">Thông báo tuyển dụng</h1>
 
 <p>Chúng tôi đang <strong>tuyển dụng</strong> vị trí <em>Frontend Developer</em> làm việc tại 

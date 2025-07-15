@@ -20,4 +20,13 @@ const postSubmitApplication = async (req, res) => {
   }
 };
 
-export default { getAllTables, getRecruitmentPage, postSubmitApplication };
+const patchRecruitment = async (req, res) => {
+  try {
+    await recruitmentServices.patchRecruitment(req.body);
+    res.status(200).json({ success: true, message: "Cập nhật thành công" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Cập nhật thất bại", error: error.message });
+  }
+}
+export default { getAllTables, getRecruitmentPage, postSubmitApplication, patchRecruitment};

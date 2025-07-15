@@ -1,5 +1,9 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
+const getQuantity = async()=>{
+    const res = await axios.get(API_ROUTES.news.count)
+    return res.data
+}
 
 const getAll = async () =>{
     const res = await axios.get(API_ROUTES.news.base);
@@ -66,6 +70,22 @@ const new_contents = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news_contents.getOne(id));
         return res.data;
+    },
+    postOne: async (data) => {
+        const res = await axios.post(API_ROUTES.news.news_contents.postOne, data, {
+            headers: {
+            'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
+    },
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.news.news_contents.updateOne(id), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
     }
 }
 const getSearchCategoriesSuggestions = async (query) => {
@@ -77,4 +97,4 @@ const getSearchSuggestions = async (query, filter) => {
     const res = await axios.get(API_ROUTES.news.search_suggestions(query, filter))
     return res.data;
 }
-export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions, getSearchCategoriesSuggestions};
+export default {getQuantity, getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions, getSearchCategoriesSuggestions};

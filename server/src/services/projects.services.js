@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import { uploadImage, deleteImage } from '#@/utils/image.js';
 
 const getAllTables = async (filter = '') => {
     const _project_page = await getProjectPage();
@@ -254,9 +255,9 @@ const projects = {
                 prj_reg.rgb_color
             from project.projects prj
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
-            where prj.id = ${id}
+            where prj.id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const project = {
             id: row.prj_id,
             title: row.title,
@@ -378,7 +379,7 @@ const project_regions = {
         return project_regions
     },
     getOne: async (id) => {
-        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = ${id}`)).rows[0];
+        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = $1`, [id])).rows[0];
         if(!project_region){
             throw new Error("Can't get project_regions");
         }
@@ -505,9 +506,9 @@ const project_contents = {
             from project.project_contents prj_cont
             join project.projects prj on prj_cont.project_id = prj.id
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
-            where prj_cont.project_id = ${id}
+            where prj_cont.project_id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const project_content = {
             id: row.cont_id,
             content: row.content,
@@ -526,6 +527,163 @@ const project_contents = {
                 is_featured: row.is_featured
             }};
         return project_content;
+    },
+    postOne: async (data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'project');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        const {
+            title,
+            main_content,
+            region_name,
+            isFeatured,
+            link_image,
+            province,
+            completeTime
+        } = data;
+
+        //Get news_categories id
+        const regionRes = await pool.query(
+            `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
+            [region_name]
+        );
+        const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
+
+        //Insert news
+        const insertProjectSql = `
+            INSERT INTO project.projects (
+            region_id, title, province, complete_time,
+            main_img, main_content, is_featured
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id;
+        `;
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+        const insertValues = [
+            region_id,
+            title,
+            province,
+            new Date(completeTime).getFullYear(),
+            main_image,
+            main_content,
+            isFeatured
+        ];
+        
+        const projectResult = await pool.query(insertProjectSql, insertValues);
+        const project_id = projectResult.rows[0].id;
+        const insertProjectContentSql = `
+            INSERT INTO project.project_contents (project_id, content)
+            values($1, $2)
+        `
+        const insertValuesProjectContent = [
+            project_id,
+            contentHTML
+        ]
+        await pool.query(insertProjectContentSql, insertValuesProjectContent);
+    },
+    updateOne: async (id, data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'project');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+
+        let imagesToDelete = data.delete_images;
+        if (typeof imagesToDelete === 'string') {
+            imagesToDelete = [imagesToDelete];
+        }
+        if (Array.isArray(imagesToDelete) && imagesToDelete.length > 0) {
+            await deleteImage(imagesToDelete);
+        }
+        
+        const {
+            title,
+            main_content,
+            region_name,
+            isFeatured,
+            link_image,
+            province,
+            completeTime
+        } = data;
+
+        //Get news_categories id
+        const regionRes = await pool.query(
+            `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
+            [region_name]
+        );
+        const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
+
+        //Update project content
+        const updateProjectContentSql = `
+            update project.project_contents
+            set 
+                content = $1
+            where project_id = ${id}
+        `
+        await pool.query(updateProjectContentSql, [contentHTML]);
+        
+        //Insert updateNews
+        const updateProjectSql = `
+            update project.projects
+            set 
+                region_id = $1,
+                title = $2, 
+                province = $3,
+                complete_time = $4,
+                main_img = $5, 
+                main_content = $6, 
+                is_featured = $7
+            where id = ${id}
+        `
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+
+        const updateValues = [
+            region_id,
+            title,
+            province,
+            new Date(completeTime).getFullYear(),
+            main_image,
+            main_content,
+            isFeatured
+        ];
+        await pool.query(updateProjectSql, updateValues);
     }
 }
 
