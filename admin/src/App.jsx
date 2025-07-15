@@ -21,6 +21,7 @@ export default function App() {
         <QueryClientProvider client={queryClient}>
             <LayoutProvider>
                 <RoutesElement />
+                <ToastContainer/>
             </LayoutProvider>
         </QueryClientProvider>
       </BrowserRouter>

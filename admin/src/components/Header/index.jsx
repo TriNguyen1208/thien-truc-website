@@ -1,9 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserIcon } from '@/components/Icon';
-import AccountModal from '@/components/Header/AccountModal';
+import AdminAccountModal, { ManagerAccountModal } from '@/components/Header/AccountModal';
 import PasswordChangeModal from '@/components/Header/PasswordChangeModal';
+import { logout } from '@/slices/auth.slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  // Lấy thông tin người dùng từ Redux store
+  const user = useSelector((state) => state.auth.user);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -37,7 +45,7 @@ const Header = () => {
                 <UserIcon />
               </div>
               <span className="text-sm font-bold text-gray-800 group-hover:text-gray-700">
-                Admin
+                {user?.fullname}
               </span>
             </div>
             {/* Dropdown menu */}
@@ -53,7 +61,12 @@ const Header = () => {
                   >
                     Thông tin tài khoản
                   </li>
-                  <li className="py-1 hover:bg-gray-100 cursor-pointer text-red-600">
+                  <li className="py-1 hover:bg-gray-100 cursor-pointer text-red-600"
+                      onClick={() => {
+                        dispatch(logout());
+                        navigate('/dang-nhap'); // Chuyển hướng về trang đăng nhập
+                      }
+                  }>
                     Đăng xuất
                   </li>
                 </ul>
@@ -63,17 +76,36 @@ const Header = () => {
         </div>
       </header>
 
-      <AccountModal
-        open={showAccountModal || showPasswordModal} // giữ cả 2 modal nền chung
-        onClose={() => {
-          setShowAccountModal(false);
-          setShowPasswordModal(false);
-        }}
-        hideContent={showPasswordModal} // ẩn Account content nếu đang xem Password
-        onChangePassword={() => {
-          setShowPasswordModal(true); // chỉ toggle nội dung, không tắt
-        }}
-      />
+      {user?.role === "admin" ? (
+        <AdminAccountModal
+          open={showAccountModal || showPasswordModal}
+          onClose={() => {
+            setShowAccountModal(false);
+            setShowPasswordModal(false);
+          }}
+          hideContent={showPasswordModal}
+          onChangePassword={() => {
+            setShowAccountModal(false);
+            setShowPasswordModal(true);
+          }}
+          user={user}
+        />
+      ) : (
+        <ManagerAccountModal
+          open={showAccountModal || showPasswordModal}
+          onClose={() => {
+            setShowAccountModal(false);
+            setShowPasswordModal(false);
+          }}
+          hideContent={showPasswordModal}
+          onChangePassword={() => {
+            setShowAccountModal(false);
+            setShowPasswordModal(true);
+          }}
+          user={user}
+        />
+      )}
+
       <PasswordChangeModal
         open={showPasswordModal}
         onClose={() => setShowPasswordModal(false)}

@@ -1,6 +1,9 @@
 import express from 'express'
 import newsController from '#@/controllers/news.controller.js';
 import upload from '#@/middlewares/upload.middleware.js'
+import authMiddleware from '#@/middlewares/auth.middleware.js';
+const { authenticateToken, authorizeAdmin } = authMiddleware;
+
 const router = express.Router();
 
 router.get('/', newsController.getAllTables);
@@ -31,4 +34,15 @@ router.patch('/news_contents/:id',  upload.fields([
 ])
 , newsController.news_contents.updateOne);
 
+
+// post
+router.post('/news_categories', authenticateToken, newsController.news_categories.createOne);
+
+// patch
+router.patch('/news_categories/:id', authenticateToken, newsController.news_categories.updateOne);
+
+// delete
+router.delete('/news/:id', authenticateToken, newsController.news.deleteOne);
+router.delete('/news_categories/:id', authenticateToken, newsController.news_categories.deleteOne);
+router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 export default router;

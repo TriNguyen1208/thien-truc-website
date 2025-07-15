@@ -274,7 +274,51 @@ const projects = {
             is_featured: row.is_featured
         };
         return project;
+    },
+    updateFeatureOne: async(is_featured, id) => {
+        await pool.query(
+            `UPDATE project.projects
+             SET is_featured = $1
+             WHERE id = $2`,
+             [is_featured, id]
+        );
+    },
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            // Giảm item_count trong project_regions
+            await client.query(`
+            UPDATE project.project_regions
+            SET item_count = item_count - 1
+            WHERE id = (SELECT region_id FROM project.projects WHERE id = $1)
+            `, [id]);
+
+            // Xoá nội dung dự án
+            await client.query(`
+            DELETE FROM project.project_contents
+            WHERE project_id = $1
+            `, [id]);
+
+            // Xoá dự án
+            const result = await client.query(`
+            DELETE FROM project.projects
+            WHERE id = $1
+            RETURNING *
+            `, [id]);
+
+            await client.query('COMMIT');
+            return result;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
     }
+
 }
 
 const project_regions = {
@@ -291,7 +335,64 @@ const project_regions = {
             throw new Error("Can't get project_regions");
         }
         return project_region
+    },
+    createOne: async(data) => {
+        const {name, rgb_color} = data;
+        await pool.query(
+            `INSERT INTO project.project_regions (name, rgb_color, item_count)
+             VALUES($1, $2, 0)`,
+             [name, rgb_color]
+        );
+    },
+    updateOne: async(data, id) => {
+        const {name, rgb_color} = data;
+        await pool.query(
+            `UPDATE project.project_regions
+             SET name = $1, rgb_color = $2
+             WHERE id = $3`,
+             [name, rgb_color, id]
+        );
+    },
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+        try {
+            // Câu 1: Xoá project_contents
+            try {
+            await client.query(
+                'DELETE FROM project.project_contents WHERE project_id IN (SELECT id FROM project.projects WHERE region_id = $1)',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá project_contents:", err.message);
+            }
+
+            // Câu 2: Xoá projects
+            try {
+            await client.query(
+                'DELETE FROM project.projects WHERE region_id = $1',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá projects:", err.message);
+            }
+
+            // Câu 3: Xoá project_regions
+            let result;
+            try {
+            result = await client.query(
+                'DELETE FROM project.project_regions WHERE id = $1 RETURNING *',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá project_regions:", err.message);
+            }
+
+            return result?.rows?.[0] || null;
+        } finally {
+            client.release();
+        }
     }
+
 }
 //  href = {companyInfoData.googlemaps_url}
 const project_contents = {

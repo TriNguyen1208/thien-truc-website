@@ -30,6 +30,18 @@ const projects = {
             staleTime: 5 * 60 * 1000,
             enabled: id != null
         })
+    },
+    useUpdateFeatureOne: () => {
+        return useMutation({
+            mutationFn: ({is_featured, id}) =>
+            projectsServices.projects.updateFeatureOne(is_featured, id)
+        })
+    },
+    useDeleteOne: (id) => {
+        return useMutation({
+            mutationFn: (id) => 
+            projectsServices.projects.deleteOne(id)
+        })
     }
 }
 const project_regions = {
@@ -45,6 +57,24 @@ const project_regions = {
             queryKey: ["admin_project_region", id],
             queryFn: () => projectsServices.project_regions.getOne(id),
             staleTime: 5 * 60 * 1000,
+        })
+    },
+    useCreateOne: (name = "", rgb_color = "") => {
+        return useMutation({
+            mutationFn: ({ name, rgb_color }) => 
+            projectsServices.project_regions.createOne(name, rgb_color)
+        })
+    },
+    useUpdateOne: (name = "", rgb_color = "", id) => {
+        return useMutation({
+            mutationFn: ({ name, rgb_color, id }) => 
+            projectsServices.project_regions.updateOne(name, rgb_color, id)
+        })
+    },
+    useDeleteOne: (id) => {
+        return useMutation({
+            mutationFn: (id) => 
+            projectsServices.project_regions.deleteOne(id)
         })
     }
 }
@@ -120,10 +150,15 @@ export default {
     projects: {
         getList: projects.useGetList,
         getOne: projects.useGetOne,
+        updateFeatureOne: projects.useUpdateFeatureOne,
+        deleteOne: projects.useDeleteOne,
     },
     project_regions: {
         getAll: project_regions.useGetAll,
         getOne: project_regions.useGetOne,
+        createOne: project_regions.useCreateOne,
+        updateOne: project_regions.useUpdateOne,
+        deleteOne: project_regions.useDeleteOne,
     },
     project_contents: {
         getAll: project_contents.useGetAll,

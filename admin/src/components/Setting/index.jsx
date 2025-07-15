@@ -84,7 +84,7 @@ const Setting = ({
         const datasFetch = datas.map((item) => {
             const id = item.id;
             const name = item.name || item.title;
-            const cat = item.region.name || item.category.name;
+            const cat = item.region?.name || item.category?.name;
             const displayVal = updatedMap.get(id) || (cat === category ? "Đã gán" : "Chưa gán");
             updatedMap.set(id, displayVal);
             return {

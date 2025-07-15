@@ -20,3 +20,6 @@ body
   border: none !important;
   box-shadow: none !important;
 }
+.animate-fade {
+  animation: fade 0.2s ease-in-out;
+}

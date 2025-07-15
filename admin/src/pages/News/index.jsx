@@ -1,25 +1,33 @@
 import { useEffect, useState} from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom'; 
 import { useLayout } from '@/layouts/layoutcontext';
+import { useQueryClient } from '@tanstack/react-query';
 import { CancelPopup } from '@/components/Popup';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import SearchBar from '@/components/Search';
 import useNews from '@/hooks/useNews';
 
-// Còn api xóa tin tức
 export default function News() {
 
+  const queryClient = useQueryClient();
+  const { mutateAsync: deleteOne } = useNews.news.deleteOne();
   // Thông tin của popup xác nhận hủy
-    const [cancelOpen, setCancelOpen] = useState(false);
-    const cancelPopupData = {
-      open: cancelOpen,
-      setOpen: setCancelOpen,
-      notification: 'Bạn có chắc chắn muốn xóa tin tức này?',
-      subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
-      buttonLabel1: 'Hủy',
-      buttonLabel2: 'Xóa',
-      buttonAction2: () => setCancelOpen(false),
-    };
+  const [currentDeleteID, setcurrentDeleteId] = useState(null);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const cancelPopupData = {
+    open: cancelOpen,
+    setOpen: setCancelOpen,
+    notification: 'Bạn có chắc chắn muốn xóa tin tức này?',
+    subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+    buttonLabel1: 'Hủy',
+    buttonLabel2: 'Xóa',
+    buttonAction2: async () => 
+      {
+        await deleteOne(currentDeleteID);
+        queryClient.invalidateQueries(['admin_news']);
+        setCancelOpen(false)
+      }
+  };
 
   // Set prop cho trang
   const navigate = useNavigate();
@@ -186,6 +194,7 @@ export default function News() {
                     <button
                       className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
                       onClick={() => {
+                        setcurrentDeleteId(item.id);
                         setCancelOpen(true);
                       }}
                     >

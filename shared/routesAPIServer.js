@@ -93,10 +93,23 @@ const API_ROUTES = {
             getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
             postOne: `${PROJECT_BASE}/projects/`,
+            
+            updateFeatureOne: (id) => `${PROJECT_BASE}/projects/${id}`,
+            // delete
+            deleteOne: (id) => `${PROJECT_BASE}/projects/${id}`,
         },
         project_regions: {
             getAll: `${PROJECT_BASE}/project_regions`,
             getOne: (id) => `${PROJECT_BASE}/project_regions/${id}`,
+
+            // post
+            createOne: `${PROJECT_BASE}/project_regions`,
+            
+            // patch
+            updateOne: (id) => `${PROJECT_BASE}/project_regions/${id}`,
+
+            // delete
+            deleteOne: (id) => `${PROJECT_BASE}/project_regions/${id}`
         },
         project_contents: {
             getAll: `${PROJECT_BASE}/project_contents`,
@@ -116,11 +129,22 @@ const API_ROUTES = {
             getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&limit=${limit}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
-            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
+            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`,
+            // delete
+            deleteOne: (id) => `${NEWS_BASE}/news/${id}`,
         },
         news_categories: {
             getAll: `${NEWS_BASE}/news_categories`,
             getOne: (id) => `${NEWS_BASE}/news_categories/${id}`,
+
+            // post
+            createOne: `${NEWS_BASE}/news_categories`,
+            
+            // patch
+            updateOne: (id) => `${NEWS_BASE}/news_categories/${id}`,
+
+            // delete
+            deleteOne: (id) => `${NEWS_BASE}/news_categories/${id}`
         },  
         news_contents: {
             getAll: `${NEWS_BASE}/news_contents`,   
@@ -180,7 +204,10 @@ const API_ROUTES = {
         // post
         login: `${AUTH_BASE}/login`,
         refreshToken: `${AUTH_BASE}/refresh-token`,
-        verifyLogin: `${AUTH_BASE}/login-result`
+        verifyLogin: `${AUTH_BASE}/login-result`,
+        // patch
+        updateProfile: `${AUTH_BASE}/update-profile`,
+        updatePassword: `${AUTH_BASE}/update-password`
     }
 };
 

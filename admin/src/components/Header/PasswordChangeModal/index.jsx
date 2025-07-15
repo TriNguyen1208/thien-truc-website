@@ -1,5 +1,30 @@
-export default function PasswordChangeModal({ open, onClose }) {
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { message } from 'antd';
+import { updatePassword } from '@/services/auth.api';
+import { toast } from 'react-toastify';
+
+export default function PasswordChangeModal({ open, onClose, role }) {
   if (!open) return null;
+  const [old_password, setOldPassword] = useState('');
+  const [new_password, setNewPassword] = useState('');
+  const [verify_password, setConfirmPassword] = useState('');
+  const dispatch = useDispatch();
+  const handleUpdate = async () => {
+    if (new_password !== verify_password) {
+      message.error('Xác nhận mật khẩu không khớp');
+      return;
+    }
+    try {
+      const payload = { old_password, new_password, verify_password };
+      const res = await dispatch(updatePassword(payload));
+      toast.success('Cập nhật mật khẩu thành công');
+      onClose();
+    } catch (err) {
+      console.error('Update failed:', err);
+      toast.error(err?.response?.data?.message || 'Lỗi cập nhật mật khẩu');
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
@@ -30,11 +55,14 @@ export default function PasswordChangeModal({ open, onClose }) {
               <input
                 type="text"
                 className="flex-1 px-3 py-2 border border-gray-300  rounded w-full text-sm"
-                defaultValue="Nhập mật khẩu cũ"
+                placeholder="Nhập mật khẩu cũ"
+                onChange={(e) => setOldPassword(e.target.value)}
               />
+              {role === 'admin' && (
               <button className="px-3 py-2 text-sm border border-gray-200 shadow-md rounded hover:bg-gray-100 whitespace-nowrap">
                 Quên mật khẩu
               </button>
+          )} 
             </div>
           </div>
 
@@ -44,12 +72,14 @@ export default function PasswordChangeModal({ open, onClose }) {
             <input
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm mb-3"
-              defaultValue="Nhập mật khẩu mới"
+              placeholder="Nhập mật khẩu mới"
+              onChange={(e) => setNewPassword(e.target.value)}
             />
             <input
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
-              defaultValue="Xác nhận mật khẩu mới"
+              placeholder="Xác nhận mật khẩu mới"
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
         </div>
@@ -62,7 +92,10 @@ export default function PasswordChangeModal({ open, onClose }) {
           >
             Hủy
           </button>
-          <button className="px-4 py-2 rounded bg-black text-white text-sm hover:bg-gray-800">
+          <button className="px-4 py-2 rounded bg-black text-white text-sm hover:bg-gray-800"
+            onClick={() => {
+              handleUpdate();
+            }}>
             Cập nhật
           </button>
         </div>
