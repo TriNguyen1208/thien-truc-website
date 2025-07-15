@@ -288,9 +288,9 @@ const products = {
             from product.products prd
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
             join product.product_prices pp on prd.id = pp.product_id
-            where prd.id = ${id}
+            where prd.id = $1
         `
-        const row = (await pool.query(query)).rows[0];
+        const row = (await pool.query(query, [id])).rows[0];
         const product = {
                 id: row.product_id,
                 name: row.product_name || "",
@@ -313,9 +313,9 @@ const products = {
     },
     updateFeatureOne: async (id, status) => {
         const query = `
-            UPDATE product.products SET is_featured = ${status} WHERE id = ${id};
+            UPDATE product.products SET is_featured = ${status} WHERE id = $1;
         `
-        const result = await pool.query(query);
+        const result = await pool.query(query, [id]);
         return result;
     },
     createOne: async (data) => {
@@ -432,7 +432,7 @@ const products = {
                 product_features = $7,
                 highlight_features = $8,
                 is_featured = $9
-            WHERE id = ${id}
+            WHERE id = $10
         `;
 
         const insertValues = [
@@ -444,7 +444,8 @@ const products = {
             warranty,
             product_features,
             highlight_feature_ids,
-            isDisplayHomePage
+            isDisplayHomePage,
+            id
         ];
 
         const productInsertResult = await pool.query(insertSql, insertValues);
@@ -472,8 +473,8 @@ const products = {
 
         // 2. Delete product & product prices
         const query = `
-            DELETE FROM product.product_prices WHERE product_id = ${id};
-            DELETE FROM product.products WHERE id = ${id};
+            DELETE FROM product.product_prices WHERE product_id = '${id}';
+            DELETE FROM product.products WHERE id = '${id}';
         `;
 
         // 3. Decrease item_count in product category
@@ -530,7 +531,7 @@ const product_categories = {
         return product_categories
     },
     getOne: async (id) => {
-        const product_category = (await pool.query(`SELECT * FROM product.product_categories WHERE id = ${id}`)).rows[0];
+        const product_category = (await pool.query(`SELECT * FROM product.product_categories WHERE id = $1`, [id])).rows[0];
         if(!product_category){
             throw new Error("Can't get product_categories");
         }
@@ -554,9 +555,9 @@ const product_categories = {
     },
     deleteOne: async (id) => {
         const query = `
-            DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = ${id});
-            DELETE FROM product.products WHERE category_id = ${id};
-            DELETE FROM product.product_categories WHERE id = ${id};
+            DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = '${id}');
+            DELETE FROM product.products WHERE category_id = '${id}';
+            DELETE FROM product.product_categories WHERE id = '${id}';
         `;
         const result = await pool.query(query);
         return result[2];
@@ -764,9 +765,9 @@ const product_prices = {
             from product.product_prices prd_pri
             join product.products prd on prd_pri.product_id = prd.id
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
-            where prd_pri.id = ${id}
+            where prd_pri.id = $1
         `
-        const row = (await pool.query(query)).rows[0];
+        const row = (await pool.query(query, [id])).rows[0];
         const product_price = {
             id: row.price_id,
             price: row.price || "",

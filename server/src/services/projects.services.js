@@ -255,9 +255,9 @@ const projects = {
                 prj_reg.rgb_color
             from project.projects prj
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
-            where prj.id = ${id}
+            where prj.id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const project = {
             id: row.prj_id,
             title: row.title,
@@ -286,7 +286,7 @@ const project_regions = {
         return project_regions
     },
     getOne: async (id) => {
-        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = ${id}`)).rows[0];
+        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = $1`, [id])).rows[0];
         if(!project_region){
             throw new Error("Can't get project_regions");
         }
@@ -356,9 +356,9 @@ const project_contents = {
             from project.project_contents prj_cont
             join project.projects prj on prj_cont.project_id = prj.id
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
-            where prj_cont.project_id = ${id}
+            where prj_cont.project_id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const project_content = {
             id: row.cont_id,
             content: row.content,
