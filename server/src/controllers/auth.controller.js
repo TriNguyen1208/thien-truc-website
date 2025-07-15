@@ -36,7 +36,7 @@ const getLoginResult = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const { status, message, user } = await authServices.updateProfile(req.body, req.user.user);
+        const { status, message, user } = await authServices.updateProfile(req.body, req.user);
         res.status(status).json({
             message,
             user
@@ -47,4 +47,17 @@ const updateProfile = async (req, res) => {
     }
 }
 
-export default { login, refreshToken, getLoginResult, updateProfile };
+const updatePassword = async (req, res) => {
+    try {
+        const { status, message, user } = await authServices.updatePassword(req.body, req.user);
+        res.status(status).json({
+            message,
+            user
+        });
+    } catch (error) {
+        console.log('Lỗi cập nhật mật khẩu: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
+
+export default { login, refreshToken, getLoginResult, updateProfile, updatePassword };
