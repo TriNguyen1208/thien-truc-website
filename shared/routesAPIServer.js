@@ -100,6 +100,7 @@ const API_ROUTES = {
             getAll: `${PROJECT_BASE}/project_contents`,
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
             postOne: `${PROJECT_BASE}/project_contents/`,
+            updateOne: (id) => `${PROJECT_BASE}/project_contents/${id}`
         },
         highlight_projects: `${PROJECT_BASE}/highlight_projects`,
         search_suggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
@@ -122,7 +123,8 @@ const API_ROUTES = {
         news_contents: {
             getAll: `${NEWS_BASE}/news_contents`,   
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
-            postOne: `${NEWS_BASE}/news_contents/`
+            postOne: `${NEWS_BASE}/news_contents/`,
+            updateOne: (id) => `${NEWS_BASE}/news_contents/${id}`
         },
         search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
         search_categories_suggestions: (query='') => `${NEWS_BASE}/search_categories_suggestions?query=${uri(query)}`,

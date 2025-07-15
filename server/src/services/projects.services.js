@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import { uploadImage, deleteImage } from '#@/utils/image.js';
 
 const getAllTables = async (filter = '') => {
     const _project_page = await getProjectPage();
@@ -376,6 +377,157 @@ const project_contents = {
                 is_featured: row.is_featured
             }};
         return project_content;
+    },
+    postOne: async (data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'project');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        const {
+            title,
+            main_content,
+            region_name,
+            isFeatured,
+            link_image,
+            province,
+            completeTime
+        } = data;
+
+        //Get news_categories id
+        const regionRes = await pool.query(
+            `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
+            [region_name]
+        );
+        const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
+        //Insert news
+        const insertProjectSql = `
+            INSERT INTO project.projects (
+            region_id, title, province, complete_time,
+            main_img, main_content, is_featured
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id;
+        `;
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+        const insertValues = [
+            region_id,
+            title,
+            province,
+            new Date(completeTime).getFullYear(),
+            main_image,
+            main_content,
+            isFeatured
+        ];
+        
+        const projectResult = await pool.query(insertProjectSql, insertValues);
+        const project_id = projectResult.rows[0].id;
+        const insertProjectContentSql = `
+            INSERT INTO project.project_contents (project_id, content)
+            values($1, $2)
+        `
+        const insertValuesProjectContent = [
+            project_id,
+            contentHTML
+        ]
+        await pool.query(insertProjectContentSql, insertValuesProjectContent);
+    },
+    updateOne: async (data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'project');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+
+        let imagesToDelete = data.delete_images;
+        if (typeof imagesToDelete === 'string') {
+            imagesToDelete = [imagesToDelete];
+        }
+        if (Array.isArray(imagesToDelete) && imagesToDelete.length > 0) {
+            await deleteImage(imagesToDelete);
+        }
+        
+        const {
+            title,
+            main_content,
+            region_name,
+            isFeatured,
+            link_image,
+            province,
+            completeTime
+        } = data;
+
+        //Get news_categories id
+        const regionRes = await pool.query(
+            `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
+            [region_name]
+        );
+        const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
+        //Insert news
+        const insertProjectSql = `
+            INSERT INTO project.projects (
+            region_id, title, province, complete_time,
+            main_img, main_content, is_featured
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id;
+        `;
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+        const insertValues = [
+            region_id,
+            title,
+            province,
+            new Date(completeTime).getFullYear(),
+            main_image,
+            main_content,
+            isFeatured
+        ];
+        
+        const projectResult = await pool.query(insertProjectSql, insertValues);
+        const project_id = projectResult.rows[0].id;
+        const insertProjectContentSql = `
+            INSERT INTO project.project_contents (project_id, content)
+            values($1, $2)
+        `
+        const insertValuesProjectContent = [
+            project_id,
+            contentHTML
+        ]
+        await pool.query(insertProjectContentSql, insertValuesProjectContent);
     }
 }
 

@@ -63,11 +63,24 @@ const project_contents = {
             staleTime: 5 * 60 * 1000,
         })
     },
-    usePostOne: (data) => {
+    usePostOne: ({onSuccess, onError}) => {
         return useMutation({
-            mutationFn: () => projectsServices.project_contents.postOne(data),
+            mutationFn: (data) => {
+                return projectsServices.project_contents.postOne(data)
+            },
+            onSuccess,
+            onError
         })
-    }
+    },
+    useUpdateOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: ({id, data}) => {
+                return projectsServices.project_contents.updateOne(id, data)
+            },
+            onSuccess,
+            onError
+        })
+    },
 }
 function useGetHighlightProjects(){
     return useQuery({
@@ -107,6 +120,8 @@ export default {
     project_contents: {
         getAll: project_contents.useGetAll,
         getOne: project_contents.useGetOne,
+        postOne: project_contents.usePostOne,
+        updateOne: project_contents.useUpdateOne
     },
     getHighlightProjects: useGetHighlightProjects,
     getSearchSuggestions: useSearchSuggest,

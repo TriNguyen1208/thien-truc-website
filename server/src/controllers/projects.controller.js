@@ -49,6 +49,10 @@ const project_contents = {
         const id = req.params.id;
         const data = await projectsServices.project_contents.getOne(id);
         res.status(200).json(data);
+    },
+    postOne: async(req, res) => {
+        await projectsServices.project_contents.postOne(req.body, req.files);
+        res.status(200).json("Tạo dự án mới thành công");
     }
 }
 

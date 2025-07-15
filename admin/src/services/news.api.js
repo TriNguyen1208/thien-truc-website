@@ -52,6 +52,14 @@ const new_contents = {
             }
         });
         return res.data;
+    },
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.news.news_contents.updateOne(id), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
     }
 }
 const getSearchCategoriesSuggestions = async (query) => {

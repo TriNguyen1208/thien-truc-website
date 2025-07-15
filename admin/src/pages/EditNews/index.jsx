@@ -1,28 +1,34 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import {useNavigate} from "react-router-dom"
+// import {useNavigate} from "react-router-dom"
 import { useLayout } from "@/layouts/layoutcontext";
 import {Editor} from "@tinymce/tinymce-react"
 import EditorWord from '../../components/EditorWord';
+import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { PlusIcon } from '../../components/Icon';
+import { PlusIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
-import EditNews from '../../components/EditNews';
+import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
-import useNavigationGuard from '../../hooks/useNavigationGuard';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {SuccessPopup, CancelPopup} from '@/components/Popup'
-import extractBlobImage from '../../utils/extractBlobImage';
+import extractBlobImage, { addDeleteImage } from '../../utils/extractBlobImage';
 import { useParams } from 'react-router-dom';
-const EditNewsPage = () => {
+import {extractAllImages} from '../../utils/extractBlobImage'
+const EditNews = () => {
+    //getID URL
     const {id: news_id} = useParams();
-    const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
+
+    //useState
     const [openPopup, setOpenPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [openErrorPopup, setOpenErrorPopup] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const {setLayoutProps} = useLayout();
-    const { setShouldWarn } = useNavigationGuardContext();
-    const postNews = useNews.news_contents.postOne({
+    const [form, setForm] = useState(null);
+    const [initialForm, setInitialForm] = useState(null);
+    //Call API
+    const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
+    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
+    const updateNews = useNews.news_contents.updateOne({
         onSuccess: (res) => {
             setPopupMessage(res.message || 'Cập nhật thành công!');
             setOpenPopup(true);
@@ -33,43 +39,59 @@ const EditNewsPage = () => {
             setOpenErrorPopup(true);
         }
     })
+
+    //set layout 
+    const {setLayoutProps} = useLayout();
     useEffect(() => {
         setLayoutProps({
-            title: "Thêm tin tức mới",
-            description: "Tạo bài viết tin tức mới",
+            title: "Cập nhật tin tức",
+            description: "Chỉnh sửa nội dung tin tức",
             hasButtonBack: true,
         })
     }, [])
-    const initialForm = useMemo(() => {
-        if (isLoadingNewsContent) return null;
-        return {
+    //check is change
+    const { setShouldWarn } = useNavigationGuardContext();
+    useEffect(() => {
+        if (isLoadingNewsContent) return;
+        setInitialForm({
             title: news_contents.news.title ?? '',
             main_content: news_contents.news.main_content ?? '',
             content: news_contents.content ?? '',
             category_name: news_contents.news.category.name ?? '',
-            isPublished: "Bản nháp",
+            isPublished: news_contents.news.is_published ? "Trưng bày" : "Bản nháp",
             main_image: news_contents.news.main_img ?? null,
             link_image: '',
-            countWord: 0
-        };
-    }, [isLoadingNewsContent]);
-
-    const [form, setForm] = useState(null);
+            countWord: news_contents.content.replace(/<[^>]+>/g, '').trim().length
+        });
+    }, [isLoadingNewsContent]) 
 
     useEffect(() => {
         if (initialForm) {
             setForm(initialForm);
         }
     }, [initialForm]);
-
-    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     useEffect(() => {
-        const isDirty = JSON.stringify(form) !== JSON.stringify(initialForm);
+        if(form == null || initialForm == null){
+            return;
+        }
+        function normalizeContent(content = '') {
+            return content
+                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+                .trim();
+        }
+        function normalizeForm(form) {
+            return {
+                ...form,
+                content: normalizeContent(form.content),
+                // nếu có nhiều field HTML thì thêm normalize ở đây
+            };
+        }
+        const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
-    }, [form]);
-    if(isLoadingCategories || isLoadingNewsContent){
-        return <></>
-    }
+    }, [form, initialForm]);
+    
+    //Helper function
     const handleSave = async () => {
         if(form.isPublished == "Trưng bày" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
             alert("Chưa nhập những nội dung bắt buộc")
@@ -80,20 +102,29 @@ const EditNewsPage = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlobImage(form.content);
+        const {formData, doc} = await extractBlobImage(form.content); //chac chan se gui cho backend de cap nhat
+
+        //Add delete image
+        const formDataNews = addDeleteImage(initialForm.content, form.content, formData);
+        
         const finalHTML = doc.body.innerHTML;
         // Duyệt qua tất cả key
         for (const key in form) {
             if (key === 'main_image' && form[key] instanceof File) {
-                formData.append('main_image', form[key]);
+                formDataNews.append('main_image', form[key]);
             } else if (key === 'content') {
-                formData.append('content', finalHTML); // content đã thay blob thành filename
+                formDataNews.append('content', finalHTML); // content đã thay blob thành filename
             } else {
-                formData.append(key, form[key]);
+                formDataNews.append(key, form[key]);
             }
         }
-        postNews.mutate(formData);     
-        setForm(initialForm);
+        for(let [key, value] of formDataNews.entries()){
+            console.log(key, value);
+        }
+        if(news_id !== null)
+            updateNews.mutate({ id: news_id, formDataNews });
+        setInitialForm(form);
+        setForm(form);
     }
     const handleDelete = () => {
         //Xoa bai viet hien tai
@@ -101,6 +132,7 @@ const EditNewsPage = () => {
     const handleRecover = () => {
         setForm(initialForm)
     }
+    //Prop setting
     const props = {
         categories: [
             ...(categories ?? []).map(item => item.name)
@@ -115,8 +147,51 @@ const EditNewsPage = () => {
         onRecover: handleRecover,
         onDelete: handleDelete
     }
+    
+    if(isLoadingCategories || isLoadingNewsContent || form == null){
+        return <></>
+    }
     return (
         <>
+            <div className='flex flex-row gap-6'>
+                <ContentManagement type="tin tức" setForm={setForm} form={form}/>
+                <div className='flex flex-col flex-1 gap-6 max-w-[300px]'>
+                    <PostSettings {...props} form={form} setForm={setForm}/>
+                    <UploadImage form={form} setForm={setForm}/>
+                    <div className='flex flex-col gap-2'>
+                        <CustomButton
+                            onClick={handleSave}
+                        >
+                            <div className='flex gap-4 items-center'>
+                                <SaveIcon/>
+                                <span>Lưu thay đổi</span>
+                                <span></span>
+                            </div>
+                        </CustomButton>
+                        <CustomButton
+                            onClick={handleRecover}
+                        >
+                            <span>Khôi phục</span>
+                        </CustomButton>
+                        <CustomButton
+                        backgroundColor="white"
+                        borderColor="#e4e4e7"
+                        hoverBackgroundColor="oklch(57.7% 0.245 27.325)"
+                        textColor="#000000"
+                        hoverTextColor="#ffffff"
+                        paddingX={16}
+                        height={45}
+                        onClick={handleDelete}
+                        >
+                            <div className='flex gap-11 items-center'>
+                                <DeleteIcon/>
+                                <span>Xóa</span>
+                                <span></span>
+                            </div>
+                        </CustomButton>                        
+                    </div>
+                </div>
+            </div>
             <SuccessPopup
                 open={openPopup}
                 setOpen={setOpenPopup}
@@ -133,12 +208,8 @@ const EditNewsPage = () => {
                 buttonLabel1="Đóng"
                 buttonLabel2="Thử lại"
             />
-            <div className='flex flex-row gap-6'>
-                <ContentManagement type="tin tức" setForm={setForm} form={form}/>
-                <EditNews {...props} form={form} setForm={setForm}/>
-            </div>
         </>
     )
 }
 
-export default EditNewsPage
+export default EditNews

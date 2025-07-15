@@ -1,24 +1,27 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import {useNavigate} from "react-router-dom"
 import { useLayout } from "@/layouts/layoutcontext";
 import {Editor} from "@tinymce/tinymce-react"
 import EditorWord from '../../components/EditorWord';
+import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { PlusIcon } from '../../components/Icon';
+import { PlusIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
-import EditNews from '../../components/EditNews';
+import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
-import useNavigationGuard from '../../hooks/useNavigationGuard';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {SuccessPopup, CancelPopup} from '@/components/Popup'
 import extractBlobImage from '../../utils/extractBlobImage';
+
 const AddNews = () => {
+    //useState
     const [openPopup, setOpenPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [openErrorPopup, setOpenErrorPopup] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const {setLayoutProps} = useLayout();
-    const { setShouldWarn } = useNavigationGuardContext();
+    const [form, setForm] = useState(null);
+    
+    //Call API
+    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     const postNews = useNews.news_contents.postOne({
         onSuccess: (res) => {
             setPopupMessage(res.message || 'Cập nhật thành công!');
@@ -30,6 +33,9 @@ const AddNews = () => {
             setOpenErrorPopup(true);
         }
     })
+
+    //set layout 
+    const {setLayoutProps} = useLayout();
     useEffect(() => {
         setLayoutProps({
             title: "Thêm tin tức mới",
@@ -37,26 +43,51 @@ const AddNews = () => {
             hasButtonBack: true,
         })
     }, [])
-    const initialForm = useMemo(() => ({
-        title: "",
-        main_content: "",
-        content: "",
-        category_name: "Công Ty",
-        isPublished: "Bản nháp",
-        main_image: "",
-        link_image: "",
-        countWord: 0
-    }), []);
-    const [form, setForm] = useState(initialForm);
-    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
+
+    //check is change
+    const { setShouldWarn } = useNavigationGuardContext(); 
+    const initialForm = useMemo(() => {
+        if (isLoadingCategories) return null;
+        return {
+            title: "",
+            main_content: "",
+            content: "",
+            category_name: (categories?.[0]?.name) ?? '',
+            isPublished: "Bản nháp",
+            main_image: "",
+            link_image: "",
+            countWord: 0
+        }
+    }, [isLoadingCategories]);
     useEffect(() => {
-        const isDirty = JSON.stringify(form) !== JSON.stringify(initialForm);
+        if (initialForm) {
+            setForm(initialForm);
+        }
+    }, [initialForm]);
+    useEffect(() => {
+        if(form == null || initialForm == null){
+            return;
+        }
+        function normalizeContent(content = '') {
+            return content
+                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+                .trim();
+        }
+        function normalizeForm(form) {
+            return {
+                ...form,
+                content: normalizeContent(form.content),
+                // nếu có nhiều field HTML thì thêm normalize ở đây
+            };
+        }
+        console.log(normalizeForm(form))
+        console.log(normalizeForm(initialForm))
+        const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
     }, [form]);
-    if(isLoadingCategories){
-        return <></>
-    }
-    console.log(form);
+
+    //Helper function
     const handleSave = async () => {
         if(form.isPublished == "Trưng bày" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
             alert("Chưa nhập những nội dung bắt buộc")
@@ -79,15 +110,17 @@ const AddNews = () => {
                 formData.append(key, form[key]);
             }
         }
+        for(let [key, value] of formData.entries()){
+            console.log(key, value)
+        }
         postNews.mutate(formData);     
         setForm(initialForm);
-    }
-    const handleDelete = () => {
-        //Xoa bai viet hien tai
     }
     const handleRecover = () => {
         setForm(initialForm)
     }
+
+    //Prop setting
     const props = {
         categories: [
             ...(categories ?? []).map(item => item.name)
@@ -95,14 +128,39 @@ const AddNews = () => {
         displays: [
             "Bản nháp",
             "Trưng bày"
-        ],
-        currentCategory: "Công Ty",
-        currentDisplay: "Bản nháp",
-        onSave: handleSave,
-        onRecover: handleRecover
+        ]
     }
+    
+    //Loading
+    if(isLoadingCategories || form === null){
+        return <></>
+    }
+
     return (
         <>
+            <div className='flex flex-row gap-6'>
+                <ContentManagement type="tin tức" setForm={setForm} form={form}/>
+                <div className='flex flex-col flex-1 gap-6 max-w-[300px]'>
+                    <PostSettings {...props} form={form} setForm={setForm}/>
+                    <UploadImage form={form} setForm={setForm}/>
+                    <div className='flex flex-col gap-2'>
+                        <CustomButton
+                            onClick={handleSave}
+                        >
+                            <div className='flex gap-4 items-center'>
+                                <SaveIcon/>
+                                <span>Lưu thay đổi</span>
+                                <span></span>
+                            </div>
+                        </CustomButton>
+                        <CustomButton
+                            onClick={handleRecover}
+                        >
+                            <span>Khôi phục</span>
+                        </CustomButton>                    
+                    </div>
+                </div>
+            </div>
             <SuccessPopup
                 open={openPopup}
                 setOpen={setOpenPopup}
@@ -119,10 +177,6 @@ const AddNews = () => {
                 buttonLabel1="Đóng"
                 buttonLabel2="Thử lại"
             />
-            <div className='flex flex-row gap-6'>
-                <ContentManagement type="tin tức" setForm={setForm} form={form}/>
-                <EditNews {...props} form={form} setForm={setForm}/>
-            </div>
         </>
     )
 }

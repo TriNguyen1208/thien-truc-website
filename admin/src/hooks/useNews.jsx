@@ -85,6 +85,15 @@ const news_contents = {
             onSuccess,
             onError
         })
+    },
+    useUpdateOne: ({onSuccess, onError}) => {
+        return useMutation({
+            mutationFn: ({id, formDataNews}) => {
+                return newsServices.new_contents.updateOne(id, formDataNews)
+            },
+            onSuccess,
+            onError
+        })
     }
 }
 function useGetSearchCategoriesSuggest(query){
@@ -117,7 +126,8 @@ export default {
     news_contents:{
         getAll: news_contents.useGetAll,
         getOne: news_contents.useGetOne,
-        postOne: news_contents.usePostOne
+        postOne: news_contents.usePostOne,
+        updateOne: news_contents.useUpdateOne
     },
     getSearchCategoriesSuggestions: useGetSearchCategoriesSuggest,
     getSearchSuggestions: useSearchSuggest,

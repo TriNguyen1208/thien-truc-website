@@ -58,6 +58,11 @@ const news_contents = {
     postOne: async (req, res) => {
         await newsServices.news_contents.postOne(req.body, req.files);
         res.status(200).json("Tạo tin tức mới thành công");
+    },
+    updateOne: async(req, res) => {
+        const {id} = req.params;
+        await newsServices.news_contents.updateOne(id, req.body, req.files)
+        res.status(200).json("Chỉnh sửa tin tức thành công");
     }
 }
 

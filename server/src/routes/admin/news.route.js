@@ -23,4 +23,10 @@ router.post('/news_contents/',  upload.fields([
     { name: 'images', maxCount: 20 }])
 , newsController.news_contents.postOne);
 
+router.patch('/news_contents/:id',  upload.fields([
+    { name: 'main_image', maxCount: 1 },
+    { name: 'images', maxCount: 20 },
+])
+, newsController.news_contents.updateOne);
+
 export default router;

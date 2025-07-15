@@ -41,7 +41,19 @@ const project_contents = {
         return res.data;
     },
     postOne: async (data) => {
-        const res = await axios.post(API_ROUTES.project.project_contents.postOne, data);
+        const res = await axios.post(API_ROUTES.project.project_contents.postOne, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
+    },
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.project.project_contents.updateOne(id), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     }
 }
