@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import { uploadImage } from '#@/utils/image.js';
 import sendMail from '#@/utils/mailer.js'
 
 const getAllTables = async () => {
@@ -85,19 +86,26 @@ const support_agents = {
         }
         return support_agent_with_id;
     },
-    createOne: async (data) => {
+    createOne: async (data, file) => {
+        let local_avatar_img = null;
+        if (file?.local_avatar_img) {
+            local_avatar_img = await uploadImage(file.local_avatar_img, 'contact');
+        }
+
         const {
-            avatar_img,
+            external_avatar_img,
             name,
             role,
             phone_number,
             facebook_url
         } = data
 
+        const final_avatar_img = local_avatar_img || external_avatar_img || null;
+
         const result = await pool.query(`
             INSERT INTO contact.support_agents (avatar_img, name, role, phone_number, facebook_url)
             VALUES ($1, $2, $3, $4, $5);
-        `, [avatar_img, name, role, phone_number, facebook_url]);
+        `, [final_avatar_img, name, role, phone_number, facebook_url]);
 
         if (result.rowCount == 0) return {
             status: 500,
