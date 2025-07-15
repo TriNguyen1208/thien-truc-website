@@ -201,7 +201,8 @@ const API_ROUTES = {
         refreshToken: `${AUTH_BASE}/refresh-token`,
         verifyLogin: `${AUTH_BASE}/login-result`,
         // patch
-        updateProfile: `${AUTH_BASE}/update-profile`
+        updateProfile: `${AUTH_BASE}/update-profile`,
+        updatePassword: `${AUTH_BASE}/update-password`
     }
 };
 

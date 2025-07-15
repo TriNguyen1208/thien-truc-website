@@ -1,5 +1,6 @@
 import pool from '#@/config/db.js'
 import bcrypt from 'bcrypt';
+import authUtil from '#@/utils/auth.js'
 import { query } from 'express-validator';
 import jwt from 'jsonwebtoken';
 const { ACCESS_SECRET, REFRESH_SECRET } = process.env;
@@ -164,4 +165,41 @@ const updateProfile = async (data, user) => {
     }
 }
 
-export default { getUserByUsername, login, refreshToken, updateProfile };
+const updatePassword = async (data, user) => {
+    const {
+        old_password,
+        new_password,
+        verify_password
+    } = data;
+    
+    const isOldPasswordValid = await bcrypt.compare(old_password, user.hashed_password);
+    if (!isOldPasswordValid) return {
+        status: 409,
+        message: "Mật khẩu cũ không đúng"
+    }
+
+    if (new_password != verify_password) return {
+        status: 409,
+        message: "Mật khẩu xác nhận chưa trùng khớp"
+    }
+
+    const hashed_new_password = authUtil.hashPassword(new_password);
+
+    await pool.query(`
+        UPDATE admin.accounts
+        SET
+            password = $1
+        WHERE
+            username = $2    
+    `, [hashed_new_password, user.username]);
+
+    user.hashed_password = hashed_new_password;
+
+    return {
+        status: 200,
+        message: "Cập nhật mật khẩu thành công",
+        user
+    }
+}
+
+export default { getUserByUsername, login, refreshToken, updateProfile, updatePassword };
