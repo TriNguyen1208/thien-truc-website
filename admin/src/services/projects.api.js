@@ -19,7 +19,7 @@ const projects = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.projects.getOne(id));
         return res.data;
-    }
+    },
 }
 const project_regions = {
     getAll: async () => {
@@ -39,6 +39,22 @@ const project_contents = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.project_contents.getOne(id));
         return res.data;
+    },
+    postOne: async (data) => {
+        const res = await axios.post(API_ROUTES.project.project_contents.postOne, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
+    },
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.project.project_contents.updateOne(id), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
     }
 }
 
@@ -51,10 +67,14 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     const res = await axios.get(API_ROUTES.project.search_suggestions(query, filter, is_featured));
     return res.data
 }
+const getQuantity = async()=>{
+    const res = await axios.get(API_ROUTES.project.count)
+    return res.data
+}
 
 const getSearchCategoriesSuggestions = async (query) => {
     const res = await axios.get(API_ROUTES.project.search_categories_suggestions(query));
     return res.data;
 }
 
-export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions };
+export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, getQuantity };

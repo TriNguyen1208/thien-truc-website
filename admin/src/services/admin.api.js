@@ -23,4 +23,12 @@ const manager =  {
         return res.data;
     },
 }
-export default { manager};
+const getQuantity = async()=>{
+    const res = await axios.get(API_ROUTES.admin.count)
+    return res.data
+}
+const getActivityLogs = async()=>{
+    const res = await axios.get(API_ROUTES.admin.activity_logs)
+    return res.data
+}
+export default {manager,  getQuantity , getActivityLogs};

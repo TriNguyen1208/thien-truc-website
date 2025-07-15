@@ -46,6 +46,25 @@ const manager = {
 
 
 }
+
+
+
+function useGetQuantity()
+{
+    return useQuery({
+        queryKey: ['admin_admin_quantity'],
+        queryFn: adminServices.getQuantity,
+        staleTime: 5 * 60 * 1000
+    })
+}
+function useGetActivityLogs()
+{
+    return useQuery({
+        queryKey: ['admin_admin_activity_logs'],
+        queryFn: adminServices.getActivityLogs,
+        staleTime: 5 * 60 * 1000
+    })
+}
 export default {
     manager: {
         getAll: manager.useGetAll,
@@ -53,5 +72,7 @@ export default {
         createOne: manager.useCreateOne,
         updateOne: manager.useUpdateOne,
         deleteOne: manager.useDeleteOne
-    }
+    },
+    getQuantity: useGetQuantity,
+    getActivityLogs: useGetActivityLogs
 }

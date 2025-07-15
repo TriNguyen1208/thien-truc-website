@@ -51,4 +51,16 @@ const postSubmitApplication = async (applicationData) => {
 
      return { success: true, message: "Ứng tuyển thành công" };
 }
-export default { getAllTables, getRecruitmentPage, postSubmitApplication};
+const patchRecruitment = async (data) => {
+    const entries = Object.entries(data); //chuyen object thanh array dang [key, value]
+    const setClause = entries.map(([key], i) => `${key} = $${i + 1}`).join(', ');
+    const values = entries.map(([_, value]) => value);
+    const query =  `
+        update recruitment.recruitment_page
+        set ${setClause}
+        returning *;
+    `
+    const result = await pool.query(query, values);
+    return result.rows[0];
+}
+export default { getAllTables, getRecruitmentPage, postSubmitApplication, patchRecruitment};

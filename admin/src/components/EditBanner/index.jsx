@@ -1,46 +1,56 @@
 import Button from '@/components/Button'
 import {SaveIcon}  from '../Icon';
-import { useRef } from 'react';
-function Input({label, placeholder,idInput,contentCurrent,ref} )
+import { useRef, useState, useEffect } from 'react';
+function Input({label, placeholder, rows,maxLength, contentCurrent,inputRef, isRequire} )
 {
+     const [value, setValue] = useState(contentCurrent || '');
+
+        useEffect(() => {
+            if (inputRef) inputRef.current = { value }; // gán lại giá trị vào ref cho component cha
+        }, [value]);
+
+        const isMax = value.length >= maxLength;
     return(<div className="flex flex-col mb-[16px]">
-        <label htmlFor = {idInput} className="mb-[8px]">{label}  </label>
-        <textarea type="text" ref ={ref} id = {idInput} placeholder={placeholder} defaultValue={contentCurrent}
-        className="text-[14px] font-regular p-[12px] min-h-[45px] border border-[#E4E4E7] bg-white rounded-[6px] focus:border-[#E4E4E7] outline-none "/>
+        <label className="mb-[8px] font-medium">{label}{isRequire && <span className="text-red-500 ml-1">*</span>} </label>
+        <textarea type="text" 
+        ref ={inputRef} 
+        rows={rows}  
+        required = {isRequire}  
+        placeholder={placeholder} 
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        maxLength={maxLength}
+        className={`text-[14px] resize-none font-regular p-[12px] min-h-[45px] border rounded-[6px] outline-none ${
+          isMax ? 'border-red-500' : 'border-[#E4E4E7]'
+        }`}/>
     </div>)
 }
-function convertToE(str)
-{
-    return str
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/đ/g, "d")
-            .replace(/Đ/g, "D")
-            .replace(/\s+/g, '');
-    
-}
+
 export default function EditBanner({title, description, listInput,saveButton})
 {
     const inputRefs = listInput.map((input, index)=>{
         return useRef()
     })
-    const firstIdInput = convertToE(title)
-    const handleSaveButton = ()=>{
+
+    const handleSaveButton = (e)=>{
+        e.preventDefault()
         if(saveButton)
         {
-            const result =inputRefs.map((inputRef, index)=>{
-                return inputRef.current.value
+            const result = {}
+            inputRefs.map((inputRef, index)=>{
+                const key = listInput[index].label
+                result[key] = inputRef.current.value
             })
+            
             saveButton(result)
         }
     }
     const propsButton ={
         Icon: SaveIcon,
-        text: "Lưu thây đổi",
+        text: "Lưu thay đổi",
         colorText: "#ffffff",
         colorBackground: "#000000",
         padding : 8,
-        handleButton: handleSaveButton
     }
     return(
         <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]">
@@ -54,15 +64,18 @@ export default function EditBanner({title, description, listInput,saveButton})
                     {description}
                 </p>
             </div>
-            <div>
+            <form onSubmit={handleSaveButton}>
+                <div>
                 {
                     (listInput || []).map((input, index)=>{
                         const props = {
                             label: input.label,
                             placeholder: input.placeholder,
-                            idInput: firstIdInput + index,
                             contentCurrent: input.contentCurrent,
-                            ref: inputRefs[index]
+                            inputRef: inputRefs[index],
+                            isRequire: input.isRequire, 
+                            rows: input.rows,
+                            maxLength: input.maxLength
                         }
                         
                         return(<div key = {index}>
@@ -73,8 +86,10 @@ export default function EditBanner({title, description, listInput,saveButton})
 
             </div>
             <div className='w-[145px] h-40[px]'>
-               <Button {...propsButton}/>
-            </div>
+              <button type = "submit"> <Button {...propsButton}/></button>
+            </div>                
+            </form>
+           
         </div>
     )
 }
