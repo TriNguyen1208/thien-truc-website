@@ -31,7 +31,6 @@ export default function EditBanner({title, description, listInput,saveButton})
     const inputRefs = listInput.map((input, index)=>{
         return useRef()
     })
-
     const handleSaveButton = (e)=>{
         e.preventDefault()
         if(saveButton)

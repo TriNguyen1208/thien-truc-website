@@ -115,6 +115,10 @@ const getCount = async () => {
     const res = await axios.get(API_ROUTES.product.count());
     return res.data;
 }
+const patchProductPage = async (updatedPage)=> {
+    const res = await axios.patch(API_ROUTES.product.update_product_page, updatedPage)
+    return res.data;
+}
 
 export default {
     getAll,
@@ -127,5 +131,6 @@ export default {
     getCount,
     getQuantity,
     getPricePage, 
-    patchPricePage  
+    patchPricePage,
+    patchProductPage
 };

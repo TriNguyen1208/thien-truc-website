@@ -5,11 +5,27 @@ import { toast } from 'react-toastify';
 
 function usePatchPricePage() {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (data) => productsServices.patchPricePage(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin_price_page"] });
+    }
+  })
+}
+function useGetProductPage(){
+    return useQuery({
+        queryKey: ["admin_product_page"],
+        queryFn: productsServices.getProductPage,
+        staleTime: 5 * 60 * 1000,
+    })
+}
+function usePatchProductPage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (updatedPage)=> productsServices.patchProductPage(updatedPage),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["product_page"] });
     },
   });
 }
@@ -28,14 +44,6 @@ function useGetAll() {
   return useQuery({
     queryKey: ["admin_product"],
     queryFn: productsServices.getAll,
-    staleTime: 5 * 60 * 1000,
-  });
-}
-
-function useGetProductPage() {
-  return useQuery({
-    queryKey: ["admin_product_page"],
-    queryFn: productsServices.getProductPage,
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -266,5 +274,6 @@ export default {
   },
   getQuantity: useGetQuantity,
   getPricePage: useGetPricePage,
-  patchPricePage: usePatchPricePage
+  patchPricePage: usePatchPricePage,
+  patchProductPage: usePatchProductPage,
 };
