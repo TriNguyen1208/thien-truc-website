@@ -61,7 +61,7 @@ const login = async (loginData) => {
         status: 200,
         message: 'Đăng nhập thành công',
         token: { accessToken, refreshToken },
-        user: user
+        user
     }
 };
 

@@ -2,8 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { UserIcon } from '@/components/Icon';
 import AccountModal from '@/components/Header/AccountModal';
 import PasswordChangeModal from '@/components/Header/PasswordChangeModal';
+import { logout } from '@/slices/auth.slice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -53,7 +58,12 @@ const Header = () => {
                   >
                     Thông tin tài khoản
                   </li>
-                  <li className="py-1 hover:bg-gray-100 cursor-pointer text-red-600">
+                  <li className="py-1 hover:bg-gray-100 cursor-pointer text-red-600"
+                      onClick={() => {
+                        dispatch(logout());
+                        navigate('/dang-nhap'); // Chuyển hướng về trang đăng nhập
+                      }
+                  }>
                     Đăng xuất
                   </li>
                 </ul>

@@ -9,12 +9,12 @@ export const loginUser = (username, password) => async (dispatch) => {
             password
         });
         const { accessToken, refreshToken } = res.data.token;
-        const role = res.data.role || 'manager';
+        const user = res.data.user;
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('role', role); // Lưu role vào localStorage
-        dispatch(setCredentials({accessToken, refreshToken, role}))
+        localStorage.setItem('user', JSON.stringify(user)); 
+        dispatch(setCredentials({accessToken, refreshToken, user}));
         // Chuyển hướng sang trang chính sau khi login
     } catch (err) {
         console.error('Đăng nhập thất bại:', err);
@@ -28,7 +28,7 @@ export const verifyFromToken = () => async (dispatch) => {
         dispatch(setCredentials({
             accessToken: localStorage.getItem('accessToken'),
             refreshToken: localStorage.getItem('refreshToken'),
-            role: localStorage.getItem('role') // Lấy role từ localStorage
+            user: JSON.parse(localStorage.getItem('user')) || null
         }));
     }catch{
         dispatch(logout());

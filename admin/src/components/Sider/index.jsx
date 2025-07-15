@@ -65,7 +65,6 @@ const getSections = (role) => {
   console.log('Current role:', role); // Debugging line to check the role
   if (role === 'admin') {
     roleSection.push({
-      label: 'QUẢN TRỊ HỆ THỐNG',
       items: [
         { label: 'Bảng điều khiển', to: '/', icon: HomeIcon },
         { label: 'Quản lý manager', to: '/quan-ly-manager', icon: PeopleIcon },
@@ -74,7 +73,6 @@ const getSections = (role) => {
     });
   } else if (role === 'manager') {
     roleSection.push({
-      label: 'TRANG CHỦ',
       items: [
         { label: 'Bảng điều khiển', to: '/', icon: HomeIcon },
         ...sharedItems
@@ -86,12 +84,12 @@ const getSections = (role) => {
 };
 
 const Sider = () => {
-  const role = useSelector((state) => state.auth.role); // ✅ hợp lệ trong component
+  const role = useSelector((state) => state.auth.user.role); // ✅ hợp lệ trong component
   const sections = getSections(role);
 
   return (
     <div className="w-65 h-full top-0 left-0 overflow-y-auto overflow-x-hidden no-scrollbar px-3 border-gray-200 border-solid shadow-sm">
-      <div className="mb-2 pt-7">
+      <div className="sticky top-0 z-10 bg-white mb-1 pt-7 pb-5">
         <h1 className="px-3 text-[23px] font-bold text-gray-800">Trang Quản Trị</h1>
       </div>
       <div className="px-3 flex flex-col space-y-1">
