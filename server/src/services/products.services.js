@@ -881,6 +881,42 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     }
 };
 
+const getSearchCategoriesSuggestions = async (query) => {
+    query = query.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(P.name::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(P.name::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(P.name::text), unaccent('${query}'::text)) DESC`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+    
+    const sql = `
+        SELECT P.name, P.id
+        FROM product.product_categories P
+        ${where}
+        ${order}
+        ${limit}
+    `;
+
+    try {
+        const result = await pool.query(sql);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+};
+
 const count = async () => {
     const product_count = (await pool.query(`
         SELECT COUNT(*)::int AS product_count
@@ -904,4 +940,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count };
