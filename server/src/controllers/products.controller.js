@@ -49,6 +49,16 @@ const products = {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
+    updateCategory: async (req, res) => {
+        const { changedItems } = req.body;
+        try {
+            await productServices.products.updateCategory(changedItems);
+            res.status(200).json({ message: 'Cập nhật loại sản phẩm thành công' });
+        } catch (error) {
+            console.error('Lỗi cập nhật loại sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
     createOne: async (req, res) => {
         try {
             await productServices.products.createOne(req.body, req.file);

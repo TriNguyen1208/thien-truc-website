@@ -34,18 +34,11 @@ const RecruitmentPageContent = () => {
   }, [])
 
   const handleButtonBanner = (result) => {
-    const data = {
-      banner_title: result["Tiêu đề banner"],
-      banner_description: result["Mô tả Banner"]
-    }
-    patchRecruitment.mutate(data);
+    patchRecruitment.mutate(result);
     //Gửi API lên backend
   }
   const handleButtonCulture = (result) => {
-    const data = {
-      culture_content: result["Nội dung văn hóa công ty"]
-    }
-    patchRecruitment.mutate(data);
+    patchRecruitment.mutate(result);
   }
 
   const {data: recruitment, isLoading: isLoadingRecruitment} = useRecruitment.getRecruitmentPage();
@@ -57,6 +50,7 @@ const RecruitmentPageContent = () => {
     description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
     listInput: [
       {
+        name: "banner_title",
         label: "Tiêu đề Banner",
         placeholder: "Nhập tiêu đề tuyển dụng",
         contentCurrent: recruitment.banner_title,
@@ -65,6 +59,7 @@ const RecruitmentPageContent = () => {
         maxLength: 100
       },
       {
+        name:"banner_description",
         label: "Mô tả Banner",
         placeholder: "Nhập mô tả Banner",
         contentCurrent: recruitment.banner_description,
@@ -80,6 +75,7 @@ const RecruitmentPageContent = () => {
     description: "Đoạn văn có thể xuống dòng",
     listInput: [
       {
+        name: "culture_content",
         label: "Nội dung văn hóa công ty",
         placeholder: "Nhập tiêu đề tuyển dụng",
         contentCurrent: recruitment.culture_content,

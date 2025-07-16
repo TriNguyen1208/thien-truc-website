@@ -62,6 +62,22 @@ const getProjectPage = async () => {
     };
 }
 
+const updateProjectPage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE project.project_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
+}
+
 const projects = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
@@ -283,6 +299,54 @@ const projects = {
              [is_featured, id]
         );
     },
+    updateRegion: async (changedItems) => {
+        if (!Array.isArray(changedItems)) {
+            throw new Error("Invalid input");
+        }
+
+        const client = await pool.connect();
+        try {
+            await client.query("BEGIN");
+
+            for (const item of changedItems) {
+                const { id, category_id } = item;
+
+                const result = await client.query(
+                    `SELECT region_id FROM project.projects WHERE id = $1`,
+                    [id]
+                );
+                const oldRegionId = result.rows[0]?.region_id;
+
+                if (oldRegionId !== category_id) {
+                    await client.query(
+                        `UPDATE project.projects SET region_id = $1 WHERE id = $2`,
+                        [category_id, id]
+                    );
+
+                    if (oldRegionId) {
+                        await client.query(
+                            `UPDATE project.project_regions SET item_count = item_count - 1 WHERE id = $1`,
+                            [oldRegionId]
+                        );
+                    }
+
+                    await client.query(
+                        `UPDATE project.project_regions SET item_count = item_count + 1 WHERE id = $1`,
+                        [category_id]
+                    );
+                }
+            }
+
+            await client.query("COMMIT");
+        } catch (error) {
+            await client.query("ROLLBACK");
+            console.error("Error during DB updateRegion:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
+
     deleteOne: async (id) => {
         const client = await pool.connect();
 
@@ -769,4 +833,5 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};
+
+export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};

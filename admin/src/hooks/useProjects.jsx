@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import projectsServices from "@/services/projects.api.js";
 
 function useGetAll(){
@@ -15,6 +15,17 @@ function useGetProjectPage(){
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function usePatchProjectPage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (updatedPage)=> projectsServices.patchProjectPage(updatedPage),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project_page"] });
+    },
+  });
+}
+
 const projects = {
     useGetList: (query = '', filter = '', is_featured, page = undefined, limit) => {
         return useQuery({
@@ -36,6 +47,12 @@ const projects = {
             mutationFn: ({is_featured, id}) =>
             projectsServices.projects.updateFeatureOne(is_featured, id)
         })
+    },
+    useUpdateRegion: () => {
+        return useMutation({
+            mutationFn: (changedItems) =>
+            projectsServices.projects.updateRegion(changedItems)
+        });
     },
     useDeleteOne: (id) => {
         return useMutation({
@@ -147,10 +164,12 @@ function useSearchCategoriesSuggest(query){
 export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
+    patchProjectPage: usePatchProjectPage,
     projects: {
         getList: projects.useGetList,
         getOne: projects.useGetOne,
         updateFeatureOne: projects.useUpdateFeatureOne,
+        updateRegion: projects.useUpdateRegion,
         deleteOne: projects.useDeleteOne,
     },
     project_regions: {

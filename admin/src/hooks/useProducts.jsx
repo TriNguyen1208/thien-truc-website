@@ -146,7 +146,12 @@ const products = {
       },
     });
   },
-
+  useUpdateCategory: () => {
+      return useMutation({
+          mutationFn: (changedItems) =>
+          productsServices.products.updateCategory(changedItems)
+      });
+  },
 
   useDeleteOne: () => {
     const queryClient = useQueryClient();
