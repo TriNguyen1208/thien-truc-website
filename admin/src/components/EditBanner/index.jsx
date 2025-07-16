@@ -35,7 +35,8 @@ export default function EditBanner({title, description, listInput,saveButton})
         e.preventDefault()
         if(saveButton)
         {
-            const result = {}
+            const result =
+             {}
             inputRefs.map((inputRef, index)=>{
                 const key = listInput[index].label
                 result[key] = inputRef.current.value

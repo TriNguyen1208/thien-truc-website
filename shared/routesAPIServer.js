@@ -10,7 +10,10 @@ const ABOUT_US_BASE = `${BASE_API}/about_us`;
 const ADMIN_BASE = `${BASE_API}/admin`;
 const AUTH_BASE = `${BASE_API}/auth`;
 
-const uri = encodeURIComponent;
+const uri = (value) => {
+  if (value === undefined || value === null) return '';
+  return encodeURIComponent(value);
+};
 
 const API_ROUTES = {
     schemaTable: (schema, table) => `${BASE_API}/${schema}/${table}`,
@@ -52,15 +55,15 @@ const API_ROUTES = {
         update_product_page: `${PRODUCT_BASE}/product_page`, // patch
         products: {
             // get
-            getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
-            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
+            getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${uri(page)}&limit=${uri(limit)}`,
+            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${uri(limit)}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/products`,
             // patch
             updateOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
-            updateCategory: `${PRODUCT_BASE}/products/update_categories`,
+            updateCategory: `${PRODUCT_BASE}/products/update-categories`,
             // delete
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
         },
@@ -157,6 +160,7 @@ const API_ROUTES = {
             postOne: `${NEWS_BASE}/news_contents/`,
             updateOne: (id) => `${NEWS_BASE}/news_contents/${id}`
         },
+        
         getFeaturedNews: `${NEWS_BASE}/featured_news`,
         updateFeaturedNews: `${NEWS_BASE}/featured_news`, // patch
         search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
@@ -172,7 +176,7 @@ const API_ROUTES = {
         base: CONTACT_BASE,
         contact_page: `${CONTACT_BASE}/contact_page`,
         updateContactPage: {
-            banner: `${CONTACT_BASE}/contact_page/banner`,
+            banner: `${CONTACT_BASE}/contact_page/banner`, // patch 
         },
         company_info: `${CONTACT_BASE}/company_info`,
         updateCompanyInfo: `${CONTACT_BASE}/company_info`, // patch        

@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
+    
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

@@ -85,7 +85,7 @@ const products = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = item_limit || 12;
+        const pageSize = parseInt(item_limit) || 12;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
@@ -114,9 +114,11 @@ const products = {
         }
 
         if (page) {
+            console.log('2');
             const offset = (page - 1) * pageSize;
             limit = `${pageSize} OFFSET ${offset}`;
         } else {
+            console.log('1');
             limit = 'ALL';
         }
         
@@ -180,7 +182,7 @@ const products = {
 
         let where = [];
         let order = [];
-        const limit = item_limit || 100;
+        const limit = parseInt(item_limit) || 100;
         
         if (query != '') {
             where.push(
@@ -318,6 +320,11 @@ const products = {
         `
         const result = await pool.query(query, [id]);
         return result;
+    },
+    updateCategory: async (changedItems) => {
+        if (!Array.isArray(changedItems)) {
+            throw new Error("Invalid input");
+        }
     },
     updateCategory: async (changedItems) => {
         if (!Array.isArray(changedItems)) {

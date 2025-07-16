@@ -33,7 +33,8 @@ const updateProductPage = async (data) => {
 
 // ==== Products ====
 const products = {
-    getList: async (query = '', filter = '', is_featured = undefined, page = 1, limit = undefined) => {
+    getList: async (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
+        console.log("day la page: ", page);
         const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured, page, limit));
         return res.data;
     },
@@ -131,6 +132,9 @@ const patchProductPage = async (updatedPage)=> {
     const res = await axios.patch(API_ROUTES.product.update_product_page, updatedPage)
     return res.data;
 }
+
+
+
 
 export default {
     getAll,

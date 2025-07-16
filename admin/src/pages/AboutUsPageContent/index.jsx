@@ -18,20 +18,18 @@ const AboutUsPageContent = () => {
       hasButton: false,
     })
   }, []);
-  const configAboutUsBanner = {
-    title: "Câu chuyện của chúng tôi",
-    description: "Chỉnh sửa tiêu đề và mô tả banner",
-    listInput: [
-      { label: 'Nội dung câu chuyện', placeholder: 'Nhập nội dung câu chuyện...', contentCurrent: 'Thiên trúc được thành lập vào năm 2025', isRequire: true },
-    ],
-    handleSave: (values) => {
-      console.log('Giá trị đã lưu:', values);
-      // Gửi dữ liệu lên server hoặc cập nhật state
-    }
+
+  function renameKeysByNames(obj, newKeys) {
+    const originalKeys = Object.keys(obj); // Lấy thứ tự key gốc
+    const result = {};
+
+    newKeys.forEach((newKey, index) => {
+      const oldKey = originalKeys[index];
+      result[newKey] = obj[oldKey];
+    });
+
+    return result;
   }
-
-
-  // ================= DUTY AND RESPONSIBILITY =================== 
 
   const [isModalOpenAddDutyAndResponsibility, setIsModalOpenAddDutyAndResponsibility] = useState(false);
   const [isModalOpenEditDutyAndResponsibility, setIsModalOpenEditDutyAndResponsibility] = useState(false);
@@ -53,6 +51,10 @@ const AboutUsPageContent = () => {
   ]);
   const [dataCurrent, setDataCurrent] = useState(null);
 
+  const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData } = useAboutUs.getAboutUsPage();
+  const { mutate: updateBanner, isLoading: isLoadingUpdateBanner } = useAboutUs.updateAboutUsPage.updateBanner();
+  const { mutate: updateOurStory, isLoading: isLoadingUpdateOurStory } = useAboutUs.updateAboutUsPage.updateOurStory();
+
   const { data: dutyAndResponsibilityData, isLoading: isLoadingDutyAndResponsibility } = useAboutUs.company_services.getAll();
   const { mutate: updateDutyAndResponsibility, isLoading: isLoadingUpdateDutyAndResponsibility } = useAboutUs.company_services.updateOne();
   const { mutate: createDutyAndResponsibility, isLoading: isLoadingCreateDutyAndResponsibility } = useAboutUs.company_services.createOne();
@@ -66,13 +68,55 @@ const AboutUsPageContent = () => {
 
   if (isLoadingDutyAndResponsibility || isLoadingCreateDutyAndResponsibility || isLoadingUpdateDutyAndResponsibility || isLoadingDeleteDutyAndResponsibility
     || isLoadingCreateWhyChooseUs || isLoadingDeleteWhyChooseUs || isLoadingUpdateWhyChooseUs || isLoadingWhyChooseUs
+    || isLoadingAboutUsPageData || isLoadingUpdateBanner || isLoadingUpdateOurStory
   ) {
     return (
       <>
-        is loading....
+        is loading...
       </>
     )
   }
+  console.log(aboutUsPageData);
+
+
+  const configAboutUsBanner = {
+    title: "Banner trang về chúng tôi",
+    description: "Chỉnh sửa tiêu đề và mô tả banner",
+    listInput: [
+      { label: 'Tiêu đề banner', placeholder: 'Nhập nội dung tiêu đề...', contentCurrent: aboutUsPageData.banner_title , isRequire: true },
+      { label: 'Mô tả banner', placeholder: 'Nhập nội dung mô tả...', contentCurrent: aboutUsPageData.banner_description, isRequire: true },
+
+    ],
+    handleSave: (values) => {
+      const newValues = renameKeysByNames(values, ["title", "description"]);
+      console.log(newValues);
+      updateBanner(newValues);
+      console.log('Giá trị đã lưu:', values);
+      // Gửi dữ liệu lên server hoặc cập nhật state
+    }
+  }
+
+  const configOutStoryBanner = {
+    title: "Câu chuyện của chúng tôi",
+    description: "Chỉnh sửa tiêu đề và mô tả banner",
+    listInput: [
+      { label: 'Nội dung câu chuyện', placeholder: 'Nhập nội dung câu chuyện...', contentCurrent: aboutUsPageData.our_story_content, isRequire: true },
+
+    ],
+    handleSave: (values) => {
+      const newValues = renameKeysByNames(values, ["our_story_content"]);
+      updateOurStory(newValues);
+      console.log(newValues);
+      // console.log('Giá trị đã lưu:', values);
+      // Gửi dữ liệu lên server hoặc cập nhật state
+    }
+  }
+
+
+
+
+  // ================= DUTY AND RESPONSIBILITY =================== 
+
   console.log(dutyAndResponsibilityData);
   const handleSubmitButtonAddDutyAndResponsibility = (valueForm) => {
     console.log('Day la button submit', valueForm)
@@ -267,11 +311,20 @@ const AboutUsPageContent = () => {
 
   return (
     <>
+      <div className='mb-[40px]'>
+
+        <EditBanner
+          title={configAboutUsBanner.title}
+          description={configAboutUsBanner.description}
+          listInput={configAboutUsBanner.listInput}
+          saveButton={configAboutUsBanner.handleSave}
+        />
+      </div>
       <EditBanner
-        title={configAboutUsBanner.title}
-        description={configAboutUsBanner.description}
-        listInput={configAboutUsBanner.listInput}
-        saveButton={configAboutUsBanner.handleSave}
+        title={configOutStoryBanner.title}
+        description={configOutStoryBanner.description}
+        listInput={configOutStoryBanner.listInput}
+        saveButton={configOutStoryBanner.handleSave}
       />
       <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] gap-[20px] mt-[40px]">
         <div className='flex items-center justify-between'>

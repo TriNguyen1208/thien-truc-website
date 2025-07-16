@@ -1,16 +1,16 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
-const getQuantity = async()=>{
+const getQuantity = async () => {
     const res = await axios.get(API_ROUTES.news.count)
     return res.data
 }
 
-const getAll = async () =>{
+const getAll = async () => {
     const res = await axios.get(API_ROUTES.news.base);
     return res.data;
 }
 
-const getNewsPage = async() => {
+const getNewsPage = async () => {
     const res = await axios.get(API_ROUTES.news.news_page);
     return res.data;
 }
@@ -49,8 +49,8 @@ const new_categories = {
     },
     createOne: async (name = '', rgb_color = '') => {
         const res = await axios.post(API_ROUTES.news.news_categories.createOne, {
-        name,
-        rgb_color
+            name,
+            rgb_color
         })
         return res.data;
     },
@@ -79,7 +79,7 @@ const new_contents = {
     postOne: async (data) => {
         const res = await axios.post(API_ROUTES.news.news_contents.postOne, data, {
             headers: {
-            'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data'
             }
         });
         return res.data;
@@ -103,9 +103,19 @@ const getSearchSuggestions = async (query, filter) => {
     return res.data;
 }
 
+const getFeatureNews = async () => {
+    const res = await axios.get(API_ROUTES.news.getFeaturedNews);
+    return res.data;
+}
+
+const updateFeatureNews = async (data) => {
+    const res = await axios.patch(API_ROUTES.news.updateFeaturedNews, data)
+    return res.data;
+}
 const patchNewsPage = async (updatedPage)=> {
     const res = await axios.patch(API_ROUTES.news.update_news_page, updatedPage)
     return res.data;
 }
-
-export default {getQuantity, getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions, getSearchCategoriesSuggestions, patchNewsPage};
+export default { 
+getQuantity, getAll, getNewsPage, news, new_categories, new_contents,
+getSearchSuggestions, getSearchCategoriesSuggestions, getFeatureNews, updateFeatureNews, patchNewsPage };

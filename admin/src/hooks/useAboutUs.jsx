@@ -16,8 +16,8 @@ const updateAboutUsPage = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (data) => aboutUsServices.updateAboutUsPage.banner(data),
-      onSuccess: () => {
-        toast.success("Cập nhật banner thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_about_us_page"] });
       },
       onError: () => {

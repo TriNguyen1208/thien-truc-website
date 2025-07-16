@@ -11,7 +11,65 @@ import Table from "../../components/Table"
 import SearchBar from '../../components/Search'
 import ProductImageCell from '../../components/ProductImageCell'
 import useHome from '../../hooks/useHome';
+import useNews from '../../hooks/useNews';
+import AddHighlight from '../../components/AddHighlight';
 const HomePageContent = () => {
+  const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
+  const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
+  const [isOpenCancelHighlightFeature, setIsOpenCancelHighlightFeature] = useState(false);
+  const [idCurrentEditHighlightFeature, setIdCurrentEditHighlightFeature] = useState(null);
+  const [highlightFeatureToDelete, setHighlightFeatureToDelete] = useState(null);
+  const [arrayHighlightNews, setArrayHighlightNews] = useState([]);
+  const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
+  const [isModalOpenAddHighlightNews, setIsModalOpenAddHighlightNews] = useState(false);
+  const [itemAddHighlightNews, setIsItemAddHighlightNews] = useState(null);
+  const [dataEditHighlightFeature, setDataEditHighlightFeature] = useState([
+    { name: 'figures', label: 'Số liệu', type: 'text', width: 12, isRequired: false, placeholder: "VD: 100+" },
+    { name: 'achievementName', label: 'Tên thành tựu', type: 'text', width: 12, isRequired: false, placeholder: "VD: dự án hoàn thành" },
+  ]);
+  const [switchTime, setSwitchTime] = useState(0);
+
+  const [contentSetting, setContentSetting] = useState({
+    title: `Quản lý danh sách tin tức`,
+    description: `Chọn các tin tức muốn thêm hoặc xóa  khỏi loại tin tức`,
+    type: "tin tức",
+    header: [
+      "Mã tin tức",
+      "Tên tin tức",
+      "Loại tin tức",
+    ]
+  });
+
+
+  const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
+  const { mutate: updateBanner, isLoading: isLoadingUpdateBanner } = useHome.updateHomePage.updateBanner();
+  const { mutate: updateAboutUs, isLoading: isLoadingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
+
+
+  const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
+  const { mutate: updateHighlightFeature, isLoading: isLoadingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
+  const { mutate: createHighlightFeature, isLoading: isLoadingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
+  const { mutate: deleteHighlightFeature, isLoading: isLoadingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
+
+  const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.getFeatureNews();
+  const { mutate: updateFeatureNews, isLoading: isLoadingUploadFeatureNews } = useNews.updateFeatureNews();
+  const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
+  useEffect(() => {
+    setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
+  }, [highlightNewsData])
+  if (isLoadingHighlightFeature || isLoadingUpdateHighlightFeature ||
+    isLoadingCreateHighlightFeature || isLoadingDeleteHighlightFeature ||
+    isLoadingHighlightNews || isLoadingHomePageData || isLoadingUpdateBanner ||
+    isLoadingUpdateAboutUs || isLoadingNewsData) {
+    return (
+      <>
+        is loading....
+      </>
+    )
+  }
+
+
+
 
 
   // ============= BANNER TRANG CHU ===================== 
@@ -19,11 +77,11 @@ const HomePageContent = () => {
     title: "Banner Trang chủ",
     description: "Chỉnh sửa tiêu đề và mô tả banner",
     listInput: [
-      { label: 'Tiêu đề Banner', placeholder: 'Nhập tiêu đề...', contentCurrent: 'Chào mừng đến với thiên trúc', isRequire: true },
-      { label: 'Mô tả Banner', placeholder: 'Nhập mô tả...', contentCurrent: 'Đối tác tin cậy trong lĩnh vực công nghệ và giải pháp thông minh', isRequire: true },
+      { label: 'Tiêu đề Banner', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.banner_title, isRequire: true },
+      { label: 'Mô tả Banner', placeholder: 'Nhập mô tả...', contentCurrent: homePageData.banner_description, isRequire: true },
     ],
     handleSave: (values) => {
-      console.log('Giá trị đã lưu:', values);
+      updateBanner(values);
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
@@ -34,10 +92,11 @@ const HomePageContent = () => {
     title: "Giới thiệu về công ty Thiên Trúc",
     description: "Đoạn văn và ảnh đại diện công ty",
     listInput: [
-      { label: 'Nội dung giới thiệu', placeholder: 'Nhập tiêu đề...', contentCurrent: 'Công ty thiên trúc là đơn vị hàng đầu trong gì đó...', isRequire: true },
-      { label: 'Ảnh đại diện (URL)', placeholder: 'Nhập url...', contentCurrent: 'https://minhtridepzai.com', isRequire: false },
+      { label: 'Nội dung giới thiệu', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.aboutus_content, isRequire: true },
+      { label: 'Ảnh đại diện (URL)', placeholder: 'Nhập url...', contentCurrent: homePageData.aboutus_img, isRequire: false },
     ],
     handleSave: (values) => {
+      updateAboutUs(values);
       console.log('Giá trị đã lưu:', values);
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
@@ -46,36 +105,15 @@ const HomePageContent = () => {
 
   // ===================== HIGHLIGHT FEATURE =================== 
   const limitHighlightFeature = 3
-  const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
-  const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
-  const [isOpenCancelHighlightFeature, setIsOpenCancelHighlightFeature] = useState(false);
-  const [idCurrentEditHighlightFeature, setIdCurrentEditHighlightFeature] = useState(null);
-  const [highlightFeatureToDelete, setHighlightFeatureToDelete] = useState(null);
-
-
-  const [isModalOpenAddHighlightNews, setIsModalOpenAddHighlightNews] = useState(false);
 
 
 
-  const [dataEditHighlightFeature, setDataEditHighlightFeature] = useState([
-    { name: 'figures', label: 'Số liệu', type: 'text', width: 12, isRequired: false, placeholder: "VD: 100+" },
-    { name: 'achievementName', label: 'Tên thành tựu', type: 'text', width: 12, isRequired: false, placeholder: "VD: dự án hoàn thành" },
-  ]);
 
-  const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
-  const { mutate: updateHighlightFeature, isLoading: isLoadingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
-  const { mutate: createHighlightFeature, isLoading: isLoadingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
-  const { mutate: deleteHighlightFeature, isLoading: isLoadingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
-  if (isLoadingHighlightFeature || isLoadingUpdateHighlightFeature || isLoadingCreateHighlightFeature || isLoadingDeleteHighlightFeature) {
-    return (
-      <>
-        is loading....
-      </>
-    )
-  }
 
-  console.log(highlightFeatureData);
+
+
+
   const handleSubmitButtonAddHighlightFeature = (valueForm) => {
     console.log('Day la button submit', valueForm)
     createHighlightFeature(valueForm);
@@ -173,6 +211,43 @@ const HomePageContent = () => {
 
   // ===================== HIGHLIGHT NEWS =================== 
 
+  // Thêm function để xử lý việc di chuyển phần tử trong mảng
+  const moveArrayElement = (array, fromIndex, toIndex) => {
+    const newArray = [...array];
+    const element = newArray.splice(fromIndex, 1)[0];
+    newArray.splice(toIndex, 0, element);
+    return newArray;
+  };
+
+  // Xử lý khi click nút ArrowUp
+  const handleMoveUp = (currentIndex) => {
+    if (currentIndex > 0) {
+      const newArray = moveArrayElement(arrayHighlightNews, currentIndex, currentIndex - 1);
+      setArrayHighlightNews(newArray);
+    }
+  };
+
+  // Xử lý khi click nút ArrowDown
+  const handleMoveDown = (currentIndex) => {
+    if (currentIndex < arrayHighlightNews.length - 1) {
+      const newArray = moveArrayElement(arrayHighlightNews, currentIndex, currentIndex + 1);
+      setArrayHighlightNews(newArray);
+    }
+  };
+  const handleChangeSwitchTime = (e) => {
+    let inputValue = e.target.value;
+
+    // Regex để kiểm tra format số với tối đa 2 chữ số thập phân (dấu phẩy)
+    const regex = /^\d*([,]\d{0,2})?$/;
+
+    if (inputValue === '' || regex.test(inputValue)) {
+      setSwitchTime(inputValue);
+
+      // Gọi callback nếu cần
+    }
+  };
+
+
   const handleSubmitButtonAddHighlightNews = (valueForm) => {
     console.log('Day la button submit', valueForm)
     setIsModalOpenAddHighlightNews(false)
@@ -209,72 +284,92 @@ const HomePageContent = () => {
         label: 'Tìm kiếm sản phẩm',
         width: 12,
         customInput: ({ value }) => (
-          <SearchBar
-            data={{
-              hasButtonCategory: true,
-              categories: ["Tất cả danh mục", "Điện thoại", "Sản phẩm"],
-              currentCategory: "Tất cả danh mục",
-              placeholder: "Tìm kiếm...",
-              currentQuery: value,
-              handleEnter: (id) => {
-                console.log("Kết quả chọn:", id);
-              },
-              onSearch: (query, category, display) => {
-                console.log(query, category, display)
-              },
-              handleSearchSuggestion: (query) => {
-                return useProjects.getSearchSuggestions(query);
-              }
-            }}
-          />
+          <div onClick={(e) => e.stopPropagation()}>
+
+            <SearchBar
+              data={{
+                hasButtonCategory: true,
+                categories: ["Tất cả danh mục", "Điện thoại", "Sản phẩm"],
+                currentCategory: "Tất cả danh mục",
+                placeholder: "Tìm kiếm...",
+                currentQuery: value,
+                handleEnter: (id) => {
+                  console.log("Kết quả chọn:", id);
+                },
+                onSearch: (query, category, display) => {
+                  console.log(query, category, display)
+                },
+                handleSearchSuggestion: (query) => {
+                  return useProjects.getSearchSuggestions(query);
+                }
+              }}
+            />
+          </div>
         )
       },
       { name: 'putOnTop', label: 'Đặt lên đầu', type: 'checkbox', width: 12 }
     ],
+    data: arrayHighlightNews,
     table: {
       columns: ["Thứ tự", "Mã tin tức", "Ảnh", "Tiêu đề", "Loại tin tức", "Ngày xuất bản", "Thao tác"],
-      data: [
-        [
-          {
-            type: "component", component: <div className='flex flex-col gap-2'>
-              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowUpIcon className="text-gray-300" /></button>
-              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowDownIcon className="text-gray-300" /></button>
-            </div>
-          },
-          { type: "text", content: "1" },
-          { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> },
-          { type: "text", content: "Ra mắt sản phẩm Iphone 15 promax" },
-          { type: "text", content: "Công ty" },
-          { type: "text", content: "15/01/2024" },
-          {
-            type: "array-components", components: [
-              <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => console.log("123")}    >      <EditIcon />    </button>,
-              <button className="px-2 py-2 border  border-gray-300 rounded-md cursor-pointer">      <SubtractIcon />    </button>,
-            ]
-          }],
-        [
-          {
-            type: "component", component: <div className='flex flex-col gap-2'>
-              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowUpIcon className="text-gray-300" /></button>
-              <button className='px-3  border border-gray-300 rounded-sm w-[50px]'><ArrowDownIcon className="text-gray-300" /></button>
-            </div>
-          },
-          { type: "text", content: "1" },
-          { type: "component", component: <ProductImageCell imageUrl="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=center" productName="iPhone 15 Pro Max"></ProductImageCell> },
-          { type: "text", content: "Ra mắt sản phẩm Iphone 15 promax" },
-          { type: "text", content: "Công ty" },
-          { type: "text", content: "15/01/2024" },
-          {
-            type: "array-components", components: [
-              <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => console.log("123")}    >      <EditIcon />    </button>,
-              <button className="px-2 py-2 border  border-gray-300 rounded-md cursor-pointer">      <SubtractIcon />    </button>,
-            ]
-          }]
-      ]
-    }
 
+    }
   }
 
+  const convertHighlightNewsListToTableData = (highlightNewsList) => {
+    return highlightNewsList.map((item, index) => {
+      return [
+        {
+          type: "component", component: <div className='flex flex-col gap-2'>
+            <button
+              // className={`px-3 border border-gray-300 rounded-sm w-[50px] ${index === 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-gray-100'}`}
+              className={`px-3 border border-gray-300 rounded-sm w-[50px]`}
+              onClick={() => handleMoveUp(index)}
+              disabled={index === 0}
+            >
+              <ArrowUpIcon className={index === 0 ? "text-gray-300" : "text-gray-600"} />
+            </button>
+            <button
+              className={`px-3 border border-gray-300 rounded-sm w-[50px]`}
+              onClick={() => handleMoveDown(index)}
+              disabled={index === highlightNewsList.length - 1}
+            >
+              <ArrowDownIcon className={index === highlightNewsList.length - 1 ? "text-gray-300" : "text-gray-600"} />
+            </button>
+          </div>
+        },
+        {
+          type: "text",
+          content: item.id
+        },
+        {
+          type: "component",
+          component: <ProductImageCell imageUrl={item.img} productName={item.name}></ProductImageCell>
+        },
+        {
+          type: "text",
+          content: item.title
+        },
+        {
+          type: "text",
+          content: item.name
+        },
+        {
+          type: "text",
+          content: item.date
+        },
+        {
+          type: "array-components", components: [
+            <button className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" onClick={() => console.log("123")}    >      <EditIcon />    </button>,
+            <button className="px-2 py-2 border  border-gray-300 rounded-md cursor-pointer">      <SubtractIcon />    </button>,
+          ]
+        }
+      ]
+    });
+  };
+  const dataTable = convertHighlightNewsListToTableData(configHighlightNews.data);
+
+  console.log(isModalOpenSetting);
   return (
     <>
       <EditBanner
@@ -307,7 +402,10 @@ const HomePageContent = () => {
           <div className='w-[160px] h-40[px]'>
             <button type="submit"
               className='w-[170px]'
-              onClick={() => setIsModalOpenAddHighlightFeature(true)}
+              onClick={() => {
+                setIsModalOpenAddHighlightFeature(true)
+
+              }}
               disabled={configHighlightFeature.arrayFeatureCard.length >= limitHighlightFeature}>
               <Button
                 {...configHighlightFeature.propsAddButton}
@@ -354,20 +452,39 @@ const HomePageContent = () => {
             </div>
           </div>
           <div className='w-[160px] h-[40px]'>
-            <button type="submit" className='w-[155px]' onClick={() => setIsModalOpenAddHighlightNews(true)}> <Button {...configHighlightNews.propsAddButton} /></button>
+            <button type="submit" className='w-[155px]' onClick={() => setIsModalOpenSetting(true)}> <Button {...configHighlightNews.propsAddButton} /></button>
           </div>
 
         </div>
         <div className='mb-[30px]'>
-          <Table columns={configHighlightNews.table.columns} data={configHighlightNews.table.data} isSetting={false} />
+          <Table columns={configHighlightNews.table.columns} data={dataTable} isSetting={false} />
         </div>
-        <div className='mb-[30px]'>
-          Thời gian chuyển giữa các tin tức
-          <input type='number' />
-        </div>
-        <div className='w-[145px] h-[40px]'>
-          <button type="submit" className='w-[190px]' onClick={() => console.log("Luu tin tuc noi bat")}> <Button {...configHighlightNews.propsSaveButton} /></button>
-        </div>
+          <div className='flex items-center'>
+          <span className="text-gray-700">Thời gian chuyển gửi của tin tức:</span>
+
+          <input
+            type="text"
+            value={switchTime}
+            onChange={handleChangeSwitchTime}
+            className="w-16 px-2 py-1 text-lg font-semibold text-gray-800 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="2.00"
+            />
+          <span className="text-gray-600">giây</span>
+            </div>
+          <button 
+            className="w-[200px] px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
+            onClick={() => {
+              const object = {
+                switch_times: switchTime,
+                news_ids: arrayHighlightNews.map(item => item.id),
+              };
+              console.log(object);
+              updateFeatureNews(object);
+            }}
+            
+          >
+            Lưu tin tức nổi bật
+          </button>
       </div>
       <SimpleForm data={configHighlightFeature.dataAddHighlightFeature} config={configHighlightFeature.configAddHighlightFeature} />
       <SimpleForm data={dataEditHighlightFeature} config={configHighlightFeature.configEditHighlightFeature} />
@@ -378,6 +495,52 @@ const HomePageContent = () => {
         notification={configHighlightFeature.cancelPopub.notification}
         subTitle={configHighlightFeature.cancelPopub.subTitle}
         buttonAction2={configHighlightFeature.cancelPopub.buttonAction2}
+      />
+      <AddHighlight
+        isOpen={isModalOpenSetting}
+        onClose={() => setIsModalOpenSetting(false)}
+        content={contentSetting}
+        useData={useNews.news}
+        useDataSuggestion={useNews}
+        useDataCategories={useNews.news_categories}
+        onSave={async (changedItems) => {
+          setIsItemAddHighlightNews(changedItems);
+          console.log(changedItems);
+          // var newItemObject  = null;
+          if (changedItems) {
+
+            console.log(newsData);
+            console.log(arrayHighlightNews);
+            const { data, isCheckbox } = changedItems;
+
+            const matchedNews = newsData.find(item => item.id === data.id);
+            if (!matchedNews) return arrayHighlightNews; // Không tìm thấy thì không làm gì
+
+            const newHighlightItem = {
+              id: matchedNews.id,
+              img: matchedNews.main_img,
+              name: matchedNews.category.name,
+              title: matchedNews.title,
+              date: matchedNews.public_date,
+            }
+
+            const filtered = arrayHighlightNews.filter(item => item.id !== data.id);
+
+            let newArray;
+            if (isCheckbox) {
+              newArray = [newHighlightItem, ...filtered];
+            } else {
+              newArray = [...filtered, newHighlightItem];
+            }
+
+            // Cập nhật sort
+            setArrayHighlightNews(newArray.map((item, index) => ({
+              ...item,
+              sort: index + 1,
+            })))
+
+          }
+        }}
       />
     </>
   );

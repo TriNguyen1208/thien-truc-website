@@ -79,7 +79,7 @@ const Product = () => {
   }
   const { mutate: updateOneProduct, isLoading: isLoadingUpdateOneProduct } = useProducts.products.updateOne();
   const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(query, filter === categoriesDefault ? undefined : filter, bool_featured);
-  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getList();
+  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
   const { mutate: updateFeatureProduct, isLoading: isLoadingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
   const { mutate: deleteOneProduct, isLoading: isLoadingDeleteOneProduct } = useProducts.products.deleteOne();
   const { mutate: createOneProduct, isLoading: isLoadingCreateOneProduct } = useProducts.products.createOne();
@@ -206,7 +206,7 @@ const Product = () => {
   }
 
   const handleEditButton = (item) => {
-
+s
     const updatedForm = [
       { ...dataEditProduct[0], value: item.name },
       { ...dataEditProduct[1], value: item.category.name },
@@ -252,8 +252,9 @@ const Product = () => {
                 checked={product.is_featured}
                 onChange={() => {
                   updateFeatureProduct({
-                                id: product.id, 
-                                status: !product.is_featured});
+                    id: product.id,
+                    status: !product.is_featured
+                  });
                 }}
                 disabled={isLoadingUpdateFeatureOne}
               />
@@ -362,7 +363,9 @@ const Product = () => {
             setOpenCancel(false);
           }
         }}
+
       />
+   
     </>
   )
 }

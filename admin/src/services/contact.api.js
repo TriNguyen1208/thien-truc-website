@@ -8,6 +8,16 @@ const getCompanyInfo = async () => {
     const res = await axios.get(API_ROUTES.contact.company_info);
     return res.data;
 }
+const getContactPage = async () => {
+    const res = await axios.get(API_ROUTES.contact.contact_page);
+    return res.data;
+}
+const updateContactPage = {
+    banner: async (data) => {
+        const res = await axios.patch(API_ROUTES.contact.updateContactPage.banner, data);
+        return res.data;
+    }
+}
 const patchCompanyInfo = async (updatedData) => {
     const res = await axios.patch(API_ROUTES.contact.updateCompanyInfo, updatedData)
     return res.data
@@ -45,4 +55,7 @@ const support_agents =  {
         return res.data;
     },
 }
-export default {support_agents, getCompanyInfo, patchCompanyInfo, getQuantity}
+export default {support_agents, getCompanyInfo, patchCompanyInfo, getQuantity,
+    getContactPage, 
+    updateContactPage
+}

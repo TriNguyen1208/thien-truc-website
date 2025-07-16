@@ -27,7 +27,7 @@ router.post('/product_categories', authenticateToken, productController.product_
 router.patch('/product_page', authenticateToken, productController.updateProductPage);
 router.patch('/price_page', authenticateToken, productController.updatePricePage);
 router.patch('/products/:id', authenticateToken, upload.single('local_image'), productController.products.updateOne);
-router.patch('/product/update_categories', authenticateToken, productController.products.updateCategory);
+router.patch('/product/update-categories', authenticateToken, productController.products.updateCategory);
 router.patch('/products/is_featured/:id/:status', authenticateToken, productController.products.updateFeatureOne);
 router.patch('/product_categories/:id', authenticateToken, productController.product_categories.updateOne);
 

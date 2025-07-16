@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import homeServices from "@/services/home.api.js";
+import { toast } from 'react-toastify';
 
 function useGetHomePage() {
     return useQuery({
@@ -14,18 +15,26 @@ const updateHomePage = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => homeServices.updateHomePage.banner(data),
-            onSuccess: () => {
+            onSuccess: (success) => {
+                toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["admin_home_page"] });
             },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         });
     },
     useUpdateAboutUs: () => {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => homeServices.updateHomePage.aboutUs(data),
-            onSuccess: () => {
+            onSuccess: (success) => {
+                toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["admin_home_page"] });
             },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         });
     },
 };
@@ -50,27 +59,39 @@ const highlight_stats_about_us = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => homeServices.highlight_stats_about_us.createOne(data),
-            onSuccess: () => {
+            onSuccess: (success) => {
+                toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["admin_highlight_stats_about_us"] });
             },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         });
     },
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: ({ id, data }) => homeServices.highlight_stats_about_us.updateOne(id, data),
-            onSuccess: () => {
+            onSuccess: (success) => {
+                toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["admin_highlight_stats_about_us"] });
             },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         });
     },
     useDeleteOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (id) => homeServices.highlight_stats_about_us.deleteOne(id),
-            onSuccess: () => {
+            onSuccess: (success) => {
+                toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["admin_highlight_stats_about_us"] });
             },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         });
     },
 };
