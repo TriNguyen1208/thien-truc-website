@@ -14,7 +14,7 @@ import useHome from '../../hooks/useHome';
 import useNews from '../../hooks/useNews';
 import Setting from '../../components/Setting';
 const HomePageContent = () => {
-    const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
+  const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
   const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
   const [isOpenCancelHighlightFeature, setIsOpenCancelHighlightFeature] = useState(false);
   const [idCurrentEditHighlightFeature, setIdCurrentEditHighlightFeature] = useState(null);
@@ -22,11 +22,14 @@ const HomePageContent = () => {
   const [arrayHighlightNews, setArrayHighlightNews] = useState([]);
   const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
   const [isModalOpenAddHighlightNews, setIsModalOpenAddHighlightNews] = useState(false);
-    const [dataEditHighlightFeature, setDataEditHighlightFeature] = useState([
+  const [dataEditHighlightFeature, setDataEditHighlightFeature] = useState([
     { name: 'figures', label: 'Số liệu', type: 'text', width: 12, isRequired: false, placeholder: "VD: 100+" },
     { name: 'achievementName', label: 'Tên thành tựu', type: 'text', width: 12, isRequired: false, placeholder: "VD: dự án hoàn thành" },
   ]);
-  const {data: homePageData, isLoading: isLoadingHomePageData} = useHome.getHomePage();
+  const [switchTime, setSwitchTime] = useState(0);
+
+
+  const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
   const { mutate: updateBanner, isLoading: isLoadingUpdateBanner } = useHome.updateHomePage.updateBanner();
   const { mutate: updateAboutUs, isLoading: isLoadingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
 
@@ -40,9 +43,9 @@ const HomePageContent = () => {
   useEffect(() => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
   }, [highlightNewsData])
-  if (isLoadingHighlightFeature || isLoadingUpdateHighlightFeature || 
-    isLoadingCreateHighlightFeature || isLoadingDeleteHighlightFeature || 
-    isLoadingHighlightNews || isLoadingHomePageData || isLoadingUpdateBanner || 
+  if (isLoadingHighlightFeature || isLoadingUpdateHighlightFeature ||
+    isLoadingCreateHighlightFeature || isLoadingDeleteHighlightFeature ||
+    isLoadingHighlightNews || isLoadingHomePageData || isLoadingUpdateBanner ||
     isLoadingUpdateAboutUs) {
     return (
       <>
@@ -215,6 +218,19 @@ const HomePageContent = () => {
     if (currentIndex < arrayHighlightNews.length - 1) {
       const newArray = moveArrayElement(arrayHighlightNews, currentIndex, currentIndex + 1);
       setArrayHighlightNews(newArray);
+    }
+  };
+  const handleChangeSwitchTime = (e) => {
+    let inputValue = e.target.value;
+
+    // Regex để kiểm tra format số với tối đa 2 chữ số thập phân (dấu phẩy)
+    const regex = /^\d*([,]\d{0,2})?$/;
+
+    if (inputValue === '' || regex.test(inputValue)) {
+      setSwitchTime(inputValue);
+
+      // Gọi callback nếu cần
+      console.log('Giá trị mới:', inputValue);
     }
   };
 
@@ -439,7 +455,12 @@ const HomePageContent = () => {
         </div>
         <div className='mb-[30px]'>
           Thời gian chuyển giữa các tin tức
-          <input type='number' />
+          <input
+            type="number"
+            value={switchTime}
+            onChange={handleChangeSwitchTime}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
         </div>
         <div className='w-[145px] h-[40px]'>
           <button type="submit" className='w-[190px]' onClick={() => console.log("Luu tin tuc noi bat")}> <Button {...configHighlightNews.propsSaveButton} /></button>

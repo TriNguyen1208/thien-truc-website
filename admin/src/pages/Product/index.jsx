@@ -118,7 +118,7 @@ const Product = () => {
 
   const idCurrentCategories = filter ? (categories || []).findIndex(item => item === filter) : 0;
   const handleSubmitButtonAddProduct = (valueForm) => {
-    console.log(valueForm);
+    console.log("Gia tri", valueForm);
     createOneProduct(valueForm);
     setIsModalOpenAddProduct(false)
   }
