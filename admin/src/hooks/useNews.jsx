@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
-
+import { toast } from 'react-toastify';
 function useGetQuantity()
 {
     return useQuery({
@@ -143,10 +143,30 @@ function useSearchSuggest(query, filter){
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function useGetFeatureNews() {
+  return useQuery({
+    queryKey: ["admin_feature_news"],
+    queryFn: newsServices.getFeatureNews,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+ function useUpdateFeatureNews(){
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: () => newsServices.updateFeatureNews,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
+      },
+    })
+  }
 export default {
     getQuantity: useGetQuantity,
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
+    getFeatureNews: useGetFeatureNews,
+    updateFeatureNews: useUpdateFeatureNews,
     news:{
         getList: news.useGetList,
         getOne: news.useGetOne,

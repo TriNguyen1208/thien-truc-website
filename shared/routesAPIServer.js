@@ -152,6 +152,7 @@ const API_ROUTES = {
             postOne: `${NEWS_BASE}/news_contents/`,
             updateOne: (id) => `${NEWS_BASE}/news_contents/${id}`
         },
+        
         getFeaturedNews: `${NEWS_BASE}/featured_news`,
         updateFeaturedNews: `${NEWS_BASE}/featured_news`, // patch
         search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,

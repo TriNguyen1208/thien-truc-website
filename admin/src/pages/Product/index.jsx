@@ -126,8 +126,8 @@ const Product = () => {
     console.log('Day la button edit submit', valueForm)
     console.log(idCurrentEditProduct)
     updateOneProduct({
-                id: idCurrentEditProduct,
-                data: valueForm
+      id: idCurrentEditProduct,
+      data: valueForm
     });
     console.log(idCurrentEditProduct, valueForm);
     setIsModalOpenEditProduct(false)
@@ -226,8 +226,9 @@ const Product = () => {
                 checked={product.is_featured}
                 onChange={() => {
                   updateFeatureProduct({
-                                id: product.id, 
-                                status: !product.is_featured});
+                    id: product.id,
+                    status: !product.is_featured
+                  });
                 }}
                 disabled={isLoadingUpdateFeatureOne}
               />
@@ -336,7 +337,9 @@ const Product = () => {
             setOpenCancel(false);
           }
         }}
+
       />
+   
     </>
   )
 }

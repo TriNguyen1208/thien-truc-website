@@ -120,6 +120,9 @@ const patchProductPage = async (updatedPage)=> {
     return res.data;
 }
 
+
+
+
 export default {
     getAll,
     getProductPage,

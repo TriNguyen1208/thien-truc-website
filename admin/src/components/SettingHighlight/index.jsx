@@ -7,7 +7,7 @@ import LabelAssign from "../LabelAssgin"
 import { Modal } from 'antd'
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 
-const Setting = ({
+const SettingHighlight = ({
     isOpen,
     onClose,
     content,
@@ -170,9 +170,40 @@ const Setting = ({
             setSelectedId(allId);
         }
     };
+    const handleClear = () => setSelectedId([]);
+    const handleClickAssign = () => {
+        setDisplay(prev =>
+            prev.map(item =>
+                selectedId.includes(item.id)
+                    ? { ...item, display: "Đã gán" }
+                    : item
+            )
+        );
+        setSelectedId([]);
+        const params = new URLSearchParams();
+        params.set("display", "Tất cả trạng thái");
+        navigate({
+            pathname: location.pathname,
+            search: params.toString()
+        });
+    };
 
-
-
+    const handleClickRemove = () => {
+        setDisplay(prev =>
+            prev.map(item =>
+                selectedId.includes(item.id)
+                    ? { ...item, display: "Chưa gán" }
+                    : item
+            )
+        );
+        setSelectedId([]);
+        const params = new URLSearchParams();
+        params.set("display", "Tất cả trạng thái");
+        navigate({
+            pathname: location.pathname,
+            search: params.toString()
+        });
+    };
 
     const handleSave = () => {
         //Ở đây có 1 lệnh post gửi lên API sau đó thoát ra luôn
@@ -262,11 +293,37 @@ const Setting = ({
                     <SearchBar data={searchProps}/>
                 </div>
                 <div className="relative">
+                    {selectedId.length > 0 && (
+                        <div className="px-5 py-3 w-full rounded-md bg-[#EFF6FF] border border-[#EFF6FF] z-20 flex items-center gap-4 mb-5">
+                            <span className="text-[#1E4DE8] font-medium">
+                                Đã chọn {selectedId.length} {type}
+                            </span>
+                            <div className="flex gap-2 justify-between">
+                                <button 
+                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded flex items-center gap-2 cursor-pointer"
+                                    onClick={handleClickAssign}
+                                >
+                                    <AcceptIcon/>
+                                    <span>Gán vào danh mục</span>
+                                </button>
+                                <button 
+                                    className="border border-gray-300 px-3 py-2 rounded flex items-center gap-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={handleClickRemove}
+                                >
+                                    <ExitIcon/>
+                                    <span>Bỏ khỏi danh mục</span>
+                                </button>
+                                <button onClick={handleClear} className="px-3 cursor-pointer hover:bg-gray-100">
+                                    Bỏ chọn
+                                </button>
+                            </div>
+                        </div>
+                    )}
                     <div className="max-h-100 overflow-y-auto">
                         <Table
                             columns={[]}
                             data={dataTable}
-                            isSetting={true}
+                            isHighlight={true}
                         />
                     </div>
                 </div>
@@ -290,4 +347,4 @@ const Setting = ({
     )
 }
 
-export default Setting
+export default SettingHighlight
