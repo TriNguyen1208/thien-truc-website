@@ -22,6 +22,9 @@ const support_agents =  {
         return res.data;
     },
     createOne: async (newsupport_agents) => {
+        for(let [key, value] of newsupport_agents.entries()){
+            console.log(key, value)
+        }
         const res = await axios.post(API_ROUTES.contact.support_agents.createOne, newsupport_agents, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -34,7 +37,7 @@ const support_agents =  {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
-        } );
+        });
         return res.data;
     },
     deleteOne: async (id) => {
