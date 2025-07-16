@@ -8,7 +8,7 @@ import ProductImageCell from '@/components/ProductImageCell'
 import { DeleteIcon, EditIcon } from '@/components/Icon'
 import DynamicForm from '@/components/DynamicForm'
 import { toast } from 'react-toastify';
-
+import changeToFormData from '@/utils/changeToFormData'
 
 
 const Contact = () => {
@@ -55,33 +55,22 @@ const handleAddContact= ()=>
 
   //====================================================Start Form=========================================================
    const handleSubmitButtonAdd = (valueForm) => {
-    addAgent(
-      {
-          "avatar_img": valueForm.img,
-          "name": valueForm.fullName,
-          "role": valueForm.position,
-          "phone_number": valueForm.phone,
-          "facebook_url": valueForm.facebook
-        }
-      ,
+     const formData = changeToFormData(valueForm)
+     addAgent(formData,
       {
       onSuccess: (success)=> { toast.success(success ? success.message: "Thêm thành công!")},
       onError:(error)=>{toast.error(error ?  error.message: "Thêm thất bại!") }
       }
-    )
+    );
     setIsModalOpenAdd(false)
   }
    const handleSubmitButtonEdit = (valueForm) => {
+     const formData = changeToFormData(valueForm)
+
     updateAgent(
       {
         id: listContacts[pendingItemEdit].id,
-        updatedsupport_agents: {
-          "avatar_img": valueForm.img,
-          "name": valueForm.fullName,
-          "role": valueForm.position,
-          "phone_number": valueForm.phone,
-          "facebook_url": valueForm.facebook
-        }
+        formData
       }
       ,
       {
@@ -115,18 +104,18 @@ const handleAddContact= ()=>
     setIsModalOpen: setIsModalOpenEdit
   }
   const dataAdd = [
-    { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
-    { name: 'position', label: 'Vị trí', type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
-    { name: 'phone', label: 'Số điện thoại', type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
-    { name: 'facebook', label: 'Facebook', type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
-    { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+    { name: 'name', label: 'Họ Tên', type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
+    { name: 'role', label: 'Vị trí', type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
+    { name: 'phone_number', label: 'Số điện thoại', type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
+    { name: 'facebook_url', label: 'Facebook', type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
+    { name: 'local_image', label: 'Ảnh đại diện', type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]
    const dataEdit = [
-    { name: 'fullName', label: 'Họ Tên', value: (listContacts[pendingItemEdit] || []).name, type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
-    { name: 'position', label: 'Vị trí', value: (listContacts[pendingItemEdit] || []).role, type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
-    { name: 'phone', label: 'Số điện thoại',  value: (listContacts[pendingItemEdit] || []).phone_number, type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
-    { name: 'facebook', label: 'Facebook',  value: (listContacts[pendingItemEdit] || []).facebook_url ,type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
-    { name: 'img', label: 'Ảnh đại diện', value: (listContacts[pendingItemEdit] || []).avatar_img, type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
+    { name: 'name', label: 'Họ Tên', value: (listContacts[pendingItemEdit] || []).name, type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
+    { name: 'role', label: 'Vị trí', value: (listContacts[pendingItemEdit] || []).role, type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
+    { name: 'phone_number', label: 'Số điện thoại',  value: (listContacts[pendingItemEdit] || []).phone_number, type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
+    { name: 'facebook_url', label: 'Facebook',  value: (listContacts[pendingItemEdit] || []).facebook_url ,type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
+    { name: 'local_image', label: 'Ảnh đại diện', value: (listContacts[pendingItemEdit] || []).local_image, type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]
   //====================================================End Form=========================================================
   //====================================================Start Table=======================================================

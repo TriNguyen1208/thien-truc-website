@@ -22,11 +22,19 @@ const support_agents =  {
         return res.data;
     },
     createOne: async (newsupport_agents) => {
-        const res = await axios.post(API_ROUTES.contact.support_agents.createOne, newsupport_agents);
+        const res = await axios.post(API_ROUTES.contact.support_agents.createOne, newsupport_agents, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     },
     updateOne: async (id, updatedsupport_agents) => {
-        const res = await axios.patch(API_ROUTES.contact.support_agents.updateOne(id), updatedsupport_agents );
+        const res = await axios.patch(API_ROUTES.contact.support_agents.updateOne(id), updatedsupport_agents, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        } );
         return res.data;
     },
     deleteOne: async (id) => {

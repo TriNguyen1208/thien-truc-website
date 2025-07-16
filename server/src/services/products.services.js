@@ -321,8 +321,8 @@ const products = {
     },
     createOne: async (data, file) => {
         let cloud_avatar_img = null;
-        if (file?.local_image) {
-            cloud_avatar_img = await uploadImage(file.local_image, 'product');
+        if (file) {
+            cloud_avatar_img = await uploadImage(file, 'product');
         }
     },
     updateCategory: async (changedItems) => {
@@ -372,7 +372,12 @@ const products = {
             client.release();
         }
     },
-    createOne: async (data) => {
+    createOne: async (data, file) => {
+        let cloud_avatar_img = null;
+        if (file) {
+            cloud_avatar_img = await uploadImage(file, 'product');
+        }
+        
         let {
             externalAvatarImage,
             characteristic,
@@ -401,8 +406,10 @@ const products = {
         const category_id = categoryRes.rows[0].id;
 
         // 2. Prepare features
-        const product_features = characteristic.map(c => c.value);
-        const highlight_feature_ids = characteristic
+        const parsed_characteristic = JSON.parse(characteristic) || [];
+        console.error('parse ', parsed_characteristic);
+        const product_features = parsed_characteristic.map(c => c.value);
+        const highlight_feature_ids = parsed_characteristic
             .map((c, index) => (c.isCheckbox ? index : -1))
             .filter(index => index !== -1);
 
@@ -445,7 +452,7 @@ const products = {
     },
     updateOne: async (data, file, id) => {
         const old_avatar_img = (await pool.query('SELECT product_img FROM product.products WHERE id = $1', [id])).rows[0].product_img;
-        const local_avatar_img = file?.local_image;
+        const local_avatar_img = file;
         
         let {
             externalAvatarImage,
@@ -480,8 +487,10 @@ const products = {
         const category_id = categoryRes.rows[0].id;
 
         // 2. Prepare features
-        const product_features = characteristic.map(c => c.value);
-        const highlight_feature_ids = characteristic
+        const parsed_characteristic = JSON.parse(characteristic) || [];
+        console.error('parse ', parsed_characteristic);
+        const product_features = parsed_characteristic.map(c => c.value);
+        const highlight_feature_ids = parsed_characteristic
             .map((c, index) => (c.isCheckbox ? index : -1))
             .filter(index => index !== -1);
 

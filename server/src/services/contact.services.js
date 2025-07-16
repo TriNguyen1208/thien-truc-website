@@ -109,8 +109,8 @@ const support_agents = {
     },
     createOne: async (data, file) => {
         let cloud_avatar_img = null;
-        if (file?.local_image) {
-            cloud_avatar_img = await uploadImage(file.local_image, 'contact');
+        if (file) {
+            cloud_avatar_img = await uploadImage(file, 'contact');
         }
 
         const {
@@ -144,7 +144,7 @@ const support_agents = {
         }
         
         const old_avatar_img = (await pool.query('SELECT avatar_img FROM contact.support_agents WHERE id = $1', [id])).rows[0].avatar_img;
-        let local_avatar_img = file?.local_image;
+        let local_avatar_img = file;
         
         const {
             external_avatar_img,

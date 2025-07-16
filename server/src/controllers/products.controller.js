@@ -61,6 +61,7 @@ const products = {
     },
     createOne: async (req, res) => {
         try {
+            console.log(req.body, req.file);
             await productServices.products.createOne(req.body, req.file);
             res.status(200).json({ message: 'Tạo sản phẩm thành công'});
         } catch (error) {

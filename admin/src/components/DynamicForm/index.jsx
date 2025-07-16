@@ -158,15 +158,12 @@ const DynamicForm = ({ data, config }) => {
 
     const handleImageUpload = (fieldName, file) => {
         if (file) {
-            console.log(file);
-            const imageUrl = URL.createObjectURL(file);
             setFormData((prev) => ({
                 ...prev,
-                [fieldName]: imageUrl
+                [fieldName]: file
             }));
         }
     };
-
     const handleImageUrl = (fieldName, url) => {
         if (url && url.trim()) {
             setFormData((prev) => ({
@@ -319,7 +316,6 @@ const DynamicForm = ({ data, config }) => {
                 );
             case 'image_upload': {
                 const image = formData[nameColumn];
-
                 return (
                     <div className="space-y-4">
                         {/* URL Input */}
@@ -371,9 +367,9 @@ const DynamicForm = ({ data, config }) => {
 
 
                         {/* Image Preview */}
-                        {image && (
+                        {image.name && (
                             <div className="text-xs text-gray-700 break-all relative border border-gray-200 rounded-md p-2">
-                                URL: {image}
+                                URL: {image.name}
                                 <button
                                     type="button"
                                     onClick={() => removeImage(nameColumn)}

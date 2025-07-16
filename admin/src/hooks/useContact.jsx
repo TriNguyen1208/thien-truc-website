@@ -42,13 +42,13 @@ const support_agents = {
         })
     },
     useCreateOne:() =>{
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newsupport_agents) => contactServices.support_agents.createOne(newsupport_agents),
-        onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
-        },
-    });
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (newsupport_agents) => contactServices.support_agents.createOne(newsupport_agents),
+            onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
+            },
+        });
     },
     useUpdateOne:() =>{
     const queryClient = useQueryClient();
