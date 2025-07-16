@@ -1,45 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLayout } from '@/layouts/layoutcontext';
 import Button from '@/components/Button';
-import { DeleteIcon, PlusIcon, SaveIcon } from '../../components/Icon';
-import useContact from '../../hooks/useContact'
-import { CancelPopup } from '../../components/Popup';
-import { Modal, Result } from 'antd';
-import { CheckCircleFilled } from '@ant-design/icons';
-function SuccessPopup ({ open, setOpen, notification, subTitle }) {
-
-  const handleOk = () => setOpen(false);
-
-  return (
-    <div className="p-6">
-
-      <Modal
-        open={open}
-        footer={null}
-        onCancel={handleOk}
-        centered
-        closable
-        width={550}
-      > 
-        <Result
-          status="success"
-          icon={<CheckCircleFilled style={{ color: '#52c41a', fontSize: 72 }} />}
-          title={
-            <div className="text-lg font-semibold">
-              {notification || 'Successfully Purchased Cloud Server ECS!'}
-            </div>
-          }
-          subTitle={
-            <div className="text-gray-500 text-sm">
-              {subTitle || 'Your order has been successfully processed. You can now manage your cloud server from the console.'}
-            </div>
-          }
-         
-        />
-      </Modal>
-    </div>
-  );
-};
+import { DeleteIcon, PlusIcon, SaveIcon } from '@/components/Icon';
+import useContact from '@/hooks/useContact'
+import { CancelPopup } from '@/components/Popup';
+import { toast } from 'react-toastify';
 function Address({index,address,isChecked, isMultiple, handleDelete, handleChange ,handleChecked})
 {
   return(
@@ -87,11 +52,13 @@ const Company = () => {
     const [nextHourId, setNextHourId] = useState(0);
     const [nextPhoneId, setNextPhoneId] = useState(0);
     const [nextAddressId, setNextAddressId] = useState(0);
+
     const [selectedAddressId, setSelectedAddressId] = useState(null);
+
     const [openCancelPopup, setOpenCancelPopup] = useState(false)
-    const [openSuccesPopup, setOpenSuccesPopup] = useState(false)
     const [pendingDeleteId, setPendingDeleteId] = useState(null);
     const [popupType, setPopupType] = useState(null); // "address" | "hour" | "phone"
+
     useEffect(() => {
       setLayoutProps({
         title: 'Thông tin công ty',
@@ -141,7 +108,6 @@ const Company = () => {
       return(<div> Loading</div>)
     }
   
-    console.log(companyInfo)
     const handleCanclePopup = ()=>{
         setOpenCancelPopup(false)
   
@@ -188,13 +154,8 @@ const Company = () => {
           
         },
           {
-            onSuccess: ()=>{
-            setOpenSuccesPopup(true)
-          },
-          onError:(error)=>{
-            console.error("Update thất bại:", error.response?.data || error.message);
-            alert("that bai")
-          }
+            onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
+            onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
           }
         )
      
@@ -203,7 +164,7 @@ const Company = () => {
     
     //===========Addresss=====================
    
-     const cancelProps = {
+  const cancelProps = {
      open:openCancelPopup, 
      setOpen :setOpenCancelPopup,
      notification:"Xác nhận xóa", 
@@ -213,15 +174,7 @@ const Company = () => {
      buttonLabel2: "Xác nhận xóa", 
      buttonAction2: handleConfirmPopup
   }
-  const succesProps = {
-     open: openSuccesPopup, 
-     setOpen :setOpenSuccesPopup,
-     notification:"Bạn đã lưu thành công!", 
-     subTitle:" "
-    
-
-  }
-    const handleDeleteAddress = (e)=>{
+  const handleDeleteAddress = (e)=>{
       const parentWithDataIndex = e.target.closest('[data-index]');
       const index = parentWithDataIndex.getAttribute('data-index');
         setPendingDeleteId(index)
@@ -305,9 +258,9 @@ const handleSelectMainAddress = (id) => {
   const handleDeletePhone =(e)=> {
       const parentWithDataIndex = e.target.closest('[data-index]');
       const index = parentWithDataIndex.getAttribute('data-index');
-       setPendingDeleteId(index)
-        setPopupType("phone")
-        setOpenCancelPopup(true)
+      setPendingDeleteId(index)
+      setPopupType("phone")
+      setOpenCancelPopup(true)
       
   }
   const handlePhoneChange = (id, value) => {
@@ -390,8 +343,7 @@ const handleSelectMainAddress = (id) => {
             </div>
             <div className='flex flex-col gap-[8px]'>
                {
-                
-              companyHourList.map((hour, index)=>{
+              (companyHourList || []).map((hour, index)=>{
                
                   return(  
                       <div key={index} data-index = {hour.id} className='flex flex-row gap-[4px] items-center'>
@@ -431,9 +383,7 @@ const handleSelectMainAddress = (id) => {
               </div>
               <div className='flex flex-col gap-[8px]'>
                {
-                
-              companyPhoneList.map((phone, index)=>{
-               
+              (companyPhoneList || []).map((phone, index)=>{
                   return(  
                       <div key={index} data-index = {phone.id} className='flex flex-row gap-[4px] items-center'>
                     <input type="text" required 
@@ -456,15 +406,14 @@ const handleSelectMainAddress = (id) => {
           value={companyFanpageUrl || ""}
           onChange = {(e)=>{setCompanyFanpageUrl(e.target.value)}}
           required className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
-          placeholder='Vd: Minhtri@gmail.com' />
+          placeholder='Vd: http://thientruc.com/...' />
         </div>
         <button type = 'submit'>
             <Button {...submitButton} />
         </button>
-           <div className='absolute'>
-             <CancelPopup {...cancelProps}/>
-             <SuccessPopup {...succesProps}/>
-           </div>
+          <div className='absolute'>
+            <CancelPopup {...cancelProps}/>
+          </div>
     </form>
   )
 }

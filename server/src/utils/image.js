@@ -28,4 +28,27 @@ const deleteImage = async(image_url_array) => {
         console.error("Delete error:", error);
     }
 }
-export {uploadImage, deleteImage};
+
+const isCloudinary = (url) => url?.includes('res.cloudinary.com');
+
+const updateImage = async (old, new_local, new_external, type) => {
+    // Ưu tiên ảnh local
+    if (new_local) {
+        if (old !== new_local.path) {
+            if (isCloudinary(old)) await deleteImage([old]);
+            return await uploadImage(new_local, type);
+        }
+        return old;
+    }
+
+    // Nếu không có local, xét external
+    if (new_external && old !== new_external) {
+        if (isCloudinary(old)) await deleteImage([old]);
+        return new_external;
+    }
+
+    // Không có gì thay đổi
+    return old;
+};
+
+export {uploadImage, deleteImage, updateImage, isCloudinary};

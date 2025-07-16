@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
 import sendMail from '#@/utils/mailer.js'
 
 const getAllTables = async () => {
@@ -106,19 +107,26 @@ const support_agents = {
         }
         return support_agent_with_id;
     },
-    createOne: async (data) => {
+    createOne: async (data, file) => {
+        let cloud_avatar_img = null;
+        if (file?.local_image) {
+            cloud_avatar_img = await uploadImage(file.local_image, 'contact');
+        }
+
         const {
-            avatar_img,
+            external_avatar_img,
             name,
             role,
             phone_number,
             facebook_url
         } = data
 
+        const final_avatar_img = cloud_avatar_img || external_avatar_img || null;
+
         const result = await pool.query(`
             INSERT INTO contact.support_agents (avatar_img, name, role, phone_number, facebook_url)
             VALUES ($1, $2, $3, $4, $5);
-        `, [avatar_img, name, role, phone_number, facebook_url]);
+        `, [final_avatar_img, name, role, phone_number, facebook_url]);
 
         if (result.rowCount == 0) return {
             status: 500,
@@ -128,21 +136,31 @@ const support_agents = {
             message: "Tạo Người Liên Hệ thành công"
         } 
     },
-    updateOne: async (data, id) => {
+    updateOne: async (data, file, id) => {
         const idCount = (await pool.query('SELECT COUNT(*)::int FROM contact.support_agents WHERE id = $1', [id])).rows[0].count;
         if (idCount == 0) return {
             status: 404,
             message: "Không tìm thấy Người Liên Hệ"
         }
-
+        
+        const old_avatar_img = (await pool.query('SELECT avatar_img FROM contact.support_agents WHERE id = $1', [id])).rows[0].avatar_img;
+        let local_avatar_img = file?.local_image;
+        
         const {
-            avatar_img,
+            external_avatar_img,
             name,
             role,
             phone_number,
             facebook_url
         } = data
 
+        const final_avatar_img = await updateImage(
+            old_avatar_img,
+            local_avatar_img,
+            external_avatar_img,
+            'contact'
+        );
+        
         const result = await pool.query(`
             UPDATE contact.support_agents
             SET 
@@ -153,7 +171,7 @@ const support_agents = {
                 facebook_url = $5
             WHERE
                 id = $6
-        `, [avatar_img, name, role, phone_number, facebook_url, id]);
+        `, [final_avatar_img, name, role, phone_number, facebook_url, id]);
 
         if (result.rowCount == 0) return {
             status: 500,
@@ -164,7 +182,13 @@ const support_agents = {
         } 
     },
     deleteOne: async (id) => {
-        const result = await pool.query('DELETE FROM contact.support_agents WHERE id = $1', [id]);
+        const result = await pool.query('DELETE FROM contact.support_agents WHERE id = $1 returning avatar_img', [id]);
+        
+        const deleted_avatar_img = result.rows[0]?.avatar_img;
+
+        if (isCloudinary(deleted_avatar_img)) {
+            await deleteImage([deleted_avatar_img]);
+        }
 
         if (result.rowCount == 0) return {
             status: 500,
