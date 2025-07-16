@@ -21,6 +21,27 @@ const getContactPage = async () => {
     return contact_page;
 }
 
+const updateContactPage = {
+    banner: async (data) => {
+        const {
+            title,
+            description
+        } = data;
+
+        await pool.query(`
+            UPDATE contact.contact_page
+            SET
+                banner_title = $1,
+                banner_description = $2    
+        `, [title, description]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Banner thành công"
+        }
+    }
+}
+
 const getCompanyInfo = async () => {
     let company_info = (await pool.query("SELECT * FROM contact.company_info")).rows[0];
     if(!company_info){
@@ -226,4 +247,4 @@ const count = async () => {
 
     return data;
 }
-export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count };
+export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count, updateContactPage };
