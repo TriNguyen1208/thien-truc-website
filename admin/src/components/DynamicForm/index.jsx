@@ -164,14 +164,6 @@ const DynamicForm = ({ data, config }) => {
             }));
         }
     };
-    const handleImageUrl = (fieldName, url) => {
-        if (url && url.trim()) {
-            setFormData((prev) => ({
-                ...prev,
-                [fieldName]: url.trim()
-            }));
-        }
-    };
     const removeImage = (fieldName) => {
         setFormData((prev) => {
             if (prev[fieldName]?.startsWith?.('blob:')) {
@@ -227,6 +219,7 @@ const DynamicForm = ({ data, config }) => {
         setSimpleFormData(formData);
         setIsModalOpenSimple(true);
     };
+    console.log(formData)
     const renderInput = (item) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
@@ -319,19 +312,16 @@ const DynamicForm = ({ data, config }) => {
                 return (
                     <div className="space-y-4">
                         {/* URL Input */}
-                        <div className="flex  gap-2 w-full items-stretch">
+                        <div className="flex gap-2 w-full items-stretch">
                             <input
                                 type="url"
                                 value={urlInput}
-                                onChange={(e) => setUrlInput(e.target.value)}
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        if (!image) {
-                                            handleImageUrl(nameColumn, urlInput);
-                                            setUrlInput('');
-                                        }
-                                    }
+                                onChange={(e) => {
+                                    setUrlInput(e.target.value)
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        img: e.target.value
+                                    }));
                                 }}
                                 placeholder="Nhập link ảnh"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md w-full"
@@ -367,7 +357,7 @@ const DynamicForm = ({ data, config }) => {
 
 
                         {/* Image Preview */}
-                        {image.name && (
+                        {image?.name && (
                             <div className="text-xs text-gray-700 break-all relative border border-gray-200 rounded-md p-2">
                                 URL: {image.name}
                                 <button
