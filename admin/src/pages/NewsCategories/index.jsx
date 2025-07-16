@@ -269,6 +269,7 @@ export default function NewsCategories() {
      <Setting {...settingFormData} 
         onSave={async (changedItems) => {
           // Map từ { id, state } -> { id, category_id }
+          
           const mappedItems = changedItems
             .map(item => ({
               id: item.id,

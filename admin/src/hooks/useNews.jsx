@@ -36,7 +36,7 @@ function usePatchNewsPage() {
 }
 
 const news = {
-    useGetList: (query = '', filter = '', is_published, sort_by = '', page = undefined, limit) => {
+    useGetList: (query = '', filter = '', is_published = undefined, sort_by = '', page = undefined, limit) => {
         return useQuery({
             queryKey: ["admin_news_list", query, filter, is_published, sort_by, page, limit],
             queryFn: () => newsServices.news.getList(query, filter, is_published, sort_by, page, limit),
@@ -174,7 +174,12 @@ function useGetFeatureNews() {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: () => newsServices.updateFeatureNews,
-      onSuccess: () => {
+      onSuccess: (success) => {
+        toast.success(success.message);
+        queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
+      },
+       onError: (error) => {
+        toast.error(error.message);
         queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
       },
     })

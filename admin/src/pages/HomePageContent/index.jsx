@@ -12,7 +12,7 @@ import SearchBar from '../../components/Search'
 import ProductImageCell from '../../components/ProductImageCell'
 import useHome from '../../hooks/useHome';
 import useNews from '../../hooks/useNews';
-import Setting from '../../components/Setting';
+import AddHighlight from '../../components/AddHighlight';
 const HomePageContent = () => {
   const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
   const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
@@ -22,11 +22,23 @@ const HomePageContent = () => {
   const [arrayHighlightNews, setArrayHighlightNews] = useState([]);
   const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
   const [isModalOpenAddHighlightNews, setIsModalOpenAddHighlightNews] = useState(false);
+  const [itemAddHighlightNews, setIsItemAddHighlightNews] = useState(null);
   const [dataEditHighlightFeature, setDataEditHighlightFeature] = useState([
     { name: 'figures', label: 'Số liệu', type: 'text', width: 12, isRequired: false, placeholder: "VD: 100+" },
     { name: 'achievementName', label: 'Tên thành tựu', type: 'text', width: 12, isRequired: false, placeholder: "VD: dự án hoàn thành" },
   ]);
   const [switchTime, setSwitchTime] = useState(0);
+
+  const [contentSetting, setContentSetting] = useState({
+    title: `Quản lý danh sách tin tức`,
+    description: `Chọn các tin tức muốn thêm hoặc xóa  khỏi loại tin tức`,
+    type: "tin tức",
+    header: [
+      "Mã tin tức",
+      "Tên tin tức",
+      "Loại tin tức",
+    ]
+  });
 
 
   const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
@@ -40,20 +52,22 @@ const HomePageContent = () => {
   const { mutate: deleteHighlightFeature, isLoading: isLoadingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
   const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.getFeatureNews();
+  const { mutate: updateFeatureNews, isLoading: isLoadingUploadFeatureNews } = useNews.updateFeatureNews();
+  const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
   useEffect(() => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
   }, [highlightNewsData])
   if (isLoadingHighlightFeature || isLoadingUpdateHighlightFeature ||
     isLoadingCreateHighlightFeature || isLoadingDeleteHighlightFeature ||
     isLoadingHighlightNews || isLoadingHomePageData || isLoadingUpdateBanner ||
-    isLoadingUpdateAboutUs) {
+    isLoadingUpdateAboutUs || isLoadingNewsData) {
     return (
       <>
         is loading....
       </>
     )
   }
-  console.log(homePageData);
+
 
 
 
@@ -230,7 +244,6 @@ const HomePageContent = () => {
       setSwitchTime(inputValue);
 
       // Gọi callback nếu cần
-      console.log('Giá trị mới:', inputValue);
     }
   };
 
@@ -355,17 +368,7 @@ const HomePageContent = () => {
     });
   };
   const dataTable = convertHighlightNewsListToTableData(configHighlightNews.data);
-  const contentSetting = {
-    title: `Quản lý danh sách dự án thuộc loại "Miền Bắc"`,
-    description: `Chọn các dự án muốn thêm hoặc xóa khỏi loại "Miền Bắc"`,
-    type: "tin tức",
-    category: "Miền Bắc",
-    header: [
-      "Mã tin tức",
-      "Tên tin tức",
-      "Khu vực",
-    ]
-  };
+
   console.log(isModalOpenSetting);
   return (
     <>
@@ -399,7 +402,10 @@ const HomePageContent = () => {
           <div className='w-[160px] h-40[px]'>
             <button type="submit"
               className='w-[170px]'
-              onClick={() => setIsModalOpenAddHighlightFeature(true)}
+              onClick={() => {
+                setIsModalOpenAddHighlightFeature(true)
+
+              }}
               disabled={configHighlightFeature.arrayFeatureCard.length >= limitHighlightFeature}>
               <Button
                 {...configHighlightFeature.propsAddButton}
@@ -453,18 +459,32 @@ const HomePageContent = () => {
         <div className='mb-[30px]'>
           <Table columns={configHighlightNews.table.columns} data={dataTable} isSetting={false} />
         </div>
-        <div className='mb-[30px]'>
-          Thời gian chuyển giữa các tin tức
+          <div className='flex items-center'>
+          <span className="text-gray-700">Thời gian chuyển gửi của tin tức:</span>
+
           <input
-            type="number"
+            type="text"
             value={switchTime}
             onChange={handleChangeSwitchTime}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div className='w-[145px] h-[40px]'>
-          <button type="submit" className='w-[190px]' onClick={() => console.log("Luu tin tuc noi bat")}> <Button {...configHighlightNews.propsSaveButton} /></button>
-        </div>
+            className="w-16 px-2 py-1 text-lg font-semibold text-gray-800 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="2.00"
+            />
+          <span className="text-gray-600">giây</span>
+            </div>
+          <button 
+            className="w-[200px] px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
+            onClick={() => {
+              const object = {
+                switch_times: switchTime,
+                news_ids: arrayHighlightNews.map(item => item.id),
+              };
+              console.log(object);
+              updateFeatureNews(object);
+            }}
+            
+          >
+            Lưu tin tức nổi bật
+          </button>
       </div>
       <SimpleForm data={configHighlightFeature.dataAddHighlightFeature} config={configHighlightFeature.configAddHighlightFeature} />
       <SimpleForm data={dataEditHighlightFeature} config={configHighlightFeature.configEditHighlightFeature} />
@@ -476,13 +496,51 @@ const HomePageContent = () => {
         subTitle={configHighlightFeature.cancelPopub.subTitle}
         buttonAction2={configHighlightFeature.cancelPopub.buttonAction2}
       />
-      <Setting
+      <AddHighlight
         isOpen={isModalOpenSetting}
         onClose={() => setIsModalOpenSetting(false)}
         content={contentSetting}
         useData={useNews.news}
         useDataSuggestion={useNews}
         useDataCategories={useNews.news_categories}
+        onSave={async (changedItems) => {
+          setIsItemAddHighlightNews(changedItems);
+          console.log(changedItems);
+          // var newItemObject  = null;
+          if (changedItems) {
+
+            console.log(newsData);
+            console.log(arrayHighlightNews);
+            const { data, isCheckbox } = changedItems;
+
+            const matchedNews = newsData.find(item => item.id === data.id);
+            if (!matchedNews) return arrayHighlightNews; // Không tìm thấy thì không làm gì
+
+            const newHighlightItem = {
+              id: matchedNews.id,
+              img: matchedNews.main_img,
+              name: matchedNews.category.name,
+              title: matchedNews.title,
+              date: matchedNews.public_date,
+            }
+
+            const filtered = arrayHighlightNews.filter(item => item.id !== data.id);
+
+            let newArray;
+            if (isCheckbox) {
+              newArray = [newHighlightItem, ...filtered];
+            } else {
+              newArray = [...filtered, newHighlightItem];
+            }
+
+            // Cập nhật sort
+            setArrayHighlightNews(newArray.map((item, index) => ({
+              ...item,
+              sort: index + 1,
+            })))
+
+          }
+        }}
       />
     </>
   );
