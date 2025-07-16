@@ -1,15 +1,18 @@
 import React from 'react'
 
-const ItemTable = ({ data }) => {
+const ItemTable = ({ data, width }) => {
     return (
         <>
             {(data || []).map((item, index) => (
                 <td
                     key={index}
-                    className="px-4 py-3 align-middle whitespace-nowrap overflow-hidden truncate max-w-[350px] relative"
+                    className="px-4 py-3 align-middle whitespace-pre-line break-words overflow-hidden relative"
                     title={item.type === "text" ? item.content : undefined}
+                    style={{ width: width ? width[index] : 'auto' }}
                 >
-                    {item.type === "text" && <span>{item.content}</span>}
+                    {item.type === "text"  &&   <span className="line-clamp-3 break-words whitespace-pre-line"> {/* 👈 hiển thị tối đa 3 dòng */}
+                                                    {item.content}
+                                                </span>}
 
                     {item.type === "img" && (
                         <img
