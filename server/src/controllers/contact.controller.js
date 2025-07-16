@@ -10,6 +10,18 @@ const getContactPage = async (req, res) => {
     res.status(200).json(data);
 }
 
+const updateContactPage ={
+    banner: async (req, res) => {
+        try {
+            const { status, message } = await contactServices.updateContactPage.banner(req.body);
+            res.status(status).json({ message: message });
+        } catch (error) {
+            console.log('Lỗi cập nhật Banner Trang Liên Hệ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
+    }
+}
+
 const getCompanyInfo = async (req, res) => {
     const data = await contactServices.getCompanyInfo();
     res.status(200).json(data);
@@ -81,4 +93,4 @@ const count = async (req, res) => {
     const data = await contactServices.count();
     res.status(200).json(data);
 }
-export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count};
+export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count, updateContactPage};

@@ -157,6 +157,7 @@ const API_ROUTES = {
             postOne: `${NEWS_BASE}/news_contents/`,
             updateOne: (id) => `${NEWS_BASE}/news_contents/${id}`
         },
+        getFeaturedNews: `${NEWS_BASE}/featured_news`,
         updateFeaturedNews: `${NEWS_BASE}/featured_news`, // patch
         search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
         search_categories_suggestions: (query='') => `${NEWS_BASE}/search_categories_suggestions?query=${uri(query)}`,
@@ -170,6 +171,9 @@ const API_ROUTES = {
     contact: {
         base: CONTACT_BASE,
         contact_page: `${CONTACT_BASE}/contact_page`,
+        updateContactPage: {
+            banner: `${CONTACT_BASE}/contact_page/banner`,
+        },
         company_info: `${CONTACT_BASE}/company_info`,
         updateCompanyInfo: `${CONTACT_BASE}/company_info`, // patch        
         support_agents: {

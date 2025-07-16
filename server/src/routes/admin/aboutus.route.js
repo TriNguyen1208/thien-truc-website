@@ -16,7 +16,7 @@ router.post('/company_services', authenticateToken, aboutUsController.company_se
 router.post('/why_choose_us', authenticateToken, aboutUsController.why_choose_us.createOne);
 
 router.patch('/about_us_page/banner', authenticateToken, aboutUsController.updateAboutUsPage.banner);
-router.patch('/about_us_page/ourStory', authenticateToken, aboutUsController.updateAboutUsPage.ourStory);
+router.patch('/about_us_page/our_story', authenticateToken, aboutUsController.updateAboutUsPage.ourStory);
 router.patch('/company_services/:id', authenticateToken, aboutUsController.company_services.updateOne);
 router.patch('/why_choose_us/:id', authenticateToken, aboutUsController.why_choose_us.updateOne);
 
