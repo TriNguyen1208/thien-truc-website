@@ -24,6 +24,17 @@ function useGetNewsPage(){
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function usePatchNewsPage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (updatedPage)=> newsServices.patchNewsPage(updatedPage),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["news_page"] });
+    },
+  });
+}
+
 const news = {
     useGetList: (query = '', filter = '', is_published, sort_by = '', page = undefined, limit) => {
         return useQuery({
@@ -36,6 +47,7 @@ const news = {
         return useQuery({
             queryKey: ["admin_news", id],
             queryFn: () => newsServices.news.getOne(id),
+            enabled: id != null,
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -50,6 +62,12 @@ const news = {
             });
         }
         })
+    },
+    useUpdateCategory: () => {
+            return useMutation({
+                mutationFn: (changedItems) =>
+                newsServices.news.updateCategory(changedItems)
+            });
     },
     useDeleteOne: (id) => {
         return useMutation({
@@ -147,11 +165,13 @@ export default {
     getQuantity: useGetQuantity,
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
+    patchNewsPage: usePatchNewsPage,
     news:{
         getList: news.useGetList,
         getOne: news.useGetOne,
         updateNumReaders: news.useUpdateNumReaders,
         deleteOne: news.useDeleteOne,
+        updateCategory: news.useUpdateCategory,
     },
     news_categories:{
         getAll: news_categories.useGetAll,

@@ -62,6 +62,22 @@ const getProjectPage = async () => {
     };
 }
 
+const updateProjectPage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE project.project_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
+}
+
 const projects = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
@@ -284,7 +300,6 @@ const projects = {
         );
     },
     updateRegion: async (changedItems) => {
-        console.log("Updating regions for projects:", changedItems);
         if (!Array.isArray(changedItems)) {
             throw new Error("Invalid input");
         }
@@ -819,4 +834,4 @@ const count = async () => {
 }
 
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};
+export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};

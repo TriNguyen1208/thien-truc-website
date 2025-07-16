@@ -10,6 +10,16 @@ const getNewsPage = async (req, res) => {
     res.status(200).json(data);
 }
 
+const updateNewsPage = async (req, res) => {
+    try {
+        await newsServices.updateNewsPage(req.body);
+        return res.status(200).json({ message: 'Cập nhật trang dự án thành công' });
+    } catch (error) {
+        console.error('Lỗi cập nhật trang dự án: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
+
 const news = {
     getList: async (req, res) => {
         const {query = '', filter = '', sort_by = 'popular', page, is_published, limit} = req.query;
@@ -31,8 +41,18 @@ const news = {
         const data = await newsServices.news.updateNumReaders(id);
         res.status(200).json(data);
     },
+    updateCategory: async (req, res) => {
+            const { changedItems } = req.body; 
+            try {
+                await newsServices.news.updateCategory(changedItems);
+                res.status(200).json({message: 'Cập nhật vùng thành công'});
+            } catch (error) {
+                console.log('Error:', error);
+                res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
+            }
+    }, 
     deleteOne: async (req, res) => {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         try {
             const result = await newsServices.news.deleteOne(id);
             if (result.rowCount == 0) {
@@ -66,7 +86,7 @@ const news_categories = {
         }
     },
     updateOne: async(req, res) => {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         try {
             await newsServices.news_categories.updateOne(req.body, id); 
             res.status(200).json({message: 'Cập nhật thông tin vùng thành công'});
@@ -76,7 +96,7 @@ const news_categories = {
         }
     },
     deleteOne: async(req, res) => {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         try {
             const result = await newsServices.news_categories.deleteOne(id);
             if (result.rowCount == 0) {
@@ -146,4 +166,4 @@ const featured_news = {
         }
     }
 }
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news};
+export default { getAllTables, getNewsPage, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news};

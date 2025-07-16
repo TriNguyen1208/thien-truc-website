@@ -20,6 +20,7 @@ router.get('/search_categories_suggestions', newsController.getSearchCategoriesS
 router.get('/count', newsController.count);
 router.get('/featured_news', newsController.featured_news.getAll);
 
+router.patch('/news/update_categories', authenticateToken, newsController.news.updateCategory);
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
 router.patch('/featured_news', newsController.featured_news.updateAll);
 
@@ -40,9 +41,10 @@ router.post('/news_categories', authenticateToken, newsController.news_categorie
 
 // patch
 router.patch('/news_categories/:id', authenticateToken, newsController.news_categories.updateOne);
+router.patch('/news_page', authenticateToken, newsController.updateNewsPage);
+router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
 // delete
 router.delete('/news/:id', authenticateToken, newsController.news.deleteOne);
 router.delete('/news_categories/:id', authenticateToken, newsController.news_categories.deleteOne);
-router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 export default router;

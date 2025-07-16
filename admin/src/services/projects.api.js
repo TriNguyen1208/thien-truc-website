@@ -10,6 +10,11 @@ const getProjectPage = async () => {
     const res = await axios.get(API_ROUTES.project.project_page);
     return res.data;
 }
+const updateProjectPage = async (data) => {
+    console.log("Updating project page with data:", data);
+    const res = await axios.patch(API_ROUTES.project.update_project_page, data);
+    return res.data;
+}
 
 const projects = {
     getList: async (query = '', filter = '', is_featured, page = undefined, limit) => {
@@ -26,11 +31,9 @@ const projects = {
         });
         return res.data;
     },
-    updateRegion: async ({changedItems}) => {
-        console.log("🚀 Gửi PATCH updateRegion với changedItems:", changedItems)
-        const res = await axios.patch(API_ROUTES.project.projects.updateRegion, {
-            changedItems,
-        });
+    updateRegion: async (changedItems) => {
+        console.log("Updating regions with changed items:", changedItems);
+        const res = await axios.patch(API_ROUTES.project.projects.updateRegion, changedItems);
         return res.data;
     },
     deleteOne: async (id) => {
@@ -112,4 +115,9 @@ const getSearchCategoriesSuggestions = async (query) => {
     return res.data;
 }
 
-export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, getQuantity };
+const patchProjectPage = async (updatedPage)=> {
+    const res = await axios.patch(API_ROUTES.project.update_project_page, updatedPage)
+    return res.data;
+}
+
+export default { getAll, getProjectPage, updateProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, getQuantity, patchProjectPage };

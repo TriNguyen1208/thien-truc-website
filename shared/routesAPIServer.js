@@ -60,6 +60,7 @@ const API_ROUTES = {
             // patch
             updateOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
+            updateCategory: `${PRODUCT_BASE}/products/update_categories`,
             // delete
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
         },
@@ -88,6 +89,7 @@ const API_ROUTES = {
     project: {
         base: PROJECT_BASE,
         project_page: `${PROJECT_BASE}/project_page`,
+        update_project_page: `${PROJECT_BASE}/project_page`, // patch
         projects: {
             getList: (query, filter, is_featured, page, limit) => `${PROJECT_BASE}/projects?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
@@ -95,7 +97,7 @@ const API_ROUTES = {
             postOne: `${PROJECT_BASE}/projects/`,
             
             updateFeatureOne: (id) => `${PROJECT_BASE}/projects/${id}`,
-            updateRegion: `${PROJECT_BASE}/projects/update_region`, // post
+            updateRegion: `${PROJECT_BASE}/projects/update_regions`, 
             // delete
             deleteOne: (id) => `${PROJECT_BASE}/projects/${id}`,
         },
@@ -105,7 +107,7 @@ const API_ROUTES = {
 
             // post
             createOne: `${PROJECT_BASE}/project_regions`,
-            
+               
             // patch
             updateOne: (id) => `${PROJECT_BASE}/project_regions/${id}`,
 
@@ -126,11 +128,13 @@ const API_ROUTES = {
     news: {
         base: NEWS_BASE,
         news_page: `${NEWS_BASE}/news_page`,
+        update_news_page: `${NEWS_BASE}/news_page`, // patch
         news: {
             getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&limit=${limit}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
             updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`,
+            updateCategory: `${NEWS_BASE}/news/update_categories`, 
             // delete
             deleteOne: (id) => `${NEWS_BASE}/news/${id}`,
         },

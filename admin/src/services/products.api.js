@@ -62,7 +62,11 @@ const products = {
         const res = await axios.patch(API_ROUTES.product.products.updateFeatureOne(id, status));
         return res.data;
     },
-
+    updateCategory: async (changedItems) => {
+        console.log("Updating category with changed items:", changedItems);
+        const res = await axios.patch(API_ROUTES.product.products.updateCategory, changedItems);
+        return res.data;
+    },
     deleteOne: async (id) => {
         const res = await axios.delete(API_ROUTES.product.products.deleteOne(id));
         return res.data;

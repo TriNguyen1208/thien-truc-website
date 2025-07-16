@@ -64,7 +64,21 @@ const getNewsPage = async () => {
         ...news_page,
     }
 }
+const updateNewsPage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
 
+    const result = await pool.query(`
+        UPDATE news.news_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
+}
 const news = {
     getList: async (query = '', filter = '', sort_by = 'date_desc', page, is_published, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
@@ -308,7 +322,53 @@ const news = {
         }
         return res;
     },
+    updateCategory: async (changedItems) => {
+        if (!Array.isArray(changedItems)) {
+            throw new Error("Invalid input");
+        }
 
+        const client = await pool.connect();
+        try {
+            await client.query("BEGIN");
+
+            for (const item of changedItems) {
+                const { id, category_id } = item;
+
+                const result = await client.query(
+                    `SELECT category_id FROM news.news WHERE id = $1`,
+                    [id]
+                );
+                const oldCategoryId = result.rows[0]?.category_id;
+
+                if (oldCategoryId !== category_id) {
+                    await client.query(
+                        `UPDATE news.news SET category_id = $1 WHERE id = $2`,
+                        [category_id, id]
+                    );
+
+                    if (oldCategoryId) {
+                        await client.query(
+                            `UPDATE news.news_categories SET item_count = item_count - 1 WHERE id = $1`,
+                            [oldCategoryId]
+                        );
+                    }
+
+                    await client.query(
+                        `UPDATE news.news_categories SET item_count = item_count + 1 WHERE id = $1`,
+                        [category_id]
+                    );
+                }
+            }
+
+            await client.query("COMMIT");
+        } catch (error) {
+            await client.query("ROLLBACK");
+            console.error("Error during DB updateRegion:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
     deleteOne: async (id) => {
         const client = await pool.connect();
 
@@ -838,4 +898,4 @@ const featured_news = {
 }
 
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};
+export default { getAllTables, getNewsPage, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};

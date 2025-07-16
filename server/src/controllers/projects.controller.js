@@ -10,6 +10,16 @@ const getProjectPage = async (req, res) => {
     res.status(200).json(data);
 }
 
+const updateProjectPage = async (req, res) => {
+    try {
+        await projectsServices.updateProjectPage(req.body);
+        return res.status(200).json({ message: 'Cập nhật trang dự án thành công' });
+    } catch (error) {
+        console.error('Lỗi cập nhật trang dự án: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
+
 const projects = {
     getList: async (req, res) => {
         const { query = '', filter = '', page, is_featured, limit } = req.query;
@@ -38,7 +48,6 @@ const projects = {
         }
     },
     updateRegion: async (req, res) => {
-        console.log("Body received at controller:", req.body);
         const { changedItems } = req.body; 
         try {
             await projectsServices.projects.updateRegion(changedItems);
@@ -47,9 +56,9 @@ const projects = {
             console.log('Error:', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
-    },
+    }, 
     deleteOne: async (req, res) => {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         try {
             const result = await projectsServices.projects.deleteOne(id);
             if (result.rowCount == 0) {
@@ -83,7 +92,7 @@ const project_regions = {
         }
     },
     updateOne: async(req, res) => {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         try {
             await projectsServices.project_regions.updateOne(req.body, id); 
             res.status(200).json({message: 'Cập nhật thông tin vùng thành công'});
@@ -93,7 +102,7 @@ const project_regions = {
         }
     },
     deleteOne: async(req, res) => {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         try {
             const result = await projectsServices.project_regions.deleteOne(id);
             if (result.rowCount == 0) {
@@ -153,4 +162,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};
+export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};

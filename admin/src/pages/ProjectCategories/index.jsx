@@ -278,7 +278,7 @@
                 id: item.id,
                 category_id: selectedCategoryId
               }));
-            
+
              try {
                 await updateRegion({ changedItems: mappedItems });
                 toast.success("Cập nhật khu vực thành công");
