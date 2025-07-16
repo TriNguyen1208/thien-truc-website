@@ -63,7 +63,7 @@ const API_ROUTES = {
             // patch
             updateOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
-            updateCategory: `${PRODUCT_BASE}/products/update_categories`,
+            updateCategory: `${PRODUCT_BASE}/products/update-categories`,
             // delete
             deleteOne: (id) => `${PRODUCT_BASE}/products/${id}`
         },
