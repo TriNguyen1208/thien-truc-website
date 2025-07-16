@@ -168,7 +168,7 @@ const API_ROUTES = {
         base: CONTACT_BASE,
         contact_page: `${CONTACT_BASE}/contact_page`,
         updateContactPage: {
-            banner: `${NEWS_BASE}/contact_page/banner`,
+            banner: `${NEWS_BASE}/contact_page/banner`, // patch 
         },
         company_info: `${CONTACT_BASE}/company_info`,
         updateCompanyInfo: `${CONTACT_BASE}/company_info`, // patch        
