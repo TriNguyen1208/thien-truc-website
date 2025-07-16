@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import projectsServices from "@/services/projects.api.js";
-
+import { toast } from 'react-toastify';
 function useGetAll(){
     return useQuery({
         queryKey: ["admin_projects"],
@@ -93,22 +93,37 @@ const project_contents = {
             staleTime: 5 * 60 * 1000,
         })
     },
-    usePostOne: ({onSuccess, onError}) => {
+    usePostOne: () => {
+        const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => {
                 return projectsServices.project_contents.postOne(data)
             },
-            onSuccess,
-            onError
+            onSuccess: (success) => {
+                console.log(success.message)
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["admin_project_contents"] });
+                queryClient.invalidateQueries({ queryKey: ["admin_projects"] });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     },
-    useUpdateOne: ({onSuccess, onError}) => {
+    useUpdateOne: () => {
+        const queryClient = useQueryClient();
         return useMutation({
             mutationFn: ({id, formDataProject}) => {
                 return projectsServices.project_contents.updateOne(id, formDataProject)
             },
-            onSuccess,
-            onError
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["admin_project"], exact: false});
+                queryClient.invalidateQueries({ queryKey: ["admin_project_contents"], exact: false });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     },
 }

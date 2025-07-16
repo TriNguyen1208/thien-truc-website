@@ -1,39 +1,21 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLayout } from "@/layouts/layoutcontext";
-import {Editor} from "@tinymce/tinymce-react"
-import EditorWord from '../../components/EditorWord';
 import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { PlusIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
+import { SaveIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
-import PostSettings from '../../components/PostSettings';
 import useProjects from '../../hooks/useProjects';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
-import {SuccessPopup, CancelPopup} from '@/components/Popup'
 import {extractBlogImages} from '../../utils/handleImage';
 import ProjectSetting from '../../components/ProjectSetting';
 
 const AddProject = () => {
     //useState
-    const [openPopup, setOpenPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-    const [openErrorPopup, setOpenErrorPopup] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
     const [form, setForm] = useState(null);
     
     //Call API
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const postProject = useProjects.project_contents.postOne({
-        onSuccess: (res) => {
-            setPopupMessage(res.message || 'Cập nhật thành công!');
-            setOpenPopup(true);
-        },
-        onError: (err) => {
-            const msg = err?.response?.data?.message || 'Cập nhật thất bại!';
-            setErrorMessage(msg);
-            setOpenErrorPopup(true);
-        }
-    })
+    const postProject = useProjects.project_contents.postOne()
 
     //set layout 
     const {setLayoutProps} = useLayout();
@@ -146,22 +128,6 @@ const AddProject = () => {
                     </div>
                 </div>
             </div>
-            <SuccessPopup
-                open={openPopup}
-                setOpen={setOpenPopup}
-                notification={popupMessage}
-                subTitle="Cảm ơn bạn đã gửi"
-                buttonLabel1="Thoát"
-                buttonLabel2="Tiếp tục chỉnh sửa"
-            />
-            <CancelPopup
-                open={openErrorPopup}
-                setOpen={setOpenErrorPopup}
-                notification={errorMessage}
-                subTitle="Vui lòng thử lại hoặc liên hệ quản trị viên"
-                buttonLabel1="Đóng"
-                buttonLabel2="Thử lại"
-            />
         </>
     )
 }

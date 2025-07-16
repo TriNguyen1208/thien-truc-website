@@ -5,27 +5,11 @@ import {SaveIcon} from "@/components/Icon"
 import DynamicForm from "@/components/DynamicForm"
 import EditBanner from '../../components/EditBanner'
 import useRecruitment from '../../hooks/useRecruitment'
-import { useState } from 'react'
-import { message } from 'antd';
+
 import { SuccessPopup, CancelPopup } from "../../components/Popup";
 const RecruitmentPageContent = () => {
-  const [openPopup, setOpenPopup] = useState(false);
-  const [popupMessage, setPopupMessage] = useState('');
-  const [openErrorPopup, setOpenErrorPopup] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
   const {setLayoutProps} = useLayout();
-  const patchRecruitment = useRecruitment.patch({
-    onSuccess: (res) => {
-      setPopupMessage(res.message || 'Cập nhật thành công!');
-      setOpenPopup(true);
-    },
-    onError: (err) => {
-      const msg = err?.response?.data?.message || 'Cập nhật thất bại!';
-      setErrorMessage(msg);
-      setOpenErrorPopup(true);
-    }
-  });
+  const patchRecruitment = useRecruitment.patch();
   useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang tuyển dụng",
@@ -35,7 +19,7 @@ const RecruitmentPageContent = () => {
 
   const handleButtonBanner = (result) => {
     const data = {
-      banner_title: result["Tiêu đề banner"],
+      banner_title: result["Tiêu đề Banner"],
       banner_description: result["Mô tả Banner"]
     }
     patchRecruitment.mutate(data);
@@ -91,23 +75,6 @@ const RecruitmentPageContent = () => {
   }
   return (
     <>
-      <SuccessPopup
-        open={openPopup}
-        setOpen={setOpenPopup}
-        notification={popupMessage}
-        subTitle="Cảm ơn bạn đã gửi"
-        buttonLabel1="Thoát"
-        buttonLabel2="Tiếp tục chỉnh sửa"
-      />
-
-      <CancelPopup
-        open={openErrorPopup}
-        setOpen={setOpenErrorPopup}
-        notification={errorMessage}
-        subTitle="Vui lòng thử lại hoặc liên hệ quản trị viên"
-        buttonLabel1="Đóng"
-        buttonLabel2="Thử lại"
-      />
       <div className='flex flex-col gap-5'>
         <EditBanner {...propsBanner}/>
         <EditBanner {...propsCulture}/>

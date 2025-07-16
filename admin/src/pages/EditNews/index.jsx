@@ -1,16 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-// import {useNavigate} from "react-router-dom"
+import { useEffect, useState } from 'react'
 import { useLayout } from "@/layouts/layoutcontext";
-import {Editor} from "@tinymce/tinymce-react"
-import EditorWord from '../../components/EditorWord';
 import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { PlusIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
+import { SaveIcon, DeleteIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
-import {SuccessPopup, CancelPopup} from '@/components/Popup'
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
 const EditNews = () => {
@@ -18,26 +14,12 @@ const EditNews = () => {
     const {id: news_id} = useParams();
 
     //useState
-    const [openPopup, setOpenPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-    const [openErrorPopup, setOpenErrorPopup] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
     //Call API
     const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
-    const updateNews = useNews.news_contents.updateOne({
-        onSuccess: (res) => {
-            setPopupMessage(res.message || 'Cập nhật thành công!');
-            setOpenPopup(true);
-        },
-        onError: (err) => {
-            const msg = err?.response?.data?.message || 'Cập nhật thất bại!';
-            setErrorMessage(msg);
-            setOpenErrorPopup(true);
-        }
-    })
+    const updateNews = useNews.news_contents.updateOne()
 
     //set layout 
     const {setLayoutProps} = useLayout();
@@ -174,14 +156,14 @@ const EditNews = () => {
                             <span>Khôi phục</span>
                         </CustomButton>
                         <CustomButton
-                        backgroundColor="white"
-                        borderColor="#e4e4e7"
-                        hoverBackgroundColor="oklch(57.7% 0.245 27.325)"
-                        textColor="#000000"
-                        hoverTextColor="#ffffff"
-                        paddingX={16}
-                        height={45}
-                        onClick={handleDelete}
+                            backgroundColor="white"
+                            borderColor="#e4e4e7"
+                            hoverBackgroundColor="oklch(57.7% 0.245 27.325)"
+                            textColor="#000000"
+                            hoverTextColor="#ffffff"
+                            paddingX={16}
+                            height={45}
+                            onClick={handleDelete}
                         >
                             <div className='flex gap-11 items-center'>
                                 <DeleteIcon/>
@@ -192,22 +174,6 @@ const EditNews = () => {
                     </div>
                 </div>
             </div>
-            <SuccessPopup
-                open={openPopup}
-                setOpen={setOpenPopup}
-                notification={popupMessage}
-                subTitle="Cảm ơn bạn đã gửi"
-                buttonLabel1="Thoát"
-                buttonLabel2="Tiếp tục chỉnh sửa"
-            />
-            <CancelPopup
-                open={openErrorPopup}
-                setOpen={setOpenErrorPopup}
-                notification={errorMessage}
-                subTitle="Vui lòng thử lại hoặc liên hệ quản trị viên"
-                buttonLabel1="Đóng"
-                buttonLabel2="Thử lại"
-            />
         </>
     )
 }

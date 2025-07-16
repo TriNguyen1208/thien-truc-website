@@ -1,16 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-// import {useNavigate} from "react-router-dom"
+import { useEffect, useState } from 'react'
 import { useLayout } from "@/layouts/layoutcontext";
-import {Editor} from "@tinymce/tinymce-react"
-import EditorWord from '../../components/EditorWord';
 import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { PlusIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
+import { SaveIcon, DeleteIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import ProjectSetting from '../../components/ProjectSetting';
 import useProjects from '../../hooks/useProjects';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
-import {SuccessPopup, CancelPopup} from '@/components/Popup'
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
 
@@ -19,27 +15,13 @@ const EditProject = () => {
     const {id: project_id} = useParams();
 
     //useState
-    const [openPopup, setOpenPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-    const [openErrorPopup, setOpenErrorPopup] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
     
     //Call API
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
     const {data: project_contents, isLoading: isLoadingProjectContent} = useProjects.project_contents.getOne(project_id);
-    const updateProject = useProjects.project_contents.updateOne({
-        onSuccess: (res) => {
-            setPopupMessage(res.message || 'Cập nhật thành công!');
-            setOpenPopup(true);
-        },
-        onError: (err) => {
-            const msg = err?.response?.data?.message || 'Cập nhật thất bại!';
-            setErrorMessage(msg);
-            setOpenErrorPopup(true);
-        }
-    })
+    const updateProject = useProjects.project_contents.updateOne()
 
     //set layout 
     const {setLayoutProps} = useLayout();
@@ -121,13 +103,15 @@ const EditProject = () => {
                 formDataProject.append(key, form[key]);
             }
         }
-        for(let [key, value] of formDataProject.entries()){
-            console.log(key, value);
-        }
         if(project_id !== null)
             updateProject.mutate({ id: project_id, formDataProject });
         setInitialForm(form);
         setForm(form);
+    }
+
+    //Helper function
+    const handleDelete = () => {
+        //Xoa bai viet hien tai
     }
     const handleRecover = () => {
         setForm(initialForm)
@@ -159,26 +143,26 @@ const EditProject = () => {
                             onClick={handleRecover}
                         >
                             <span>Khôi phục</span>
-                        </CustomButton>                   
+                        </CustomButton>  
+                        <CustomButton
+                            backgroundColor="white"
+                            borderColor="#e4e4e7"
+                            hoverBackgroundColor="oklch(57.7% 0.245 27.325)"
+                            textColor="#000000"
+                            hoverTextColor="#ffffff"
+                            paddingX={16}
+                            height={45}
+                            onClick={handleDelete}
+                        >
+                            <div className='flex gap-11 items-center'>
+                                <DeleteIcon/>
+                                <span>Xóa</span>
+                                <span></span>
+                            </div>
+                        </CustomButton>                 
                     </div>
                 </div>
             </div>
-            <SuccessPopup
-                open={openPopup}
-                setOpen={setOpenPopup}
-                notification={popupMessage}
-                subTitle="Cảm ơn bạn đã gửi"
-                buttonLabel1="Thoát"
-                buttonLabel2="Tiếp tục chỉnh sửa"
-            />
-            <CancelPopup
-                open={openErrorPopup}
-                setOpen={setOpenErrorPopup}
-                notification={errorMessage}
-                subTitle="Vui lòng thử lại hoặc liên hệ quản trị viên"
-                buttonLabel1="Đóng"
-                buttonLabel2="Thử lại"
-            />
         </>
     )
 }

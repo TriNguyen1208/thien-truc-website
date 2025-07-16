@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
+import { toast } from 'react-toastify';
 
 function useGetQuantity()
 {
@@ -109,22 +110,36 @@ const news_contents = {
             staleTime: 5 * 60 * 1000,
         })
     },
-    usePostOne: ({onSuccess, onError}) => {
+    usePostOne: () => {
+        const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => {
                 return newsServices.new_contents.postOne(data)
             },
-            onSuccess,
-            onError
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["admin_news_contents"] });
+                queryClient.invalidateQueries({ queryKey: ["admin_news"] });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     },
-    useUpdateOne: ({onSuccess, onError}) => {
+    useUpdateOne: () => {
+        const queryClient = useQueryClient();
         return useMutation({
             mutationFn: ({id, formDataNews}) => {
                 return newsServices.new_contents.updateOne(id, formDataNews)
             },
-            onSuccess,
-            onError
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["admin_news_contents"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_news"], exact: false });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     }
 }

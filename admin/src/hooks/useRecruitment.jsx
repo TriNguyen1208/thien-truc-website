@@ -1,24 +1,32 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import recruitmentServices from "@/services/recruitment.api.js";
+import { toast } from 'react-toastify';
 function useGetAll(){
     return useQuery({
-        queryKey: ["recruitment"],
+        queryKey: ["admin_recruitment"],
         queryFn: recruitmentServices.getAll,
         staleTime: 5 * 60 * 1000,
     })
 }
 function useGetRecruitmentPage(){
     return useQuery({
-        queryKey: ["recruitment_page"],
+        queryKey: ["admin_recruitment_page"],
         queryFn: recruitmentServices.getRecruitmentPage,
         staleTime: 5 * 60 * 1000,
     })
 }
-function usePatchRecruitment({ onSuccess, onError }){
+function usePatchRecruitment(){
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (data) => recruitmentServices.patchRecruitment(data),
-        onSuccess,
-        onError
+        onSuccess: (success) => {
+            toast.success(success.message)
+            queryClient.invalidateQueries({ queryKey: ['admin_recruitment'] });
+            queryClient.invalidateQueries({ queryKey: ['admin_recruitment_page'] });
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        }
     })
 }
 export default {
