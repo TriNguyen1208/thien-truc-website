@@ -309,6 +309,7 @@ const DynamicForm = ({ data, config }) => {
                 );
             case 'image_upload': {
                 const image = formData[nameColumn];
+                console.log(image);
                 return (
                     <div className="space-y-4">
                         {/* URL Input */}
@@ -357,9 +358,9 @@ const DynamicForm = ({ data, config }) => {
 
 
                         {/* Image Preview */}
-                        {image?.name && (
+                        {image && (
                             <div className="text-xs text-gray-700 break-all relative border border-gray-200 rounded-md p-2">
-                                URL: {image.name}
+                                URL: {image}
                                 <button
                                     type="button"
                                     onClick={() => removeImage(nameColumn)}

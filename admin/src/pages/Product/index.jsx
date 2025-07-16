@@ -206,7 +206,7 @@ const Product = () => {
   }
 
   const handleEditButton = (item) => {
-s
+
     const updatedForm = [
       { ...dataEditProduct[0], value: item.name },
       { ...dataEditProduct[1], value: item.category.name },

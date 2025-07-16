@@ -187,7 +187,7 @@ export default function News() {
                     <div className="flex items-center gap-2">
                     <button
                       className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
-                      onClick={() => navigate(`/quan-ly-tin-tuc/chinh-sua-tic-tuc/${item.id}`)}
+                      onClick={() => navigate(`/quan-ly-tin-tuc/chinh-sua-tin-tuc/${item.id}`)}
                     >
                       <EditIcon />
                     </button>
