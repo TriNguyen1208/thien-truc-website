@@ -321,8 +321,8 @@ const products = {
     },
     createOne: async (data, file) => {
         let cloud_avatar_img = null;
-        if (file?.local_avatar_img) {
-            cloud_avatar_img = await uploadImage(file.local_avatar_img, 'product');
+        if (file?.local_image) {
+            cloud_avatar_img = await uploadImage(file.local_image, 'product');
         }
 
         let {
@@ -397,7 +397,7 @@ const products = {
     },
     updateOne: async (data, file, id) => {
         const old_avatar_img = (await pool.query('SELECT product_img FROM product.products WHERE id = $1', [id])).rows[0].product_img;
-        const local_avatar_img = file?.local_avatar_img;
+        const local_avatar_img = file?.local_image;
         
         let {
             externalAvatarImage,
