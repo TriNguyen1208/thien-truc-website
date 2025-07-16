@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "development": "^0.0.6",
+    "express-list-endpoints": "^7.1.1",
+    "gulp": "^4.0.2",
     "lucide-react": "^0.525.0",
     "react-color": "^2.19.3"
   }

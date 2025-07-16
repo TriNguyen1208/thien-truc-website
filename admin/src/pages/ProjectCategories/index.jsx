@@ -1,270 +1,294 @@
-import { React, useState, useEffect} from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLayout } from '@/layouts/layoutcontext';
-import { EditIcon, DeleteIcon, SettingIcon } from '@/components/Icon';
-import { useQueryClient } from '@tanstack/react-query';
-import Setting from '@/components/Setting';
-import SearchBar from '@/components/Search';
-import SimpleForm from '@/components/SimpleForm';
-import useProjects from '@/hooks/useProjects';
-import {CancelPopup} from '@/components/Popup';
+  import { React, useState, useEffect} from 'react'
+  import { useNavigate, useSearchParams } from 'react-router-dom';
+  import { useLayout } from '@/layouts/layoutcontext';
+  import { EditIcon, DeleteIcon, SettingIcon } from '@/components/Icon';
+  import { useQueryClient } from '@tanstack/react-query';
+  import Setting from '@/components/Setting';
+  import SearchBar from '@/components/Search';
+  import SimpleForm from '@/components/SimpleForm';
+  import useProjects from '@/hooks/useProjects';
+  import {CancelPopup} from '@/components/Popup';
+  import { toast } from 'react-toastify';
 
-// Còn sự kiện  sự kiện lưu thay đổi trong cài đặt loại tin tức
-export default function ProjectCategories () {
-  // Lấy hàm từ hook
-  const queryClient = useQueryClient();
-  const { mutateAsync: createOne } = useProjects.project_regions.createOne();
-  const { mutateAsync: updateOne } = useProjects.project_regions.updateOne();
-  const { mutateAsync: deleteOne } = useProjects.project_regions.deleteOne();
+  // Còn sự kiện  sự kiện lưu thay đổi trong cài đặt loại tin tức
+  export default function ProjectCategories () {
+    // Lấy hàm từ hook
+    const queryClient = useQueryClient();
+    const { mutateAsync: createOne } = useProjects.project_regions.createOne();
+    const { mutateAsync: updateOne } = useProjects.project_regions.updateOne();
+    const { mutateAsync: deleteOne } = useProjects.project_regions.deleteOne();
+    const { mutateAsync: updateRegion } = useProjects.projects.updateRegion();
 
-  // Thông tin của form thêm loại dự án
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const formData = [
-    {
-      name: 'name',
-      label: 'Tên khu vực',
-      type: 'text',
-      isRequired: true,
-      width: 12,
-      placeholder: 'VD: Miền Nam, Tây Nguyên...'
-    },
-    {
-      name: 'rgb_color',
-      label: 'Màu sắc đại diện',
-      type: 'color',
-      isRequired: true,
-      width: 12,
-      value: '#3B82F6',
+    // Thông tin của form thêm loại dự án
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const formData = [
+      {
+        name: 'name',
+        label: 'Tên khu vực',
+        type: 'text',
+        isRequired: true,
+        width: 12,
+        placeholder: 'VD: Miền Nam, Tây Nguyên...'
+      },
+      {
+        name: 'rgb_color',
+        label: 'Màu sắc đại diện',
+        type: 'color',
+        isRequired: true,
+        width: 12,
+        value: '#3B82F6',
+      }
+    ];
+    const formConfig = {
+      isModalOpenSimple: isModalOpen,
+      setIsModalOpenSimple: setIsModalOpen,
+      widthModal: 430,
+      title: 'Thêm khu vực mới',
+      description: 'Thêm khu vực và màu sắc đại diện',
+      handleSubmitButton: async (data) => {
+        await createOne(data);
+        queryClient.invalidateQueries(['admin_project_regions']);
+        setIsModalOpen(false);
+      },
+    };
+
+    // Thông tin của form chỉnh sửa loại dự án
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+    const [formEditData, setFormEditData] = useState([
+      {
+        name: 'name',
+        label: 'Tên khu vực',
+        type: 'text',
+        isRequired: true,
+        width: 12,
+        placeholder: 'VD: Miền Nam, Tây Nguyên...',
+      },
+      {
+        name: 'rgb_color',
+        label: 'Màu sắc đại diện',
+        type: 'color',
+        isRequired: true,
+        width: 12,
+        value: '#3B82F6',
+      }
+    ])
+    const [currentEditId, setCurrentEditId] = useState(null);
+    const formEditConfig = {
+      isModalOpenSimple: isModalEditOpen,
+      setIsModalOpenSimple: setIsModalEditOpen,
+      widthModal: 430,
+      title: 'Chỉnh sửa khu vực',
+      description: 'Chỉnh sửa thông tin khu vực và màu sắc đại diện',
+      handleSubmitButton: async (data) => {
+        await updateOne({...data, id: currentEditId});
+        queryClient.invalidateQueries(['admin_project_regions']);
+        setIsModalEditOpen(false);
+      },
+    };
+
+    // Thông tin của pop up xóa loại dự án
+    const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+    const[currentDeleteID, setCurrentDeleteId] = useState(null);
+    const formDelete = {
+      open: isModalDeleteOpen,
+      setOpen: setIsModalDeleteOpen,
+      notification: 'Bạn có chắc chắn muốn xoá khu vực này?',
+      subTitle: 'Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xoá khu vực này?',
+      buttonLabel1: 'Hủy',
+      buttonLabel2: 'Xoá',
+      buttonAction2: async () => {
+        await deleteOne(currentDeleteID);
+        queryClient.invalidateQueries(['admin_project_list'])
+        setIsModalDeleteOpen(false);
+      }
     }
-  ];
-  const formConfig = {
-    isModalOpenSimple: isModalOpen,
-    setIsModalOpenSimple: setIsModalOpen,
-    widthModal: 430,
-    title: 'Thêm khu vực mới',
-    description: 'Thêm khu vực và màu sắc đại diện',
-    handleSubmitButton: async (data) => {
-      await createOne(data);
-      queryClient.invalidateQueries(['admin_project_regions']);
-      setIsModalOpen(false);
-    },
-  };
 
-  // Thông tin của form chỉnh sửa loại dự án
-  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
-  const [formEditData, setFormEditData] = useState([
-    {
-      name: 'name',
-      label: 'Tên khu vực',
-      type: 'text',
-      isRequired: true,
-      width: 12,
-      placeholder: 'VD: Miền Nam, Tây Nguyên...',
-    },
-    {
-      name: 'rgb_color',
-      label: 'Màu sắc đại diện',
-      type: 'color',
-      isRequired: true,
-      width: 12,
-      value: '#3B82F6',
-    }
-  ])
-  const [currentEditId, setCurrentEditId] = useState(null);
-  const formEditConfig = {
-    isModalOpenSimple: isModalEditOpen,
-    setIsModalOpenSimple: setIsModalEditOpen,
-    widthModal: 430,
-    title: 'Chỉnh sửa khu vực',
-    description: 'Chỉnh sửa thông tin khu vực và màu sắc đại diện',
-    handleSubmitButton: async (data) => {
-      await updateOne({...data, id: currentEditId});
-      queryClient.invalidateQueries(['admin_project_regions']);
-      setIsModalEditOpen(false);
-    },
-  };
+    // Thông tin của form cài đặt loại dự án
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [settingFormData, setSettingFormData] = useState({
+      isOpen: false,
+      onClose: () => setSettingFormData(prev => ({ ...prev, isOpen: false })),
+      content: {
+        title: 'Quản lý danh sách thuộc loại',
+        description: 'Chọn các tin tức muốn thêm hoặc xóa khỏi loại',
+        type: 'tin tức',
+        category: '',
+        header: ['', 'Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
+      },
+      useData: useProjects.projects,
+      useDataSuggestion: useProjects,
+      useDataCategories: useProjects.project_regions,
+    });
 
-  // Thông tin của pop up xóa loại dự án
-  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
-  const[currentDeleteID, setCurrentDeleteId] = useState(null);
-  const formDelete = {
-    open: isModalDeleteOpen,
-    setOpen: setIsModalDeleteOpen,
-    notification: 'Bạn có chắc chắn muốn xoá khu vực này?',
-    subTitle: 'Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xoá khu vực này?',
-    buttonLabel1: 'Hủy',
-    buttonLabel2: 'Xoá',
-    buttonAction2: async () => {
-      await deleteOne(currentDeleteID);
-      queryClient.invalidateQueries(['admin_project_list'])
-      setIsModalDeleteOpen(false);
-    }
-  }
 
-  // Thông tin của form cài đặt loại dự án
-  const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
-  const settingFormData = {
-    isOpen: isSettingModalOpen,
-    onClose: () => setIsSettingModalOpen(false),
-    content: {
-      title: 'Quản lý danh sách thuộc loại',
-      description: 'Chọn các tin tức muốn thêm hoặc xóa khỏi loại',
-      type: 'tin tức',
-      category: '',
-      header: ['', 'Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
-    },
-    useData: useProjects.projects,
-    useDataSuggestion: useProjects,
-    useDataCategories: useProjects.project_regions,
-  };
+    // Thiết lập prop cho trang
+    const navigate = useNavigate();
+    const { setLayoutProps } = useLayout();
+    useEffect(() => {
+        setLayoutProps({
+          title: 'Quản lý khu vực dự án',
+          description: 'Quản lý các khu vực dự án',
+          hasButton: true,
+          buttonLabel: 'Thêm khu vực',
+          buttonAction: () => {
+            setIsModalOpen(true);
+          },
+        })
+      }, [setLayoutProps]);
+    
 
-  // Thiết lập prop cho trang
-  const navigate = useNavigate();
-  const { setLayoutProps } = useLayout();
-  useEffect(() => {
-      setLayoutProps({
-        title: 'Quản lý khu vực dự án',
-        description: 'Quản lý các khu vực dự án',
-        hasButton: true,
-        buttonLabel: 'Thêm khu vực',
-        buttonAction: () => {
-          setIsModalOpen(true);
-        },
-      })
-    }, [setLayoutProps]);
-  
+    // Lấy danh sách khu vực dự án theo URL
+    const [searchParams] = useSearchParams();
+    const query = searchParams.get('query') || '';
+    const id = searchParams.get('id') || '';
 
-  // Lấy danh sách khu vực dự án theo URL
-  const [searchParams] = useSearchParams();
-  const query = searchParams.get('query') || '';
-  const id = searchParams.get('id') || '';
-
-  let projectRegions = null;
-  let isLoadingProjectRegions = false;
-  if (id === '') {
-    if (query === '') {
-      const result = useProjects.project_regions.getAll();
-      projectRegions = result.data;
-      isLoadingProjectRegions = result.isLoading;
+    let projectRegions = null;
+    let isLoadingProjectRegions = false;
+    if (id === '') {
+      if (query === '') {
+        const result = useProjects.project_regions.getAll();
+        projectRegions = result.data;
+        isLoadingProjectRegions = result.isLoading;
+      } else {
+        const result = useProjects.getSearchCategoriesSuggestions(query);
+        projectRegions = result.data;
+        isLoadingProjectRegions = result.isLoading;
+      }
     } else {
-      const result = useProjects.getSearchCategoriesSuggestions(query);
+      const result = useProjects.project_regions.getOne(id);
       projectRegions = result.data;
       isLoadingProjectRegions = result.isLoading;
     }
-  } else {
-    const result = useProjects.project_regions.getOne(id);
-    projectRegions = result.data;
-    isLoadingProjectRegions = result.isLoading;
-  }
 
-  const projectRegionsList = Array.isArray(projectRegions) ? projectRegions : projectRegions?.results ?? (projectRegions ? [projectRegions] : []);
-  if (isLoadingProjectRegions) return <div>Loading...</div>;
+    const projectRegionsList = Array.isArray(projectRegions) ? projectRegions : projectRegions?.results ?? (projectRegions ? [projectRegions] : []);
+    if (isLoadingProjectRegions) return <div>Loading...</div>;
 
 
 
-  // Handler cho tìm kiếm và điều hướng
-  const onSearch = (query) => {
-    const newParams = new URLSearchParams();
-    newParams.set('query', query);
-    navigate(`/quan-ly-khu-vuc-du-an?${newParams.toString()}`);
-  };
-  const handleEnter = (item) => {
-    navigate(`/quan-ly-khu-vuc-du-an?id=${item.id}`);
-  };
-  const handleSearchSuggestions = (query) => {
-    return useProjects.getSearchCategoriesSuggestions(query);
-  }
+    // Handler cho tìm kiếm và điều hướng
+    const onSearch = (query) => {
+      const newParams = new URLSearchParams();
+      newParams.set('query', query);
+      navigate(`/quan-ly-khu-vuc-du-an?${newParams.toString()}`);
+    };
+    const handleEnter = (item) => {
+      navigate(`/quan-ly-khu-vuc-du-an?id=${item.id}`);
+    };
+    const handleSearchSuggestions = (query) => {
+      return useProjects.getSearchCategoriesSuggestions(query);
+    }
 
 
 
-  // Render giao diện
-  return (
-    <div>
-      <div className='flex justify-between items-center mb-6 p-5 bg-white rounded-lg shadow border border-gray-200'>
-        <SearchBar 
-          data={{
-            hasButtonCategory: false,
-            hasButtonDisplay: false,
-            placeholder: "Tìm kiếm theo tên khu vực...",
-            currentQuery: query,
-            onSearch: onSearch, 
-            handleEnter: handleEnter,
-            handleSearchSuggestion: handleSearchSuggestions,
+    // Render giao diện
+    return (
+      <div>
+        <div className='flex justify-between items-center mb-6 p-5 bg-white rounded-lg shadow border border-gray-200'>
+          <SearchBar 
+            data={{
+              hasButtonCategory: false,
+              hasButtonDisplay: false,
+              placeholder: "Tìm kiếm theo tên khu vực...",
+              currentQuery: query,
+              onSearch: onSearch, 
+              handleEnter: handleEnter,
+              handleSearchSuggestion: handleSearchSuggestions,
+            }}
+          />
+        </div>
+
+        <div className='bg-white p-5 border border-gray-200 rounded-lg shadow-md'>
+          <h1 className='text-xl font-semibold text-gray-900 mb-4'>Danh sách khu vực dự án</h1>
+          <p className='text-gray-600 mb-4'>Tổng cộng {projectRegions.length} khu vực</p>
+
+          <table className='w-full mt-6'>
+            <thead className='text-left text-gray-500 font-normal text-[15px] border-b border-gray-200'>
+              <tr>
+                <th className='w-[13%] py-3 pl-5'>STT</th>
+                <th className='w-[30%] px-4 py-3'>Tên khu vực</th>
+                <th className='w-[20%] py-3 px-4'>Màu sắc</th>
+                <th className='w-[22%] py-3 px-4'>Số lượng</th>
+                <th className='w-[20%] py-3 px-4'>Thao tác</th>
+              </tr>
+            </thead>
+
+            <tbody>
+                {projectRegionsList.map((item, index) => (
+                  <tr key={item.id} className='border-b border-gray-200 hover:bg-gray-100'>
+                    <td className='w-[10%] py-5 pl-7'>{index + 1}</td>
+                    <td className='w-[30%] py-5 px-4 font-medium'>{query === '' ? item.name : item.query}</td>
+                    <td className='w-[20%] py-5 px-4'>
+                      <span className='inline-block w-4 py-2 mt-2 mr-2' style={{ backgroundColor: item.rgb_color }}></span>
+                      {item.rgb_color}
+                    </td>
+                    <td className='w-[20%] py-5 pl-10'>{item.item_count}</td>
+                    <td className='w-[20%] py-5 flex items-center gap-3'>
+                      <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' 
+                          onClick={() => {
+                            setSelectedCategoryId(item.id);
+                            setSettingFormData(prev => ({
+                              ...prev,
+                              isOpen: true,
+                              content: { ...prev.content, category: item.name }
+                            }));
+                          }}>
+                        <SettingIcon />
+                      </button>
+                      <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' 
+                              onClick={() => {
+                                  setFormEditData(prev => {
+                                    const newData = [...prev];
+                                    newData[0] = { ...newData[0], placeholder: item.name };
+                                    newData[1] = { ...newData[1], value: item.rgb_color };
+                                    return newData;
+                                });
+                                setCurrentEditId(item.id);
+                                setIsModalEditOpen(true);
+                              }}>
+                        <EditIcon />
+                      </button>
+                      <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' onClick={() => 
+                      {
+                        setCurrentDeleteId(item.id)
+                        setIsModalDeleteOpen(true)
+                      }
+                      }>
+                        <DeleteIcon />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+          </table>
+        </div>
+        <SimpleForm
+          data={formData}
+          config={formConfig}
+        />
+        <SimpleForm
+          data={formEditData}
+          config={formEditConfig}
+        />
+        <CancelPopup {...formDelete} />
+        <Setting {...settingFormData}
+           onSave={async (changedItems) => {
+            // Map từ { id, state } -> { id, category_id }
+            const mappedItems = changedItems
+              .map(item => ({
+                id: item.id,
+                category_id: selectedCategoryId
+              }));
+
+             try {
+                await updateRegion({ changedItems: mappedItems });
+                toast.success("Cập nhật khu vực thành công");
+                queryClient.invalidateQueries(['admin_projects_list']);
+              } catch (err) {
+                toast.error("Cập nhật khu vực thất bại");
+                console.error("Lỗi khi cập nhật:", err);
+              }
           }}
         />
       </div>
-
-      <div className='bg-white p-5 border border-gray-200 rounded-lg shadow-md'>
-        <h1 className='text-xl font-semibold text-gray-900 mb-4'>Danh sách khu vực dự án</h1>
-        <p className='text-gray-600 mb-4'>Tổng cộng {projectRegions.length} khu vực</p>
-
-        <table className='w-full mt-6'>
-          <thead className='text-left text-gray-500 font-normal text-[15px] border-b border-gray-200'>
-            <tr>
-              <th className='w-[13%] py-3 pl-5'>STT</th>
-              <th className='w-[30%] px-4 py-3'>Tên khu vực</th>
-              <th className='w-[20%] py-3 px-4'>Màu sắc</th>
-              <th className='w-[22%] py-3 px-4'>Số lượng</th>
-              <th className='w-[20%] py-3 px-4'>Thao tác</th>
-            </tr>
-          </thead>
-
-           <tbody>
-              {projectRegionsList.map((item, index) => (
-                <tr key={item.id} className='border-b border-gray-200 hover:bg-gray-100'>
-                  <td className='w-[10%] py-5 pl-7'>{index + 1}</td>
-                  <td className='w-[30%] py-5 px-4 font-medium'>{query === '' ? item.name : item.query}</td>
-                  <td className='w-[20%] py-5 px-4'>
-                    <span className='inline-block w-4 py-2 mt-2 mr-2' style={{ backgroundColor: item.rgb_color }}></span>
-                    {item.rgb_color}
-                  </td>
-                  <td className='w-[20%] py-5 pl-10'>{item.item_count}</td>
-                  <td className='w-[20%] py-5 flex items-center gap-3'>
-                    <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' onClick={() => 
-                      {
-                        settingFormData.content.category = item.name; // Cập nhật danh mục động
-                        setIsSettingModalOpen(true);
-                      }
-                    }>
-                      <SettingIcon />
-                    </button>
-                    <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' 
-                            onClick={() => {
-                                setFormEditData(prev => {
-                                  const newData = [...prev];
-                                  newData[0] = { ...newData[0], placeholder: item.name };
-                                  newData[1] = { ...newData[1], value: item.rgb_color };
-                                  return newData;
-                              });
-                              setCurrentEditId(item.id);
-                              setIsModalEditOpen(true);
-                            }}>
-                      <EditIcon />
-                    </button>
-                    <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' onClick={() => 
-                    {
-                      setCurrentDeleteId(item.id)
-                      setIsModalDeleteOpen(true)
-                    }
-                    }>
-                      <DeleteIcon />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-        </table>
-      </div>
-      <SimpleForm
-        data={formData}
-        config={formConfig}
-      />
-      <SimpleForm
-        data={formEditData}
-        config={formEditConfig}
-      />
-      <CancelPopup {...formDelete} />
-      <Setting {...settingFormData} />
-    </div>
-  );
-}
+    );
+  }

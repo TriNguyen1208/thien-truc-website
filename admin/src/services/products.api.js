@@ -33,7 +33,8 @@ const updateProductPage = async (data) => {
 
 // ==== Products ====
 const products = {
-    getList: async (query = '', filter = '', is_featured = undefined, page = 1, limit = undefined) => {
+    getList: async (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
+        console.log("day la page: ", page);
         const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured, page, limit));
         return res.data;
     },
@@ -62,7 +63,11 @@ const products = {
         const res = await axios.patch(API_ROUTES.product.products.updateFeatureOne(id, status));
         return res.data;
     },
-
+    updateCategory: async (changedItems) => {
+        console.log("Updating category with changed items:", changedItems);
+        const res = await axios.patch(API_ROUTES.product.products.updateCategory, changedItems);
+        return res.data;
+    },
     deleteOne: async (id) => {
         const res = await axios.delete(API_ROUTES.product.products.deleteOne(id));
         return res.data;

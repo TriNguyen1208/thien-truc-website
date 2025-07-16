@@ -8,7 +8,10 @@ const RECRUITMENT_BASE = `${BASE_API}/recruitment`;
 const CONTACT_BASE = `${BASE_API}/contact`;
 const ABOUT_US_BASE = `${BASE_API}/about_us`;
 
-const uri = encodeURIComponent;
+const uri = (value) => {
+  if (value === undefined || value === null) return '';
+  return encodeURIComponent(value);
+};
 
 const API_ROUTES = {
     schemaTable: (schema, table) => `${BASE_API}/${schema}/${table}`,
@@ -24,8 +27,8 @@ const API_ROUTES = {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
         products: {
-            getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
-            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
+            getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${uri(page)}&limit=${uri(limit)}`,
+            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${uri(limit)}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
         },
         product_categories: {

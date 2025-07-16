@@ -8,6 +8,7 @@ import Setting from '@/components/Setting';
 import SearchBar from '@/components/Search';
 import SimpleForm from '@/components/SimpleForm';
 import useNews from '@/hooks/useNews';
+import { toast } from 'react-toastify';
 
 // Còn api thêm loại tin tức, chỉnh sửa loại tin tức, xóa loại tin tức, cài đặt loại tin tức
 export default function NewsCategories() {
@@ -17,6 +18,7 @@ export default function NewsCategories() {
   const { mutateAsync: createOne } = useNews.news_categories.createOne();
   const { mutateAsync: updateOne } = useNews.news_categories.updateOne();
   const { mutateAsync: deleteOne } = useNews.news_categories.deleteOne();
+  const { mutateAsync: updateCategory } = useNews.news.updateCategory();
 
   // Thông tin của form thêm loại tin tức
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -104,10 +106,10 @@ export default function NewsCategories() {
   };
   
   // Thông tin cho setting
-  const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
-  const settingFormData = {
-    isOpen: isSettingModalOpen,
-    onClose: () => setIsSettingModalOpen(false),
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [settingFormData, setSettingFormData] = useState({
+    isOpen: false,
+    onClose: () => setSettingFormData(prev => ({ ...prev, isOpen: false })),
     content: {
       title: 'Quản lý danh sách thuộc loại',
       description: 'Chọn các tin tức muốn thêm hoặc xóa khỏi loại',
@@ -117,8 +119,8 @@ export default function NewsCategories() {
     },
     useData: useNews.news,
     useDataSuggestion: useNews,
-    useDataCategories: useNews.news_categories
-  };
+    useDataCategories: useNews.news_categories,
+  });
 
   // Set prop cho trang
   const navigate = useNavigate();
@@ -215,10 +217,15 @@ export default function NewsCategories() {
                 </td>
                 <td className='w-[20%] py-5 pl-10'>{item.item_count}</td>
                 <td className='w-[20%] py-5 flex items-center gap-3'>
-                  <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' onClick={() => {
-                      settingFormData.content.category = item.name; // Cập nhật danh mục động
-                      setIsSettingModalOpen(true);
-                    }}>
+                  <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' 
+                    onClick={() => {
+                          setSelectedCategoryId(item.id);
+                          setSettingFormData(prev => ({
+                            ...prev,
+                            isOpen: true,
+                            content: { ...prev.content, category: item.name }
+                          }));
+                        }}>
                     <SettingIcon />
                   </button>
                   <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' 
@@ -228,7 +235,7 @@ export default function NewsCategories() {
                         newData[0] = { ...newData[0], placeholder: item.name };
                         newData[1] = { ...newData[1], value: item.rgb_color };
                         return newData;
-                    });
+                    });   
                     setCurrentEditId(item.id);
                     setIsEditModalOpen(true);
                     }}>
@@ -259,7 +266,24 @@ export default function NewsCategories() {
       <CancelPopup
         {...cancelPopupData}
       />
-     <Setting {...settingFormData} />
+     <Setting {...settingFormData} 
+        onSave={async (changedItems) => {
+          // Map từ { id, state } -> { id, category_id }
+          const mappedItems = changedItems
+            .map(item => ({
+              id: item.id,
+              category_id: selectedCategoryId
+            }));
+
+            try {
+              await updateCategory({ changedItems: mappedItems });
+              toast.success("Cập nhật khu vực thành công");
+              queryClient.invalidateQueries(['admin_news_list']);
+            } catch (err) {
+              toast.error("Cập nhật khu vực thất bại");
+              console.error("Lỗi khi cập nhật:", err);
+            }
+        }}/>
     </div>
   )
 }

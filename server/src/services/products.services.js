@@ -85,7 +85,7 @@ const products = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = item_limit || 12;
+        const pageSize = parseInt(item_limit) || 12;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
@@ -114,9 +114,11 @@ const products = {
         }
 
         if (page) {
+            console.log('2');
             const offset = (page - 1) * pageSize;
             limit = `${pageSize} OFFSET ${offset}`;
         } else {
+            console.log('1');
             limit = 'ALL';
         }
         
@@ -180,7 +182,7 @@ const products = {
 
         let where = [];
         let order = [];
-        const limit = item_limit || 100;
+        const limit = parseInt(item_limit) || 100;
         
         if (query != '') {
             where.push(
@@ -324,7 +326,55 @@ const products = {
         if (file?.local_avatar_img) {
             cloud_avatar_img = await uploadImage(file.local_avatar_img, 'product');
         }
+    },
+    updateCategory: async (changedItems) => {
+        if (!Array.isArray(changedItems)) {
+            throw new Error("Invalid input");
+        }
 
+        const client = await pool.connect();
+        try {
+            await client.query("BEGIN");
+
+            for (const item of changedItems) {
+                const { id, category_id } = item;
+
+                const result = await client.query(
+                    `SELECT category_id FROM product.products WHERE id = $1`,
+                    [id]
+                );
+                const oldCategoryId = result.rows[0]?.category_id;
+
+                if (oldCategoryId !== category_id) {
+                    await client.query(
+                        `UPDATE product.products SET category_id= $1 WHERE id = $2`,
+                        [category_id, id]
+                    );
+
+                    if (oldCategoryId) {
+                        await client.query(
+                            `UPDATE product.product_categories SET item_count = item_count - 1 WHERE id = $1`,
+                            [oldCategoryId]
+                        );
+                    }
+
+                    await client.query(
+                        `UPDATE product.product_categories SET item_count = item_count + 1 WHERE id = $1`,
+                        [category_id]
+                    );
+                }
+            }
+
+            await client.query("COMMIT");
+        } catch (error) {
+            await client.query("ROLLBACK");
+            console.error("Error during DB updateRegion:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
+    createOne: async (data) => {
         let {
             externalAvatarImage,
             characteristic,

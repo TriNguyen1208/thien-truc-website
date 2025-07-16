@@ -28,6 +28,11 @@ const news = {
         const res = await axios.patch(API_ROUTES.news.news.updateNumReaders(id));
         return res.data;
     },
+    updateCategory: async (changedItems) => {
+        console.log("Updating category with changed items:", changedItems);
+        const res = await axios.patch(API_ROUTES.news.news.updateCategory, changedItems);
+        return res.data;
+    },
     deleteOne: async (id) => {
         const res = await axios.delete(API_ROUTES.news.news.deleteOne(id));
         return res.data;
@@ -107,6 +112,10 @@ const updateFeatureNews = async (data) => {
     const res = await axios.patch(API_ROUTES.news.updateFeaturedNews, data)
     return res.data;
 }
+const patchNewsPage = async (updatedPage)=> {
+    const res = await axios.patch(API_ROUTES.news.update_news_page, updatedPage)
+    return res.data;
+}
 export default { 
 getQuantity, getAll, getNewsPage, news, new_categories, new_contents,
-getSearchSuggestions, getSearchCategoriesSuggestions, getFeatureNews, updateFeatureNews };
+getSearchSuggestions, getSearchCategoriesSuggestions, getFeatureNews, updateFeatureNews, patchNewsPage };

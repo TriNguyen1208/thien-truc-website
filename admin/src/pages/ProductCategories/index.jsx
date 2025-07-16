@@ -14,7 +14,10 @@ import { CancelPopup } from '../../components/Popup'
 import Setting from '../../components/Setting';
 import useProducts from '../../hooks/useProducts';
 import useProjects from '../../hooks/useProjects';
+import { toast } from 'react-toastify';
+import { useQueryClient } from '@tanstack/react-query';
 const ProductCategories = () => {
+  const queryClient = useQueryClient();
   const { setLayoutProps } = useLayout()
   useEffect(() => {
     setLayoutProps({
@@ -39,21 +42,24 @@ const ProductCategories = () => {
   const [dataEditProductCategories, setDataEditProductCategories] = useState([
     { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true },
   ]);
-  const contentSetting = {
-    title: `Quản lý danh sách dự án thuộc loại "Miền Bắc"`,
-    description: `Chọn các dự án muốn thêm hoặc xóa khỏi loại "Miền Bắc"`,
-    type: "dự án",
-    category: "Miền Bắc",
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [contentSetting, setContentSetting] = useState({
+    title: `Quản lý danh sách sản phẩm `,
+    description: `Chọn các sản phẩm muốn thêm hoặc xóa  khỏi danh mục`,
+    type: "sản phẩm",
     header: [
-      "Mã dự án",
-      "Tên dự án",
-      "Khu vực",
+      "Mã sản phẩm",
+      "Tên sản phẩm",
+      "Danh mục",
     ]
-  };
-  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getList();
+  });
+
+  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
   const { mutate: updateOneProductCategories, isLoading: isLoadingUpdateProductCategories } = useProducts.product_categories.updateOne();
   const { mutate: createOneProductCategories, isLoading: isLoadingCreateOneProductCategories } = useProducts.product_categories.createOne();
   const { mutate: deleteOneProductCategories, isLoading: isLoadingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
+  const { mutateAsync: updateCategory } = useProduct.products.updateCategory();
   if (isLoadingProductCategoriesData || isLoadingUpdateProductCategories || isLoadingCreateOneProductCategories || isLoadingDeleteOneProductCategories) {
     return (
       <>
@@ -86,7 +92,7 @@ const ProductCategories = () => {
   }
   const configProductCategories = {
     title: "Danh sách loại sản phẩm",
-    description: `Tổng cộng ${productCategoriesData.length} loại sản phẩm`, 
+    description: `Tổng cộng ${productCategoriesData.length} loại sản phẩm`,
     form: {
       configAdd: {
         title: "Tạo loại sản phẩm mới",
@@ -163,7 +169,16 @@ const ProductCategories = () => {
           components: [
             <button
               className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-              onClick={() => setIsModalOpenSetting(true)}
+              onClick={() => {
+                setSelectedCategoryId(productCategories.id);
+                setContentSetting(prev => ({
+                  ...prev,
+                  category: productCategories.name
+                }));
+                setIsModalOpenSetting(true);
+
+              }
+              }
             >
               <SettingIcon />
             </button>,
@@ -238,10 +253,26 @@ const ProductCategories = () => {
         isOpen={isModalOpenSetting}
         onClose={() => setIsModalOpenSetting(false)}
         content={contentSetting}
-        useData={useProjects.projects}
-        useDataSuggestion={useProjects}
-        useDataCategories={useProjects.project_regions}
-      />
+        useData={useProduct.products}
+        useDataSuggestion={useProduct}
+        useDataCategories={useProduct.product_categories}
+        onSave={async (changedItems) => {
+          // Map từ { id, state } -> { id, category_id }
+          const mappedItems = changedItems
+            .map(item => ({
+              id: item.id,
+              category_id: selectedCategoryId
+            }));
+
+          try {
+            await updateCategory({ changedItems: mappedItems });
+            toast.success("Cập nhật khu vực thành công");
+            queryClient.invalidateQueries(['admin_product_list']);
+          } catch (err) {
+            toast.error("Cập nhật khu vực thất bại");
+            console.error("Lỗi khi cập nhật:", err);
+          }
+        }} />
     </>
   )
 }

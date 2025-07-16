@@ -22,6 +22,7 @@ const updateProductPage = async (req, res) => {
 
 const products = {
     getList: async (req, res) => {
+        console.log('product: ', req.query)
         const {query ='', filter = '', page, is_featured, limit} = req.query;
         const data = await productServices.products.getList(query, filter, parseInt(page), is_featured, parseInt(limit));
         res.status(200).json(data);
@@ -46,6 +47,16 @@ const products = {
             return res.status(200).json({ message: 'Cập nhật sản phẩm thành công' });
         } catch (error) {
             console.error('Lỗi cập nhật sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    updateCategory: async (req, res) => {
+        const { changedItems } = req.body;
+        try {
+            await productServices.products.updateCategory(changedItems);
+            res.status(200).json({ message: 'Cập nhật loại sản phẩm thành công' });
+        } catch (error) {
+            console.error('Lỗi cập nhật loại sản phẩm: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },

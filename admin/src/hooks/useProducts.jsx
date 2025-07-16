@@ -84,7 +84,7 @@ function useSearchSuggestions(query = '', filter = '', is_featured = undefined) 
 
 // ==== Products ====
 const products = {
-  useGetList: (query = '', filter = '', is_featured = undefined, page = 1, limit = undefined) => {
+  useGetList: (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
     return useQuery({
       queryKey: ["admin_product_list", query, filter, is_featured, page, limit],
       queryFn: () => productsServices.products.getList(query, filter, is_featured, page, limit),
@@ -104,6 +104,7 @@ const products = {
     return useQuery({
       queryKey: ["admin_product", id],
       queryFn: () => productsServices.products.getOne(id),
+      enabled: id != null, 
       staleTime: 5 * 60 * 1000,
     });
   },
@@ -146,7 +147,12 @@ const products = {
       },
     });
   },
-
+  useUpdateCategory: () => {
+      return useMutation({
+          mutationFn: (changedItems) =>
+          productsServices.products.updateCategory(changedItems)
+      });
+  },
 
   useDeleteOne: () => {
     const queryClient = useQueryClient();
@@ -260,9 +266,10 @@ export default {
     updateOne: products.useUpdateOne,
     updateFeatureOne: products.useUpdateFeatureOne,
     deleteOne: products.useDeleteOne,
+    updateCategory: products.useUpdateCategory,
   },
   product_categories: {
-    getList: product_categories.useGetList,
+    getAll: product_categories.useGetList,
     getOne: product_categories.useGetOne,
     createOne: product_categories.useCreateOne,
     updateOne: product_categories.useUpdateOne,
