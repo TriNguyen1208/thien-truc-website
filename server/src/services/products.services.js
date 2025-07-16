@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
 
 const getAllTables = async () => {
     const _product_page = await getProductPage();
@@ -318,9 +319,14 @@ const products = {
         const result = await pool.query(query, [id]);
         return result;
     },
-    createOne: async (data) => {
+    createOne: async (data, file) => {
+        let cloud_avatar_img = null;
+        if (file?.local_avatar_img) {
+            cloud_avatar_img = await uploadImage(file.local_avatar_img, 'product');
+        }
+
         let {
-            avatarImage,
+            externalAvatarImage,
             characteristic,
             description,
             isDisplayHomePage,
@@ -330,6 +336,8 @@ const products = {
             technicalDetails,
             warranty // int
         } = data;
+
+        const final_avatar_img = cloud_avatar_img || externalAvatarImage || null;
 
         if (price == "") price = null;
         warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
@@ -363,7 +371,7 @@ const products = {
         const insertValues = [
             productName,
             description,
-            avatarImage,
+            final_avatar_img,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
             warranty,
@@ -387,9 +395,12 @@ const products = {
             [category_id]
         );
     },
-    updateOne: async (data, id) => {
+    updateOne: async (data, file, id) => {
+        const old_avatar_img = (await pool.query('SELECT product_img FROM product.products WHERE id = $1', [id])).rows[0].product_img;
+        const local_avatar_img = file?.local_avatar_img;
+        
         let {
-            avatarImage,
+            externalAvatarImage,
             characteristic,
             description,
             isDisplayHomePage,
@@ -399,6 +410,13 @@ const products = {
             technicalDetails,
             warranty
         } = data;
+
+        const final_avatar_img = await updateImage(
+            old_avatar_img,
+            local_avatar_img,
+            externalAvatarImage,
+            'product'
+        );
 
         if (price == "") price = null;
         warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
@@ -438,7 +456,7 @@ const products = {
         const insertValues = [
             productName,
             description,
-            avatarImage,
+            final_avatar_img,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
             warranty,
@@ -461,31 +479,43 @@ const products = {
         );
     },
     deleteOne: async (id) => {
-        // 1. Get category_id
-        const categoryRes = await pool.query(
-            `SELECT category_id FROM product.products WHERE id = $1`,
+        // 1. Kiểm tra tồn tại và lấy category + product_img
+        const res = await pool.query(
+            `SELECT category_id, product_img FROM product.products WHERE id = $1`,
             [id]
         );
-        if (categoryRes.rowCount === 0) {
-            return categoryRes;
+        if (res.rowCount === 0) {
+            return { status: 404, message: "Không tìm thấy sản phẩm" };
         }
-        const category_id = categoryRes.rows[0].category_id;
 
-        // 2. Delete product & product prices
-        const query = `
-            DELETE FROM product.product_prices WHERE product_id = '${id}';
-            DELETE FROM product.products WHERE id = '${id}';
-        `;
+        const { category_id, product_img } = res.rows[0];
 
-        // 3. Decrease item_count in product category
+        // 2. Xóa bảng product_prices trước (nếu có liên kết FK)
+        await pool.query(
+            `DELETE FROM product.product_prices WHERE product_id = $1`,
+            [id]
+        );
+
+        // 3. Xóa sản phẩm chính, không cần RETURNING nữa vì đã có product_img
+        await pool.query(
+            `DELETE FROM product.products WHERE id = $1`,
+            [id]
+        );
+
+        // 4. Cập nhật item_count của danh mục
         await pool.query(
             `UPDATE product.product_categories SET item_count = item_count - 1 WHERE id = $1`,
             [category_id]
         );
 
-        const result = await pool.query(query);
-        return result[1];
+        // 5. Xóa ảnh nếu là ảnh từ Cloudinary
+        if (isCloudinary(product_img)) {
+            await deleteImage([product_img]);
+        }
+
+        return { status: 200, message: "Xóa sản phẩm thành công" };
     }
+
 }
 
 const product_categories = {
@@ -554,13 +584,64 @@ const product_categories = {
         );
     },
     deleteOne: async (id) => {
-        const query = `
-            DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = '${id}');
-            DELETE FROM product.products WHERE category_id = '${id}';
-            DELETE FROM product.product_categories WHERE id = '${id}';
-        `;
-        const result = await pool.query(query);
-        return result[2];
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // 1. Lấy tất cả ảnh sản phẩm
+            const productImagesRes = await client.query(
+                `SELECT product_img FROM product.products WHERE category_id = $1`,
+                [id]
+            );
+            const productImgs = productImagesRes.rows.map(row => row.product_img).filter(Boolean);
+
+            // 2. Xóa product_prices
+            await client.query(
+                `DELETE FROM product.product_prices 
+                WHERE product_id IN (
+                    SELECT id FROM product.products WHERE category_id = $1
+                )`,
+                [id]
+            );
+
+            // 3. Xóa products
+            await client.query(
+                `DELETE FROM product.products WHERE category_id = $1`,
+                [id]
+            );
+
+            // 4. Xóa category
+            const categoryDeleteRes = await client.query(
+                `DELETE FROM product.product_categories WHERE id = $1`,
+                [id]
+            );
+
+            if (categoryDeleteRes.rowCount === 0) {
+                await client.query('ROLLBACK');
+                client.release();
+                return { status: 404, message: "Không tìm thấy danh mục để xóa" };
+            }
+
+            await client.query('COMMIT');
+            client.release();
+
+            // 5. Xử lý ảnh Cloudinary
+            const cloudinaryImgs = productImgs.filter(isCloudinary);
+            if (cloudinaryImgs.length > 0) {
+                await deleteImage(cloudinaryImgs);
+            }
+
+            return {
+                status: 200,
+                message: "Xóa danh mục và toàn bộ sản phẩm thành công",
+                deletedImages: cloudinaryImgs
+            };
+        } catch (err) {
+            await client.query('ROLLBACK');
+            client.release();
+            console.error("Lỗi khi xóa danh mục:", err);
+            return { status: 500, message: "Đã xảy ra lỗi khi xóa danh mục" };
+        }
     }
 }
 

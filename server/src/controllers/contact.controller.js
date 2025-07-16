@@ -38,7 +38,7 @@ const support_agents = {
     },
     createOne: async (req, res) => {
         try {
-            const { status, message } = await contactServices.support_agents.createOne(req.body);
+            const { status, message } = await contactServices.support_agents.createOne(req.body, req.file);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi tạo Người Liên Lạc: ', error);
@@ -48,7 +48,7 @@ const support_agents = {
     updateOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await contactServices.support_agents.updateOne(req.body, id);
+            const { status, message } = await contactServices.support_agents.updateOne(req.body, req.file, id);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi chỉnh sửa Người Liên Lạc: ', error);
