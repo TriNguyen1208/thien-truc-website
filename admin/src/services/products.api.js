@@ -49,7 +49,11 @@ const products = {
     },
 
     createOne: async (data) => {
-        const res = await axios.post(API_ROUTES.product.products.createOne, data);
+        const res = await axios.post(API_ROUTES.product.products.createOne, data, {
+            headers: {
+            'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     },
 
