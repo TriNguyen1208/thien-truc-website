@@ -693,23 +693,19 @@ const news_contents = {
             countWord,
             link_image
         } = data;
-
         //Get news_categories id
         const categoryRes = await pool.query(
             `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
             [category_name]
         );
         const category_id = categoryRes.rows.length > 0 ? categoryRes.rows[0].id : null;
-        
         //Update news content
         const updateNewsContentSql = `
-            update news.news_contents
-            set 
-                content = $1
-            where news_id = ${id}
-        `
-        await pool.query(updateNewsContentSql, [contentHTML]);
-        
+            UPDATE news.news_contents
+            SET content = $1
+            WHERE news_id = $2
+        `;
+        await pool.query(updateNewsContentSql, [contentHTML, id]);
         //Insert updateNews
         const updateNewsSql = `
             update news.news
@@ -722,7 +718,7 @@ const news_contents = {
                 num_readers = $6, 
                 main_img = $7, 
                 main_content = $8
-            where id= ${id}
+            where id= $9
         `
         const measure_time = Math.ceil(countWord / 1000);
 
@@ -742,7 +738,8 @@ const news_contents = {
             measure_time,
             0,
             main_image,
-            main_content
+            main_content,
+            id
         ];
 
         await pool.query(updateNewsSql, updateValues);

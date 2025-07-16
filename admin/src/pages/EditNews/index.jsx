@@ -9,10 +9,12 @@ import useNews from '../../hooks/useNews';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const EditNews = () => {
+    //navigate
+    const navigate = useNavigate();
     //getID URL
     const {id: news_id} = useParams();
-
     //useState
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
@@ -20,7 +22,7 @@ const EditNews = () => {
     const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     const updateNews = useNews.news_contents.updateOne()
-
+    const deleteNews = useNews.news.deleteOne();
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -41,8 +43,8 @@ const EditNews = () => {
             content: news_contents.content ?? '',
             category_name: news_contents.news.category.name ?? '',
             isPublished: news_contents.news.is_published ? "Trưng bày" : "Bản nháp",
-            main_image: news_contents.news.main_img ?? null,
-            link_image: '',
+            main_image: '',
+            link_image: news_contents.news.main_img ?? null,
             countWord: news_contents.content.replace(/<[^>]+>/g, '').trim().length
         });
     }, [isLoadingNewsContent]) 
@@ -85,10 +87,8 @@ const EditNews = () => {
         }
         //Them bai viet, call database
         const {formData, doc} = await extractBlogImages(form.content); //chac chan se gui cho backend de cap nhat
-
         //Add delete image
-        const formDataNews = addDeleteImage(initialForm.content, form.content, formData);
-        
+        const formDataNews = addDeleteImage(initialForm, form, formData);
         const finalHTML = doc.body.innerHTML;
         // Duyệt qua tất cả key
         for (const key in form) {
@@ -109,6 +109,8 @@ const EditNews = () => {
         setForm(form);
     }
     const handleDelete = () => {
+        deleteNews.mutate(news_id);
+        navigate('/quan-ly-tin-tuc')
         //Xoa bai viet hien tai
     }
     const handleRecover = () => {

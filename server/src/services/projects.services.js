@@ -664,9 +664,9 @@ const project_contents = {
             update project.project_contents
             set 
                 content = $1
-            where project_id = ${id}
+            where project_id = $2
         `
-        await pool.query(updateProjectContentSql, [contentHTML]);
+        await pool.query(updateProjectContentSql, [contentHTML, id]);
         
         //Insert updateNews
         const updateProjectSql = `
@@ -679,7 +679,7 @@ const project_contents = {
                 main_img = $5, 
                 main_content = $6, 
                 is_featured = $7
-            where id = ${id}
+            where id = $8
         `
         let main_image = "";
         if(result.main_image){
@@ -696,7 +696,8 @@ const project_contents = {
             new Date(completeTime).getFullYear(),
             main_image,
             main_content,
-            isFeatured
+            isFeatured,
+            id
         ];
         await pool.query(updateProjectSql, updateValues);
     }
