@@ -1,58 +1,25 @@
 import {useLayout} from '@/layouts/LayoutContext'
-import { useEffect,useState } from 'react'
-import Table from '../../components/Table'
-import Button from '../../components/Button'
-import { DeleteIcon, EditIcon } from '../../components/Icon'
-import DynamicForm from '../../components/DynamicForm'
-import { CancelPopup } from '../../components/Popup'
-import { Modal, Result } from 'antd'
-import { CheckCircleFilled } from '@ant-design/icons';
 import useContact from '@/hooks/useContact';
-import changeToFormData from '../../utils/changeToFormData'
-function SuccessPopup ({ open, setOpen, notification, subTitle}) {
+import { useEffect,useState } from 'react'
+import Table from '@/components/Table'
+import Button from '@/components/Button'
+import { CancelPopup } from '@/components/Popup'
+import ProductImageCell from '@/components/ProductImageCell'
+import { DeleteIcon, EditIcon } from '@/components/Icon'
+import DynamicForm from '@/components/DynamicForm'
+import { toast } from 'react-toastify';
+import changeToFormData from '@/utils/changeToFormData'
 
-  const handleOk = () => setOpen(false);
-
-  return (
-    <div className="p-6">
-
-      <Modal
-        open={open}
-        footer={null}
-        onCancel={handleOk}
-        centered
-        closable
-        width={550}
-      > 
-        <Result
-          status="success"
-          icon={<CheckCircleFilled style={{ color: '#52c41a', fontSize: 72 }} />}
-          title={
-            <div className="text-lg font-semibold">
-              {notification || 'Successfully Purchased Cloud Server ECS!'}
-            </div>
-          }
-          subTitle={
-            <div className="text-gray-500 text-sm">
-              {subTitle || 'Your order has been successfully processed. You can now manage your cloud server from the console.'}
-            </div>
-          }
-        
-        />
-      </Modal>
-    </div>
-  );
-};
 
 const Contact = () => {
   const {setLayoutProps} = useLayout();
   const [listContacts , setListContacts] = useState([])
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
+
   const [pendingItemDel, setPendingItemDel] = useState(null)
   const [pendingItemEdit, setPendingItemEdit] = useState(null)
   const [isOpenDeletePopup, setIsOpenDeletePopup] = useState(false)
-  const [isOpenSuccesPopup, setIsOpenSuccesPopup] = useState(false)
 
   const {data: supportAgents, isLoading: isLoadingSupportAgent} = useContact.support_agents.getAll()
   const {mutate: addAgent} = useContact.support_agents.createOne()
@@ -85,12 +52,7 @@ const handleAddContact= ()=>
     return(<div>loading</div>)
   }
   
-  const succesProps = {
-    open:isOpenSuccesPopup, 
-    setOpen:setIsOpenSuccesPopup, 
-    notification:"Lưu thành công!", 
-    subTitle:" "
-  }
+
   //====================================================Start Form=========================================================
    const handleSubmitButtonAdd = (valueForm) => {
     const { img, ...rest } = valueForm;
@@ -110,14 +72,10 @@ const handleAddContact= ()=>
     addAgent(
       formData
       ,{
-        onSuccess: ()=>{
-          setIsOpenSuccesPopup(true)
-        },
-        onError: ()=>{
-          alert("that bai")
-        }
+      onSuccess: (success)=> { toast.success(success ? success.message: "Thêm thành công!")},
+      onError:(error)=>{toast.error(error ?  error.message: "Thêm thất bại!") }
       }
-    )
+    );
     setIsModalOpenAdd(false)
   }
    const handleSubmitButtonEdit = (valueForm) => {
@@ -142,13 +100,8 @@ const handleAddContact= ()=>
       }
       ,
       {
-        onSuccess: ()=>{
-          setIsOpenSuccesPopup(true)
-        },
-        onError: (error)=>{
-          if(error) console.error()
-          alert("that bai")
-        }
+        onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
+        onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
       }
     )
     setIsModalOpenEdit(false)
@@ -196,9 +149,8 @@ const handleAddContact= ()=>
  const handleConfirmDeletePopup = ()=>{
     deleteAgent(listContacts[pendingItemDel].id,
       {
-        onError: ()=>{
-          alert("That bai")
-        }
+        onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
+        onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
       }
     )
     setIsOpenDeletePopup(false)
@@ -238,14 +190,13 @@ const handleAddContact= ()=>
       const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
       setPendingItemEdit(index)
       setIsModalOpenEdit(true)
-    
     }
     
   }
   
  const dataTable = listContacts.map((contact, index)=>{
         return([ {type: "text",content: index+1}, 
-      {type: "img", path: contact.avatar_img},
+      {type: "component", component: <div> <ProductImageCell imageUrl = {contact.avatar_img} productName = {"Nhân viên"} /> </div>},
       {type: "text", content: contact.name}, 
       {type: "text", content: contact.role},
       {type: "text", content: contact.phone_number},
@@ -276,9 +227,7 @@ const handleAddContact= ()=>
 
       <DynamicForm data={dataAdd} config={configAdd} />
       <DynamicForm data={dataEdit} config={configEdit} />
-     
       <CancelPopup {...deleteProps}/>
-      <SuccessPopup {...succesProps}/>
     </div>
   )
 }

@@ -325,11 +325,6 @@ const products = {
         if (!Array.isArray(changedItems)) {
             throw new Error("Invalid input");
         }
-    },
-    updateCategory: async (changedItems) => {
-        if (!Array.isArray(changedItems)) {
-            throw new Error("Invalid input");
-        }
 
         const client = await pool.connect();
         try {
@@ -378,8 +373,7 @@ const products = {
         if (file) {
             cloud_avatar_img = await uploadImage(file, 'product');
         }
-        console.error('cloudinary image: ', cloud_avatar_img);
-
+        
         let {
             external_avatar_img,
             characteristic,

@@ -2,6 +2,7 @@ import {useEffect} from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import useProducts from '@/hooks/useProducts'
 import EditBanner from '@/components/EditBanner'
+import { toast } from 'react-toastify';
 const PricePageContent = () => {
   const {setLayoutProps} = useLayout()
   const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
@@ -19,25 +20,17 @@ const PricePageContent = () => {
   }
   
    const handleSave = (data)=>{
-      updatePricePage({
-          "title": data['Tiêu đề Banner'],
-          "description": data['Mô tả Banner']
-  }, 
+      updatePricePage(data, 
    {
-      onSuccess: (res) => {
-        alert(" Thành công", res);
-        // hiện popup thành công hoặc toast
-      },
-      onError: (err) => {
-        alert(" Thất bại", err);
-        // hiện popup lỗi hoặc thông báo thất bại
-      },
+      onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
+      onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
     });
    }
   const bannerProps = {
       title: "Banner Trang bảng giá",
       description: "Chỉnh sửa tiêu đề và mô tả banner", 
       listInput: [{
+        name: "title",
         label: "Tiêu đề Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: pricePage.banner_title ,
@@ -46,6 +39,7 @@ const PricePageContent = () => {
         maxLength: 200
       },
       {
+        name: "description",
         label: "Mô tả Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: pricePage.banner_description,

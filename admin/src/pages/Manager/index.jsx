@@ -1,48 +1,12 @@
 import {useLayout} from '@/layouts/LayoutContext'
 import { useEffect,useState } from 'react'
-import Table from '../../components/Table'
-import Button from '../../components/Button'
-import { DeleteIcon, EditIcon } from '../../components/Icon'
-import DynamicForm from '../../components/DynamicForm'
-import { CancelPopup } from '../../components/Popup'
-import { Modal, Result } from 'antd';
-import { CheckCircleFilled } from '@ant-design/icons';
-import useAdmin from '../../hooks/useAdmin'
-function SuccessPopup({ open, setOpen, notification, subTitle}) {
-
-  const handleOk = () => setOpen(false);
-
-  return (
-    <div className="p-6">
-
-      <Modal
-        open={open}
-        footer={null}
-        onCancel={handleOk}
-        centered
-        closable
-        width={550}
-      > 
-        <Result
-          status="success"
-          icon={<CheckCircleFilled style={{ color: '#52c41a', fontSize: 72 }} />}
-          title={
-            <div className="text-lg font-semibold">
-              {notification || 'Successfully Purchased Cloud Server ECS!'}
-            </div>
-          }
-          subTitle={
-            <div className="text-gray-500 text-sm">
-              {subTitle || 'Your order has been successfully processed. You can now manage your cloud server from the console.'}
-            </div>
-          }
-         
-        />
-      </Modal>
-    </div>
-  );
-};
-
+import Table from '@/components/Table'
+import Button from '@/components/Button'
+import { DeleteIcon, EditIcon } from '@/components/Icon'
+import DynamicForm from '@/components/DynamicForm'
+import { CancelPopup } from '@/components/Popup'
+import useAdmin from '@/hooks/useAdmin'
+import { toast } from 'react-toastify';
 const Manager = () => {
 
   const { data: managers, isLoading: isLoadingManagers } = useAdmin.manager.getAll();
@@ -52,12 +16,15 @@ const Manager = () => {
 
   const {setLayoutProps} = useLayout();
   const [listManagers , setListManagers] = useState([])
+
   const [isModalOpenAdd,setIsModalOpenAdd] = useState(false)
   const [isModalOpenEdit,setIsModalOpenEdit] = useState(false)
+
   const [pendingItemDel, setPendingItemDel] = useState(null)
   const [pendingItemEdit, setPendingItemEdit] = useState(null)
+
   const [isOpenCancelPopup, setIsOpenCancelPopup] = useState(false)
-  const [isOpenSuccesPopup, setIsOpenSuccesPopup] = useState(false)
+ 
 
    useEffect(()=>{
     setLayoutProps({
@@ -67,7 +34,6 @@ const Manager = () => {
       buttonLabel: "Thêm Manager",
       buttonAction:()=>{
           setIsModalOpenAdd(true)
-
       }
     })
   },[])
@@ -84,20 +50,20 @@ const Manager = () => {
   
   const handleConfirmPopup = ()=>{
     setIsOpenCancelPopup(false)
-     setListManagers(prev => prev.filter(mgr => prev.indexOf(mgr) !== pendingItemDel))
-     deleteManager(managers[pendingItemDel].username)
+    setListManagers(prev => prev.filter(mgr => prev.indexOf(mgr) !== pendingItemDel))
+    deleteManager(managers[pendingItemDel].username,{
+      onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
+      onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
+      }
+    )
+    
+        
 
   }
   const handleCanclePopup = ()=>{
     setIsOpenCancelPopup(false)
+  }
 
-  }
-  const succesProps = {
-      open: isOpenSuccesPopup, 
-     setOpen: setIsOpenSuccesPopup, 
-     notification: "Lưu thành công!", 
-     subTitle:" ", 
-  }
   const cancelProps={
      open: isOpenCancelPopup, 
      setOpen: setIsOpenCancelPopup, 
@@ -123,8 +89,8 @@ const Manager = () => {
       "description": valueForm.description
       },
       {
-        onSuccess: ()=> {setIsOpenSuccesPopup(true)}
-
+        onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
+        onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
       }
     )
     setIsModalOpenAdd(false)
@@ -141,11 +107,8 @@ const Manager = () => {
       "description": valueForm.description
       },
       {
-        onSuccess: ()=> {setIsOpenSuccesPopup(true)},
-        onError:()=>
-        {
-          alert("thatbai")
-        }
+        onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
+        onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
       }
     )
     setIsModalOpenEdit(false)
@@ -193,9 +156,9 @@ const Manager = () => {
   //====================================================End Form=========================================================
   const handleDelItem = (e)=> {
     
-    const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
-        setPendingItemDel(index)
-        setIsOpenCancelPopup(true)
+      const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
+      setPendingItemDel(index)
+      setIsOpenCancelPopup(true)
          
     }
   const delButton = {
@@ -233,18 +196,17 @@ const Manager = () => {
     data: dataTable ,
     isSetting: false
   }
-  console.log(listManagers)
+  
   return (
     <div className='bg-white border border-gray-300 rounded-[8px] p-[24px]'> 
       <h1 className='text-black text-[24px] font-semibold my-[12px]'>Danh sách Manager</h1>
-      <p className='text-[#71717A] text-[14px] font-regular  my-[12px]'> Tổng cộng {(listManagers || []).length} Manager</p>
+      <p className='text-[#71717A] text-[14px] font-regular my-[12px]'> Tổng cộng {(listManagers || []).length} Manager</p>
       <div>
           <Table {...tableProps}/>
       </div>
       <DynamicForm data={dataAdd} config={configAdd}/>
       <DynamicForm data={dataEdit} config={configEdit}/>
       <CancelPopup {...cancelProps}/>
-      <SuccessPopup {...succesProps}/>
     </div>
   )
 }

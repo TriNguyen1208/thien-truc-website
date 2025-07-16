@@ -69,7 +69,7 @@ const support_agents = {
         return useMutation({
             mutationFn: (newsupport_agents) => contactServices.support_agents.createOne(newsupport_agents),
             onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
+            queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
             },
         });
     },

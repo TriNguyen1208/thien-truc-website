@@ -22,10 +22,7 @@ const ProjectPageContent = () => {
   }
   
   const handleSave = (data)=>{
-    updateProjectPage({
-          "title": data['Tiêu đề Banner'],
-          "description": data['Mô tả Banner']
-    }, 
+    updateProjectPage(data, 
     {
       onSuccess: () => toast.success("Cập nhật thành công"),
       onError: () => toast.error("Cập nhật thất bại"),
@@ -36,6 +33,7 @@ const ProjectPageContent = () => {
       title: "Banner Trang dự án",
       description: "Chỉnh sửa tiêu đề và mô tả banner", 
       listInput: [{
+        name: "title",
         label: "Tiêu đề Banner",
         placeholder: "Vd: Dự án của chúng tôi...",
         contentCurrent: projectPage.banner_title ,
@@ -44,6 +42,7 @@ const ProjectPageContent = () => {
         rows: 1
       },
       {
+        name:"description",
         label: "Mô tả Banner",
         placeholder: "Vd: Dự án của chúng tôi...",
         contentCurrent: projectPage.banner_description,

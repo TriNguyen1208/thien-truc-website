@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
 import useProducts from '@/hooks/useProducts'
-
+import { toast } from 'react-toastify';
 const ProductPageContent = () => {
 
   const {setLayoutProps} = useLayout()
@@ -21,19 +21,10 @@ const ProductPageContent = () => {
   }
   
   const handleSave = (data)=>{
-      updateProductPage({
-          "title": data['Tiêu đề Banner'],
-          "description": data['Mô tả Banner']
-  }, 
+      updateProductPage(data, 
    {
-      onSuccess: (res) => {
-        alert(" Thành công", res);
-        // hiện popup thành công hoặc toast
-      },
-      onError: (err) => {
-        alert(" Thất bại", err);
-        // hiện popup lỗi hoặc thông báo thất bại
-      },
+      onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
+      onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
     }
 );
   }
@@ -41,6 +32,7 @@ const ProductPageContent = () => {
       title: "Banner Trang sản phẩm",
       description: "Chỉnh sửa tiêu đề và mô tả banner", 
       listInput: [{
+        name: "title",
         label: "Tiêu đề Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: productPage.banner_title ,
@@ -49,6 +41,7 @@ const ProductPageContent = () => {
         rows: 1
       },
       {
+        name: "description",
         label: "Mô tả Banner",
         placeholder: "Vd: Sản phẩm của chúng tôi...",
         contentCurrent: productPage.banner_description,

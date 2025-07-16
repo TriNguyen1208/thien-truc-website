@@ -24,10 +24,7 @@ const NewsPageContent = () => {
   }
   
   const handleSave = (data)=>{
-    updateNewsPage({
-          "title": data['Tiêu đề Banner'],
-          "description": data['Mô tả Banner']
-    }, 
+    updateNewsPage(data, 
     {
       onSuccess: () => toast.success("Cập nhật thành công"),
       onError: () => toast.error("Cập nhật thất bại"),
@@ -38,6 +35,7 @@ const NewsPageContent = () => {
       title: "Banner Trang tin tức",
       description: "Chỉnh sửa tiêu đề và mô tả banner", 
       listInput: [{
+        name: "title",
         label: "Tiêu đề Banner",
         placeholder: "Vd: Tin tức công ty...",
         contentCurrent: NewsPage.banner_title ,
@@ -46,6 +44,7 @@ const NewsPageContent = () => {
         rows: 1
       },
       {
+        name: "description",
         label: "Mô tả Banner",
         placeholder: "Vd: Tin tức của chúng tôi...",
         contentCurrent: NewsPage.banner_description,

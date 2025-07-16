@@ -50,6 +50,7 @@ const support_agents = {
     },
     createOne: async (req, res) => {
         try {
+            console.log(req.file)
             const { status, message } = await contactServices.support_agents.createOne(req.body, req.file);
             res.status(status).json({ message: message });
         } catch (error) {
@@ -58,6 +59,7 @@ const support_agents = {
         }
     },
     updateOne: async (req, res) => {
+        console.log('updateone contact', req.query, req.file)
         const id = req.params.id;
         try {
             const { status, message } = await contactServices.support_agents.updateOne(req.body, req.file, id);
