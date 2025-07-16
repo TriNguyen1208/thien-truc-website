@@ -105,7 +105,7 @@ const Product = () => {
       { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
       { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
       { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
-      { name: 'local_image', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
+      { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
       { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
     ])
   }, [categories]);
@@ -119,19 +119,43 @@ const Product = () => {
 
   const idCurrentCategories = filter ? (categories || []).findIndex(item => item === filter) : 0;
   const handleSubmitButtonAddProduct = (valueForm) => {
-    const formData = changeToFormData(valueForm);
-    console.log(valueForm);
+    const { img, ...rest } = valueForm;
+    let newForm = null;
+    if(valueForm.img instanceof File){
+        newForm = {
+          ...rest,
+          local_image: img,
+        }
+    }else{
+      newForm = {
+        ...rest,
+        external_avatar_img: img,
+      }
+    }
+    const formData = changeToFormData(newForm);
+    
     createOneProduct(formData);
     setIsModalOpenAddProduct(false);
   }
   const handleSubmitButtonEditProduct = (valueForm) => {
-    console.log('Day la button edit submit', valueForm)
-    console.log(idCurrentEditProduct)
+    const { img, ...rest } = valueForm;
+    let newForm = null;
+    if(valueForm.img instanceof File){
+        newForm = {
+          ...rest,
+          local_image: img,
+        }
+    }else{
+      newForm = {
+        ...rest,
+        external_avatar_img: img,
+      }
+    }
+    const formData = changeToFormData(newForm);
     updateOneProduct({
-                id: idCurrentEditProduct,
-                data: valueForm
+      id: idCurrentEditProduct,
+      data: formData
     });
-    console.log(idCurrentEditProduct, valueForm);
     setIsModalOpenEditProduct(false)
   }
 
@@ -168,7 +192,7 @@ const Product = () => {
         { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
         { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
         { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
-        { name: 'local_image', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
+        { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
         { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
       ],
     },

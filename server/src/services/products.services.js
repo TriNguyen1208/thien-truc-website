@@ -326,7 +326,7 @@ const products = {
         }
         console.error('cloudinary image: ', cloud_avatar_img);
         let {
-            externalAvatarImage,
+            external_avatar_img,
             characteristic,
             description,
             isDisplayHomePage,
@@ -337,7 +337,7 @@ const products = {
             warranty // int
         } = data;
 
-        const final_avatar_img = cloud_avatar_img || externalAvatarImage || null;
+        const final_avatar_img = cloud_avatar_img || external_avatar_img || null;
 
         if (price == "") price = null;
         warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
@@ -402,7 +402,7 @@ const products = {
         const local_avatar_img = file;
         
         let {
-            externalAvatarImage,
+            external_avatar_img,
             characteristic,
             description,
             isDisplayHomePage,
@@ -416,7 +416,7 @@ const products = {
         const final_avatar_img = await updateImage(
             old_avatar_img,
             local_avatar_img,
-            externalAvatarImage,
+            external_avatar_img,
             'product'
         );
 

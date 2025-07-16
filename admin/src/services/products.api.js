@@ -58,7 +58,11 @@ const products = {
     },
 
     updateOne: async (id, data) => {
-        const res = await axios.patch(API_ROUTES.product.products.updateOne(id), data);
+        const res = await axios.patch(API_ROUTES.product.products.updateOne(id), data, {
+            headers: {
+            'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     },
 
