@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
-
+import { useNavigationGuardContext } from '@/layouts/NavigatorProvider';
 const useConfirmModal = () => {
   const [open, setOpen] = useState(false);
   const [resolver, setResolver] = useState(null);
-
+  const { setShouldWarn } = useNavigationGuardContext(); 
   const confirm = () => {
     setOpen(true);
     return new Promise((resolve) => {
@@ -15,6 +15,7 @@ const useConfirmModal = () => {
   const handleOk = () => {
     setOpen(false);
     resolver?.(true);
+    setShouldWarn(false);
   };
 
   const handleCancel = () => {
