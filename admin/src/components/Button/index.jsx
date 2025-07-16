@@ -25,7 +25,7 @@ export default function Button({ Icon, text, colorText, colorBackground, padding
       onMouseEnter={!disable ? () => handleMouseEnter(colorBackground) : undefined}
       onMouseLeave={handleMouseLeave}
       onClick={!disable ? handleButton : undefined}
-      className="flex flex-row border border-[#f5f5f5] items-center gap-[10px] w-full h-full rounded-[6px]"
+      className="flex flex-row justify-center border border-[#f5f5f5] items-center  w-full h-full rounded-[6px]"
       style={{
         color: colorText,
         backgroundColor: disable ? '#d3d3d3' : colorBackground, 
@@ -36,8 +36,8 @@ export default function Button({ Icon, text, colorText, colorBackground, padding
         justifyContent: text && Icon ? 'flex-start' : 'center',
       }}
     >
-      {Icon && <div className="mx-[8px]"><Icon /></div>}
-      {text && <p className="text-[14px] font-medium">{text}</p>}
+     <div className="flex flex-row mx-auto gap-[4px]"> {Icon && <div className="flex items-center"><Icon /></div>}
+      {text && <p className="text-[14px] font-medium">{text}</p>} </div>
     </div>
   );
 }
