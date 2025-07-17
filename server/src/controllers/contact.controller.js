@@ -1,4 +1,6 @@
 import contactServices from "#@/services/contact.services.js";
+import activityLogServices from "#@/services/activity-log.services.js";
+const { logActivity } = activityLogServices;
 
 const getAllTables = async (req, res) => {
     const data = await contactServices.getAllTables();
@@ -13,10 +15,11 @@ const getContactPage = async (req, res) => {
 const updateContactPage ={
     banner: async (req, res) => {
         try {
-            const { status, message } = await contactServices.updateContactPage.banner(req.body);
+            const { status, message, action = null } = await contactServices.updateContactPage.banner(req.body);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi cập nhật Banner Trang Liên Hệ: ', error);
+            console.log('Lỗi cập nhật Banner trang Liên Hệ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     }
@@ -29,7 +32,8 @@ const getCompanyInfo = async (req, res) => {
 
 const updateCompanyInfo = async (req, res) => {
     try {
-        const { status, message } = await contactServices.updateCompanyInfo(req.body);
+        const { status, message, action = null } = await contactServices.updateCompanyInfo(req.body);
+        if (status == 200) logActivity(req.user.username, action);
         res.status(status).json({ message: message });
     } catch (error) {
         console.log('Lỗi cập nhật Thông Tin Công Ty: ', error);
@@ -50,8 +54,8 @@ const support_agents = {
     },
     createOne: async (req, res) => {
         try {
-            console.log(req.file)
-            const { status, message } = await contactServices.support_agents.createOne(req.body, req.file);
+            const { status, message, action = null } = await contactServices.support_agents.createOne(req.body, req.file);
+        if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi tạo Người Liên Lạc: ', error);
@@ -59,10 +63,10 @@ const support_agents = {
         }
     },
     updateOne: async (req, res) => {
-        console.log('updateone contact', req.query, req.file)
         const id = req.params.id;
         try {
-            const { status, message } = await contactServices.support_agents.updateOne(req.body, req.file, id);
+            const { status, message, action = null } = await contactServices.support_agents.updateOne(req.body, req.file, id);
+        if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi chỉnh sửa Người Liên Lạc: ', error);
@@ -72,7 +76,8 @@ const support_agents = {
     deleteOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await contactServices.support_agents.deleteOne(id);
+            const { status, message, action = null } = await contactServices.support_agents.deleteOne(id);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi xóa Người Liên Lạc: ', error);
@@ -95,4 +100,5 @@ const count = async (req, res) => {
     const data = await contactServices.count();
     res.status(200).json(data);
 }
+
 export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count, updateContactPage};

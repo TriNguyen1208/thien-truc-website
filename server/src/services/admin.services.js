@@ -23,7 +23,7 @@ const activity_logs = {
             FROM admin.activity_logs log
             JOIN admin.accounts acc ON log.username = acc.username
             ORDER BY log.time DESC
-            LIMIT 10
+            LIMIT 50
         `));
 
         if(!rows){

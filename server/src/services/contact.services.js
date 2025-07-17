@@ -37,7 +37,8 @@ const updateContactPage = {
 
         return {
             status: 200,
-            message: "Cập nhật Banner thành công"
+            message: "Cập nhật Banner thành công",
+            action: `Cập nhật Banner trang Liên Hệ`
         }
     }
 }
@@ -88,7 +89,8 @@ const updateCompanyInfo = async (data) => {
 
     return {
         status: 200,
-        message: 'Cập nhật Thông Tin Công Ty thành công'
+        message: 'Cập nhật Thông Tin Công Ty thành công',
+        action: `Cập nhật Thông Tin Công Ty`
     }
 }
 
@@ -133,12 +135,13 @@ const support_agents = {
             message: "Không thể tạo Người Liên Hệ"
         }; else if (result.rowCount > 0) return {
             status: 200,
-            message: "Tạo Người Liên Hệ thành công"
+            message: "Tạo Người Liên Hệ thành công",
+            action: `Tạo Người Liên Hệ: ${name}`
         } 
     },
     updateOne: async (data, file, id) => {
-        const idCount = (await pool.query('SELECT COUNT(*)::int FROM contact.support_agents WHERE id = $1', [id])).rows[0].count;
-        if (idCount == 0) return {
+        const old_name = (await pool.query('SELECT name FROM contact.support_agents WHERE id = $1', [id])).rows?.[0]?.name;
+        if (!old_name) return {
             status: 404,
             message: "Không tìm thấy Người Liên Hệ"
         }
@@ -161,7 +164,7 @@ const support_agents = {
             'contact'
         );
         
-        const result = await pool.query(`
+        await pool.query(`
             UPDATE contact.support_agents
             SET 
                 avatar_img = $1,
@@ -172,31 +175,32 @@ const support_agents = {
             WHERE
                 id = $6
         `, [final_avatar_img, name, role, phone_number, facebook_url, id]);
-
-        if (result.rowCount == 0) return {
-            status: 500,
-            message: "Không thể cập nhật Người Liên Hệ"
-        }; else if (result.rowCount > 0) return {
+        
+        const note = (old_name != name) ? ' (đã đổi tên)' : '';
+        return {
             status: 200,
-            message: "Cập nhật Người Liên Hệ thành công"
+            message: "Cập nhật Người Liên Hệ thành công",
+            action: `Cập nhật Người Liên Hệ${note}: ${name}`
         } 
     },
     deleteOne: async (id) => {
-        const result = await pool.query('DELETE FROM contact.support_agents WHERE id = $1 returning avatar_img', [id]);
-        
-        const deleted_avatar_img = result.rows[0]?.avatar_img;
+        const result = await pool.query('DELETE FROM contact.support_agents WHERE id = $1 returning name, avatar_img', [id]);
+        if (result.rowCount == 0) return {
+            status: 404,
+            message: "Không tìm thấy Người Liên Hệ"
+        };
 
+        const deleted_avatar_img = result.rows[0].avatar_img;
         if (isCloudinary(deleted_avatar_img)) {
             await deleteImage([deleted_avatar_img]);
         }
 
-        if (result.rowCount == 0) return {
-            status: 500,
-            message: "Không tìm thấy Người Liên Hệ"
-        }; else if (result.rowCount > 0) return {
+        const name = result.rows[0].name;
+        return {
             status: 200,
-            message: "Xóa Người Liên Hệ thành công"
-        } 
+            message: "Xóa Người Liên Hệ thành công",
+            action: `Xóa Người Liên Hệ: ${name}`
+        }
     }
     
 }

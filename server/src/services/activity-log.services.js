@@ -3,7 +3,7 @@ import pool from '#@/config/db.js'
 const logActivity = async (username, action) => {
     const result = await pool.query(`
         INSERT INTO admin.activity_logs (content, username, time)
-        VALUES ($1, $2, CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh')
+        VALUES ($1, $2, CURRENT_TIMESTAMP)
         RETURNING id
     `, [action, username]); // Đảm bảo đúng thứ tự: content, username
 
