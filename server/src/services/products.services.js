@@ -1,5 +1,6 @@
 import pool from '#@/config/db.js'
 import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
+import { PawPrint } from 'lucide-react';
 
 const getAllTables = async () => {
     const _product_page = await getProductPage();
@@ -15,6 +16,7 @@ const getAllTables = async () => {
         product_prices: _product_prices
     };
 }
+
 const getNumPage = async (query, filter) => {
     let totalCount = 0;
     const hasQuery = query !== '';
@@ -55,6 +57,7 @@ const getNumPage = async (query, filter) => {
         return totalCount;
     }
 }
+
 const getProductPage = async () => {
     const product_page = (await pool.query("SELECT * FROM product.product_page")).rows[0];
     if(!product_page){
@@ -71,14 +74,18 @@ const updateProductPage = async (data) => {
         description
     } = data;
 
-    const result = await pool.query(`
+    await pool.query(`
         UPDATE product.product_page
         SET
             banner_title = $1,
             banner_description = $2
     `, [title, description]);
 
-    return result;
+    return {
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Sản Phẩm"
+    }
 }
 
 const products = {
@@ -314,12 +321,24 @@ const products = {
             };
         return product
     },
-    updateFeatureOne: async (id, status) => {
+    updateFeatureOne: async (id, product_status) => {
         const query = `
-            UPDATE product.products SET is_featured = ${status} WHERE id = $1;
+            UPDATE product.products SET is_featured = $1 WHERE id = $2 RETURNING name;
         `
-        const result = await pool.query(query, [id]);
-        return result;
+        const result = await pool.query(query, [product_status, id]);
+
+        if (result.rowCount == 0) return {
+            status: 404,
+            message: "Không tìm thấy sản phẩm"
+        }
+
+        const { name } = result.rows[0];
+        const update = (product_status == 'true') ? 'Trưng bày' : 'Bỏ trưng bày'
+        return {
+            status: 200,
+            message: `${update} sản phẩm thành công`,
+            action: `${update} sản phẩm: ${id} - ${name}`
+        }
     },
     updateCategory: async (changedItems) => {
         if (!Array.isArray(changedItems)) {
@@ -334,9 +353,10 @@ const products = {
                 const { id, category_id } = item;
 
                 const result = await client.query(
-                    `SELECT category_id FROM product.products WHERE id = $1`,
+                    `SELECT category_id, name FROM product.products WHERE id = $1`,
                     [id]
                 );
+
                 const oldCategoryId = result.rows[0]?.category_id;
 
                 if (oldCategoryId !== category_id) {
@@ -360,6 +380,12 @@ const products = {
             }
 
             await client.query("COMMIT");
+
+            return {
+                status: 200,
+                message: "Gán loại sản phẩm thành công",
+                action: `Gán loại sản phẩm: ...`
+            }
         } catch (error) {
             await client.query("ROLLBACK");
             console.error("Error during DB updateRegion:", error);
@@ -445,9 +471,23 @@ const products = {
             `UPDATE product.product_categories SET item_count = item_count + 1 WHERE id = $1`,
             [category_id]
         );
+
+        return {
+            status: 200,
+            message: "Tạo sản phẩm thành công",
+            action: `Tạo sản phẩm: ${product_id} - ${productName}`
+        }
     },
     updateOne: async (data, file, id) => {
-        const old_avatar_img = (await pool.query('SELECT product_img FROM product.products WHERE id = $1', [id])).rows[0].product_img;
+        const { 
+            product_img: old_avatar_img,
+            name: old_name
+        } = (await pool.query('SELECT product_img, name FROM product.products WHERE id = $1', [id])).rows?.[0];
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy sản phẩm"
+        }
+
         const local_avatar_img = file;
         
         let {
@@ -530,18 +570,26 @@ const products = {
             `,
             [id, price]
         );
+
+        const note = (old_name != productName) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật sản phẩm thành công",
+            action: `Cập nhật sản phẩm${note}: ${id} - ${productName}`
+        }
     },
     deleteOne: async (id) => {
         // 1. Kiểm tra tồn tại và lấy category + product_img
         const res = await pool.query(
-            `SELECT category_id, product_img FROM product.products WHERE id = $1`,
+            `SELECT category_id, product_img, name FROM product.products WHERE id = $1`,
             [id]
         );
-        if (res.rowCount === 0) {
-            return { status: 404, message: "Không tìm thấy sản phẩm" };
-        }
+        if (res.rowCount == 0) return {
+            status: 404,
+            message: "Không tìm thấy sản phẩm"
+        };
 
-        const { category_id, product_img } = res.rows[0];
+        const { category_id, product_img, name } = res.rows[0];
 
         // 2. Xóa bảng product_prices trước (nếu có liên kết FK)
         await pool.query(
@@ -566,7 +614,11 @@ const products = {
             await deleteImage([product_img]);
         }
 
-        return { status: 200, message: "Xóa sản phẩm thành công" };
+        return {
+            status: 200,
+            message: "Xóa sản phẩm thành công",
+            action: `Xóa sản phẩm: ${id} - ${name}`
+        };
     }
 
 }
@@ -622,12 +674,27 @@ const product_categories = {
     },
     createOne: async (data) => {
         const { productNameCategories } = data;
-        await pool.query(
-            `INSERT INTO product.product_categories (name, item_count) VALUES ($1, 0)`,
+
+        const result = await pool.query(
+            `INSERT INTO product.product_categories (name, item_count) VALUES ($1, 0) RETURNING id`,
             [productNameCategories]
         );
+
+        const { id } = result.rows[0];
+        return {
+            status: 200,
+            message: "Tạo loại sản phẩm thành công",
+            action: `Tạo loại sản phẩm: ${id} - ${productNameCategories}`
+        }
+
     },
     updateOne: async (data, id) => {
+        const old_name = (await pool.query('SELECT name FROM product.product_categories WHERE id = $1', [id])).rows?.[0]?.name;
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy loại sản phẩm"
+        }
+
         const { productNameCategories } = data;
         await pool.query(
             `UPDATE product.product_categories
@@ -635,6 +702,13 @@ const product_categories = {
             WHERE id = $2`,
             [productNameCategories, id]
         );
+
+        const note = (old_name != productNameCategories) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật loại sản phẩm thành công",
+            action: `Cập nhật loại sản phẩm${note}: ${id} - ${productNameCategories}`
+        }
     },
     deleteOne: async (id) => {
         const client = await pool.connect();
@@ -659,13 +733,13 @@ const product_categories = {
 
             // 3. Xóa products
             await client.query(
-                `DELETE FROM product.products WHERE category_id = $1`,
+                `DELETE FROM product.products WHERE category_id = $1 RETURNING name`,
                 [id]
             );
 
             // 4. Xóa category
             const categoryDeleteRes = await client.query(
-                `DELETE FROM product.product_categories WHERE id = $1`,
+                `DELETE FROM product.product_categories WHERE id = $1 RETURNING name`,
                 [id]
             );
 
@@ -674,6 +748,8 @@ const product_categories = {
                 client.release();
                 return { status: 404, message: "Không tìm thấy danh mục để xóa" };
             }
+
+            const { name: categoryName } = categoryDeleteRes.rows[0];
 
             await client.query('COMMIT');
             client.release();
@@ -687,6 +763,7 @@ const product_categories = {
             return {
                 status: 200,
                 message: "Xóa danh mục và toàn bộ sản phẩm thành công",
+                action: `Xóa loại sản phẩm và toàn bộ sản phẩm thuộc loại: ${id} - ${categoryName}`,
                 deletedImages: cloudinaryImgs
             };
         } catch (err) {
@@ -720,7 +797,11 @@ const updatePricePage = async (data) => {
             banner_description = $2
     `, [title, description]);
 
-    return result;
+    return {
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Bảng Giá thành công"
+    }
 }
 
 const product_prices = {
