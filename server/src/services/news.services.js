@@ -964,5 +964,4 @@ const featured_news = {
     }
 }
 
-
 export default { getAllTables, getNewsPage, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};

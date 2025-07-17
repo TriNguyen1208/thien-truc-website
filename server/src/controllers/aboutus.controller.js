@@ -1,4 +1,6 @@
 import aboutUsServices from "#@/services/aboutus.services.js";
+import activityLogServices from "#@/services/activity-log.services.js";
+const { logActivity } = activityLogServices;
 
 const getAllTables = async (req, res) => {
     const data = await aboutUsServices.getAllTables();
@@ -13,7 +15,8 @@ const getAboutUsPage = async (req, res) => {
 const updateAboutUsPage = {
     banner: async (req, res) => {
         try {
-            const { status, message } = await aboutUsServices.updateAboutUsPage.banner(req.body);
+            const { status, message, action = null } = await aboutUsServices.updateAboutUsPage.banner(req.body);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
@@ -22,7 +25,8 @@ const updateAboutUsPage = {
     },
     ourStory: async (req, res) => {
         try {
-            const { status, message } = await aboutUsServices.updateAboutUsPage.ourStory(req.body);
+            const { status, message, action = null } = await aboutUsServices.updateAboutUsPage.ourStory(req.body);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
@@ -43,7 +47,8 @@ const company_services = {
     },
     createOne: async (req, res) => {
         try {
-            const { status, message } = await aboutUsServices.company_services.createOne(req.body);
+            const { status, message, action = null } = await aboutUsServices.company_services.createOne(req.body);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi tạo Nhiệm Vụ Và Trách Nhiệm: ', error);
@@ -53,7 +58,8 @@ const company_services = {
     updateOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await aboutUsServices.company_services.updateOne(req.body, id);
+            const { status, message, action = null } = await aboutUsServices.company_services.updateOne(req.body, id);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi cập nhật Nhiệm Vụ Và Trách Nhiệm: ', error);
@@ -63,7 +69,8 @@ const company_services = {
     deleteOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await aboutUsServices.company_services.deleteOne(id);
+            const { status, message, action = null } = await aboutUsServices.company_services.deleteOne(id);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi xóa Nhiệm Vụ Và Trách Nhiệm: ', error);
@@ -84,7 +91,8 @@ const why_choose_us = {
     },
     createOne: async (req, res) => {
         try {
-            const { status, message } = await aboutUsServices.why_choose_us.createOne(req.body);
+            const { status, message, action = null } = await aboutUsServices.why_choose_us.createOne(req.body);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi tạo Tại Sao Chọn Thiên Trúc: ', error);
@@ -94,7 +102,8 @@ const why_choose_us = {
     updateOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await aboutUsServices.why_choose_us.updateOne(req.body, id);
+            const { status, message, action = null } = await aboutUsServices.why_choose_us.updateOne(req.body, id);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi cập nhật Tại Sao Chọn Thiên Trúc: ', error);
@@ -104,7 +113,8 @@ const why_choose_us = {
     deleteOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await aboutUsServices.why_choose_us.deleteOne(id);
+            const { status, message, action = null } = await aboutUsServices.why_choose_us.deleteOne(id);
+            if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
             console.log('Lỗi xóa Tại Sao Chọn Thiên Trúc: ', error);

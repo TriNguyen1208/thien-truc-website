@@ -35,7 +35,8 @@ const updateAboutUsPage = {
 
         return {
             status: 200,
-            message: "Cập nhật Banner thành công"
+            message: "Cập nhật Banner thành công",
+            action: "Cập nhật Banner trang Về Chúng Tôi"
         }
     },
     ourStory: async (data) => {
@@ -51,7 +52,8 @@ const updateAboutUsPage = {
 
         return {
             status: 200,
-            message: "Cập nhật Câu Chuyện Của Chúng Tôi thành công"
+            message: "Cập nhật Câu Chuyện Của Chúng Tôi thành công",
+            action: "Cập nhật Câu Chuyện Của Chúng Tôi trang Về Chúng Tôi"
         }
     }
 }
@@ -87,21 +89,29 @@ const company_services = {
         await pool.query(`
             INSERT INTO about_us.company_services (title, description, details)
             VALUES ($1, $2, $3)
+            RETURNING id
         `, [title, description, details]);
 
         return {
             status: 200,
-            message: "Tạo Nhiệm Vụ Và Trách Nhiệm thành công"
+            message: "Tạo Nhiệm Vụ Và Trách Nhiệm thành công",
+            action: `Tạo Nhiệm Vụ Và Trách Nhiệm trang Về Chúng Tôi: ${title}`
         }         
     },
     updateOne: async (data, id) => {
+        const old_title = (await pool.query(`SELECT title FROM about_us.company_services WHERE id = $1`, [id])).rows?.[0]?.title;
+        if (!old_title) return {
+            status: 404,
+            message: "Không tìm thấy Nhiệm Vụ Và Trách Nhiệm",
+        }
+
         const { 
             title,
             description,
             details
         } = data;
 
-        const { rowCount } = await pool.query(`
+        await pool.query(`
             UPDATE about_us.company_services
             SET
                 title = $1,
@@ -111,25 +121,29 @@ const company_services = {
                 id = $4
         `, [title, description, details, id]);
 
-        if (rowCount > 0) return {
+        const note = (old_title != title) ? ' (đã đổi tên)' : '';
+        return {
             status: 200,
-            message: "Cập nhật Nhiệm Vụ Và Trách Nhiệm thành công"
-        }; else return {
-            status: 404,
-            message: "Không tìm thấy Nhiệm Vụ Và Trách Nhiệm"
+            message: "Cập nhật Nhiệm Vụ Và Trách Nhiệm thành công",
+            action: `Cập nhật Nhiệm Vụ Và Trách Nhiệm trang Về Chúng Tôi${note}: ${title}`
         }
     },
     deleteOne: async (id) => {
-        const { rowCount } = await pool.query(`
-            DELETE FROM about_us.company_services WHERE id = ${id}
+        const result = await pool.query(`
+            DELETE FROM about_us.company_services WHERE id = ${id} RETURNING title
         `);
 
-        if (rowCount > 0) return {
-            status: 200,
-            message: "Xóa Nhiệm Vụ Và Trách Nhiệm thành công"
-        }; else return {
+        if (result.rowCount == 0) return {
             status: 404,
             message: "Không tìm thấy Nhiệm Vụ Và Trách Nhiệm"
+        }; 
+
+        const { title } = result.rows[0];
+
+        return {
+            status: 200,
+            message: "Xóa Nhiệm Vụ Và Trách Nhiệm thành công",
+            action: `Xóa Nhiệm Vụ Và Trách Nhiệm trang Vê Chúng Tôi: ${title}`
         }
     }
 }
@@ -169,17 +183,24 @@ const why_choose_us = {
 
         return {
             status: 200,
-            message: "Tạo Tại Sao Chọn Thiên Trúc thành công"
+            message: "Tạo Tại Sao Chọn Thiên Trúc thành công",
+            action: `Tạo Tại Sao Chọn Thiên trúc trang Về Chúng Tôi: ${title}`
         }         
     },
-    updateOne: async (data, id) => {
+    updateOne: async (data, id) => {        
+        const old_title = (await pool.query(`SELECT title FROM about_us.why_choose_us WHERE id = $1`, [id])).rows?.[0]?.title;
+        if (!old_title) return {
+            status: 404,
+            message: "Không tìm thấy Tại Sao Chọn Thiên Trúc"
+        }
+
         const { 
             title,
             description,
             details
         } = data;
 
-        const { rowCount } = await pool.query(`
+        await pool.query(`
             UPDATE about_us.why_choose_us
             SET
                 title = $1,
@@ -189,25 +210,28 @@ const why_choose_us = {
                 id = $4
         `, [title, description, details, id]);
 
-        if (rowCount > 0) return {
+        const note = (old_title != title) ? ' (đã đổi tên)' : ''
+        return {
             status: 200,
-            message: "Cập nhật Tại Sao Chọn Thiên Trúc thành công"
-        }; else return {
-            status: 404,
-            message: "Không tìm thấy Tại Sao Chọn Thiên Trúc"
+            message: "Cập nhật Tại Sao Chọn Thiên Trúc thành công",
+            action: `Cập nhật Tại Sao Chọn Thiên Trúc trang Về Chúng Tôi${note}: ${title}`
         }
     },
     deleteOne: async (id) => {
-        const { rowCount } = await pool.query(`
-            DELETE FROM about_us.why_choose_us WHERE id = ${id}
+        const result = await pool.query(`
+            DELETE FROM about_us.why_choose_us WHERE id = ${id} RETURNING title
         `);
 
-        if (rowCount > 0) return {
-            status: 200,
-            message: "Xóa Tại Sao Chọn Thiên Trúc thành công"
-        }; else return {
+        if (result.rowCount == 0) return {
             status: 404,
             message: "Không tìm thấy Tại Sao Chọn Thiên Trúc"
+        }
+
+        const { title } = result.rows[0];
+        return {
+            status: 200,
+            message: "Xóa Tại Sao Chọn Thiên Trúc thành công",
+            action: `Xóa Tại Sao Chọn Thiên Trúc trang Về Chúng Tôi: ${title}`
         }
     }
 }
