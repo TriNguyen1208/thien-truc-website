@@ -60,7 +60,12 @@ const patchRecruitment = async (data) => {
         set ${setClause}
         returning *;
     `
-    const result = await pool.query(query, values);
-    return result.rows[0];
+    await pool.query(query, values);
+
+    return {
+        status: 200,
+        message: "Cập nhật trang Tuyển Dụng thành công",
+        action: `Cập nhật trang Tuyển Dụng`
+    };
 }
 export default { getAllTables, getRecruitmentPage, postSubmitApplication, patchRecruitment};

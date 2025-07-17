@@ -1,4 +1,6 @@
 import recruitmentServices from "#@/services/recruitment.services.js";
+import activityLogServices from "#@/services/activity-log.services.js";
+const { logActivity } = activityLogServices;
 
 const getAllTables = async (req, res) => {
     const data = await recruitmentServices.getAllTables();
@@ -22,8 +24,9 @@ const postSubmitApplication = async (req, res) => {
 
 const patchRecruitment = async (req, res) => {
   try {
-    await recruitmentServices.patchRecruitment(req.body);
-    res.status(200).json({ success: true, message: "Cập nhật thành công" });
+    const { status, message, action = null } = await recruitmentServices.patchRecruitment(req.body);
+    if (status == 200) logActivity(req.user.username, action);
+    res.status(status).json({ success: true, message });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Cập nhật thất bại", error: error.message });

@@ -800,7 +800,7 @@ const updatePricePage = async (data) => {
     return {
         status: 200,
         message: "Cập nhật Banner thành công",
-        action: "Cập nhật Banner trang Bảng Giá thành công"
+        action: "Cập nhật Banner trang Bảng Giá"
     }
 }
 
