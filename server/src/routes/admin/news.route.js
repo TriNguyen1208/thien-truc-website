@@ -22,14 +22,14 @@ router.get('/featured_news', newsController.featured_news.getAll);
 
 router.patch('/news/update_categories', authenticateToken, newsController.news.updateCategory);
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
-router.patch('/featured_news', newsController.featured_news.updateAll);
+router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
-router.post('/news_contents/',  upload.fields([
+router.post('/news_contents/', authenticateToken,  upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 }])
 , newsController.news_contents.postOne);
 
-router.patch('/news_contents/:id',  upload.fields([
+router.patch('/news_contents/:id', authenticateToken, upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 },
 ])

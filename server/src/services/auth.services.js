@@ -93,7 +93,7 @@ const refreshToken = async (tokenData) => {
         const decodedUser = jwt.verify(refreshToken, REFRESH_SECRET);
 
         const accessToken = jwt.sign(
-            { role: decodedUser.role },
+            { username: decodedUser.username, role: decodedUser.role },
             ACCESS_SECRET,
             { expiresIn: '15m' }
         );

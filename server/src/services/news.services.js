@@ -1,5 +1,4 @@
 import pool from '#@/config/db.js'
-import upload from '#@/middlewares/upload.middleware.js';
 import { uploadImage, deleteImage } from '#@/utils/image.js';
 const getAllTables = async () => {
     const _news_page = await getNewsPage();
@@ -64,6 +63,7 @@ const getNewsPage = async () => {
         ...news_page,
     }
 }
+
 const updateNewsPage = async (data) => {
     const {
         title,
@@ -77,8 +77,13 @@ const updateNewsPage = async (data) => {
             banner_description = $2
     `, [title, description]);
 
-    return result;
+    return {
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Tin Tức"
+    };
 }
+
 const news = {
     getList: async (query = '', filter = '', sort_by = 'date_desc', page, is_published, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
@@ -361,6 +366,12 @@ const news = {
             }
 
             await client.query("COMMIT");
+
+            return {
+                status: 200,
+                message: "Gán loại tin tức thành công",
+                action: `Gán loại tin tức: ...`
+            }
         } catch (error) {
             await client.query("ROLLBACK");
             console.error("Error during DB updateRegion:", error);
@@ -399,8 +410,15 @@ const news = {
             RETURNING *
             `, [id]);
 
-            await client.query('COMMIT');
-            return result;
+            await client.query('COMMIT');   
+            if (result.rowCount > 0) return {
+                status: 200,
+                message: "Xóa tin tức thành công",
+                action: `Xóa tin tức: ${id} - ${result?.rows?.[0]?.title}`
+            }; else return {
+                status: 404,
+                message: "Không tìm thấy tin tức"
+            }
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;
@@ -427,21 +445,46 @@ const news_categories = {
         return news_category;
     },
     createOne: async(data) => {
-            const {name, rgb_color} = data;
-            await pool.query(
-                `INSERT INTO news.news_categories (name, rgb_color, item_count)
-                 VALUES($1, $2, 0)`,
-                 [name, rgb_color]
-            );
-        },
+        const {name, rgb_color} = data;
+
+        const result = await pool.query(
+            `INSERT INTO news.news_categories (name, rgb_color, item_count)
+            VALUES($1, $2, 0)
+            RETURNING id`,
+            [name, rgb_color]
+        );
+
+        const id = result?.rows?.[0]?.id; 
+
+        return {
+            status: 200,
+            message: "Thêm loại tin tức thành công",
+            action: `Tạo loại tin tức: ${id} - ${name}`
+        }
+    },
     updateOne: async(data, id) => {
         const {name, rgb_color} = data;
+
+        const old_name = await pool.query(`SELECT name FROM news.news_categories WHERE id = $1`, [id]).rows?.[0]?.name;
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy loại tin tức"
+        }
+
         await pool.query(
             `UPDATE news.news_categories
                 SET name = $1, rgb_color = $2
                 WHERE id = $3`,
                 [name, rgb_color, id]
         );
+
+        const note = (old_name != name) ? ' (đã đổi tên)' : '';
+
+        return {
+            status: 200,
+            message: "Chỉnh sửa loại tin tức thành công",
+            action: `Chỉnh sửa loại tin tức${note}: ${id} - ${name}`
+        }
     },
     deleteOne: async (id) => {
         const client = await pool.connect();
@@ -486,7 +529,18 @@ const news_categories = {
             console.error("Lỗi xoá news_categories:", err.message);
             }
 
-            return result?.rows?.[0] || null;
+            if (result.rowCount == 0) return {
+                status: 404,
+                message: "Không tìm thấy loại tin tức"
+            }
+
+            const { id, name } = result.rows[0]
+
+            return {
+                status: 200,
+                message: "Xóa loại tin tức thành công",
+                action: `Xóa loại tin tức thành công: ${id} - ${name}`
+            }
         } finally {
             client.release();
         }
@@ -626,7 +680,7 @@ const news_contents = {
             measure_time, num_readers,
             main_img, main_content
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-            RETURNING id;
+            RETURNING id, title;
         `;
         const measure_time = Math.ceil(countWord / 1000);
 
@@ -648,8 +702,8 @@ const news_contents = {
             main_content
         ];
         const newsResult = await pool.query(insertNewsSql, insertValues);
-        console.log(newsResult.rows[0])
         const news_id = newsResult.rows[0].id;
+        const news_title = newsResult.rows[0].title;
         const insertNewsContentSql = `
             INSERT INTO news.news_contents (news_id, content)
             values($1, $2)
@@ -659,8 +713,16 @@ const news_contents = {
             contentHTML
         ]
         await pool.query(insertNewsContentSql, insertValuesNewsContent);
+
+        return {
+            status: 200,
+            message: "Tạo tin tức thành công",
+            action: `Tạo tin tức: ${news_id} - ${news_title}`
+        }
     },
     updateOne: async (id, data, files) => {
+        const old_title = await pool.query(`SELECT title FROM news.news WHERE id = $1`, [id]);
+
         const result = {};
         if(files?.main_image?.[0]){
             const mainImageUrl = await uploadImage(files.main_image[0], 'news');
@@ -718,7 +780,7 @@ const news_contents = {
                 num_readers = $6, 
                 main_img = $7, 
                 main_content = $8
-            where id= $9
+            where id = $9
         `
         const measure_time = Math.ceil(countWord / 1000);
 
@@ -743,6 +805,13 @@ const news_contents = {
         ];
 
         await pool.query(updateNewsSql, updateValues);
+
+        const note = (old_title != title) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật tin tức thành công",
+            action: `Cập nhật tin tức${note}: ${id} - ${title}`
+        }        
     },
 }
 const getSearchCategoriesSuggestions = async (query) => {
@@ -889,7 +958,8 @@ const featured_news = {
 
         return {
             status: 200,
-            message: "Cập nhật Tin Tức Nổi Bật thành công"
+            message: "Cập nhật Tin Tức Nổi Bật thành công",
+            action: `Cập nhật tin tức nổi bật`
         }
     }
 }
