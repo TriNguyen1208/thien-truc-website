@@ -1,4 +1,6 @@
 import adminServices from "#@/services/admin.services.js";
+import activityLogServices from "#@/services/activity-log.services.js";
+const { logActivity } = activityLogServices;
 
 const count = async(req, res) => {
     const data = await adminServices.count();
@@ -24,11 +26,9 @@ const manager = {
     },
     createOne: async (req, res) => {
         try {
-            const result = await adminServices.manager.createOne(req.body);
-            if (result.rowCount == 0) {
-                return res.status(409).json({ message: 'Username đã tồn tại' });
-            }
-            return res.status(200).json({ message: 'Tạo Manager thành công'});
+            const { status, message, action = null} = await adminServices.manager.createOne(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi tạo Manager: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
@@ -37,11 +37,9 @@ const manager = {
     updateOne: async (req, res) => {
         const username = req.params.username;
         try {
-            const result = await adminServices.manager.updateOne(req.body, username);
-            if (result.rowCount == 0) {
-                return res.status(404).json({ message: 'Không tìm thấy Manager' });
-            }
-            res.status(200).json({ message: 'Cập nhật Manager thành công'});
+            const { status, message, action = null } = await adminServices.manager.updateOne(req.body, username);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi cập nhật Manager: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
@@ -50,11 +48,9 @@ const manager = {
     deleteOne: async (req, res) => {
         const username = req.params.username;
         try {
-            const result = await adminServices.manager.deleteOne(username);
-            if (result.rowCount == 0) {
-                return res.status(404).json({ message: 'Không tìm thấy Manager' });
-            }
-            res.status(200).json({ message: 'Xóa Manager thành công'});
+            const { status, message, action = null } = await adminServices.manager.deleteOne(username);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi xóa Manager: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
