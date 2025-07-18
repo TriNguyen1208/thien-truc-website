@@ -332,6 +332,18 @@ const news = {
             throw new Error("Invalid input");
         }
 
+        if (changedItems.length == 0) return {
+            status: 400,
+            message: "Không có dữ liệu cần cập nhật"
+        }
+
+        const category_id = changedItems[0].category_id;
+        const category_name = (await pool.query('SELECT name FROM news.news_categories WHERE id = $1', [category_id])).rows?.[0]?.name;
+        if (!category_name) return {
+            status: 404,
+            message: "Không tìm loại tin tức"
+        }
+
         const client = await pool.connect();
         try {
             await client.query("BEGIN");
@@ -367,10 +379,11 @@ const news = {
 
             await client.query("COMMIT");
 
+            const news_ids = changedItems.map(item => item.id).join(', ');
             return {
                 status: 200,
                 message: "Gán loại tin tức thành công",
-                action: `Gán loại tin tức: ...`
+                action: `Gán loại tin tức ${category_id} - ${category_name} cho các tin tức: ${news_ids}`
             }
         } catch (error) {
             await client.query("ROLLBACK");

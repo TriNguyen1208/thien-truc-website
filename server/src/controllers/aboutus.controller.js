@@ -19,7 +19,7 @@ const updateAboutUsPage = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
+            console.error('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     },
@@ -29,7 +29,7 @@ const updateAboutUsPage = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
+            console.error('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     }
@@ -51,7 +51,7 @@ const company_services = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi tạo Nhiệm Vụ Và Trách Nhiệm: ', error);
+            console.error('Lỗi tạo Nhiệm Vụ Và Trách Nhiệm: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     },
@@ -62,7 +62,7 @@ const company_services = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi cập nhật Nhiệm Vụ Và Trách Nhiệm: ', error);
+            console.error('Lỗi cập nhật Nhiệm Vụ Và Trách Nhiệm: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     },
@@ -73,7 +73,7 @@ const company_services = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi xóa Nhiệm Vụ Và Trách Nhiệm: ', error);
+            console.error('Lỗi xóa Nhiệm Vụ Và Trách Nhiệm: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     }
@@ -95,7 +95,7 @@ const why_choose_us = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi tạo Tại Sao Chọn Thiên Trúc: ', error);
+            console.error('Lỗi tạo Tại Sao Chọn Thiên Trúc: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     },
@@ -106,7 +106,7 @@ const why_choose_us = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi cập nhật Tại Sao Chọn Thiên Trúc: ', error);
+            console.error('Lỗi cập nhật Tại Sao Chọn Thiên Trúc: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     },
@@ -117,7 +117,7 @@ const why_choose_us = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.log('Lỗi xóa Tại Sao Chọn Thiên Trúc: ', error);
+            console.error('Lỗi xóa Tại Sao Chọn Thiên Trúc: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     }

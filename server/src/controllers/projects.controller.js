@@ -47,7 +47,7 @@ const projects = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Error', error);
+            console.error('Error', error);
             res.status(500).json({message: 'Loi may chu'});
         }
     },
@@ -58,7 +58,7 @@ const projects = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Error:', error);
+            console.error('Error:', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     }, 
@@ -69,7 +69,7 @@ const projects = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Lỗi máy chủ', error);
+            console.error('Lỗi máy chủ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }
@@ -91,7 +91,7 @@ const project_regions = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
@@ -102,7 +102,7 @@ const project_regions = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Error:', error);
+            console.error('Error:', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
@@ -113,7 +113,7 @@ const project_regions = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }
@@ -135,7 +135,7 @@ const project_contents = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }        
     },
@@ -146,7 +146,7 @@ const project_contents = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }

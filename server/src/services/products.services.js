@@ -121,11 +121,9 @@ const products = {
         }
 
         if (page) {
-            console.log('2');
             const offset = (page - 1) * pageSize;
             limit = `${pageSize} OFFSET ${offset}`;
         } else {
-            console.log('1');
             limit = 'ALL';
         }
         
@@ -344,6 +342,18 @@ const products = {
         if (!Array.isArray(changedItems)) {
             throw new Error("Invalid input");
         }
+        
+        if (changedItems.length == 0) return {
+            status: 400,
+            message: "Không có dữ liệu cần cập nhật"
+        }
+
+        const category_id = changedItems[0].category_id;
+        const category_name = (await pool.query('SELECT name FROM product.product_categories WHERE id = $1', [category_id])).rows?.[0]?.name;
+        if (!category_name) return {
+            status: 404,
+            message: "Không tìm thấy loại sản phẩm"
+        }
 
         const client = await pool.connect();
         try {
@@ -381,10 +391,11 @@ const products = {
 
             await client.query("COMMIT");
 
+            const product_ids = changedItems.map(item => item.id).join(', ');
             return {
                 status: 200,
                 message: "Gán loại sản phẩm thành công",
-                action: `Gán loại sản phẩm: ...`
+                action: `Gán loại sản phẩm ${category_id} - ${category_name} cho các sản phẩm: ${product_ids}`
             }
         } catch (error) {
             await client.query("ROLLBACK");
@@ -429,7 +440,6 @@ const products = {
 
         // 2. Prepare features
         const parsed_characteristic = JSON.parse(characteristic) || [];
-        console.error('parse ', parsed_characteristic);
         const product_features = parsed_characteristic.map(c => c.value);
         const highlight_feature_ids = parsed_characteristic
             .map((c, index) => (c.isCheckbox ? index : -1))
@@ -524,7 +534,6 @@ const products = {
 
         // 2. Prepare features
         const parsed_characteristic = JSON.parse(characteristic) || [];
-        console.error('parse ', parsed_characteristic);
         const product_features = parsed_characteristic.map(c => c.value);
         const highlight_feature_ids = parsed_characteristic
             .map((c, index) => (c.isCheckbox ? index : -1))

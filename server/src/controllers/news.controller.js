@@ -45,15 +45,15 @@ const news = {
         res.status(200).json(data);
     },
     updateCategory: async (req, res) => {
-            const { changedItems } = req.body; 
-            try {
-                const { status, message, action = null} = await newsServices.news.updateCategory(changedItems);
-                if (status == 200) logActivity(req.user.username, action)
-                res.status(status).json({ message });
-            } catch (error) {
-                console.log('Error:', error);
-                res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
-            }
+        const { changedItems } = req.body; 
+        try {
+            const { status, message, action = null } = await newsServices.news.updateCategory(changedItems);
+            if (status == 200) logActivity(req.user.username, action)
+            res.status(status).json({ message });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
+        }
     }, 
     deleteOne: async (req, res) => {
         const id = req.params.id;
@@ -62,7 +62,7 @@ const news = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.log('Lỗi máy chủ', error);
+            console.error('Lỗi máy chủ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }
@@ -84,7 +84,7 @@ const news_categories = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
@@ -95,7 +95,7 @@ const news_categories = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.log('Error:', error);
+            console.error('Error:', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
@@ -106,7 +106,7 @@ const news_categories = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }
@@ -128,7 +128,7 @@ const news_contents = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });
         }
         
@@ -140,7 +140,7 @@ const news_contents = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });
         }
         

@@ -49,8 +49,6 @@ const login = async (loginData) => {
         message: 'Tài khoản không tồn tại'
     }
 
-    console.log(user);
-
     const isPasswordValid = await isValidPassword(username, password);
     if (!isPasswordValid) return {
         status: 401,
@@ -204,7 +202,7 @@ const updatePassword = async (data, user) => {
         WHERE
             username = $2    
     `, [hashed_new_password, user.username]);
-    console.log(user);
+
     return {
         status: 200,
         message: "Cập nhật mật khẩu thành công",
