@@ -181,14 +181,18 @@ const products = {
             };
         else return [...results];
     },
-    getListByCategory: async (query = '', filter = '', is_featured, item_limit) => {
+    getListByCategory: async (id = '', query = '', filter = '', is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
+        id = id.trim().replace(/^['"]|['"]$/g, '');
 
         let where = [];
         let order = [];
         const limit = parseInt(item_limit) || 100;
         
+        if (id) {
+            where.push(`prd.id = '${id}'`);
+        }
         if (query != '') {
             where.push(
                 `(unaccent(prd.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
