@@ -3,7 +3,7 @@ import authServices from '#@/services/auth.services.js';
 // Hàm login
 const login = async (req, res) => {
     try {
-        const { status, message, token, user } = await authServices.login(req.body);
+        const { status, message, token = null, user = null } = await authServices.login(req.body);
         res.status(status).json({ message: message, token, user });
     } catch (error) {
         console.error('Lỗi đăng nhập: ', error);
@@ -36,7 +36,7 @@ const getLoginResult = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const { status, message, user } = await authServices.updateProfile(req.body, req.user);
+        const { status, message, user = null } = await authServices.updateProfile(req.body, req.user);
         res.status(status).json({
             message,
             user
@@ -49,7 +49,7 @@ const updateProfile = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     try {
-        const { status, message, user } = await authServices.updatePassword(req.body, req.user);
+        const { status, message, user = null } = await authServices.updatePassword(req.body, req.user);
         res.status(status).json({
             message,
             user
@@ -60,4 +60,24 @@ const updatePassword = async (req, res) => {
     }
 }
 
-export default { login, refreshToken, getLoginResult, updateProfile, updatePassword };
+const sendResetPassword = async(req, res) => {
+    try {
+        const { status, message } = await authServices.sendResetPassword(req.body);
+        res.status(status).json({ message });
+    } catch (error) {
+        console.error('Lỗi gửi reset mật khẩu: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        const { status, message } = await authServices.resetPassword(req.body);
+        res.status(status).json({ message });
+    } catch (error) {
+        console.error('Lỗi reset mật khẩu: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
+
+export default { login, refreshToken, getLoginResult, updateProfile, updatePassword, sendResetPassword, resetPassword };
