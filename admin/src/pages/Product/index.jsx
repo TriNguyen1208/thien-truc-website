@@ -14,7 +14,7 @@ import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
 import ProductImageCell from '../../components/ProductImageCell'
 import changeToFormData from '../../utils/changeToFormData'
-
+import Loading from '@/components/Loading'
 const Product = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -111,9 +111,7 @@ const Product = () => {
   }, [categories]);
   if (isLoadingProductData || isLoadingProductCategoriesData || isLoadingUpdateFeatureOne || isLoadingDeleteOneProduct || isLoadingCreateOneProduct || isLoadingUpdateOneProduct) {
     return (
-      <>
-        Dang loading...
-      </>
+      <Loading/>
     )
   }
 

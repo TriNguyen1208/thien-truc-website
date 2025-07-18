@@ -13,6 +13,7 @@ import ProductImageCell from '../../components/ProductImageCell'
 import useHome from '../../hooks/useHome';
 import useNews from '../../hooks/useNews';
 import AddHighlight from '../../components/AddHighlight';
+import Loading from '@/components/Loading'
 const HomePageContent = () => {
   const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
   const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
@@ -62,9 +63,7 @@ const HomePageContent = () => {
     isLoadingHighlightNews || isLoadingHomePageData || isLoadingUpdateBanner ||
     isLoadingUpdateAboutUs || isLoadingNewsData) {
     return (
-      <>
-        is loading....
-      </>
+     <Loading/>
     )
   }
 

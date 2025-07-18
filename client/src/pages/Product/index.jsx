@@ -18,7 +18,6 @@ function GoBackListProduct({goBack ,categorySelected ,query}){
     )
 }
 function DisplayByCategories({ data, handleViewMore, handleViewProduct, handlePageChange }) {
-
     return (
         Object.entries(data).map((objectCategory, index) => {
 
@@ -37,42 +36,42 @@ function DisplayByCategories({ data, handleViewMore, handleViewProduct, handlePa
 }
 
 function DisplayProduct({ dataAll, categorySelected, query, handleViewMore, handleViewProduct, handlePageChange }) {
-    if (!Array.isArray(dataAll.results)) {
+    if (!Array.isArray(dataAll)) {
         const props = {
-            data: dataAll.results,
+            data: dataAll,
             handleViewMore: handleViewMore,
             handleViewProduct: handleViewProduct,
             handlePageChange: handlePageChange
         }
         return (<DisplayByCategories {...props} />)
     } else if (query == '') {
-        if (dataAll.results.length == 0)
+        if (dataAll.length == 0)
             return (<div className='py-[20px]'>
                 <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
             </div>)
         const props = {
             category: categorySelected,
             allCategories: false,
-            products: dataAll.results,
+            products: dataAll,
             handleViewProduct: handleViewProduct,
             handlePageChange: handlePageChange,
 
         }
-        return (<Category {...props} paging={<Paging data={{ numberPagination: Math.ceil(dataAll.totalCount / 12) }} onPageChange={handlePageChange} currentPage={dataAll.page} />} />)
+        return (<Category {...props} paging={<Paging onPageChange={handlePageChange} currentPage={1} />} />)
 
 
     } else {
-        if (dataAll.results.length == 0)
+        if (dataAll.length == 0)
             return (<div className='py-[20px]'>
                 <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
             </div>)
         const props = {
-            products: dataAll.results,
+            products: dataAll,
             handleViewProduct: handleViewProduct
         }
         return (<div className='flex flex-col my-[20px]'>
             <ListProduct {...props} />
-            <Paging data={{ numberPagination: Math.ceil(dataAll.totalCount / 12)}} onPageChange={ handlePageChange} currentPage={dataAll.page} />
+            <Paging  onPageChange={ handlePageChange} currentPage={1} />
         </div>)
     }
 
@@ -148,7 +147,6 @@ export default function Product() {
             <Loading />
         </div>)
     }
-
 
     const handleSearchSuggestion = (query, filter) => {
         return useProducts.getSearchSuggestions(query, filter)

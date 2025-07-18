@@ -3,7 +3,7 @@ import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
 import useNews from '@/hooks/useNews'
 import { toast } from 'react-toastify';
-
+import Loading from '@/components/Loading'
 const NewsPageContent = () => {
 
   const {setLayoutProps} = useLayout()
@@ -20,7 +20,7 @@ const NewsPageContent = () => {
   },[])
   if(isLoadingNewsPage)
   {
-    return(<div> Dang load</div>)
+    return(<Loading/>)
   }
   
   const handleSave = (data)=>{

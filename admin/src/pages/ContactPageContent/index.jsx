@@ -2,6 +2,7 @@ import EditBanner from '../../components/EditBanner'
 import { useLayout } from "@/layouts/LayoutContext"
 import { useEffect } from "react"
 import useContact from '../../hooks/useContact';
+import Loading from '@/components/Loading'
 const ContactPageContent = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -26,9 +27,7 @@ const ContactPageContent = () => {
   const { mutate: updateBanner, isLoading: isLoadingUpdateBanner } = useContact.updateContactPage.updateBanner();
   if (isLoadingBanner || isLoadingUpdateBanner) {
     return (
-      <>
-        is loading..
-      </>
+     <Loading/>
     )
   }
   console.log(bannerData, isLoadingBanner);

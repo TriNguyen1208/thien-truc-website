@@ -3,6 +3,7 @@ import {useLayout} from '@/layouts/LayoutContext'
 import useProducts from '@/hooks/useProducts'
 import EditBanner from '@/components/EditBanner'
 import { toast } from 'react-toastify';
+import Loading from '@/components/Loading'
 const PricePageContent = () => {
   const {setLayoutProps} = useLayout()
   const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
@@ -16,7 +17,7 @@ const PricePageContent = () => {
   },[])
   if(isLoadingPricePage)
   {
-    return(<div> Dang load</div>)
+    return(<Loading/>)
   }
   
    const handleSave = (data)=>{
