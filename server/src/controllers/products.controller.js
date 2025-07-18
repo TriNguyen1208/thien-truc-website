@@ -185,8 +185,9 @@ const getSearchSuggestions = async (req, res) => {
 
 const getSearchCategoriesSuggestions = async (req, res) => {
     const query = req.query.query || '';
+    const id = req.query.id || '';
 
-    const data = await productServices.getSearchCategoriesSuggestions(query);
+    const data = await productServices.getSearchCategoriesSuggestions(id, query);
     res.status(200).json(data);
 }
 

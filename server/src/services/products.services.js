@@ -1115,13 +1115,18 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     }
 };
 
-const getSearchCategoriesSuggestions = async (query) => {
+const getSearchCategoriesSuggestions = async (id, query) => {
     query = query.trim().replaceAll(`'`, ``);
+    id = id.trim().replace(/^['"]|['"]$/g, '');
+
     const suggestions_limit = 5;
     let where = [];
     let order = [];
     const limit = 'LIMIT ' + suggestions_limit;
 
+    if (id) {
+        where.push(`P.id = '${id}'`);
+    }
     if (query != '') {
         where.push(`(unaccent(P.name::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
             similarity(unaccent(P.name::text), unaccent('${query}'::text)) > 0)`);
