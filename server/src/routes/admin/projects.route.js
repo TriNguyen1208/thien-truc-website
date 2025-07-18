@@ -23,18 +23,18 @@ router.get('/search_suggestions', projectsController.getSearchSuggestions);
 
 router.get('/count', projectsController.count);
 
-router.post('/project_contents/',  upload.fields([
+// post
+router.post('/project_regions', authenticateToken, projectsController.project_regions.createOne);
+router.post('/project_contents/', authenticateToken, upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 }])
 , projectsController.project_contents.postOne);
 
-router.patch('/project_contents/:id',  upload.fields([
+router.patch('/project_contents/:id', authenticateToken, upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 },
 ])
 , projectsController.project_contents.updateOne);
-// post
-router.post('/project_regions', authenticateToken, projectsController.project_regions.createOne);
 
 // patch
 router.patch('/project_page', authenticateToken, projectsController.updateProjectPage);

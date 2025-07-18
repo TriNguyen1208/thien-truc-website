@@ -58,7 +58,9 @@ const getProjectPage = async () => {
         throw new Error("Can't get project_page");
     }
     return {
-        ...project_page,
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Dự Án"
     };
 }
 
@@ -292,18 +294,44 @@ const projects = {
         return project;
     },
     updateFeatureOne: async(is_featured, id) => {
-        await pool.query(
+        const result = await pool.query(
             `UPDATE project.projects
              SET is_featured = $1
-             WHERE id = $2`,
+             WHERE id = $2
+             RETURNING title`,
              [is_featured, id]
         );
+
+        if (result.rowCount == 0 ) return {
+            status: 404,
+            message: "Không tìm thấy dự án"
+        }
+
+        const { title } = result.rows[0];
+        const update = (is_featured == true) ? 'Trưng bày' : 'Bỏ trưng bày';
+        return {
+            status: 200,
+            message: `${update} dự án thành công`,
+            action: `${update} dự án: ${id} - ${title}`
+        }
     },
     updateRegion: async (changedItems) => {
         if (!Array.isArray(changedItems)) {
             throw new Error("Invalid input");
         }
 
+        if (changedItems.length == 0) return {
+            status: 400, // bad request
+            message: "Không có dữ liệu cần cập nhật"
+        }
+
+        const region_id = changedItems[0].category_id;
+        const region_name = (await pool.query('SELECT name FROM project.project_regions WHERE id = $1', [region_id])).rows?.[0]?.name;
+        if (!region_name) return {
+            status: 404,
+            message: "Không tìm thấy khu vực dự án"
+        }
+        
         const client = await pool.connect();
         try {
             await client.query("BEGIN");
@@ -338,6 +366,13 @@ const projects = {
             }
 
             await client.query("COMMIT");
+
+            const project_ids = changedItems.map(item => item.id).join(', ');
+            return {
+                status: 200,
+                message: "Gán khu vực dự án thành công",
+                action: `Gán khu vực ${region_id} - ${region_name} cho các dự án: ${project_ids}`
+            }
         } catch (error) {
             await client.query("ROLLBACK");
             console.error("Error during DB updateRegion:", error);
@@ -374,7 +409,18 @@ const projects = {
             `, [id]);
 
             await client.query('COMMIT');
-            return result;
+            
+            if (result.rowCount == 0) return {
+                status: 404,
+                message: "Không tìm thấy dự án"
+            }
+            
+            const { title } = result.rows[0];
+            return {
+                status: 200,
+                message: "Xóa dự án thành công",
+                action: `Xóa dự án: ${id} - ${title}`
+            }
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;
@@ -401,21 +447,43 @@ const project_regions = {
         return project_region
     },
     createOne: async(data) => {
-        const {name, rgb_color} = data;
-        await pool.query(
+        const { name, rgb_color } = data;
+        const result = await pool.query(
             `INSERT INTO project.project_regions (name, rgb_color, item_count)
-             VALUES($1, $2, 0)`,
-             [name, rgb_color]
+            VALUES($1, $2, 0)
+            RETURNING id`,
+            [name, rgb_color]
         );
+
+        const { id } = result.rows[0];
+
+        return {
+            status: 200,
+            message: "Tạo khu vực dự án thành công",
+            action: `Tạo khu vực dự án: ${id} - ${name}`
+        }
     },
     updateOne: async(data, id) => {
-        const {name, rgb_color} = data;
+        const old_name = (await pool.query('SELECT name FROM project.project_regions WHERE id = $1', [id])).rows?.[0]?.name;
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy khu vực dự án"
+        }
+
+        const { name, rgb_color } = data;
         await pool.query(
             `UPDATE project.project_regions
              SET name = $1, rgb_color = $2
              WHERE id = $3`,
              [name, rgb_color, id]
         );
+
+        const note = (old_name != name) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật khu vực dự án thành công",
+            action: `Cập nhật khu vực dự án${note}: ${id} - ${name}`
+        }
     },
     deleteOne: async (id) => {
         const client = await pool.connect();
@@ -443,15 +511,25 @@ const project_regions = {
             // Câu 3: Xoá project_regions
             let result;
             try {
-            result = await client.query(
-                'DELETE FROM project.project_regions WHERE id = $1 RETURNING *',
-                [id]
-            );
+                result = await client.query(
+                    'DELETE FROM project.project_regions WHERE id = $1 RETURNING *',
+                    [id]
+                );
             } catch (err) {
-            console.error("Lỗi xoá project_regions:", err.message);
+                console.error("Lỗi xoá project_regions:", err.message);
             }
 
-            return result?.rows?.[0] || null;
+            if (result.rowCount == 0) return {
+                status: 404,
+                message: "Không tìm thấy loại dự án",
+            }
+
+            const { name } = result.rows[0];
+            return {
+                status: 200,
+                message: "Xóa khu vực dự án thành công",
+                action: `Xóa khu vực dự án và tất cả dự án thuộc loại: ${id} - ${name}`
+            }
         } finally {
             client.release();
         }
@@ -614,6 +692,12 @@ const project_contents = {
             contentHTML
         ]
         await pool.query(insertProjectContentSql, insertValuesProjectContent);
+
+        return {
+            status: 200,
+            message: "Tạo dự án thành công",
+            action: `Tạo dự án: ${project_id} - ${title}`
+        }
     },
     updateOne: async (id, data, files) => {
         const result = {};
@@ -642,6 +726,12 @@ const project_contents = {
             await deleteImage(imagesToDelete);
         }
         
+        const old_title = (await pool.query('SELECT title FROM project.projects WHERE id = $1', [id])).rows?.[0]?.title;
+        if (!old_title) return {
+            status: 404,
+            message: "Không tìm thấy dự án"
+        }
+
         const {
             title,
             main_content,
@@ -700,6 +790,13 @@ const project_contents = {
             id
         ];
         await pool.query(updateProjectSql, updateValues);
+        
+        const note = (old_title != title) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật dự án thành công",
+            action: `Cập nhật dự án${note}: ${id} - ${title}`
+        }
     }
 }
 

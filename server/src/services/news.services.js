@@ -491,42 +491,42 @@ const news_categories = {
         try {
             // Câu 1: Xoá news_contents
             try {
-            await client.query(
-                'DELETE FROM news.news_contents WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
-                [id]
-            );
+                await client.query(
+                    'DELETE FROM news.news_contents WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
+                    [id]
+                );
             } catch (err) {
-            console.error("Lỗi xoá news_contents:", err.message);
+                console.error("Lỗi xoá news_contents:", err.message);
             }
 
             try {
-            await client.query(
-                'DELETE FROM news.featured_news WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
-                [id]
-            );
+                await client.query(
+                    'DELETE FROM news.featured_news WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
+                    [id]
+                );
             } catch (err) {
-            console.error("Lỗi xoá news_featured:", err.message);
+                console.error("Lỗi xoá news_featured:", err.message);
             }
 
             // Câu 2: Xoá news
             try {
-            await client.query(
-                'DELETE FROM news.news WHERE category_id = $1',
-                [id]
-            );
+                await client.query(
+                    'DELETE FROM news.news WHERE category_id = $1',
+                    [id]
+                );
             } catch (err) {
-            console.error("Lỗi xoá news:", err.message);
+                console.error("Lỗi xoá news:", err.message);
             }
 
             // Câu 3: Xoá news_categories
             let result;
             try {
-            result = await client.query(
-                'DELETE FROM news.news_categories WHERE id = $1 RETURNING *',
-                [id]
+                result = await client.query(
+                    'DELETE FROM news.news_categories WHERE id = $1 RETURNING *',
+                    [id]
             );
             } catch (err) {
-            console.error("Lỗi xoá news_categories:", err.message);
+                console.error("Lỗi xoá news_categories:", err.message);
             }
 
             if (result.rowCount == 0) return {
@@ -534,12 +534,12 @@ const news_categories = {
                 message: "Không tìm thấy loại tin tức"
             }
 
-            const { id, name } = result.rows[0]
+            const { name } = result.rows[0];
 
             return {
                 status: 200,
                 message: "Xóa loại tin tức thành công",
-                action: `Xóa loại tin tức thành công: ${id} - ${name}`
+                action: `Xóa loại tin tức và tất cả tin tức thuộc loại: ${id} - ${name}`
             }
         } finally {
             client.release();
