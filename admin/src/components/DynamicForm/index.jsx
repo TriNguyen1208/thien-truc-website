@@ -36,14 +36,30 @@ const DynamicForm = ({ data, config }) => {
             const { name, type, value, isSingleColumn, options } = field;
 
             if (type === 'dynamicFields') {
-                if (value !== undefined) {
-                    result[name] = isSingleColumn
-                        ? [...value] // mảng đơn
-                        : Object.entries(value).map(([k, v]) => ({ name: k, value: v }));
+                if (isSingleColumn) {
+                    if (field.isCheckbox) {
+                        result[name] =
+                            Array.isArray(value) && value.length > 0
+                                ? value.map(item => ({
+                                    value: item.value || '',
+                                    isCheckbox: !!item.isCheckbox
+                                }))
+                                : [{ value: '', isCheckbox: false }];
+                    } else {
+                        result[name] =
+                            Array.isArray(value) && value.length > 0
+                                ? value.map(v => v || '')
+                                : [''];
+                    }
                 } else {
-                    result[name] = isSingleColumn ? [''] : [{ name: '', value: '' }];
+                    result[name] =
+                        value && typeof value === 'object' && Object.keys(value).length > 0
+                            ? Object.entries(value).map(([k, v]) => ({ name: k, value: v }))
+                            : [{ name: '', value: '' }];
                 }
-            } else if (type === 'checkbox') {
+
+            }
+            else if (type === 'checkbox') {
                 result[name] = value !== undefined ? value : false;
             } else if (type === 'select') {
                 result[name] = value !== undefined ? value : options?.[0]?.value || '';
@@ -65,15 +81,25 @@ const DynamicForm = ({ data, config }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const finalData = { ...formData };
+
         Object.keys(finalData).forEach(key => {
             const field = data.find(f => f.name === key);
+
             if (field?.type === 'dynamicFields') {
                 if (field.isSingleColumn) {
-                    // Trường hợp single column - trả về mảng các giá trị
-                    finalData[key] = (finalData[key] || [])
-                        .filter(spec => spec && spec.trim() !== '');
+                    if (field.isCheckbox) {
+                        finalData[key] = (finalData[key] || [])
+                            .filter(spec => spec.value && spec.value.trim() !== '')
+                            .map(spec => ({
+                                value: spec.value.trim(),
+                                isCheckbox: !!spec.isCheckbox
+                            }));
+                    } else {
+                        finalData[key] = (finalData[key] || [])
+                            .filter(v => typeof v === 'string' && v.trim() !== '')
+                            .map(v => v.trim());
+                    }
                 } else {
-                    // Trường hợp 2 cột - trả về object với key-value
                     finalData[key] = (finalData[key] || [])
                         .filter(spec => spec.name && spec.value)
                         .reduce((obj, spec) => {
@@ -83,29 +109,45 @@ const DynamicForm = ({ data, config }) => {
                 }
             }
         });
+
         config.handleSubmitButton(finalData);
         setFormData(initialValues);
-    }
+    };
+
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
+        const field = data.find(f => f.name === name); // Tìm field đang thao tác
         let newValue = value;
         if (type === 'checkbox') {
             newValue = checked;
         } else if (type === 'file') {
             newValue = files[0];
         }
+        // ✅ Nếu trường chỉ cho nhập số
+        if (field?.isOnlyNumber && !/^\d*$/.test(newValue)) {
+            return; // không setState nếu nhập không phải số
+        }
+
         setFormData((prev) => ({
             ...prev,
             [name]: newValue
         }))
     }
 
-    const handleDynamicFieldsChange = (fieldName, index, keyOrValue, value, isSingle = false) => {
+    const handleDynamicFieldsChange = (fieldName, index, keyOrValue, value, isSingle = false, isCheckbox = false) => {
         setFormData((prev) => {
             const specs = [...(prev[fieldName] || [])];
             if (isSingle) {
-                specs[index] = value;
+                if (isCheckbox) {
+                    // Đảm bảo là object { value, isCheckbox }
+                    if (!specs[index] || typeof specs[index] !== 'object') {
+                        specs[index] = { value: '', isCheckbox: false };
+                    }
+                    specs[index][keyOrValue] = value;
+                } else {
+                    specs[index] = value;
+                }
             } else {
                 if (!specs[index]) specs[index] = { name: '', value: '' };
                 specs[index][keyOrValue] = value;
@@ -113,21 +155,12 @@ const DynamicForm = ({ data, config }) => {
             return { ...prev, [fieldName]: specs };
         });
     };
+
     const handleImageUpload = (fieldName, file) => {
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
             setFormData((prev) => ({
                 ...prev,
-                [fieldName]: imageUrl
-            }));
-        }
-    };
-
-    const handleImageUrl = (fieldName, url) => {
-        if (url && url.trim()) {
-            setFormData((prev) => ({
-                ...prev,
-                [fieldName]: url.trim()
+                [fieldName]: file
             }));
         }
     };
@@ -145,13 +178,25 @@ const DynamicForm = ({ data, config }) => {
             const current = prev[fieldName] || [];
             const field = data.find(item => item.name === fieldName);
             const limit = field?.limitRowDynamicFields || Infinity;
+
             if (current.length >= limit) return prev;
+
+            const isCheckbox = field?.isCheckbox || false;
+            let newEntry;
+
+            if (isSingle) {
+                newEntry = isCheckbox ? { value: '', isCheckbox: false } : '';
+            } else {
+                newEntry = { name: '', value: '' };
+            }
+
             return {
                 ...prev,
-                [fieldName]: [...(prev[fieldName] || []), isSingle ? '' : { name: '', value: '' }],
-            }
+                [fieldName]: [...current, newEntry],
+            };
         });
     };
+
 
     const removeDynamicFields = (fieldName, index) => {
         setFormData((prev) => {
@@ -174,6 +219,7 @@ const DynamicForm = ({ data, config }) => {
         setSimpleFormData(formData);
         setIsModalOpenSimple(true);
     };
+    console.log(formData)
     const renderInput = (item) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
@@ -191,6 +237,7 @@ const DynamicForm = ({ data, config }) => {
 
             required: item.isRequired || defaultField.isRequired,
             maxLength: maxLength || undefined,
+            readOnly: item.isReadOnly || false,
             style: {
                 padding: '8px 12px',
                 display: 'block',
@@ -216,6 +263,7 @@ const DynamicForm = ({ data, config }) => {
                     />
                 );
             case 'select':
+
                 return (
                     <div className="flex gap-2 mb-2">
                         <select
@@ -226,6 +274,7 @@ const DynamicForm = ({ data, config }) => {
                             {(item.options || defaultField.options).map((opt, idx) => (
                                 <option key={idx} value={opt.value} className="text-center">{opt.label}</option>
                             ))}
+
                         </select>
                         <button
                             type="button"
@@ -247,6 +296,7 @@ const DynamicForm = ({ data, config }) => {
                             display: 'inline-block',
                             marginRight: '0.5rem' // tương đương với Tailwind `mr-2`
                         }}
+                        className="accent-black"
                     />
                 );
             case 'file':
@@ -259,23 +309,20 @@ const DynamicForm = ({ data, config }) => {
                 );
             case 'image_upload': {
                 const image = formData[nameColumn];
-
+                console.log(image);
                 return (
                     <div className="space-y-4">
                         {/* URL Input */}
-                        <div className="flex  gap-2 w-full items-stretch">
+                        <div className="flex gap-2 w-full items-stretch">
                             <input
                                 type="url"
                                 value={urlInput}
-                                onChange={(e) => setUrlInput(e.target.value)}
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        if (!image) {
-                                            handleImageUrl(nameColumn, urlInput);
-                                            setUrlInput('');
-                                        }
-                                    }
+                                onChange={(e) => {
+                                    setUrlInput(e.target.value)
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        img: e.target.value
+                                    }));
                                 }}
                                 placeholder="Nhập link ảnh"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md w-full"
@@ -332,11 +379,13 @@ const DynamicForm = ({ data, config }) => {
                 const isSingle = item.isSingleColumn;
                 const field = data.find(item => item.name === nameColumn);
                 const limit = field?.limitRowDynamicFields || Infinity;
+
                 return (
                     <div>
                         {specs.map((entry, index) => (
                             <div key={index} className="flex gap-2 mb-2">
                                 {!isSingle && (
+
                                     <input
                                         type="text"
                                         value={entry.name || ''}
@@ -353,23 +402,52 @@ const DynamicForm = ({ data, config }) => {
                                         className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
                                         placeholder={item.placeholder?.[0] ?? defaultField.placeholder}
                                     />
+
                                 )}
                                 <input
                                     type="text"
-                                    value={isSingle ? entry : entry.value || ''}
+                                    value={
+                                        isSingle
+                                            ? (item.isCheckbox
+                                                ? entry.value || ''     // ✅ Truy cập đúng value trong object
+                                                : entry || '')          // Nếu không checkbox thì là string
+                                            : entry.value || ''
+                                    }
                                     required={item.isRequired || defaultField.isRequired}
                                     onChange={(e) =>
                                         handleDynamicFieldsChange(
                                             nameColumn,
                                             index,
-                                            isSingle ? null : 'value',
+                                            item.isCheckbox || !isSingle ? 'value' : index, // ✅ Sửa chỗ này
                                             e.target.value,
-                                            isSingle
+                                            isSingle,
+                                            item.isCheckbox
                                         )
                                     }
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md "
-                                    placeholder={isSingle ? item.placeholder || defaultField.placeholder : item.placeholder?.[1] ?? defaultField.placeholder}
+                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                                    placeholder={isSingle ? item.placeholder : item.placeholder?.[1] || defaultField.placeholder}
+
                                 />
+
+                                {item.isCheckbox && (
+
+                                    <input
+                                        type="checkbox"
+                                        checked={typeof entry === 'object' && entry !== null ? entry.isCheckbox : false}
+                                        onChange={(e) =>
+                                            handleDynamicFieldsChange(
+                                                nameColumn,
+                                                index,
+                                                'isCheckbox',
+                                                e.target.checked,
+                                                isSingle,
+                                                true
+                                            )
+                                        }
+                                        className="accent-black"
+                                    />
+                                )}
+
                                 {specs.length < limit && (
                                     <button
                                         type="button"
@@ -379,6 +457,7 @@ const DynamicForm = ({ data, config }) => {
                                         +
                                     </button>
                                 )}
+
                                 {specs.length > 1 && (
                                     <button
                                         type="button"
@@ -390,9 +469,12 @@ const DynamicForm = ({ data, config }) => {
                                 )}
                             </div>
                         ))}
+
+
                     </div>
                 );
             }
+
             case 'password': {
 
 
@@ -516,6 +598,104 @@ const DynamicForm = ({ data, config }) => {
 }
 
 export default DynamicForm
+
+
+
+
+
+
+/*
+
+case 'dynamicFields': {
+                const specs = formData[nameColumn] || [];
+                const isSingle = item.isSingleColumn;
+                const field = data.find(item => item.name === nameColumn);
+                const limit = field?.limitRowDynamicFields || Infinity;
+                return (
+                    <div>
+                        {specs.map((entry, index) => (
+                            <div key={index} className="flex gap-2 mb-2">
+                                {!isSingle && (
+                                    <input
+                                        type="text"
+                                        value={entry.name || ''}
+                                        required={item.isRequired || defaultField.isRequired}
+                                        onChange={(e) =>
+                                            handleDynamicFieldsChange(
+                                                nameColumn,
+                                                index,
+                                                'name',
+                                                e.target.value,
+                                                false
+                                            )
+                                        }
+                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                                        placeholder={item.placeholder?.[0] ?? defaultField.placeholder}
+                                    />
+                                )}
+                                <input
+                                    type="text"
+                                    value={entry.name || ''}
+                                    required={item.isRequired || defaultField.isRequired}
+                                    onChange={(e) =>
+                                        handleDynamicFieldsChange(
+                                            nameColumn,
+                                            index,
+                                            'name',
+                                            e.target.value,
+                                            false
+                                        )
+                                    }
+                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                                    placeholder={isSingle ? item.placeholder : item.placeholder[1]}
+                                />
+
+                                {item.isCheckbox && (
+                                    <input
+                                        type="checkbox"
+                                        checked={typeof entry === 'object' && entry !== null ? entry.isCheckbox : false}
+                                        onChange={(e) =>
+                                            handleDynamicFieldsChange(
+                                                nameColumn,
+                                                index,
+                                                'isCheckbox',
+                                                e.target.checked,
+                                                isSingle,
+                                                true
+                                            )
+                                        }
+                                    />
+                                )}
+
+                                {specs.length < limit && (
+                                    <button
+                                        type="button"
+                                        onClick={() => addDynamicFields(nameColumn, isSingle)}
+                                        className="px-3 py-2  border  border-gray-300 rounded-md cursor-pointer"
+                                    >
+                                        +
+                                    </button>
+                                )}
+                                {specs.length > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => removeDynamicFields(nameColumn, index)}
+                                        className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
+                                    >
+                                        <DeleteIcon />
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                );
+            }
+*/
+
+
+
+
+
 /*
 
 import React from 'react'

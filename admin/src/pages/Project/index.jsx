@@ -1,12 +1,13 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect, useOptimistic} from 'react'
 import { useLayout } from '@/layouts/layoutcontext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import { CancelPopup } from '@/components/Popup';
 import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
 
-// Còn sự kiện ấn vào nút trưng bày, sự kiện xác nhận xóa dự án
+// Còn sự kiện ấn vào nút trưng bày
 const StatusBox = ({ isFeatured }) => {
   return (
     <div
@@ -40,9 +41,14 @@ const StatusBox = ({ isFeatured }) => {
 
 
 export default function Project () {
+  // Lấy hàm từ hook
+  const queryClient = useQueryClient();
+  const { mutateAsync: deleteOne } = useProjects.projects.deleteOne();
+  const { mutateAsync: updateFeatureOne} = useProjects.projects.updateFeatureOne();
 
   // Thông tin của popup xác nhận hủy
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [currentDeleteID, setcurrentDeleteId] = useState(null);
   const cancelPopupData = {
     open: cancelOpen,
     setOpen: setCancelOpen,
@@ -50,7 +56,12 @@ export default function Project () {
     subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
     buttonLabel1: 'Hủy',
     buttonLabel2: 'Xóa',
-    buttonAction2: () => setCancelOpen(false),
+    buttonAction2: async () => 
+      {
+        await deleteOne(currentDeleteID);
+        queryClient.invalidateQueries(['admin_projects']);
+        setCancelOpen(false)
+      }
   };
 
   // Set prop cho trang
@@ -182,7 +193,22 @@ export default function Project () {
                     <td className="py-4 px-4 text-gray-800">{item.province}</td>
                     <td className="py-4 px-4 text-gray-800">{new Date(item.complete_time).toLocaleDateString('vi-VN')}</td>
                     <td className="py-4 px-9 item-center">
+                      <button onClick={async () => {
+                        const newFeature = !item.is_featured;
+                        queryClient.setQueryData(['admin_projects_list', query, filter, is_featured, undefined, undefined], (old) => {
+                          if (!old?.results) return old;
+                          return {
+                            ...old,
+                            results: old.results.map((proj) =>
+                              proj.id === item.id ? { ...proj, is_featured: newFeature } : proj
+                            )
+                          };
+                        });
+                        await updateFeatureOne({ is_featured: newFeature, id: item.id });
+                        queryClient.invalidateQueries(['admin_projects_list']);
+                      }}>
                       <StatusBox isFeatured={item.is_featured} />
+                      </button>
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex items-center gap-2">
@@ -196,6 +222,7 @@ export default function Project () {
                       <button
                         className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
                         onClick={() => {
+                          setcurrentDeleteId(item.id);
                           setCancelOpen(true);
                         }}
                       >

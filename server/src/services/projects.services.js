@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import { uploadImage, deleteImage } from '#@/utils/image.js';
 
 const getAllTables = async (filter = '') => {
     const _project_page = await getProjectPage();
@@ -57,8 +58,26 @@ const getProjectPage = async () => {
         throw new Error("Can't get project_page");
     }
     return {
-        ...project_page,
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Dự Án"
     };
+}
+
+const updateProjectPage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE project.project_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return result;
 }
 
 const projects = {
@@ -254,9 +273,9 @@ const projects = {
                 prj_reg.rgb_color
             from project.projects prj
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
-            where prj.id = ${id}
+            where prj.id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const project = {
             id: row.prj_id,
             title: row.title,
@@ -273,7 +292,143 @@ const projects = {
             is_featured: row.is_featured
         };
         return project;
+    },
+    updateFeatureOne: async(is_featured, id) => {
+        const result = await pool.query(
+            `UPDATE project.projects
+             SET is_featured = $1
+             WHERE id = $2
+             RETURNING title`,
+             [is_featured, id]
+        );
+
+        if (result.rowCount == 0 ) return {
+            status: 404,
+            message: "Không tìm thấy dự án"
+        }
+
+        const { title } = result.rows[0];
+        const update = (is_featured == true) ? 'Trưng bày' : 'Bỏ trưng bày';
+        return {
+            status: 200,
+            message: `${update} dự án thành công`,
+            action: `${update} dự án: ${id} - ${title}`
+        }
+    },
+    updateRegion: async (changedItems) => {
+        if (!Array.isArray(changedItems)) {
+            throw new Error("Invalid input");
+        }
+
+        if (changedItems.length == 0) return {
+            status: 400, // bad request
+            message: "Không có dữ liệu cần cập nhật"
+        }
+
+        const region_id = changedItems[0].category_id;
+        const region_name = (await pool.query('SELECT name FROM project.project_regions WHERE id = $1', [region_id])).rows?.[0]?.name;
+        if (!region_name) return {
+            status: 404,
+            message: "Không tìm thấy khu vực dự án"
+        }
+        
+        const client = await pool.connect();
+        try {
+            await client.query("BEGIN");
+
+            for (const item of changedItems) {
+                const { id, category_id } = item;
+
+                const result = await client.query(
+                    `SELECT region_id FROM project.projects WHERE id = $1`,
+                    [id]
+                );
+                const oldRegionId = result.rows[0]?.region_id;
+
+                if (oldRegionId !== category_id) {
+                    await client.query(
+                        `UPDATE project.projects SET region_id = $1 WHERE id = $2`,
+                        [category_id, id]
+                    );
+
+                    if (oldRegionId) {
+                        await client.query(
+                            `UPDATE project.project_regions SET item_count = item_count - 1 WHERE id = $1`,
+                            [oldRegionId]
+                        );
+                    }
+
+                    await client.query(
+                        `UPDATE project.project_regions SET item_count = item_count + 1 WHERE id = $1`,
+                        [category_id]
+                    );
+                }
+            }
+
+            await client.query("COMMIT");
+
+            const project_ids = changedItems.map(item => item.id).join(', ');
+            return {
+                status: 200,
+                message: "Gán khu vực dự án thành công",
+                action: `Gán khu vực ${region_id} - ${region_name} cho các dự án: ${project_ids}`
+            }
+        } catch (error) {
+            await client.query("ROLLBACK");
+            console.error("Error during DB updateRegion:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
+
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            // Giảm item_count trong project_regions
+            await client.query(`
+            UPDATE project.project_regions
+            SET item_count = item_count - 1
+            WHERE id = (SELECT region_id FROM project.projects WHERE id = $1)
+            `, [id]);
+
+            // Xoá nội dung dự án
+            await client.query(`
+            DELETE FROM project.project_contents
+            WHERE project_id = $1
+            `, [id]);
+
+            // Xoá dự án
+            const result = await client.query(`
+            DELETE FROM project.projects
+            WHERE id = $1
+            RETURNING *
+            `, [id]);
+
+            await client.query('COMMIT');
+            
+            if (result.rowCount == 0) return {
+                status: 404,
+                message: "Không tìm thấy dự án"
+            }
+            
+            const { title } = result.rows[0];
+            return {
+                status: 200,
+                message: "Xóa dự án thành công",
+                action: `Xóa dự án: ${id} - ${title}`
+            }
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
     }
+
 }
 
 const project_regions = {
@@ -285,12 +440,101 @@ const project_regions = {
         return project_regions
     },
     getOne: async (id) => {
-        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = ${id}`)).rows[0];
+        const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = $1`, [id])).rows[0];
         if(!project_region){
             throw new Error("Can't get project_regions");
         }
         return project_region
+    },
+    createOne: async(data) => {
+        const { name, rgb_color } = data;
+        const result = await pool.query(
+            `INSERT INTO project.project_regions (name, rgb_color, item_count)
+            VALUES($1, $2, 0)
+            RETURNING id`,
+            [name, rgb_color]
+        );
+
+        const { id } = result.rows[0];
+
+        return {
+            status: 200,
+            message: "Tạo khu vực dự án thành công",
+            action: `Tạo khu vực dự án: ${id} - ${name}`
+        }
+    },
+    updateOne: async(data, id) => {
+        const old_name = (await pool.query('SELECT name FROM project.project_regions WHERE id = $1', [id])).rows?.[0]?.name;
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy khu vực dự án"
+        }
+
+        const { name, rgb_color } = data;
+        await pool.query(
+            `UPDATE project.project_regions
+             SET name = $1, rgb_color = $2
+             WHERE id = $3`,
+             [name, rgb_color, id]
+        );
+
+        const note = (old_name != name) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật khu vực dự án thành công",
+            action: `Cập nhật khu vực dự án${note}: ${id} - ${name}`
+        }
+    },
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+        try {
+            // Câu 1: Xoá project_contents
+            try {
+            await client.query(
+                'DELETE FROM project.project_contents WHERE project_id IN (SELECT id FROM project.projects WHERE region_id = $1)',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá project_contents:", err.message);
+            }
+
+            // Câu 2: Xoá projects
+            try {
+            await client.query(
+                'DELETE FROM project.projects WHERE region_id = $1',
+                [id]
+            );
+            } catch (err) {
+            console.error("Lỗi xoá projects:", err.message);
+            }
+
+            // Câu 3: Xoá project_regions
+            let result;
+            try {
+                result = await client.query(
+                    'DELETE FROM project.project_regions WHERE id = $1 RETURNING *',
+                    [id]
+                );
+            } catch (err) {
+                console.error("Lỗi xoá project_regions:", err.message);
+            }
+
+            if (result.rowCount == 0) return {
+                status: 404,
+                message: "Không tìm thấy loại dự án",
+            }
+
+            const { name } = result.rows[0];
+            return {
+                status: 200,
+                message: "Xóa khu vực dự án thành công",
+                action: `Xóa khu vực dự án và tất cả dự án thuộc loại: ${id} - ${name}`
+            }
+        } finally {
+            client.release();
+        }
     }
+
 }
 //  href = {companyInfoData.googlemaps_url}
 const project_contents = {
@@ -355,9 +599,9 @@ const project_contents = {
             from project.project_contents prj_cont
             join project.projects prj on prj_cont.project_id = prj.id
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
-            where prj_cont.project_id = ${id}
+            where prj_cont.project_id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const project_content = {
             id: row.cont_id,
             content: row.content,
@@ -376,6 +620,183 @@ const project_contents = {
                 is_featured: row.is_featured
             }};
         return project_content;
+    },
+    postOne: async (data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'project');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        const {
+            title,
+            main_content,
+            region_name,
+            isFeatured,
+            link_image,
+            province,
+            completeTime
+        } = data;
+
+        //Get news_categories id
+        const regionRes = await pool.query(
+            `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
+            [region_name]
+        );
+        const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
+
+        //Insert news
+        const insertProjectSql = `
+            INSERT INTO project.projects (
+            region_id, title, province, complete_time,
+            main_img, main_content, is_featured
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id;
+        `;
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+        const insertValues = [
+            region_id,
+            title,
+            province,
+            new Date(completeTime).getFullYear(),
+            main_image,
+            main_content,
+            isFeatured
+        ];
+        
+        const projectResult = await pool.query(insertProjectSql, insertValues);
+        const project_id = projectResult.rows[0].id;
+        const insertProjectContentSql = `
+            INSERT INTO project.project_contents (project_id, content)
+            values($1, $2)
+        `
+        const insertValuesProjectContent = [
+            project_id,
+            contentHTML
+        ]
+        await pool.query(insertProjectContentSql, insertValuesProjectContent);
+
+        return {
+            status: 200,
+            message: "Tạo dự án thành công",
+            action: `Tạo dự án: ${project_id} - ${title}`
+        }
+    },
+    updateOne: async (id, data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'project');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+
+        let imagesToDelete = data.delete_images;
+        if (typeof imagesToDelete === 'string') {
+            imagesToDelete = [imagesToDelete];
+        }
+        if (Array.isArray(imagesToDelete) && imagesToDelete.length > 0) {
+            await deleteImage(imagesToDelete);
+        }
+        
+        const old_title = (await pool.query('SELECT title FROM project.projects WHERE id = $1', [id])).rows?.[0]?.title;
+        if (!old_title) return {
+            status: 404,
+            message: "Không tìm thấy dự án"
+        }
+
+        const {
+            title,
+            main_content,
+            region_name,
+            isFeatured,
+            link_image,
+            province,
+            completeTime
+        } = data;
+
+        //Get news_categories id
+        const regionRes = await pool.query(
+            `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
+            [region_name]
+        );
+        const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
+
+        //Update project content
+        const updateProjectContentSql = `
+            update project.project_contents
+            set 
+                content = $1
+            where project_id = $2
+        `
+        await pool.query(updateProjectContentSql, [contentHTML, id]);
+        
+        //Insert updateNews
+        const updateProjectSql = `
+            update project.projects
+            set 
+                region_id = $1,
+                title = $2, 
+                province = $3,
+                complete_time = $4,
+                main_img = $5, 
+                main_content = $6, 
+                is_featured = $7
+            where id = $8
+        `
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+
+        const updateValues = [
+            region_id,
+            title,
+            province,
+            new Date(completeTime).getFullYear(),
+            main_image,
+            main_content,
+            isFeatured,
+            id
+        ];
+        await pool.query(updateProjectSql, updateValues);
+        
+        const note = (old_title != title) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật dự án thành công",
+            action: `Cập nhật dự án${note}: ${id} - ${title}`
+        }
     }
 }
 
@@ -510,4 +931,5 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};
+
+export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};

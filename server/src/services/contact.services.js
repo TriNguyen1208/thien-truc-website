@@ -1,4 +1,5 @@
 import pool from '#@/config/db.js'
+import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
 import sendMail from '#@/utils/mailer.js'
 
 const getAllTables = async () => {
@@ -20,6 +21,28 @@ const getContactPage = async () => {
     return contact_page;
 }
 
+const updateContactPage = {
+    banner: async (data) => {
+        const {
+            title,
+            description
+        } = data;
+
+        await pool.query(`
+            UPDATE contact.contact_page
+            SET
+                banner_title = $1,
+                banner_description = $2    
+        `, [title, description]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Banner thành công",
+            action: `Cập nhật Banner trang Liên Hệ`
+        }
+    }
+}
+
 const getCompanyInfo = async () => {
     let company_info = (await pool.query("SELECT * FROM contact.company_info")).rows[0];
     if(!company_info){
@@ -39,6 +62,38 @@ const getCompanyInfo = async () => {
     return company_info;
 }
 
+const updateCompanyInfo = async (data) => {
+    let {
+        office_address,
+        main_office_id,
+        googlemaps_embed_url,
+        working_hours,
+        company_email,
+        company_phone,
+        fanpage_url
+    } = data
+    
+    office_address = office_address.map(element => JSON.stringify(element));
+
+    await pool.query(`
+        UPDATE contact.company_info
+        SET
+            office_address = $1,
+            main_office_id = $2,
+            googlemaps_embed_url = $3,
+            working_hours = $4,
+            company_email = $5,
+            company_phone = $6,
+            fanpage_url = $7            
+    `, [office_address, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, fanpage_url]);
+
+    return {
+        status: 200,
+        message: 'Cập nhật Thông Tin Công Ty thành công',
+        action: `Cập nhật Thông Tin Công Ty`
+    }
+}
+
 const support_agents = {
     getAll: async () => {
         const support_agents = (await pool.query("SELECT * FROM contact.support_agents")).rows;
@@ -53,7 +108,101 @@ const support_agents = {
             throw new Error("Can't get support_agents");
         }
         return support_agent_with_id;
+    },
+    createOne: async (data, file) => {
+        let cloud_avatar_img = null;
+        if (file) {
+            cloud_avatar_img = await uploadImage(file, 'contact');
+        }
+
+        const {
+            external_avatar_img,
+            name,
+            role,
+            phone_number,
+            facebook_url
+        } = data
+
+        const final_avatar_img = cloud_avatar_img || external_avatar_img || null;
+
+        const result = await pool.query(`
+            INSERT INTO contact.support_agents (avatar_img, name, role, phone_number, facebook_url)
+            VALUES ($1, $2, $3, $4, $5);
+        `, [final_avatar_img, name, role, phone_number, facebook_url]);
+
+        if (result.rowCount == 0) return {
+            status: 500,
+            message: "Không thể tạo Người Liên Hệ"
+        }; else if (result.rowCount > 0) return {
+            status: 200,
+            message: "Tạo Người Liên Hệ thành công",
+            action: `Tạo Người Liên Hệ: ${name}`
+        } 
+    },
+    updateOne: async (data, file, id) => {
+        const old_name = (await pool.query('SELECT name FROM contact.support_agents WHERE id = $1', [id])).rows?.[0]?.name;
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy Người Liên Hệ"
+        }
+        
+        const old_avatar_img = (await pool.query('SELECT avatar_img FROM contact.support_agents WHERE id = $1', [id])).rows[0].avatar_img;
+        let local_avatar_img = file;
+        
+        const {
+            external_avatar_img,
+            name,
+            role,
+            phone_number,
+            facebook_url
+        } = data
+
+        const final_avatar_img = await updateImage(
+            old_avatar_img,
+            local_avatar_img,
+            external_avatar_img,
+            'contact'
+        );
+        
+        await pool.query(`
+            UPDATE contact.support_agents
+            SET 
+                avatar_img = $1,
+                name = $2,
+                role = $3,
+                phone_number = $4,
+                facebook_url = $5
+            WHERE
+                id = $6
+        `, [final_avatar_img, name, role, phone_number, facebook_url, id]);
+        
+        const note = (old_name != name) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật Người Liên Hệ thành công",
+            action: `Cập nhật Người Liên Hệ${note}: ${name}`
+        } 
+    },
+    deleteOne: async (id) => {
+        const result = await pool.query('DELETE FROM contact.support_agents WHERE id = $1 returning name, avatar_img', [id]);
+        if (result.rowCount == 0) return {
+            status: 404,
+            message: "Không tìm thấy Người Liên Hệ"
+        };
+
+        const deleted_avatar_img = result.rows[0].avatar_img;
+        if (isCloudinary(deleted_avatar_img)) {
+            await deleteImage([deleted_avatar_img]);
+        }
+
+        const name = result.rows[0].name;
+        return {
+            status: 200,
+            message: "Xóa Người Liên Hệ thành công",
+            action: `Xóa Người Liên Hệ: ${name}`
+        }
     }
+    
 }
 
 const postContactMessage = async (applicationData) => {
@@ -102,4 +251,4 @@ const count = async () => {
 
     return data;
 }
-export default { getAllTables, getContactPage, getCompanyInfo, support_agents, postContactMessage, count };
+export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count, updateContactPage };

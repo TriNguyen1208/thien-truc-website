@@ -1,12 +1,16 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
+const getQuantity = async () => {
+    const res = await axios.get(API_ROUTES.news.count)
+    return res.data
+}
 
-const getAll = async () =>{
+const getAll = async () => {
     const res = await axios.get(API_ROUTES.news.base);
     return res.data;
 }
 
-const getNewsPage = async() => {
+const getNewsPage = async () => {
     const res = await axios.get(API_ROUTES.news.news_page);
     return res.data;
 }
@@ -23,6 +27,15 @@ const news = {
     updateNumReaders: async (id) => {
         const res = await axios.patch(API_ROUTES.news.news.updateNumReaders(id));
         return res.data;
+    },
+    updateCategory: async (changedItems) => {
+        console.log("Updating category with changed items:", changedItems);
+        const res = await axios.patch(API_ROUTES.news.news.updateCategory, changedItems);
+        return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.news.news.deleteOne(id));
+        return res.data;
     }
 }
 const new_categories = {
@@ -32,6 +45,24 @@ const new_categories = {
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news_categories.getOne(id));
+        return res.data;
+    },
+    createOne: async (name = '', rgb_color = '') => {
+        const res = await axios.post(API_ROUTES.news.news_categories.createOne, {
+            name,
+            rgb_color
+        })
+        return res.data;
+    },
+    updateOne: async (name = '', rgb_color = '', id) => {
+        const res = await axios.patch(API_ROUTES.news.news_categories.updateOne(id), {
+            name,
+            rgb_color
+        });
+        return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.news.news_categories.deleteOne(id));
         return res.data;
     }
 }
@@ -44,6 +75,22 @@ const new_contents = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news_contents.getOne(id));
         return res.data;
+    },
+    postOne: async (data) => {
+        const res = await axios.post(API_ROUTES.news.news_contents.postOne, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
+    },
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.news.news_contents.updateOne(id), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
     }
 }
 const getSearchCategoriesSuggestions = async (query) => {
@@ -55,4 +102,20 @@ const getSearchSuggestions = async (query, filter) => {
     const res = await axios.get(API_ROUTES.news.search_suggestions(query, filter))
     return res.data;
 }
-export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions, getSearchCategoriesSuggestions};
+
+const getFeatureNews = async () => {
+    const res = await axios.get(API_ROUTES.news.getFeaturedNews);
+    return res.data;
+}
+
+const updateFeatureNews = async (data) => {
+    const res = await axios.patch(API_ROUTES.news.updateFeaturedNews, data)
+    return res.data;
+}
+const patchNewsPage = async (updatedPage)=> {
+    const res = await axios.patch(API_ROUTES.news.update_news_page, updatedPage)
+    return res.data;
+}
+export default { 
+getQuantity, getAll, getNewsPage, news, new_categories, new_contents,
+getSearchSuggestions, getSearchCategoriesSuggestions, getFeatureNews, updateFeatureNews, patchNewsPage };

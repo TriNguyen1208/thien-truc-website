@@ -14,7 +14,7 @@ function useGetRecruitmentPage(){
         queryFn: recruitmentServices.getRecruitmentPage,
         staleTime: 5 * 60 * 1000,
     })
-}
+}z
 export default {
     getAll: useGetAll,
     getRecruitmentPage: useGetRecruitmentPage

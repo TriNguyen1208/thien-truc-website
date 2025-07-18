@@ -6,6 +6,8 @@ import CustomButton from "@/components/ButtonLayout";
 import { PlusOutlined, ArrowLeftOutlined} from "@ant-design/icons";
 import { useLayout } from "@/layouts/layoutcontext";
 import { useNavigate } from "react-router-dom";
+import { useNavigationGuardContext } from "../NavigatorProvider";
+import useNavigationGuard from "../../hooks/useNavigationGuard";
 
 export default function DefaultLayout({ children }) {
 
@@ -19,18 +21,19 @@ const {
   buttonAction = () => {},
 } = layoutProps ?? {};
   const navigate = useNavigate();
-
+  const {shouldWarn} = useNavigationGuardContext() ?? {};
+  const modal = useNavigationGuard(shouldWarn);
   return (
     <div className="flex h-screen overflow-hidden">
       {/* SIDER */}
-      <div className="w-65 flex-shrink-0 overflow-x-hidden bg-white border-r border-gray-200 overflow-y-auto z-10">
+      <div className="w-65 flex-shrink-0  bg-white border-r border-gray-200 overflow-y-auto z-10">
         <Sider />
       </div>
 
-      <div className="flex-1 flex flex-col overflow-hidden overflow-x-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden ">
         <Header />
         <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-100 py-13 pr-6 pl-7">
-          <div className="flex justify-between items-center mb-4 overflow-x-hidden">
+          <div className="flex justify-between items-center mb-4 ">
              <div className="flex items-center gap-3">
               {hasButtonBack && (
                 <CustomButton
@@ -61,12 +64,13 @@ const {
             </CustomButton>
             )}
             </div>
-            <div className="bg-gray-100 overflow-x-hidden">
+            <div className="bg-gray-100 ">
               <Outlet />
             </div>
         </main>
         {/* <Footer /> nếu cần */}
       </div>
+      {modal}
     </div>
   );
 }

@@ -1,5 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
+import { toast } from 'react-toastify';
+function useGetQuantity()
+{
+    return useQuery({
+        queryKey: ['admin_news_quantity'],
+        queryFn: newsServices.getQuantity,
+        staleTime: 5 * 60 * 1000
+    })
+}
 
 function useGetAll(){
     return useQuery({
@@ -15,8 +24,19 @@ function useGetNewsPage(){
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function usePatchNewsPage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (updatedPage)=> newsServices.patchNewsPage(updatedPage),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["news_page"] });
+    },
+  });
+}
+
 const news = {
-    useGetList: (query = '', filter = '', is_published, sort_by = '', page = undefined, limit) => {
+    useGetList: (query = '', filter = '', is_published = undefined, sort_by = '', page = undefined, limit) => {
         return useQuery({
             queryKey: ["admin_news_list", query, filter, is_published, sort_by, page, limit],
             queryFn: () => newsServices.news.getList(query, filter, is_published, sort_by, page, limit),
@@ -27,6 +47,7 @@ const news = {
         return useQuery({
             queryKey: ["admin_news", id],
             queryFn: () => newsServices.news.getOne(id),
+            enabled: id != null,
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -35,12 +56,23 @@ const news = {
         return useMutation({
             mutationFn: () => newsServices.news.updateNumReaders(id),
             onSuccess: () => {
-            // ✅ Invalidate tất cả danh sách đã từng được query
             queryClient.invalidateQueries({
                 queryKey: ["admin_news_list"], // match theo prefix
                 exact: false,            // cho phép match tất cả ["news_list", ...]
             });
         }
+        })
+    },
+    useUpdateCategory: () => {
+            return useMutation({
+                mutationFn: (changedItems) =>
+                newsServices.news.updateCategory(changedItems)
+            });
+    },
+    useDeleteOne: (id) => {
+        return useMutation({
+            mutationFn: (id) => 
+            newsServices.news.deleteOne(id)
         })
     }
 }
@@ -59,6 +91,24 @@ const news_categories = {
             queryFn: () => newsServices.new_categories.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
+    },
+    useCreateOne: (name = "", rgb_color = "") => {
+        return useMutation({
+            mutationFn: ({ name, rgb_color }) => 
+            newsServices.new_categories.createOne(name, rgb_color)
+        })
+    },
+    useUpdateOne: (name = "", rgb_color = "", id) => {
+        return useMutation({
+            mutationFn: ({ name, rgb_color, id }) => 
+            newsServices.new_categories.updateOne(name, rgb_color, id)
+        })
+    },
+    useDeleteOne: (id) => {
+        return useMutation({
+            mutationFn: (id) => 
+            newsServices.new_categories.deleteOne(id)
+        })
     }
 }
 
@@ -72,9 +122,41 @@ const news_contents = {
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["admin_news_content", id],
+            queryKey: ["news_content", id],
             queryFn: () => newsServices.new_contents.getOne(id),
             staleTime: 5 * 60 * 1000,
+        })
+    },
+    usePostOne: () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (data) => {
+                return newsServices.new_contents.postOne(data)
+            },
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["admin_news_contents"] });
+                queryClient.invalidateQueries({ queryKey: ["admin_news"] });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
+        })
+    },
+    useUpdateOne: () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: ({id, formDataNews}) => {
+                return newsServices.new_contents.updateOne(id, formDataNews)
+            },
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["admin_news_contents"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_news"], exact: false });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     }
 }
@@ -93,21 +175,55 @@ function useSearchSuggest(query, filter){
         staleTime: 5 * 60 * 1000,
     })
 }
+
+function useGetFeatureNews() {
+  return useQuery({
+    queryKey: ["admin_feature_news"],
+    queryFn: newsServices.getFeatureNews,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+ function useUpdateFeatureNews(){
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: () => newsServices.updateFeatureNews,
+      onSuccess: (success) => {
+        toast.success(success.message);
+        queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
+      },
+       onError: (error) => {
+        toast.error(error.message);
+        queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
+      },
+    })
+  }
 export default {
+    getQuantity: useGetQuantity,
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
+    getFeatureNews: useGetFeatureNews,
+    updateFeatureNews: useUpdateFeatureNews,
+    patchNewsPage: usePatchNewsPage,
     news:{
         getList: news.useGetList,
         getOne: news.useGetOne,
-        updateNumReaders: news.useUpdateNumReaders
+        updateNumReaders: news.useUpdateNumReaders,
+        deleteOne: news.useDeleteOne,
+        updateCategory: news.useUpdateCategory,
     },
     news_categories:{
         getAll: news_categories.useGetAll,
         getOne: news_categories.useGetOne,
+        createOne: news_categories.useCreateOne,
+        updateOne: news_categories.useUpdateOne,
+        deleteOne: news_categories.useDeleteOne,
     },
     news_contents:{
         getAll: news_contents.useGetAll,
         getOne: news_contents.useGetOne,
+        postOne: news_contents.usePostOne,
+        updateOne: news_contents.useUpdateOne
     },
     getSearchCategoriesSuggestions: useGetSearchCategoriesSuggest,
     getSearchSuggestions: useSearchSuggest,

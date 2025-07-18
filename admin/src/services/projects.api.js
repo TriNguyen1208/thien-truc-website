@@ -10,6 +10,11 @@ const getProjectPage = async () => {
     const res = await axios.get(API_ROUTES.project.project_page);
     return res.data;
 }
+const updateProjectPage = async (data) => {
+    console.log("Updating project page with data:", data);
+    const res = await axios.patch(API_ROUTES.project.update_project_page, data);
+    return res.data;
+}
 
 const projects = {
     getList: async (query = '', filter = '', is_featured, page = undefined, limit) => {
@@ -18,6 +23,21 @@ const projects = {
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.projects.getOne(id));
+        return res.data;
+    },
+    updateFeatureOne: async (is_featured, id) => {
+        const res = await axios.patch(API_ROUTES.project.projects.updateFeatureOne(id), {
+            is_featured
+        });
+        return res.data;
+    },
+    updateRegion: async (changedItems) => {
+        console.log("Updating regions with changed items:", changedItems);
+        const res = await axios.patch(API_ROUTES.project.projects.updateRegion, changedItems);
+        return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.project.projects.deleteOne(id));
         return res.data;
     }
 }
@@ -29,6 +49,24 @@ const project_regions = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.project_regions.getOne(id));
         return res.data;
+    },
+    createOne: async (name = '', rgb_color = '') => {
+        const res = await axios.post(API_ROUTES.project.project_regions.createOne, {
+        name,
+        rgb_color
+        })
+        return res.data;
+    },
+    updateOne: async (name = '', rgb_color = '', id) => {
+        const res = await axios.patch(API_ROUTES.project.project_regions.updateOne(id), {
+            name,
+            rgb_color
+        });
+        return res.data;
+    },
+    deleteOne: async (id) => {
+        const res = await axios.delete(API_ROUTES.project.project_regions.deleteOne(id));
+        return res.data;
     }
 }
 const project_contents = {
@@ -38,6 +76,22 @@ const project_contents = {
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.project_contents.getOne(id));
+        return res.data;
+    },
+    postOne: async (data) => {
+        const res = await axios.post(API_ROUTES.project.project_contents.postOne, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return res.data;
+    },
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.project.project_contents.updateOne(id), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     }
 }
@@ -51,10 +105,19 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     const res = await axios.get(API_ROUTES.project.search_suggestions(query, filter, is_featured));
     return res.data
 }
+const getQuantity = async()=>{
+    const res = await axios.get(API_ROUTES.project.count)
+    return res.data
+}
 
 const getSearchCategoriesSuggestions = async (query) => {
     const res = await axios.get(API_ROUTES.project.search_categories_suggestions(query));
     return res.data;
 }
 
-export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions };
+const patchProjectPage = async (updatedPage)=> {
+    const res = await axios.patch(API_ROUTES.project.update_project_page, updatedPage)
+    return res.data;
+}
+
+export default { getAll, getProjectPage, updateProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, getQuantity, patchProjectPage };

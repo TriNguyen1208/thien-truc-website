@@ -1,5 +1,5 @@
 import pool from '#@/config/db.js'
-
+import { uploadImage, deleteImage } from '#@/utils/image.js';
 const getAllTables = async () => {
     const _news_page = await getNewsPage();
     const _news = await news.getList();
@@ -62,6 +62,26 @@ const getNewsPage = async () => {
     return {
         ...news_page,
     }
+}
+
+const updateNewsPage = async (data) => {
+    const {
+        title,
+        description
+    } = data;
+
+    const result = await pool.query(`
+        UPDATE news.news_page
+        SET
+            banner_title = $1,
+            banner_description = $2
+    `, [title, description]);
+
+    return {
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Tin Tức"
+    };
 }
 
 const news = {
@@ -138,7 +158,8 @@ const news = {
         const results = rows.map(row => ({
             id: row.news_id,
             title: row.title,
-            public_date: row.public_date,
+            is_published: row.is_published,
+            public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
             measure_time: row.measure_time,
             num_readers: row.num_readers,
             main_img: row.main_img,
@@ -202,6 +223,7 @@ const news = {
             SELECT 
                 n.id AS news_id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
@@ -237,7 +259,8 @@ const news = {
             groupedResults[categoryName].push({
                 id: row.news_id,
                 title: row.title,
-                public_date: row.public_date,
+                is_published: row.is_published,
+                public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
                 measure_time: row.measure_time,
                 num_readers: row.num_readers,
                 main_img: row.main_img,
@@ -257,28 +280,32 @@ const news = {
             select 
                 n.id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id as category_id,
                 n_cate.name,
                 n_cate.rgb_color
             from news.news n
             join news.news_categories n_cate on n_cate.id = n.category_id
-            where n.id = ${id}
+            where n.id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const news = {
             id: row.id,
             title: row.title,
-            public_date: row.public_date,
+            is_published: row.is_published,
+            public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
             measure_time: row.measure_time,
             num_readers: row.num_readers,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_published: row.is_published,
             category: {
                 id: row.category_id,
                 name: row.name,
@@ -299,7 +326,120 @@ const news = {
             num_readers: row.num_readers,
         }
         return res;
+    },
+    updateCategory: async (changedItems) => {
+        if (!Array.isArray(changedItems)) {
+            throw new Error("Invalid input");
+        }
+
+        if (changedItems.length == 0) return {
+            status: 400,
+            message: "Không có dữ liệu cần cập nhật"
+        }
+
+        const category_id = changedItems[0].category_id;
+        const category_name = (await pool.query('SELECT name FROM news.news_categories WHERE id = $1', [category_id])).rows?.[0]?.name;
+        if (!category_name) return {
+            status: 404,
+            message: "Không tìm loại tin tức"
+        }
+
+        const client = await pool.connect();
+        try {
+            await client.query("BEGIN");
+
+            for (const item of changedItems) {
+                const { id, category_id } = item;
+
+                const result = await client.query(
+                    `SELECT category_id FROM news.news WHERE id = $1`,
+                    [id]
+                );
+                const oldCategoryId = result.rows[0]?.category_id;
+
+                if (oldCategoryId !== category_id) {
+                    await client.query(
+                        `UPDATE news.news SET category_id = $1 WHERE id = $2`,
+                        [category_id, id]
+                    );
+
+                    if (oldCategoryId) {
+                        await client.query(
+                            `UPDATE news.news_categories SET item_count = item_count - 1 WHERE id = $1`,
+                            [oldCategoryId]
+                        );
+                    }
+
+                    await client.query(
+                        `UPDATE news.news_categories SET item_count = item_count + 1 WHERE id = $1`,
+                        [category_id]
+                    );
+                }
+            }
+
+            await client.query("COMMIT");
+
+            const news_ids = changedItems.map(item => item.id).join(', ');
+            return {
+                status: 200,
+                message: "Gán loại tin tức thành công",
+                action: `Gán loại tin tức ${category_id} - ${category_name} cho các tin tức: ${news_ids}`
+            }
+        } catch (error) {
+            await client.query("ROLLBACK");
+            console.error("Error during DB updateRegion:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            // Giảm item_count trong news_categories
+            await client.query(`
+            UPDATE news.news_categories
+            SET item_count = item_count - 1
+            WHERE id = (SELECT category_id FROM news.news WHERE id = $1)
+            `, [id]);
+
+            // Xoá nội dung dự án
+            await client.query(`
+            DELETE FROM news.news_contents
+            WHERE news_id = $1
+            `, [id]);
+            await client.query(`
+            DELETE FROM news.featured_news
+            WHERE news_id = $1
+            `, [id]);
+
+            // Xoá dự án
+            const result = await client.query(`
+            DELETE FROM news.news
+            WHERE id = $1
+            RETURNING *
+            `, [id]);
+
+            await client.query('COMMIT');   
+            if (result.rowCount > 0) return {
+                status: 200,
+                message: "Xóa tin tức thành công",
+                action: `Xóa tin tức: ${id} - ${result?.rows?.[0]?.title}`
+            }; else return {
+                status: 404,
+                message: "Không tìm thấy tin tức"
+            }
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
     }
+
 }
 
 const news_categories = {
@@ -311,11 +451,112 @@ const news_categories = {
         return news_categories
     },
     getOne: async (id) => {
-        const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = ${id}`)).rows[0];
+        const news_category = (await pool.query(`SELECT * FROM news.news_categories WHERE id = $1`, [id])).rows[0];
         if(!news_category){
             throw new Error("Can't get news_categories");
         }
         return news_category;
+    },
+    createOne: async(data) => {
+        const {name, rgb_color} = data;
+
+        const result = await pool.query(
+            `INSERT INTO news.news_categories (name, rgb_color, item_count)
+            VALUES($1, $2, 0)
+            RETURNING id`,
+            [name, rgb_color]
+        );
+
+        const id = result?.rows?.[0]?.id; 
+
+        return {
+            status: 200,
+            message: "Thêm loại tin tức thành công",
+            action: `Tạo loại tin tức: ${id} - ${name}`
+        }
+    },
+    updateOne: async(data, id) => {
+        const {name, rgb_color} = data;
+
+        const old_name = await pool.query(`SELECT name FROM news.news_categories WHERE id = $1`, [id]).rows?.[0]?.name;
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy loại tin tức"
+        }
+
+        await pool.query(
+            `UPDATE news.news_categories
+                SET name = $1, rgb_color = $2
+                WHERE id = $3`,
+                [name, rgb_color, id]
+        );
+
+        const note = (old_name != name) ? ' (đã đổi tên)' : '';
+
+        return {
+            status: 200,
+            message: "Chỉnh sửa loại tin tức thành công",
+            action: `Chỉnh sửa loại tin tức${note}: ${id} - ${name}`
+        }
+    },
+    deleteOne: async (id) => {
+        const client = await pool.connect();
+        try {
+            // Câu 1: Xoá news_contents
+            try {
+                await client.query(
+                    'DELETE FROM news.news_contents WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
+                    [id]
+                );
+            } catch (err) {
+                console.error("Lỗi xoá news_contents:", err.message);
+            }
+
+            try {
+                await client.query(
+                    'DELETE FROM news.featured_news WHERE news_id IN (SELECT id FROM news.news WHERE category_id = $1)',
+                    [id]
+                );
+            } catch (err) {
+                console.error("Lỗi xoá news_featured:", err.message);
+            }
+
+            // Câu 2: Xoá news
+            try {
+                await client.query(
+                    'DELETE FROM news.news WHERE category_id = $1',
+                    [id]
+                );
+            } catch (err) {
+                console.error("Lỗi xoá news:", err.message);
+            }
+
+            // Câu 3: Xoá news_categories
+            let result;
+            try {
+                result = await client.query(
+                    'DELETE FROM news.news_categories WHERE id = $1 RETURNING *',
+                    [id]
+            );
+            } catch (err) {
+                console.error("Lỗi xoá news_categories:", err.message);
+            }
+
+            if (result.rowCount == 0) return {
+                status: 404,
+                message: "Không tìm thấy loại tin tức"
+            }
+
+            const { name } = result.rows[0];
+
+            return {
+                status: 200,
+                message: "Xóa loại tin tức thành công",
+                action: `Xóa loại tin tức và tất cả tin tức thuộc loại: ${id} - ${name}`
+            }
+        } finally {
+            client.release();
+        }
     }
 }
 
@@ -328,11 +569,13 @@ const news_contents = {
 
                 n.id as news_id,
                 n.title,
+                n.is_published,
                 n.public_date,
                 n.measure_time,
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id as category_id,
                 n_cate.name,
@@ -348,11 +591,13 @@ const news_contents = {
             news: {
               id: row.news_id,
               title: row.title,
-              public_date: row.public_date,
+              is_published: row.is_published,
+              public_date: (new Date(row.public_date)).toLocaleDateString('vi-VN'),
               measure_time: row.measure_time,
               num_readers: row.num_readers,
               main_img: row.main_img,
               main_content: row.main_content,
+              is_published: row.is_published,
               category: {
                 id: row.category_id,
                 name: row.name,
@@ -375,6 +620,7 @@ const news_contents = {
                 n.num_readers,
                 n.main_img,
                 n.main_content,
+                n.is_published,
 
                 n_cate.id as category_id,
                 n_cate.name,
@@ -382,20 +628,22 @@ const news_contents = {
             from news.news_contents n_cont
             join news.news n on n_cont.news_id = n.id
             join news.news_categories n_cate on n_cate.id = n.category_id
-            where n_cont.news_id = ${id}
+            where n_cont.news_id = $1
         `
-        const row = (await pool.query(query)).rows[0]
+        const row = (await pool.query(query, [id])).rows[0]
         const news_content = {
             id: row.content_id,
             content: row.content,
             news: {
               id: row.news_id,
               title: row.title,
+              is_published: row.is_published,
               public_date: row.public_date,
               measure_time: row.measure_time,
               num_readers: row.num_readers,
               main_img: row.main_img,
               main_content: row.main_content,
+              is_published: row.is_published,
               category: {
                 id: row.category_id,
                 name: row.name,
@@ -404,9 +652,181 @@ const news_contents = {
             }
           };
           return news_content;
-    }
-}
+    },
+    postOne: async (data, files) => {
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'news');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'news');
+                imageUrls.push(url);
 
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        const {
+            title,
+            main_content,
+            category_name,
+            isPublished,
+            countWord,
+            link_image
+        } = data;
+
+        //Get news_categories id
+        const categoryRes = await pool.query(
+            `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
+            [category_name]
+        );
+        const category_id = categoryRes.rows.length > 0 ? categoryRes.rows[0].id : null;
+        //Insert news
+        const insertNewsSql = `
+            INSERT INTO news.news (
+            category_id, title, is_published, public_date,
+            measure_time, num_readers,
+            main_img, main_content
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING id, title;
+        `;
+        const measure_time = Math.ceil(countWord / 1000);
+
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+        const insertValues = [
+            category_id,
+            title,
+            isPublished == "Trưng bày" ? true: false,
+            new Date(),
+            measure_time, // in case it's an object
+            0,
+            main_image,
+            main_content
+        ];
+        const newsResult = await pool.query(insertNewsSql, insertValues);
+        const news_id = newsResult.rows[0].id;
+        const news_title = newsResult.rows[0].title;
+        const insertNewsContentSql = `
+            INSERT INTO news.news_contents (news_id, content)
+            values($1, $2)
+        `
+        const insertValuesNewsContent = [
+            news_id,
+            contentHTML
+        ]
+        await pool.query(insertNewsContentSql, insertValuesNewsContent);
+
+        return {
+            status: 200,
+            message: "Tạo tin tức thành công",
+            action: `Tạo tin tức: ${news_id} - ${news_title}`
+        }
+    },
+    updateOne: async (id, data, files) => {
+        const old_title = await pool.query(`SELECT title FROM news.news WHERE id = $1`, [id]);
+
+        const result = {};
+        if(files?.main_image?.[0]){
+            const mainImageUrl = await uploadImage(files.main_image[0], 'news');
+            result.main_image = mainImageUrl
+        }
+        let imageUrls = [];
+        let contentHTML= data?.content;
+        if(files?.images?.length){
+            for(const img of files.images){
+                const fakeName = img.originalname;
+                const url = await uploadImage(img, 'news');
+                imageUrls.push(url);
+
+                contentHTML = contentHTML.replaceAll(fakeName, url);
+            }
+            result.imageUrls = imageUrls;
+        }
+        let imagesToDelete = data.delete_images;
+        if (typeof imagesToDelete === 'string') {
+            imagesToDelete = [imagesToDelete];
+        }
+        if (Array.isArray(imagesToDelete) && imagesToDelete.length > 0) {
+            await deleteImage(imagesToDelete);
+        }
+        const {
+            title,
+            main_content,
+            category_name,
+            isPublished,
+            countWord,
+            link_image
+        } = data;
+        //Get news_categories id
+        const categoryRes = await pool.query(
+            `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
+            [category_name]
+        );
+        const category_id = categoryRes.rows.length > 0 ? categoryRes.rows[0].id : null;
+        //Update news content
+        const updateNewsContentSql = `
+            UPDATE news.news_contents
+            SET content = $1
+            WHERE news_id = $2
+        `;
+        await pool.query(updateNewsContentSql, [contentHTML, id]);
+        //Insert updateNews
+        const updateNewsSql = `
+            update news.news
+            set 
+                category_id = $1,
+                title = $2, 
+                is_published = $3,
+                public_date = $4,
+                measure_time = $5, 
+                num_readers = $6, 
+                main_img = $7, 
+                main_content = $8
+            where id = $9
+        `
+        const measure_time = Math.ceil(countWord / 1000);
+
+        let main_image = "";
+        if(result.main_image){
+            main_image = result.main_image;
+        }
+        else if(link_image){
+            main_image = link_image;
+        }
+
+        const updateValues = [
+            category_id,
+            title,
+            isPublished === "Trưng bày",
+            new Date(),
+            measure_time,
+            0,
+            main_image,
+            main_content,
+            id
+        ];
+
+        await pool.query(updateNewsSql, updateValues);
+
+        const note = (old_title != title) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật tin tức thành công",
+            action: `Cập nhật tin tức${note}: ${id} - ${title}`
+        }        
+    },
+}
 const getSearchCategoriesSuggestions = async (query) => {
     const cleanedQuery = query.trim().replaceAll(`'`, ``);
     const sql = `
@@ -499,4 +919,62 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getNewsPage, news, news_categories, news_contents, getSearchCategoriesSuggestions, getSearchSuggestions, count};
+const featured_news = {
+    getAll: async () => {
+        const news_rows = (await pool.query(`
+            SELECT
+                FN.sort,
+                FN.news_id,
+                N.main_img,
+                N.title,
+                C.name,
+                N.public_date
+            FROM
+                news.featured_news FN
+                JOIN news.news N ON FN.news_id = N.id
+                JOIN news.news_categories C ON N.category_id = C.id
+            ORDER BY FN.sort ASC 
+        `)).rows;
+        
+        const switch_time = (await pool.query(`
+            SELECT news_switch_time
+            FROM home.home_page    
+        `)).rows[0].news_switch_time;
+
+        const news = news_rows.map(row => ({
+            sort: row.sort,
+            id: row.news_id,
+            img: row.main_img,
+            title: row.title,
+            name: row.name,
+            date: (new Date(row.public_date)).toLocaleDateString('vi-VN')
+        }));
+
+        return {
+            switch_time: switch_time,
+            featured_news: [...news]
+        };
+    },
+    updateAll: async (data) => {
+        const {
+            news_ids,
+            switch_time
+        } = data
+
+        await pool.query('DELETE FROM news.featured_news');
+
+        for (let sort = 1; sort <= news_ids.length; sort++) {
+            await pool.query('INSERT INTO news.featured_news (news_id, sort) VALUES ($1, $2)', [news_ids[sort - 1], sort]);
+        }
+        
+        await pool.query('UPDATE home.home_page SET news_switch_time = $1', [switch_time]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Tin Tức Nổi Bật thành công",
+            action: `Cập nhật tin tức nổi bật`
+        }
+    }
+}
+
+export default { getAllTables, getNewsPage, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};

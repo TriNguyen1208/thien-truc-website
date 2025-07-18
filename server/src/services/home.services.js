@@ -30,6 +30,12 @@ const updateHomePage = {
                 banner_title = $1,
                 banner_description = $2
         `, [title, description]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Banner thành công",
+            action: "Cập nhật Banner trang Trang Chủ"
+        }
     },
     aboutUs: async (data) => {
         const content = data["Nội dung giới thiệu"];
@@ -41,6 +47,12 @@ const updateHomePage = {
                 aboutus_content = $1,
                 aboutus_img = $2
         `, [content, image]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Giới Thiệu Về Công Ty thành công",
+            action: "Cập nhật Giới Thiệu Về Công Ty trang Trang Chủ",
+        }
     }
 }
 
@@ -83,44 +95,52 @@ const highlight_stats_about_us = {
 
         return {
             status: 200,
-            message: 'Tạo Thông Số Nổi Bật thành công'
+            message: 'Tạo Thông Số Nổi Bật thành công',
+            action: `Tạo Thông Số Nổi Bật trang Trang Chủ: ${figures} ${achievementName}`
         }
     },
 
     updateOne: async (data, id) => {
+        const old_label = (await pool.query('SELECT label FROM home.highlight_stats_about_us WHERE id = $1', [id])).rows?.[0]?.label;
+        if (!old_label) return {
+            status: 404,
+            message: "Không tìm thấy Thông Số Nổi Bật"
+        }
+
         const { figures, achievementName } = data;
 
-        const rowCount = (await pool.query(`
+        await pool.query(`
             UPDATE home.highlight_stats_about_us
             SET
                 number_text = $1,
                 label = $2
             WHERE
                 id = $3
-        `, [figures, achievementName, id])).rowCount;
+        `, [figures, achievementName, id]);
         
-        if (rowCount > 0) return {
+        const note = (old_label != achievementName) ? ' (đã đổi tên)' : '';
+        return {
             status: 200,
-            message: "Cập nhật Thông Số Nổi Bật thành công"
-        }
-        else return {
-            status: 404,
-            message: "Không tìm thấy Thông Số Nổi Bật"
+            message: "Cập nhật Thông Số Nổi Bật thành công",
+            action: `Cập nhật Thông Số Nổi Bật trang Trang Chủ${note}: ${figures} ${achievementName}`
         }
     },
 
     deleteOne: async (id) => {
-        const rowCount = (await pool.query(`
-            DELETE FROM home.highlight_stats_about_us WHERE id = $1
-        `, [id])).rowCount;
+        const result = await pool.query(`
+            DELETE FROM home.highlight_stats_about_us WHERE id = $1 RETURNING number_text, label
+        `, [id]);
 
-        if (rowCount > 0) return {
-            status: 200,
-            message: "Xóa Thông Số Nổi Bật thành công"
-        }
-        else return {
+        if (result.rowCount == 0) return {
             status: 404,
             message: "Không tìm thấy Thông Số Nổi Bật"
+        }
+
+        const { number_text, label } = result.rows[0];
+        return {
+            status: 200,
+            message: "Xóa Thông Số Nổi Bật thành công",
+            action: `Xóa Thông Số Nổi Bật trang Trang Chủ: ${number_text} ${label}`
         }
     }
 }

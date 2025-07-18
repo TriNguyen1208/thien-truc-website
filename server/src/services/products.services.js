@@ -1,4 +1,6 @@
 import pool from '#@/config/db.js'
+import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
+import { PawPrint } from 'lucide-react';
 
 const getAllTables = async () => {
     const _product_page = await getProductPage();
@@ -14,6 +16,7 @@ const getAllTables = async () => {
         product_prices: _product_prices
     };
 }
+
 const getNumPage = async (query, filter) => {
     let totalCount = 0;
     const hasQuery = query !== '';
@@ -54,6 +57,7 @@ const getNumPage = async (query, filter) => {
         return totalCount;
     }
 }
+
 const getProductPage = async () => {
     const product_page = (await pool.query("SELECT * FROM product.product_page")).rows[0];
     if(!product_page){
@@ -70,21 +74,25 @@ const updateProductPage = async (data) => {
         description
     } = data;
 
-    const result = await pool.query(`
+    await pool.query(`
         UPDATE product.product_page
         SET
             banner_title = $1,
             banner_description = $2
     `, [title, description]);
 
-    return result;
+    return {
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Sản Phẩm"
+    }
 }
 
 const products = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-        const pageSize = item_limit || 12;
+        const pageSize = parseInt(item_limit) || 12;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
@@ -150,19 +158,19 @@ const products = {
         const { rows } = await pool.query(sql);
         const results = rows.map(row => ({
             id: row.product_id,
-            name: row.product_name,
-            description: row.description,
-            product_img: row.product_img,
-            price: row.price,
+            name: row.product_name || "",
+            description: row.description || "",
+            product_img: row.product_img || "",
+            price: isNaN(row.price) ? "" : row.price,
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: row.warranty_period,
+            warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
                 id: row.category_id,
                 name: row.category_name
             },
-            is_featured: row.is_featured
+            is_featured: row.is_featured || false
         }));
         if (page)
             return {
@@ -179,7 +187,7 @@ const products = {
 
         let where = [];
         let order = [];
-        const limit = item_limit || 100;
+        const limit = parseInt(item_limit) || 100;
         
         if (query != '') {
             where.push(
@@ -250,19 +258,19 @@ const products = {
 
             groupedResults[categoryName].push({
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                price: row.price,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                price: isNaN(row.price) ? "" : row.price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
-                warranty_period: row.warranty_period,
+                warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
                 },
-                is_featured: row.is_featured
+                is_featured: row.is_featured || false
             });
         }
 
@@ -288,17 +296,17 @@ const products = {
             from product.products prd
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
             join product.product_prices pp on prd.id = pp.product_id
-            where prd.id = ${id}
+            where prd.id = $1
         `
-        const row = (await pool.query(query)).rows[0];
+        const row = (await pool.query(query, [id])).rows[0];
         const product = {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                price: row.price,
-                product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                price: isNaN(row.price) ? "" : row.price,
+                product_specifications: JSON.parse(row.product_specifications || '{}'),
+                warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
 
@@ -307,29 +315,119 @@ const products = {
                     name: row.category_name
                 },
 
-                is_featured: row.is_featured
+                is_featured: row.is_featured || false
             };
         return product
     },
-    updateFeatureOne: async (id, status) => {
+    updateFeatureOne: async (id, product_status) => {
         const query = `
-            UPDATE product.products SET is_featured = ${status} WHERE id = ${id};
+            UPDATE product.products SET is_featured = $1 WHERE id = $2 RETURNING name;
         `
-        const result = await pool.query(query);
-        return result;
+        const result = await pool.query(query, [product_status, id]);
+
+        if (result.rowCount == 0) return {
+            status: 404,
+            message: "Không tìm thấy sản phẩm"
+        }
+
+        const { name } = result.rows[0];
+        const update = (product_status == 'true') ? 'Trưng bày' : 'Bỏ trưng bày'
+        return {
+            status: 200,
+            message: `${update} sản phẩm thành công`,
+            action: `${update} sản phẩm: ${id} - ${name}`
+        }
     },
-    createOne: async (data) => {
-        const {
-            avatarImage,
+    updateCategory: async (changedItems) => {
+        if (!Array.isArray(changedItems)) {
+            throw new Error("Invalid input");
+        }
+        
+        if (changedItems.length == 0) return {
+            status: 400,
+            message: "Không có dữ liệu cần cập nhật"
+        }
+
+        const category_id = changedItems[0].category_id;
+        const category_name = (await pool.query('SELECT name FROM product.product_categories WHERE id = $1', [category_id])).rows?.[0]?.name;
+        if (!category_name) return {
+            status: 404,
+            message: "Không tìm thấy loại sản phẩm"
+        }
+
+        const client = await pool.connect();
+        try {
+            await client.query("BEGIN");
+
+            for (const item of changedItems) {
+                const { id, category_id } = item;
+
+                const result = await client.query(
+                    `SELECT category_id, name FROM product.products WHERE id = $1`,
+                    [id]
+                );
+
+                const oldCategoryId = result.rows[0]?.category_id;
+
+                if (oldCategoryId !== category_id) {
+                    await client.query(
+                        `UPDATE product.products SET category_id = $1 WHERE id = $2`,
+                        [category_id, id]
+                    );
+
+                    if (oldCategoryId) {
+                        await client.query(
+                            `UPDATE product.product_categories SET item_count = item_count - 1 WHERE id = $1`,
+                            [oldCategoryId]
+                        );
+                    }
+
+                    await client.query(
+                        `UPDATE product.product_categories SET item_count = item_count + 1 WHERE id = $1`,
+                        [category_id]
+                    );
+                }
+            }
+
+            await client.query("COMMIT");
+
+            const product_ids = changedItems.map(item => item.id).join(', ');
+            return {
+                status: 200,
+                message: "Gán loại sản phẩm thành công",
+                action: `Gán loại sản phẩm ${category_id} - ${category_name} cho các sản phẩm: ${product_ids}`
+            }
+        } catch (error) {
+            await client.query("ROLLBACK");
+            console.error("Error during DB updateRegion:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
+    createOne: async (data, file) => {
+        let cloud_avatar_img = null;
+        if (file) {
+            cloud_avatar_img = await uploadImage(file, 'product');
+        }
+        
+        let {
+            external_avatar_img,
             characteristic,
             description,
             isDisplayHomePage,
-            price,
+            price, // int
             productCategories,
             productName,
             technicalDetails,
-            warranty
+            warranty // int
         } = data;
+
+        const final_avatar_img = cloud_avatar_img || external_avatar_img || null;
+
+        if (price == "") price = null;
+        warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
+        console.error(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
@@ -342,8 +440,9 @@ const products = {
         const category_id = categoryRes.rows[0].id;
 
         // 2. Prepare features
-        const product_features = characteristic.map(c => c.value);
-        const highlight_feature_ids = characteristic
+        const parsed_characteristic = JSON.parse(characteristic) || [];
+        const product_features = parsed_characteristic.map(c => c.value);
+        const highlight_feature_ids = parsed_characteristic
             .map((c, index) => (c.isCheckbox ? index : -1))
             .filter(index => index !== -1);
 
@@ -360,10 +459,10 @@ const products = {
         const insertValues = [
             productName,
             description,
-            avatarImage,
+            final_avatar_img,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
-            parseInt(warranty),
+            warranty,
             product_features,
             highlight_feature_ids,
             isDisplayHomePage
@@ -383,10 +482,27 @@ const products = {
             `UPDATE product.product_categories SET item_count = item_count + 1 WHERE id = $1`,
             [category_id]
         );
+
+        return {
+            status: 200,
+            message: "Tạo sản phẩm thành công",
+            action: `Tạo sản phẩm: ${product_id} - ${productName}`
+        }
     },
-    updateOne: async (data, id) => {
-        const {
-            avatarImage,
+    updateOne: async (data, file, id) => {
+        const { 
+            product_img: old_avatar_img,
+            name: old_name
+        } = (await pool.query('SELECT product_img, name FROM product.products WHERE id = $1', [id])).rows?.[0];
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy sản phẩm"
+        }
+
+        const local_avatar_img = file;
+        
+        let {
+            external_avatar_img,
             characteristic,
             description,
             isDisplayHomePage,
@@ -396,6 +512,16 @@ const products = {
             technicalDetails,
             warranty
         } = data;
+
+        const final_avatar_img = await updateImage(
+            old_avatar_img,
+            local_avatar_img,
+            external_avatar_img,
+            'product'
+        );
+
+        if (price == "") price = null;
+        warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
@@ -408,8 +534,9 @@ const products = {
         const category_id = categoryRes.rows[0].id;
 
         // 2. Prepare features
-        const product_features = characteristic.map(c => c.value);
-        const highlight_feature_ids = characteristic
+        const parsed_characteristic = JSON.parse(characteristic) || [];
+        const product_features = parsed_characteristic.map(c => c.value);
+        const highlight_feature_ids = parsed_characteristic
             .map((c, index) => (c.isCheckbox ? index : -1))
             .filter(index => index !== -1);
 
@@ -426,19 +553,20 @@ const products = {
                 product_features = $7,
                 highlight_features = $8,
                 is_featured = $9
-            WHERE id = ${id}
+            WHERE id = $10
         `;
 
         const insertValues = [
             productName,
             description,
-            avatarImage,
+            final_avatar_img,
             category_id,
             JSON.stringify(technicalDetails), // in case it's an object
-            parseInt(warranty),
+            warranty,
             product_features,
             highlight_feature_ids,
-            isDisplayHomePage
+            isDisplayHomePage,
+            id
         ];
 
         const productInsertResult = await pool.query(insertSql, insertValues);
@@ -452,27 +580,103 @@ const products = {
             `,
             [id, price]
         );
+
+        const note = (old_name != productName) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật sản phẩm thành công",
+            action: `Cập nhật sản phẩm${note}: ${id} - ${productName}`
+        }
     },
     deleteOne: async (id) => {
-        const query = `
-            DELETE FROM product.product_prices WHERE product_id = ${id};
-            DELETE FROM product.products WHERE id = ${id};
-        `;
-        const result = await pool.query(query);
-        return result[1];
+        // 1. Kiểm tra tồn tại và lấy category + product_img
+        const res = await pool.query(
+            `SELECT category_id, product_img, name FROM product.products WHERE id = $1`,
+            [id]
+        );
+        if (res.rowCount == 0) return {
+            status: 404,
+            message: "Không tìm thấy sản phẩm"
+        };
+
+        const { category_id, product_img, name } = res.rows[0];
+
+        // 2. Xóa bảng product_prices trước (nếu có liên kết FK)
+        await pool.query(
+            `DELETE FROM product.product_prices WHERE product_id = $1`,
+            [id]
+        );
+
+        // 3. Xóa sản phẩm chính, không cần RETURNING nữa vì đã có product_img
+        await pool.query(
+            `DELETE FROM product.products WHERE id = $1`,
+            [id]
+        );
+
+        // 4. Cập nhật item_count của danh mục
+        await pool.query(
+            `UPDATE product.product_categories SET item_count = item_count - 1 WHERE id = $1`,
+            [category_id]
+        );
+
+        // 5. Xóa ảnh nếu là ảnh từ Cloudinary
+        if (isCloudinary(product_img)) {
+            await deleteImage([product_img]);
+        }
+
+        return {
+            status: 200,
+            message: "Xóa sản phẩm thành công",
+            action: `Xóa sản phẩm: ${id} - ${name}`
+        };
     }
+
 }
 
 const product_categories = {
-    getAll: async () => {
-        const product_categories = (await pool.query("SELECT * FROM product.product_categories")).rows;
+    // getAll: async () => {
+    //     const product_categories = (await pool.query("SELECT * FROM product.product_categories")).rows;
+    //     if(!product_categories){
+    //         throw new Error("Can't get product_categories");
+    //     }
+    //     return product_categories
+    // },
+    getList: async (query) => {
+        query = query.trim().replaceAll(`'`, ``); // clean
+
+        let where = [];
+        let order = [];
+        
+        if (query != '') {
+            where.push(
+                `(unaccent(C.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+                similarity(unaccent(C.name::text), unaccent('${query}'::text)) > 0.1)`
+            );
+            
+            order.push(
+                `similarity(unaccent(C.name), unaccent('${query}')) DESC`
+            );
+        }
+
+        // Chuẩn hóa từng thành phần truy vấn
+        if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+
+        const product_categories = (await pool.query(`
+            SELECT * 
+            FROM product.product_categories C
+            ${where}
+            ${order}
+
+        `)).rows;
+
         if(!product_categories){
             throw new Error("Can't get product_categories");
         }
         return product_categories
     },
     getOne: async (id) => {
-        const product_category = (await pool.query(`SELECT * FROM product.product_categories WHERE id = ${id}`)).rows[0];
+        const product_category = (await pool.query(`SELECT * FROM product.product_categories WHERE id = $1`, [id])).rows[0];
         if(!product_category){
             throw new Error("Can't get product_categories");
         }
@@ -480,12 +684,27 @@ const product_categories = {
     },
     createOne: async (data) => {
         const { productNameCategories } = data;
-        await pool.query(
-            `INSERT INTO product.product_categories (name, item_count) VALUES ($1, 0)`,
+
+        const result = await pool.query(
+            `INSERT INTO product.product_categories (name, item_count) VALUES ($1, 0) RETURNING id`,
             [productNameCategories]
         );
+
+        const { id } = result.rows[0];
+        return {
+            status: 200,
+            message: "Tạo loại sản phẩm thành công",
+            action: `Tạo loại sản phẩm: ${id} - ${productNameCategories}`
+        }
+
     },
     updateOne: async (data, id) => {
+        const old_name = (await pool.query('SELECT name FROM product.product_categories WHERE id = $1', [id])).rows?.[0]?.name;
+        if (!old_name) return {
+            status: 404,
+            message: "Không tìm thấy loại sản phẩm"
+        }
+
         const { productNameCategories } = data;
         await pool.query(
             `UPDATE product.product_categories
@@ -493,15 +712,76 @@ const product_categories = {
             WHERE id = $2`,
             [productNameCategories, id]
         );
+
+        const note = (old_name != productNameCategories) ? ' (đã đổi tên)' : '';
+        return {
+            status: 200,
+            message: "Cập nhật loại sản phẩm thành công",
+            action: `Cập nhật loại sản phẩm${note}: ${id} - ${productNameCategories}`
+        }
     },
     deleteOne: async (id) => {
-        const query = `
-            DELETE FROM product.product_prices WHERE product_id in (SELECT id FROM product.products WHERE category_id = ${id});
-            DELETE FROM product.products WHERE category_id = ${id};
-            DELETE FROM product.product_categories WHERE id = ${id};
-        `;
-        const result = await pool.query(query);
-        return result[2];
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // 1. Lấy tất cả ảnh sản phẩm
+            const productImagesRes = await client.query(
+                `SELECT product_img FROM product.products WHERE category_id = $1`,
+                [id]
+            );
+            const productImgs = productImagesRes.rows.map(row => row.product_img).filter(Boolean);
+
+            // 2. Xóa product_prices
+            await client.query(
+                `DELETE FROM product.product_prices 
+                WHERE product_id IN (
+                    SELECT id FROM product.products WHERE category_id = $1
+                )`,
+                [id]
+            );
+
+            // 3. Xóa products
+            await client.query(
+                `DELETE FROM product.products WHERE category_id = $1 RETURNING name`,
+                [id]
+            );
+
+            // 4. Xóa category
+            const categoryDeleteRes = await client.query(
+                `DELETE FROM product.product_categories WHERE id = $1 RETURNING name`,
+                [id]
+            );
+
+            if (categoryDeleteRes.rowCount === 0) {
+                await client.query('ROLLBACK');
+                client.release();
+                return { status: 404, message: "Không tìm thấy danh mục để xóa" };
+            }
+
+            const { name: categoryName } = categoryDeleteRes.rows[0];
+
+            await client.query('COMMIT');
+            client.release();
+
+            // 5. Xử lý ảnh Cloudinary
+            const cloudinaryImgs = productImgs.filter(isCloudinary);
+            if (cloudinaryImgs.length > 0) {
+                await deleteImage(cloudinaryImgs);
+            }
+
+            return {
+                status: 200,
+                message: "Xóa danh mục và toàn bộ sản phẩm thành công",
+                action: `Xóa loại sản phẩm và toàn bộ sản phẩm thuộc loại: ${id} - ${categoryName}`,
+                deletedImages: cloudinaryImgs
+            };
+        } catch (err) {
+            await client.query('ROLLBACK');
+            client.release();
+            console.error("Lỗi khi xóa danh mục:", err);
+            return { status: 500, message: "Đã xảy ra lỗi khi xóa danh mục" };
+        }
     }
 }
 
@@ -511,7 +791,7 @@ const getPricePage = async () => {
     if(!price_page){
         throw new Error("Can't get price_page");
     }
-    return price_page;
+    return price_page || "";
 }
 
 const updatePricePage = async (data) => {
@@ -527,7 +807,11 @@ const updatePricePage = async (data) => {
             banner_description = $2
     `, [title, description]);
 
-    return result;
+    return {
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Bảng Giá"
+    }
 }
 
 const product_prices = {
@@ -572,14 +856,14 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedQuery, cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -621,14 +905,14 @@ const product_prices = {
         const { rows } = await pool.query(sql);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -667,14 +951,14 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -706,19 +990,19 @@ const product_prices = {
             from product.product_prices prd_pri
             join product.products prd on prd_pri.product_id = prd.id
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
-            where prd_pri.id = ${id}
+            where prd_pri.id = $1
         `
-        const row = (await pool.query(query)).rows[0];
+        const row = (await pool.query(query, [id])).rows[0];
         const product_price = {
             id: row.price_id,
-            price: row.price,
-            note: row.note,
+            price: row.price || "",
+            note: row.note || "",
             product: {
                 id: row.product_id,
-                name: row.product_name,
-                description: row.description,
-                product_img: row.product_img,
-                warranty_period: row.warranty_period,
+                name: row.product_name || "",
+                description: row.description || "",
+                product_img: row.product_img || "",
+                warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
             
@@ -758,12 +1042,12 @@ const getHighlightProducts = async () => {
         const { rows } = await pool.query(sql);
         const results = rows.map(row => ({
             id: row.product_id,
-            name: row.product_name,
-            product_img: row.product_img,
-            description: row.description,
-            price: row.price,
+            name: row.product_name || "",
+            product_img: row.product_img || "",
+            description: row.description || "",
+            price: row.price || "",
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: row.warranty_period,
+            warranty_period: row.warranty_period || "",
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
@@ -823,6 +1107,42 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     }
 };
 
+const getSearchCategoriesSuggestions = async (query) => {
+    query = query.trim().replaceAll(`'`, ``);
+    const suggestions_limit = 5;
+    let where = [];
+    let order = [];
+    const limit = 'LIMIT ' + suggestions_limit;
+
+    if (query != '') {
+        where.push(`(unaccent(P.name::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+            similarity(unaccent(P.name::text), unaccent('${query}'::text)) > 0)`);
+        order.push(`similarity(unaccent(P.name::text), unaccent('${query}'::text)) DESC`);
+    }
+
+    // Chuẩn hóa các thành phần query
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+    if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+    
+    const sql = `
+        SELECT P.name, P.id
+        FROM product.product_categories P
+        ${where}
+        ${order}
+        ${limit}
+    `;
+
+    try {
+        const result = await pool.query(sql);
+        return result.rows.map(row => ({
+            query: row.name,
+            id: row.id
+        }));
+    } catch (err) {
+        throw new Error(`DB error: ${err.message}`);
+    }
+};
+
 const count = async () => {
     const product_count = (await pool.query(`
         SELECT COUNT(*)::int AS product_count
@@ -846,4 +1166,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count };

@@ -1,4 +1,6 @@
 import homeServices from "#@/services/home.services.js";
+import activityLogServices from "#@/services/activity-log.services.js";
+const { logActivity } = activityLogServices;
 
 const getAllTables = async (req, res) => {
     const data = await homeServices.getAllTables();
@@ -13,8 +15,9 @@ const getHomePage = async(req, res) => {
 const updateHomePage = {
     banner: async(req, res) => {
         try {
-            await homeServices.updateHomePage.banner(req.body);
-            return res.status(200).json({ message: 'Cập nhật banner Trang Chủ thành công' });
+            const { status, message, action = null } = await homeServices.updateHomePage.banner(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi cập nhật banner Trang Chủ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
@@ -22,8 +25,9 @@ const updateHomePage = {
     }, 
     aboutUs: async(req, res) => {
         try {
-            await homeServices.updateHomePage.aboutUs(req.body);
-            return res.status(200).json({ message: 'Cập nhật nội dung Về Chúng Tôi của Trang Chủ thành công' });
+            const { status, message, action = null } = await homeServices.updateHomePage.aboutUs(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi cập nhật nội dung Về Chúng Tôi của Trang Chủ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
@@ -43,8 +47,9 @@ const highlight_stats_about_us = {
     },
     createOne: async (req, res) => {
         try {
-            const { status, message } = await homeServices.highlight_stats_about_us.createOne (req.body);
-            return res.status(status).json({ message: message });
+            const { status, message, action = null } = await homeServices.highlight_stats_about_us.createOne (req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi tạo Thông Số Nổi Bật của Trang Chủ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
@@ -53,8 +58,9 @@ const highlight_stats_about_us = {
     updateOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await homeServices.highlight_stats_about_us.updateOne(req.body, id);
-            return res.status(status).json({ message: message});
+            const { status, message,action = null } = await homeServices.highlight_stats_about_us.updateOne(req.body, id);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi cập nhật Thông Số Nổi Bật của Trang Chủ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
@@ -63,8 +69,9 @@ const highlight_stats_about_us = {
     deleteOne: async (req, res) => {
         const id = req.params.id;
         try {
-            const { status, message } = await homeServices.highlight_stats_about_us.deleteOne(id);
-            return res.status(status).json({ message: message });
+            const { status, message, action = null } = await homeServices.highlight_stats_about_us.deleteOne(id);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi xóa Thông Số Nổi Bật của Trang Chủ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
