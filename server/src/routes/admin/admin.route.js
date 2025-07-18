@@ -5,8 +5,8 @@ const { authenticateToken, authorizeAdmin } = authMiddleware;
 
 const router = express.Router();
 
-router.get('/count', authenticateToken, authorizeAdmin, adminController.count);
-router.get('/activity_logs', authenticateToken, authorizeAdmin, adminController.activity_logs.getAll);
+router.get('/count', authenticateToken, adminController.count);
+router.get('/activity_logs', authenticateToken, adminController.activity_logs.getAll);
 router.get('/managers', authenticateToken, authorizeAdmin, adminController.manager.getAll);
 router.get('/managers/:username', authenticateToken, authorizeAdmin, adminController.manager.getOne);
 
