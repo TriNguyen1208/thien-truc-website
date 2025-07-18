@@ -185,7 +185,7 @@ const products = {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
         id = id.trim().replace(/^['"]|['"]$/g, '');
-
+        
         let where = [];
         let order = [];
         const limit = parseInt(item_limit) || 100;
@@ -645,12 +645,16 @@ const product_categories = {
     //     }
     //     return product_categories
     // },
-    getList: async (query) => {
+    getList: async (id, query) => {
         query = query.trim().replaceAll(`'`, ``); // clean
+        id = id.trim().replace(/^['"]|['"]$/g, '');
 
         let where = [];
         let order = [];
         
+        if (id) {
+            where.push(`C.id = '${id}'`);
+        }
         if (query != '') {
             where.push(
                 `(unaccent(C.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR

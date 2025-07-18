@@ -97,8 +97,8 @@ const products = {
 
 const product_categories = {
     getList: async (req, res) => {
-        const {query =''} = req.query;
-        const data = await productServices.product_categories.getList(query);
+        const { id = '', query ='' } = req.query;
+        const data = await productServices.product_categories.getList(id, query);
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
