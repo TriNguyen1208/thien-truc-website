@@ -82,6 +82,14 @@ function useSearchSuggestions(query = '', filter = '', is_featured = undefined) 
   });
 }
 
+function useSearchCategoriesSuggestion(query = '') {
+    return useQuery({
+    queryKey: ["admin_product_categories_suggestions", query],
+    queryFn: () => productsServices.getSearchCategoriesSuggestions(query),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 // ==== Products ====
 const products = {
   useGetList: (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
@@ -92,10 +100,10 @@ const products = {
     });
   },
 
-  useGetListByCategory: (query = '', filter = '', is_featured = undefined, limit = undefined) => {
+  useGetListByCategory: (id = '', query = '', filter = '', is_featured = undefined, limit = undefined) => {
     return useQuery({
-      queryKey: ["admin_product_by_category", query, filter, is_featured, limit],
-      queryFn: () => productsServices.products.getListByCategory(query, filter, is_featured, limit),
+      queryKey: ["admin_product_by_category", id, query, filter, is_featured, limit],
+      queryFn: () => productsServices.products.getListByCategory(id, query, filter, is_featured, limit),
       staleTime: 5 * 60 * 1000,
     });
   },
@@ -142,9 +150,13 @@ const products = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: ({ id, status }) => productsServices.products.updateFeatureOne(id, status),
-      onSuccess: () => {
+      onSuccess: (success) => {
+        toast.success(success?.message ?? "Cập nhật checkbox thành công");
         queryClient.invalidateQueries({ queryKey: ["admin_product_by_category"] });
       },
+      onError: (error) => {
+        toast.error(error?.message ?? "Cập nhật checkbox không thành công");
+      } 
     });
   },
   useUpdateCategory: () => {
@@ -171,10 +183,10 @@ const products = {
 
 // ==== Product Categories ====
 const product_categories = {
-  useGetList: (query) => {
+  useGetList: (id, query) => {
     return useQuery({
-      queryKey: ["admin_product_categories_list", query],
-      queryFn: () => productsServices.product_categories.getList(query),
+      queryKey: ["admin_product_categories_list", id, query],
+      queryFn: () => productsServices.product_categories.getList(id, query),
       staleTime: 5 * 60 * 1000,
     });
   },
@@ -258,6 +270,7 @@ export default {
   getHighlightProducts: useGetHighlightProducts,
   getCount: useGetCount,
   getSearchSuggestions: useSearchSuggestions,
+  getSearchCategoriesSuggestion: useSearchCategoriesSuggestion,
   products: {
     getList: products.useGetList,
     getListByCategory: products.useGetListByCategory,

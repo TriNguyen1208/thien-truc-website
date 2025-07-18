@@ -11,6 +11,7 @@ const SimpleForm = ({ data, config }) => {
         label: '',
         value: '',
         isRequired: false,
+         limitRowDynamicFields: undefined,
         width: 12,
     }
     const defaultConfig = {
