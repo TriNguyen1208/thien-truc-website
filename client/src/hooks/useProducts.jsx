@@ -23,6 +23,13 @@ const products = {
             staleTime: 5 * 60 * 1000,
         })
     },
+    useGetListByCategory: (id, query ='', filter ='', is_featured, limit)=>{
+        return useQuery({
+            queryKey: ["product-list",id, query, filter, is_featured, limit],
+            queryFn: ()=> productsServices.products.getListByCategory(id, query, filter, is_featured, limit),
+            staleTime: 5 * 60 * 1000,
+        })
+    },
     useGetOne: (id)=>{
         return useQuery({
             queryKey: ["product", id],
@@ -93,6 +100,7 @@ export default {
     getProductPage: useGetProductPage,
     products: {
         getList: products.useGetList,
+        getListByCategory: products.useGetListByCategory,
         getOne: products.useGetOne
     },
     product_categories: {

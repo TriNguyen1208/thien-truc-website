@@ -16,6 +16,10 @@ const products = {
         const res = await axios.get(API_ROUTES.product.products.getList(query, filter, page));
         return res.data;
     },
+    getListByCategory: async(id, query ='', filter ='', is_featured, limit) =>{
+        const res = await axios.get(API_ROUTES.product.products.getListByCategory(id, query, filter, is_featured, limit))
+        return res.data
+    },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.product.products.getOne(id));
         return res.data;

@@ -17,7 +17,23 @@ function GoBackListProduct({goBack ,categorySelected ,query}){
         </div> : <div></div>
     )
 }
-function DisplayByCategories({ data, handleViewMore, handleViewProduct, handlePageChange }) {
+function ListByCategories({ filter, query, page,categories, handleViewMore, handleViewProduct, handlePageChange }) {
+    
+    if(filter === '')
+    {
+        return(
+            categories.map((category, index)=>{
+                const props = {
+                     category: category, 
+                     handleViewMore : null, 
+                }
+                return(
+                    <Category {...props}/>
+                )
+            })
+        )
+    }
+    
     return (
         Object.entries(data).map((objectCategory, index) => {
 
@@ -35,47 +51,6 @@ function DisplayByCategories({ data, handleViewMore, handleViewProduct, handlePa
     )
 }
 
-function DisplayProduct({ dataAll, categorySelected, query, handleViewMore, handleViewProduct, handlePageChange }) {
-    if (!Array.isArray(dataAll)) {
-        const props = {
-            data: dataAll,
-            handleViewMore: handleViewMore,
-            handleViewProduct: handleViewProduct,
-            handlePageChange: handlePageChange
-        }
-        return (<DisplayByCategories {...props} />)
-    } else if (query == '') {
-        if (dataAll.length == 0)
-            return (<div className='py-[20px]'>
-                <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
-            </div>)
-        const props = {
-            category: categorySelected,
-            allCategories: false,
-            products: dataAll,
-            handleViewProduct: handleViewProduct,
-            handlePageChange: handlePageChange,
-
-        }
-        return (<Category {...props} paging={<Paging onPageChange={handlePageChange} currentPage={1} />} />)
-
-
-    } else {
-        if (dataAll.length == 0)
-            return (<div className='py-[20px]'>
-                <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
-            </div>)
-        const props = {
-            products: dataAll,
-            handleViewProduct: handleViewProduct
-        }
-        return (<div className='flex flex-col my-[20px]'>
-            <ListProduct {...props} />
-            <Paging  onPageChange={ handlePageChange} currentPage={1} />
-        </div>)
-    }
-
-}
 function ListProduct({ products, handleViewProduct }) {
     return (
         <div className='grid grid-cols-4 py-[20px] mx-[30px] gap-y-[20px]'>
@@ -96,24 +71,30 @@ function ListProduct({ products, handleViewProduct }) {
         </div>
     )
 }
-function Category({ category, allCategories = true, products, handleViewMore = null, handleViewProduct, paging = <></> }) {
-
+function Category({ category, handleViewProduct  }) {
+    console.log(category)
+    const {data: productByCategory, isLoading: isLoadingProductByCategory} = useProducts.products.getListByCategory(category.id,'','', false,4)
+    if(isLoadingProductByCategory)
+    {
+        return(<div>Loading</div>)
+    }
+    console.log(productByCategory)
     return (
 
         <div className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
             <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
                 <div className='border-l-[5px] border-[#1E2A38] px-[16px] ml-[30px]'>
                     <h1 className='text-[30px] leading-none text-[#1E2A38]'>
-                        {category}
+                        {category.id}
                     </h1>
                 </div>
             </div>
-            <ListProduct products={products} handleViewProduct={handleViewProduct} />
+            <ListProduct products={productByCategory} handleViewProduct={handleViewProduct} />
 
             <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
                 <div className="h-fit w-fit">
                     {
-                        allCategories ? <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(category)} /> : paging
+                        <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(category)} /> 
                     }
 
                 </div>
@@ -134,15 +115,9 @@ export default function Product() {
     const query = searchParams.get('query') || "";
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
-    const {data: dataAll , isLoading : isLoadingProduct} =  useProducts.products.getList(query, filter =='Tất cả sản phẩm' ?"":filter , page)
-  
-   
-   
 
 
-
-
-    if (isLoadingPage || isLoadingCategories || isLoadingProduct) {
+    if (isLoadingPage || isLoadingCategories) {
         return (<div >
             <Loading />
         </div>)
@@ -184,10 +159,10 @@ export default function Product() {
         newParams.set("query", query);
         setSearchParams(newParams);
     }   
-     const categories = productCategories.map((category) => {
+     const categoriesName = productCategories.map((category) => {
          return (category.name)
         }) 
-    categories.unshift("Tất cả sản phẩm")
+    categoriesName.unshift("Tất cả sản phẩm")
     const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
     const handleSearch = (category, query) => {
         const newParams = new URLSearchParams();
@@ -210,7 +185,7 @@ export default function Product() {
         value: query,
         idCategories: idSelectedCategories,
         handleButton: handleSearch,
-        categories: categories,
+        categories: categoriesName,
         contentPlaceholder: 'Tìm kiếm sản phẩm...',
         handleSearchSuggestion: handleSearchSuggestion,
         handleEnter: handleEnterSearch
@@ -256,14 +231,7 @@ export default function Product() {
 
 
 
-    const propsDisplayProduct = {
-        dataAll: dataAll,
-        categorySelected: filter,
-        query: query,
-        handleViewMore: handleViewMore,
-        handleViewProduct: handleViewProduct,
-        handlePageChange: handlePageChange
-    }
+ 
     return (
 
         <>
@@ -286,7 +254,7 @@ export default function Product() {
                     <GoBackListProduct goBack={goBack} categorySelected={filter} query={query} />
                 </div>
 
-                <DisplayProduct {...propsDisplayProduct} />
+               <ListByCategories filter ={filter} query= {query} page={page} categories = {productCategories} handleViewMore = {null} handleViewProduct = {null}  handlePageChange = {null}  />
 
             </div>
 
