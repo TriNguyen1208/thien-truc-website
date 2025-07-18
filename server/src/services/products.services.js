@@ -161,9 +161,9 @@ const products = {
             name: row.product_name || "",
             description: row.description || "",
             product_img: row.product_img || "",
-            price: row.price || "",
+            price: isNaN(row.price) ? "" : row.price,
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: row.warranty_period || "",
+            warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
@@ -261,9 +261,9 @@ const products = {
                 name: row.product_name || "",
                 description: row.description || "",
                 product_img: row.product_img || "",
-                price: row.price || "",
+                price: isNaN(row.price) ? "" : row.price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
-                warranty_period: row.warranty_period || "",
+                warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -304,9 +304,9 @@ const products = {
                 name: row.product_name || "",
                 description: row.description || "",
                 product_img: row.product_img || "",
-                price: row.price || "",
-                product_specifications: JSON.parse(row.product_specifications || '{}'), // xử lý JSON
-                warranty_period: row.warranty_period || "",
+                price: isNaN(row.price) ? "" : row.price,
+                product_specifications: JSON.parse(row.product_specifications || '{}'),
+                warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
 
@@ -427,6 +427,7 @@ const products = {
 
         if (price == "") price = null;
         warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
+        console.error(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
