@@ -293,22 +293,19 @@ const projects = {
         };
         return project;
     },
-    updateFeatureOne: async(is_featured, id) => {
-        const result = await pool.query(
-            `UPDATE project.projects
-             SET is_featured = $1
-             WHERE id = $2
-             RETURNING title`,
-             [is_featured, id]
-        );
+    updateFeatureOne: async (id, project_status) => {
+        const query = `
+            UPDATE project.projects SET is_featured = $1 WHERE id = $2 RETURNING title;
+        `
+        const result = await pool.query(query, [project_status, id]);
 
-        if (result.rowCount == 0 ) return {
+        if (result.rowCount == 0) return {
             status: 404,
             message: "Không tìm thấy dự án"
         }
 
         const { title } = result.rows[0];
-        const update = (is_featured == true) ? 'Trưng bày' : 'Bỏ trưng bày';
+        const update = (project_status == 'true') ? 'Trưng bày' : 'Bỏ trưng bày'
         return {
             status: 200,
             message: `${update} dự án thành công`,

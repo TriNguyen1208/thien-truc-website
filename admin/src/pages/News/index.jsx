@@ -161,9 +161,9 @@ export default function News() {
                 <tr>
                   <th className="w-[8%] px-3 py-3">Mã tin tức</th>
                   <th className="w-[10%] px-4 py-3">Ảnh</th>
-                  <th className="w-[45%] px-1 py-3">Tiêu đề</th>
-                  <th className="w-[11%] px-4 py-3">Trạng thái</th>
-                  <th className="w-[11%] px-4 py-3">Ngày xuất bản</th>
+                  <th className="w-[42%] px-1 py-3">Tiêu đề</th>
+                  <th className="w-[13%] px-4 py-3">Trạng thái</th>
+                  <th className="w-[12%] px-2 py-3">Ngày xuất bản</th>
                   <th className="w-[11%] px-4 py-3">Thao tác</th>
                 </tr>
               </thead>
@@ -171,18 +171,18 @@ export default function News() {
               <tbody className="text-left">
 
               {news.map((item) => (
-                <tr key={item.id + '-' + category.id} className=" hover:bg-gray-100">
+                <tr key={item.id + '-' + category.id} className=" border-b border-gray-200 hover:bg-gray-100">
                   <td className="py-4 px-3 text-black-100 font-medium">{item.id}</td>
                   <td className="py-4 px-4">
                     <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded" />
                   </td>
                   <td className="py-4 px-1 text-black max-w-[530px] overflow-hidden text-ellipsis line-clamp-2">{item.title}</td>
-                  <td className="py-4 px-4">
+                  <td className="py-4 px-3">
                     <span className={`px-2 py-1 rounded-xl text-[12px] font-semibold ${item.is_published === true ? 'bg-black text-white' : 'bg-gray-200 text-black'}`}>
                       {item.is_published === true ? 'Đã xuất bản' : 'Bản nháp'}
                     </span>
                   </td>
-                  <td className="py-4 px-4 text-gray-800">{new Date(item.public_date).toLocaleDateString('vi-VN')}</td>
+             <td className="py-4 px-2 text-gray-800">{item.public_date}</td>
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-2">
                     <button

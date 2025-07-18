@@ -41,7 +41,7 @@ const Product = () => {
     { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
     { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: categoriesObject },
     { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500000)", isOnlyNumber: true },
-    { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
+    { name: 'warranty', label: 'Thời gian bảo hành (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
     { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
     { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
@@ -242,26 +242,49 @@ const Product = () => {
         { type: "text", content: product.name },
         { type: "text", content: `${product.price != null ? Number(product.price).toLocaleString() : ''} ₫` },
         { type: "text", content: `${product.warranty_period} tháng` },
-        {
-          type: "component",
-          component: (
-            <div className="ml-[30px]">
-              <input
-                type="checkbox"
-                className="w-5 h-5 accent-black "
-                checked={product.is_featured}
-                onChange={() => {
-                  updateFeatureProduct({
-                    id: product.id,
-                    status: !product.is_featured
-                  });
-                }}
-                disabled={isLoadingUpdateFeatureOne}
-              />
-              {/* {isPending ? "Đang cập nhật..." : "Đổi trạng thái"} */}
-            </div>
-          ),
-        },
+          {
+            type: "component",
+            component: (
+              <div className="ml-[30px]">
+                <input
+                  type="checkbox"
+                  checked={product.is_featured}
+                  onChange={() => {
+                    updateFeatureProduct({
+                      id: product.id,
+                      status: !product.is_featured,
+                    });
+                  }}
+                  disabled={isLoadingUpdateFeatureOne}
+                  className={`
+                    w-5 h-5 appearance-none cursor-pointer rounded-[3px]
+                    transition-all duration-200
+                    border border-gray-400
+                    checked:bg-green-500
+                    hover:shadow hover:scale-105
+                    absolute top-6 left-10
+                  `}
+                />
+                {product.is_featured && (
+                  <svg
+                    className="absolute top-[24px] left-[40px] w-5 h-5 text-white pointer-events-none"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 8L7 11L12 5"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
+                {/* {isPending ? "Đang cập nhật..." : "Đổi trạng thái"} */}
+              </div>
+            ),
+          },
         {
           type: "array-components",
           components: [

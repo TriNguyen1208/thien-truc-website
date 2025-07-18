@@ -40,15 +40,14 @@ const projects = {
         res.status(200).json(data);
     },
     updateFeatureOne: async (req, res) => {
-        const id = req.params.id;
-        const {is_featured} = req.body;
+        const { id, status: project_status } = req.params;
         try {
-            const { status, message, action = null } = await projectsServices.projects.updateFeatureOne(is_featured, id);
+            const { status, message, action = null } = await projectsServices.projects.updateFeatureOne(id, project_status);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Error', error);
-            res.status(500).json({message: 'Loi may chu'});
+            console.error('Lỗi cập nhật dự án: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
     updateRegion: async (req, res) => {
