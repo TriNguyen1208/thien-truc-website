@@ -5,18 +5,16 @@ import { useEffect } from "react"
 import SimpleForm from '../../components/SimpleForm'
 import SearchBar from '../../components/Search'
 import { useState } from 'react';
-import { Button, Modal } from 'antd';
 import useProduct from "../../hooks/useProducts";
-import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, SettingIcon } from "../../components/Icon"
 import { CancelPopup } from '../../components/Popup'
 import Setting from '../../components/Setting';
 import useProducts from '../../hooks/useProducts';
-import useProjects from '../../hooks/useProjects';
 import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
 import Loading from '@/components/Loading'
+import { useSearchParams } from 'react-router-dom';
 const ProductCategories = () => {
   const queryClient = useQueryClient();
   const { setLayoutProps } = useLayout()
@@ -27,7 +25,6 @@ const ProductCategories = () => {
       hasButton: true,
       buttonLabel: "Thêm sản phẩm",
       buttonAction: () => {
-        console.log("Open button")
         setIsModalOpenAddProductCategories(true);
       }
     })
@@ -41,7 +38,7 @@ const ProductCategories = () => {
   const [idCurrentEditProductCategories, setIdCurrentEditProductCategories] = useState(null);
   const [openCancel, setOpenCancel] = useState(false);
   const [dataEditProductCategories, setDataEditProductCategories] = useState([
-    { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true },
+    { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true, maxLength: 300 },
   ]);
 
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -55,8 +52,11 @@ const ProductCategories = () => {
       "Danh mục",
     ]
   });
+  const [searchParams, setSearchParams] = useSearchParams();
+  var query = searchParams.get('query') || undefined;
+  var id = searchParams.get('id') || undefined;
 
-  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
+  const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll(id, query);
   const { mutate: updateOneProductCategories, isLoading: isLoadingUpdateProductCategories } = useProducts.product_categories.updateOne();
   const { mutate: createOneProductCategories, isLoading: isLoadingCreateOneProductCategories } = useProducts.product_categories.createOne();
   const { mutate: deleteOneProductCategories, isLoading: isLoadingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
@@ -66,19 +66,15 @@ const ProductCategories = () => {
       <Loading/>
     )
   }
-  console.log(productCategoriesData);
 
   const handleSubmitButtonAddProductCategories = (valueForm) => {
-    console.log('Day la button submit', valueForm)
     createOneProductCategories(valueForm);
     setIsModalOpenAddProductCategories(false)
   }
   const handleCancelButtonAddProductCategories = () => {
-    console.log('Day la button cancle')
     setIsModalOpenAddProductCategories(false)
   }
   const handleSubmitButtonEditProductCategories = (valueForm) => {
-    console.log('Day la button submit', valueForm)
     updateOneProductCategories({
       id: idCurrentEditProductCategories,
       data: valueForm
@@ -86,7 +82,6 @@ const ProductCategories = () => {
     setIsModalOpenEditProductCategories(false)
   }
   const handleCancelButtonEditProductCategories = () => {
-    console.log('Day la button cancle')
     setIsModalOpenEditProductCategories(false)
   }
   const configProductCategories = {
@@ -116,34 +111,35 @@ const ProductCategories = () => {
         setIsModalOpenSimple: setIsModalOpenEditProductCategories,
       },
       dataAdd: [
-        { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true },
+        { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true, maxLength: 300 },
       ],
     },
     data: productCategoriesData,
     table: {
-      columns: ["Số TT", "Tên loại sản phẩm", "Số lượng", "Thao tác"]
+      columns: ["Mã loại sản phẩm", "Tên loại sản phẩm", "Số lượng", "Thao tác"],
+      width: ["20%", "40%", "20%", "20%"]
     }
   }
 
 
   const handleEnter = (id) => {
-    console.log(id);
+    const newParams = new URLSearchParams();
+    newParams.set("id", id.id);
+    setSearchParams(newParams);
   }
-  const categories = ["Tất cả danh mục", "Điện thoại", "Máy tính", "Phụ kiện"];
-  const displays = ["Tất cả trạng thái", "Đang hoạt động", "Ngừng kinh doanh"];
-  const handleSearch = (query, category, display) => {
-    console.log(query, category, display)
+  const handleSearch = (query) => {
+    const newParams = new URLSearchParams();
+    newParams.set("query", query);
+    setSearchParams(newParams);
   }
   const handleSearchSuggestion = (query) => {
-    return useProduct.getSearchSuggestions(query);
+
+    return useProduct.getSearchCategoriesSuggestion(query);
   }
   const dataSearch = {
     hasButtonCategory: false,
     hasButtonDisplay: false,
-    categories: categories,
-    displays: displays,
-    currentCategory: categories[0],
-    currentDisplay: displays[0],
+    currentQuery: query,
     placeholder: "Tìm kiếm theo tên sản phẩm hoặc mã sản phẩm",
     handleEnter: handleEnter,
     onSearch: handleSearch,
@@ -152,16 +148,16 @@ const ProductCategories = () => {
 
 
   const convertProductCategoriesListToTableData = (productCategoriesList) => {
-    return productCategoriesList.map((productCategories, index) => {
+    return productCategoriesList.map((item) => {
       return [
-        { type: "text", content: `${index + 1}` }, // STT
+        { type: "text", content: `${item.id}` }, // STT
         {
           type: "text",
-          content: `${productCategories.name}`
+          content: `${item.name}`
         },
         {
           type: "text",
-          content: `${productCategories.item_count}`
+          content: `${item.item_count}`
         },
         {
           type: "array-components",
@@ -169,10 +165,10 @@ const ProductCategories = () => {
             <button
               className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
               onClick={() => {
-                setSelectedCategoryId(productCategories.id);
+                setSelectedCategoryId(item.id);
                 setContentSetting(prev => ({
                   ...prev,
-                  category: productCategories.name
+                  category: item.name
                 }));
                 setIsModalOpenSetting(true);
 
@@ -183,14 +179,14 @@ const ProductCategories = () => {
             </button>,
             <button
               className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
-              onClick={() => handleEditButton(productCategories)}
+              onClick={() => handleEditButton(item)}
             >
               <EditIcon />
             </button>,
             <button
               className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
               onClick={() => {
-                setProductCategoriesToDelete(productCategories);
+                setProductCategoriesToDelete(item);
                 setOpenCancel(true)
               }
               }
@@ -210,10 +206,8 @@ const ProductCategories = () => {
 
     ];
     setDataEditProductCategories(updatedForm);
-    console.log(item.id, item, updatedForm);
     setIdCurrentEditProductCategories(item.id);
     setIsModalOpenEditProductCategories(true);
-    console.log(dataEditProductCategories);
   }
   const dataTable = convertProductCategoriesListToTableData(configProductCategories.data);
 
@@ -229,7 +223,7 @@ const ProductCategories = () => {
         <div className='text-gray-600 mb-[30px]'>
           {configProductCategories.description}
         </div>
-        <Table columns={configProductCategories.table.columns} data={dataTable} isSetting={false} />
+        <Table columns={configProductCategories.table.columns} data={dataTable} isSetting={false} width={configProductCategories.table.width} />
 
       </div>
 

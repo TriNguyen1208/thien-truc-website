@@ -19,6 +19,7 @@ const DynamicForm = ({ data, config }) => {
         isSingleColumn: false,
         limitRowDynamicFields: undefined,
         options: [{ value: "", label: "" }],
+        maxLength: Infinity,
     }
     const defaultConfig = {
         title: "",
@@ -34,7 +35,7 @@ const DynamicForm = ({ data, config }) => {
         const result = {};
         data.forEach(field => {
             const { name, type, value, isSingleColumn, options } = field;
-
+            // console.log("Gia tri name va value khoi tao form: ", name, value);
             if (type === 'dynamicFields') {
                 if (isSingleColumn) {
                     if (field.isCheckbox) {
@@ -64,6 +65,7 @@ const DynamicForm = ({ data, config }) => {
             } else if (type === 'select') {
                 result[name] = value !== undefined ? value : options?.[0]?.value || '';
             } else if (type === 'image_upload') {
+                console.log(name, value);
                 result[name] = value !== undefined ? value : "";
             }
             else {
@@ -84,7 +86,7 @@ const DynamicForm = ({ data, config }) => {
 
         Object.keys(finalData).forEach(key => {
             const field = data.find(f => f.name === key);
-
+            
             if (field?.type === 'dynamicFields') {
                 if (field.isSingleColumn) {
                     if (field.isCheckbox) {
@@ -219,31 +221,33 @@ const DynamicForm = ({ data, config }) => {
         setSimpleFormData(formData);
         setIsModalOpenSimple(true);
     };
-    console.log(formData)
     const renderInput = (item) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
-        let value = formData[nameColumn] || defaultField.value;
+        let value = formData[nameColumn] == 0  || formData[nameColumn]  ? formData[nameColumn] :  defaultField.value;
         const maxLength = item.maxLength || Infinity;
         const isInvalid = maxLength !== undefined && value.length >= maxLength;
         const isFocused = focusedFields[nameColumn] || false;
         const commonProps = {
             name: nameColumn,
             id: nameColumn,
-            value,
+            value: value,
             onChange: handleChange,
             onFocus: () => setFocusedFields(prev => ({ ...prev, [nameColumn]: true })),
             onBlur: () => setFocusedFields(prev => ({ ...prev, [nameColumn]: false })),
 
             required: item.isRequired || defaultField.isRequired,
             maxLength: maxLength || undefined,
-            readOnly: item.isReadOnly || false,
+            disabled: item.isReadOnly || false,
+            
             style: {
+                backgroundColor: item.isReadOnly ? '#f3f4f6' : 'white',
                 padding: '8px 12px',
                 display: 'block',
                 width: '100%',
                 borderRadius: '5px',
                 outline: 'none',
+                cursor: item.isReadOnly ? 'not-allowed' : 'text',
                 border: isInvalid
                     ? '1px solid red'
                     : isFocused
@@ -252,6 +256,7 @@ const DynamicForm = ({ data, config }) => {
             }
         };
         switch (type) {
+            
             case 'textarea':
                 return (
                     <textarea
@@ -269,6 +274,7 @@ const DynamicForm = ({ data, config }) => {
                         <select
                             {...commonProps}
                             value={value}
+
                             className="flex-1 border border-gray-300 rounded-[5px]"
                         >
                             {(item.options || defaultField.options).map((opt, idx) => (
@@ -308,8 +314,9 @@ const DynamicForm = ({ data, config }) => {
                     />
                 );
             case 'image_upload': {
+                // console.log("Gia tri form data: ",  formData, nameColumn);
                 const image = formData[nameColumn];
-                console.log(image);
+                // console.log("gia tri image: ", image);
                 return (
                     <div className="space-y-4">
                         {/* URL Input */}
@@ -358,9 +365,9 @@ const DynamicForm = ({ data, config }) => {
 
 
                         {/* Image Preview */}
-                        {image && (
+                        {image?.name && (
                             <div className="text-xs text-gray-700 break-all relative border border-gray-200 rounded-md p-2">
-                                URL: {image}
+                                URL: {image.name}
                                 <button
                                     type="button"
                                     onClick={() => removeImage(nameColumn)}
@@ -524,6 +531,7 @@ const DynamicForm = ({ data, config }) => {
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-12 gap-4">
                             {data.map((item, index) => {
+                                
                                 const nameColumn = item.name || defaultField.name;
                                 return (
                                     <div key={index} style={{ gridColumn: `span ${item.width}` }}>
@@ -584,11 +592,9 @@ const DynamicForm = ({ data, config }) => {
                     isModalOpenSimple,
                     setIsModalOpenSimple,
                     handleSubmitButton: (valueForm) => {
-                        console.log("Submit simple form", valueForm);
                         setIsModalOpenSimple(false);
                     },
                     handleCancelButton: () => {
-                        console.log("Cancel simple form");
                         setIsModalOpenSimple(false);
                     }
                 }}

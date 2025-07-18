@@ -92,7 +92,7 @@ const Login = () => {
                             />
                             <span
                                 onClick={() => setIsVisible(!visible)}
-                                className='flex items-center cursor-pointer'
+                                className='flex items-center cursor-pointer text-gray-500'
                             >
                                 {visible ? <EyeOffIcon/> : <EyeIcon/>}
                             </span>

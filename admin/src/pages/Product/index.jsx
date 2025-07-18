@@ -38,7 +38,7 @@ const Product = () => {
   const [isModalOpenEditProduct, setIsModalOpenEditProduct] = useState(false);
   const [idCurrentEditProduct, setIdCurrentEditProduct] = useState(null);
   const [dataEditProduct, setDataEditProduct] = useState([
-    { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
+    { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true, maxLength: 500 },
     { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: categoriesObject },
     { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500000)", isOnlyNumber: true },
     { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
@@ -48,20 +48,22 @@ const Product = () => {
     { name: 'local_image', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
     { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
   ]);
+
+
+
   const [openCancel, setOpenCancel] = useState(false);
 
   const handleCancelButtonAddProduct = () => {
-    console.log('Day la button cancle')
     setIsModalOpenAddProduct(false)
   }
 
   const handleCancelButtonEditProduct = () => {
-    console.log('Day la button cancle')
     setIsModalOpenEditProduct(false)
   }
   const categoriesDefault = "Tẩt cả sản phẩm";
   const [searchParams, setSearchParams] = useSearchParams();
   // Lay params
+  var id = searchParams.get('id') || undefined;
   const filter = searchParams.get('filter') || undefined;
   var query = searchParams.get('query') || undefined;
   const is_featured = searchParams.get('is_featured') || undefined;
@@ -78,7 +80,7 @@ const Product = () => {
     }
   }
   const { mutate: updateOneProduct, isLoading: isLoadingUpdateOneProduct } = useProducts.products.updateOne();
-  const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(query, filter === categoriesDefault ? undefined : filter, bool_featured);
+  const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(id, query, filter === categoriesDefault ? undefined : filter, bool_featured);
   const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
   const { mutate: updateFeatureProduct, isLoading: isLoadingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
   const { mutate: deleteOneProduct, isLoading: isLoadingDeleteOneProduct } = useProducts.products.deleteOne();
@@ -98,7 +100,7 @@ const Product = () => {
 
     setCategoriesObject(object);
     setDataEditProduct([
-      { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
+      { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true, maxLength: 500 },
       { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: false, options: object },
       { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500000)", isOnlyNumber: true },
       { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
@@ -116,6 +118,7 @@ const Product = () => {
   }
 
   const idCurrentCategories = filter ? (categories || []).findIndex(item => item === filter) : 0;
+  const idCurrentDisplays = is_featured ? (displays).findIndex(item => item === is_featured) : 0;
   const handleSubmitButtonAddProduct = (valueForm) => {
     const { img, ...rest } = valueForm;
     let newForm = null;
@@ -183,7 +186,7 @@ const Product = () => {
         setIsModalOpen: setIsModalOpenEditProduct,
       },
       dataAddProduct: [
-        { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true },
+        { name: 'productName', label: 'Tên sản phẩm', type: 'text', width: 12, isRequired: true, maxLength: 500 },
         { name: 'productCategories', label: 'Loại sản phẩm', type: 'select', width: 6, isRequired: true, options: categoriesObject },
         { name: 'price', label: 'Giá (VND)', type: 'text', width: 6, isRequired: false, placeholder: "Nhập giá trị số (VD: 500000)", isOnlyNumber: true },
         { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
@@ -198,6 +201,7 @@ const Product = () => {
     dataProduct: productData,
     table: {
       columns: ["Mã SP", "Hình ảnh", "Tên sản phẩm", "Giá", "Bảo hành", "Trưng bày", "Thao tác"],
+      width:  [ "8%", "10%", "28%", "15%", "15%", "13%", "13%"]
     },
 
 
@@ -218,10 +222,8 @@ const Product = () => {
 
     ];
     setDataEditProduct(updatedForm);
-    console.log(item.id, item, updatedForm);
     setIdCurrentEditProduct(item.id);
     setIsModalOpenEditProduct(true);
-    console.log(dataEditProduct);
   }
 
   const convertProductListToTableData = (productList) => {
@@ -238,8 +240,8 @@ const Product = () => {
           ),
         },
         { type: "text", content: product.name },
-        { type: "text", content: `${product.price != null ? Number(product.price).toLocaleString() : ''} ₫` },
-        { type: "text", content: `${product.warranty_period} tháng` },
+        { type: "text", content: `${product.price !== "" ? Number(product.price).toLocaleString() + ' đ': 'Cập nhật sau'} ` },
+        { type: "text", content: `${product.warranty_period !== ""  ? product.warranty_period + ' tháng' : "Cập nhật sau"}` },
         {
           type: "component",
           component: (
@@ -289,7 +291,7 @@ const Product = () => {
   const handleEnter = (id) => {
     // TODO: fix 
     const newParams = new URLSearchParams();
-    newParams.set("query", id.query);
+    newParams.set("id", id.id);
     setSearchParams(newParams);
   }
   const handleSearch = (query, filter, is_featured) => {
@@ -301,7 +303,6 @@ const Product = () => {
   }
 
   const handleSearchSuggestion = (query, category, display) => {
-    console.log(query, category, display);
     return useProducts.getSearchSuggestions(query, category, display);
   }
   const dataSearch = {
@@ -310,7 +311,7 @@ const Product = () => {
     categories: categories || [],
     displays: displays,
     currentCategory: categories[idCurrentCategories],
-    currentDisplay: displays[0],
+    currentDisplay: displays[idCurrentDisplays],
     currentQuery: query,
     placeholder: "Tìm kiếm theo tên sản phẩm hoặc mã sản phẩm",
     handleEnter: handleEnter,
@@ -341,6 +342,7 @@ const Product = () => {
                 columns={configProduct.table.columns}
                 data={dataTable}
                 isSetting={false}
+                width = {configProduct.table.width}
               />
             </div>
           );

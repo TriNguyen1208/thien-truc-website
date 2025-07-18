@@ -39,8 +39,8 @@ const products = {
         return res.data;
     },
 
-    getListByCategory: async (query = '', filter = '', is_featured = undefined, limit = undefined) => {
-        const res = await axios.get(API_ROUTES.product.products.getListByCategory(query, filter, is_featured, limit));
+    getListByCategory: async (id = '', query = '', filter = '', is_featured = undefined, limit = undefined) => {
+        const res = await axios.get(API_ROUTES.product.products.getListByCategory(id, query, filter, is_featured, limit));
         return res.data;
     },
 
@@ -72,7 +72,6 @@ const products = {
         return res.data;
     },
     updateCategory: async (changedItems) => {
-        console.log("Updating category with changed items:", changedItems);
         const res = await axios.patch(API_ROUTES.product.products.updateCategory, changedItems);
         return res.data;
     },
@@ -84,8 +83,8 @@ const products = {
 
 // ==== Product Categories ====
 const product_categories = {
-     getList: async (query = '') => {
-        const res = await axios.get(API_ROUTES.product.product_categories.getList(query));
+     getList: async (id = '', query = '') => {
+        const res = await axios.get(API_ROUTES.product.product_categories.getList(id, query));
         return res.data;
     },
 
@@ -123,6 +122,11 @@ const getSearchSuggestions = async (query = '', filter = '', is_featured) => {
     return res.data;
 }
 
+const getSearchCategoriesSuggestions = async (query = '') => {
+    const res = await axios.get(API_ROUTES.product.search_categories_suggestions(query));
+    return res.data;
+}
+
 // ==== Search Suggestions ====
 const getCount = async () => {
     const res = await axios.get(API_ROUTES.product.count());
@@ -144,6 +148,7 @@ export default {
     product_categories,
     getHighlightProducts,
     getSearchSuggestions,
+    getSearchCategoriesSuggestions,
     getCount,
     getQuantity,
     getPricePage, 
