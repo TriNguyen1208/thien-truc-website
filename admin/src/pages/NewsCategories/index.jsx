@@ -179,7 +179,7 @@ export default function NewsCategories() {
   // Render
   return (
     <div>
-      <div className='p-4 bg-white border-b border-gray-200 shadow-sm rounded-t-lg mb-6'>
+      <div className='p-5 bg-white border-b border-gray-200 shadow-sm rounded-t-lg mb-6'>
         <SearchBar
           data={{
           hasButtonCategory: false,
@@ -192,26 +192,26 @@ export default function NewsCategories() {
         }}
         />
       </div>
-      <div className='bg-white py-5 border border-gray-200 shadow-sm rounded-lg'>
-        <h1 className='text-2xl font-bold text-gray-800 text-left pl-6'>Danh sách loại tin tức</h1>
-        <p className='text-gray-500 text-[14px] pl-6'>Tổng cộng {newsCategories.length} loại tin tức</p>
+      <div className='bg-white p-6 border border-gray-200 shadow-sm rounded-lg'>
+        <h1 className='text-2xl font-bold text-gray-800 text-left'>Danh sách loại tin tức</h1>
+        <p className='text-gray-500 text-[14px]'>Tổng cộng {newsCategories.length} loại tin tức</p>
 
-        <table className='w-full mt-6'>
-          <thead className='text-left text-gray-500 font-normal text-[15px] border-b border-gray-200'>
+        <table className='mt-9 w-full table-fixed border-collapse'>
+          <thead className='text-left border-b border-gray-200 text-[14px] font-normal text-gray-500'>
             <tr>
-              <th className='w-[10%] py-3 pl-10'>STT</th>
+              <th className='w-[10%] py-3 pl-4'>Mã loại</th>
               <th className='w-[30%] px-4 py-3'>Tên loại tin tức</th>
-              <th className='w-[20%] py-3 px-4'>Màu sắc</th>
+              <th className='w-[20%] py-3 px-9'>Màu sắc</th>
               <th className='w-[20%] py-3 px-4'>Số lượng</th>
               <th className='w-[20%] py-3 px-4'>Thao tác</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-left">
             {newsCategoriesList.map((item, index) => (
                <tr key={item.id} className='border-b border-gray-200 hover:bg-gray-100'>
-                <td className='w-[10%] py-5 pl-12'>{index + 1}</td>
+                <td className='w-[10%] py-5 pl-4 font-medium'>{item.id}</td>
                 <td className='w-[30%] py-5 px-4 font-medium'>{query ==='' ? item.name : item.query}</td>
-                <td className='w-[20%] py-5 px-4'>
+                <td className='w-[20%] py-5 px-6'>
                   <span className='inline-block w-4 py-2 mt-2 mr-2' style={{ backgroundColor: item.rgb_color }}></span>
                   {item.rgb_color}
                 </td>

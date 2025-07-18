@@ -114,7 +114,7 @@ export default function Project () {
     acc[region.id].projects.push(project);
     return acc;
   }, {});
-
+  console.log('projectPage', projectPage);
   const { data: projectRegions, isLoading: isLoadingProjectRegions } = useProjects.project_regions.getAll();
   const regions = [
     'Tất cả khu vực',
@@ -182,9 +182,9 @@ export default function Project () {
                 </thead>
             
                 <tbody className="text-left">
-  
+
                 {projects.map((item) => (
-                  <tr key={item.id + '-' + region.id} className=" hover:bg-gray-100">
+                  <tr key={item.id + '-' + region.id} className=" border-b border-gray-200 hover:bg-gray-100">
                     <td className="py-4 px-3 text-black-100 font-medium">{item.id}</td>
                     <td className="py-4 px-4">
                       <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded" />
@@ -193,21 +193,13 @@ export default function Project () {
                     <td className="py-4 px-4 text-gray-800">{item.province}</td>
                     <td className="py-4 px-4 text-gray-800">{new Date(item.complete_time).toLocaleDateString('vi-VN')}</td>
                     <td className="py-4 px-9 item-center">
-                      <button onClick={async () => {
-                        const newFeature = !item.is_featured;
-                        queryClient.setQueryData(['admin_projects_list', query, filter, is_featured, undefined, undefined], (old) => {
-                          if (!old?.results) return old;
-                          return {
-                            ...old,
-                            results: old.results.map((proj) =>
-                              proj.id === item.id ? { ...proj, is_featured: newFeature } : proj
-                            )
-                          };
-                        });
-                        await updateFeatureOne({ is_featured: newFeature, id: item.id });
-                        queryClient.invalidateQueries(['admin_projects_list']);
-                      }}>
-                      <StatusBox isFeatured={item.is_featured} />
+                      <button
+                        onClick={() => {
+                          updateFeatureOne({ id: item.id, status: !item.is_featured });
+                          console.log('projects', projects); // ✅ chạy đúng chỗ
+                        }}
+                      >
+                        <StatusBox isFeatured={item.is_featured} />
                       </button>
                     </td>
                     <td className="py-4 px-4">

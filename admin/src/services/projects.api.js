@@ -25,10 +25,8 @@ const projects = {
         const res = await axios.get(API_ROUTES.project.projects.getOne(id));
         return res.data;
     },
-    updateFeatureOne: async (is_featured, id) => {
-        const res = await axios.patch(API_ROUTES.project.projects.updateFeatureOne(id), {
-            is_featured
-        });
+    updateFeatureOne: async (id, status) => {
+        const res = await axios.patch(API_ROUTES.project.projects.updateFeatureOne(id, status));
         return res.data;
     },
     updateRegion: async (changedItems) => {

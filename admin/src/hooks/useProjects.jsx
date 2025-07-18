@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import projectsServices from "@/services/projects.api.js";
 import { toast } from 'react-toastify';
+
 function useGetAll(){
     return useQuery({
         queryKey: ["admin_projects"],
@@ -42,12 +43,41 @@ const projects = {
             enabled: id != null
         })
     },
-    useUpdateFeatureOne: () => {
-        return useMutation({
-            mutationFn: ({is_featured, id}) =>
-            projectsServices.projects.updateFeatureOne(is_featured, id)
-        })
-    },
+        useUpdateFeatureOne: () => {
+            const queryClient = useQueryClient();
+            return useMutation({
+            mutationFn: ({ id, status }) => projectsServices.projects.updateFeatureOne(id, status),
+            onMutate: async ({ id, status }) => {
+                await queryClient.cancelQueries({ queryKey: ["admin_projects_list"] });
+
+                const previousData = queryClient.getQueryData(["admin_projects_list"]);
+
+                queryClient.setQueryData(["admin_projects_list"], (old) => {
+                    if (!old?.results) return old;
+                    return {
+                    ...old,
+                    results: old.results.map((proj) =>
+                        proj.id === id ? { ...proj, is_featured: status } : proj
+                    ),
+                    };
+                });
+
+                return { previousData };
+            },
+
+                // 🔁 Rollback nếu có lỗi
+                onError: (_err, _variables, context) => {
+                if (context?.previousData) {
+                    queryClient.setQueryData(["admin_projects_list"], context.previousData);
+                }
+                },
+
+                // ✅ Refetch lại cho chắc
+                onSettled: () => {
+                queryClient.invalidateQueries({ queryKey: ["admin_projects_list"] });
+                },
+            });
+        },
     useUpdateRegion: () => {
         return useMutation({
             mutationFn: (changedItems) =>
