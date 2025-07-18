@@ -7,6 +7,7 @@ import DynamicForm from '@/components/DynamicForm'
 import { CancelPopup } from '@/components/Popup'
 import useAdmin from '@/hooks/useAdmin'
 import { toast } from 'react-toastify';
+import Loading from '@/components/Loading'
 const Manager = () => {
 
   const { data: managers, isLoading: isLoadingManagers } = useAdmin.manager.getAll();
@@ -45,7 +46,7 @@ const Manager = () => {
   
   if(isLoadingManagers)
   {
-    return(<div>Loading</div>)
+    return(<Loading/>)
   }
   
   const handleConfirmPopup = ()=>{
@@ -194,7 +195,8 @@ const Manager = () => {
   const tableProps = {
     columns:["Tên đăng nhập", "Họ tên", "Số điện thoại", "Email", "Vị trí", "Mô tả", "Thao tác"],
     data: dataTable ,
-    isSetting: false
+    isSetting: false,
+    width :['150px' ,'150px','150px', '50px', '150px','100px', '120px']
   }
   
   return (

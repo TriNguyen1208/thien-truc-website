@@ -5,6 +5,7 @@ import { DeleteIcon, PlusIcon, SaveIcon } from '@/components/Icon';
 import useContact from '@/hooks/useContact'
 import { CancelPopup } from '@/components/Popup';
 import { toast } from 'react-toastify';
+import Loading from '@/components/Loading'
 function Address({index,address,isChecked, isMultiple, handleDelete, handleChange ,handleChecked})
 {
   return(
@@ -105,7 +106,7 @@ const Company = () => {
     },[companyInfo])
     if(isLoadingCompanyInfo)
     {
-      return(<div> Loading</div>)
+      return(<Loading/>)
     }
   
     const handleCanclePopup = ()=>{

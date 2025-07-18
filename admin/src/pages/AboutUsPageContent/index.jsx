@@ -9,6 +9,7 @@ import { useState } from 'react';
 import Button from '@/components/Button'
 import useAboutUs from '../../hooks/useAboutUs';
 import { CancelPopup } from '../../components/Popup'
+import Loading from '@/components/Loading'
 const AboutUsPageContent = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -71,9 +72,7 @@ const AboutUsPageContent = () => {
     || isLoadingAboutUsPageData || isLoadingUpdateBanner || isLoadingUpdateOurStory
   ) {
     return (
-      <>
-        is loading...
-      </>
+      <Loading/>
     )
   }
   console.log(aboutUsPageData);

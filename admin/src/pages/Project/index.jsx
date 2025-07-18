@@ -6,7 +6,7 @@ import { EditIcon, DeleteIcon } from '@/components/Icon';
 import { CancelPopup } from '@/components/Popup';
 import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
-
+import Loading from '@/components/Loading'
 // Còn sự kiện ấn vào nút trưng bày
 const StatusBox = ({ isFeatured }) => {
   return (
@@ -122,7 +122,7 @@ export default function Project () {
   ]
   const display = ['Tất cả hiển thị', 'Trưng bày', 'Không trưng bày'];
   if (isLoadingProjects || isLoadingProjectRegions) {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
 

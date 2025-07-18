@@ -148,7 +148,7 @@ export default function Product() {
             <Loading />
         </div>)
     }
-
+    console.log(productCategories)
 
     const handleSearchSuggestion = (query, filter) => {
         return useProducts.getSearchSuggestions(query, filter)

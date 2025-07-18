@@ -16,6 +16,7 @@ import useProducts from '../../hooks/useProducts';
 import useProjects from '../../hooks/useProjects';
 import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
+import Loading from '@/components/Loading'
 const ProductCategories = () => {
   const queryClient = useQueryClient();
   const { setLayoutProps } = useLayout()
@@ -62,9 +63,7 @@ const ProductCategories = () => {
   const { mutateAsync: updateCategory } = useProduct.products.updateCategory();
   if (isLoadingProductCategoriesData || isLoadingUpdateProductCategories || isLoadingCreateOneProductCategories || isLoadingDeleteOneProductCategories) {
     return (
-      <>
-        is loading
-      </>
+      <Loading/>
     )
   }
   console.log(productCategoriesData);

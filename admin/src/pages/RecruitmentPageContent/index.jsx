@@ -5,7 +5,7 @@ import {SaveIcon} from "@/components/Icon"
 import DynamicForm from "@/components/DynamicForm"
 import EditBanner from '../../components/EditBanner'
 import useRecruitment from '../../hooks/useRecruitment'
-
+import Loading from '@/components/Loading'
 import { SuccessPopup, CancelPopup } from "../../components/Popup";
 const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
@@ -27,7 +27,7 @@ const RecruitmentPageContent = () => {
 
   const {data: recruitment, isLoading: isLoadingRecruitment} = useRecruitment.getRecruitmentPage();
   if(isLoadingRecruitment){
-    return <></>
+    return <Loading/>
   }
   const propsBanner = {
     title: "Nội dung Trang tuyển dụng",

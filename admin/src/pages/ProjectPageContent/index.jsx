@@ -3,7 +3,7 @@ import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
 import useProjects from '@/hooks/useProjects'
 import { toast } from 'react-toastify';
-
+import Loading from '@/components/Loading'
 const ProjectPageContent = () => {
 
   const {setLayoutProps} = useLayout()
@@ -18,7 +18,7 @@ const ProjectPageContent = () => {
   },[])
   if(isLoadingProjectPage)
   {
-    return(<div> Dang load</div>)
+    return(<Loading/>)
   }
   
   const handleSave = (data)=>{
