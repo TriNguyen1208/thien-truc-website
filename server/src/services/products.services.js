@@ -161,9 +161,9 @@ const products = {
             name: row.product_name || "",
             description: row.description || "",
             product_img: row.product_img || "",
-            price: isNaN(row.price) ? "" : row.price,
+            price: (row.price == null) ? "" : row.price,
             product_specifications: JSON.parse(row.product_specifications || '{}'),
-            warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
+            warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
             product_features: row.product_features || [],
             highlight_features: row.highlight_features || [],
             category: {
@@ -181,14 +181,18 @@ const products = {
             };
         else return [...results];
     },
-    getListByCategory: async (query = '', filter = '', is_featured, item_limit) => {
+    getListByCategory: async (id = '', query = '', filter = '', is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
-
+        id = id.trim().replace(/^['"]|['"]$/g, '');
+        
         let where = [];
         let order = [];
         const limit = parseInt(item_limit) || 100;
         
+        if (id) {
+            where.push(`prd.id = '${id}'`);
+        }
         if (query != '') {
             where.push(
                 `(unaccent(prd.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
@@ -261,9 +265,9 @@ const products = {
                 name: row.product_name || "",
                 description: row.description || "",
                 product_img: row.product_img || "",
-                price: isNaN(row.price) ? "" : row.price,
+                price: (row.price == null) ? "" : row.price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
-                warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
+                warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
                 category: {
@@ -304,9 +308,9 @@ const products = {
                 name: row.product_name || "",
                 description: row.description || "",
                 product_img: row.product_img || "",
-                price: isNaN(row.price) ? "" : row.price,
+                price: (row.price == null) ? "" : row.price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
-                warranty_period: isNaN(row.warranty_period) ? "" : row.warranty_period,
+                warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features || [],
 
@@ -641,12 +645,16 @@ const product_categories = {
     //     }
     //     return product_categories
     // },
-    getList: async (query) => {
+    getList: async (id, query) => {
         query = query.trim().replaceAll(`'`, ``); // clean
+        id = id.trim().replace(/^['"]|['"]$/g, '');
 
         let where = [];
         let order = [];
         
+        if (id) {
+            where.push(`C.id = '${id}'`);
+        }
         if (query != '') {
             where.push(
                 `(unaccent(C.name::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
@@ -1107,13 +1115,18 @@ const getSearchSuggestions = async (query, filter, is_featured) => {
     }
 };
 
-const getSearchCategoriesSuggestions = async (query) => {
+const getSearchCategoriesSuggestions = async (id, query) => {
     query = query.trim().replaceAll(`'`, ``);
+    id = id.trim().replace(/^['"]|['"]$/g, '');
+
     const suggestions_limit = 5;
     let where = [];
     let order = [];
     const limit = 'LIMIT ' + suggestions_limit;
 
+    if (id) {
+        where.push(`P.id = '${id}'`);
+    }
     if (query != '') {
         where.push(`(unaccent(P.name::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
             similarity(unaccent(P.name::text), unaccent('${query}'::text)) > 0)`);

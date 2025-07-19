@@ -56,7 +56,7 @@ const API_ROUTES = {
         products: {
             // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${uri(page)}&limit=${uri(limit)}`,
-            getListByCategory: (query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${uri(limit)}`,
+            getListByCategory: (id, query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?id=${uri(id)}&query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${uri(limit)}`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/products`,
@@ -69,7 +69,8 @@ const API_ROUTES = {
         },
         product_categories: {
             // get
-            getList: (query) => `${PRODUCT_BASE}/product_categories?query=${uri(query)}`,
+            getAll: `${PRODUCT_BASE}/product_categories`,
+            getList: (id, query) => `${PRODUCT_BASE}/product_categories?id=${uri(id)}&query=${uri(query)}`,
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
             // post
             createOne: `${PRODUCT_BASE}/product_categories`,
@@ -86,7 +87,7 @@ const API_ROUTES = {
         update_price_page: `${PRODUCT_BASE}/price_page`, // patch
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
-        search_categories_suggestions: (query='') => `${PRODUCT_BASE}/search_categories_suggestions?query=${uri(query)}`,
+        search_categories_suggestions: (id='', query='') => `${PRODUCT_BASE}/search_categories_suggestions?id=${uri(id)}&query=${uri(query)}`,
         count: `${PRODUCT_BASE}/count`
     },
     project: {

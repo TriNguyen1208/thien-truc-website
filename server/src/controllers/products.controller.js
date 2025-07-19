@@ -30,8 +30,8 @@ const products = {
         res.status(200).json(data);
     },
     getListByCategory: async (req, res) => {
-        const {query ='', filter = '', is_featured, limit} = req.query;
-        const data = await productServices.products.getListByCategory(query, filter, is_featured, parseInt(limit));
+        const {id = '', query ='', filter = '', is_featured, limit} = req.query;
+        const data = await productServices.products.getListByCategory(id, query, filter, is_featured, parseInt(limit));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
@@ -97,8 +97,8 @@ const products = {
 
 const product_categories = {
     getList: async (req, res) => {
-        const {query =''} = req.query;
-        const data = await productServices.product_categories.getList(query);
+        const { id = '', query ='' } = req.query;
+        const data = await productServices.product_categories.getList(id, query);
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
@@ -185,8 +185,9 @@ const getSearchSuggestions = async (req, res) => {
 
 const getSearchCategoriesSuggestions = async (req, res) => {
     const query = req.query.query || '';
+    const id = req.query.id || '';
 
-    const data = await productServices.getSearchCategoriesSuggestions(query);
+    const data = await productServices.getSearchCategoriesSuggestions(id, query);
     res.status(200).json(data);
 }
 
