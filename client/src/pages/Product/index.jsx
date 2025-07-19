@@ -72,24 +72,26 @@ function ListProduct({ products, handleViewProduct }) {
     )
 }
 function Category({ category, handleViewProduct  }) {
-    console.log(category)
-    const {data: productByCategory, isLoading: isLoadingProductByCategory} = useProducts.products.getListByCategory(category.id,'','', false,4)
+    const {data: productByCategory, isLoading: isLoadingProductByCategory} = useProducts.products.getListByCategory('','',category.name, false,4)
     if(isLoadingProductByCategory)
     {
         return(<div>Loading</div>)
     }
-    console.log(productByCategory)
+    if(Object.keys(productByCategory).length === 0)
+    {
+        return(<></>)
+    }
     return (
 
         <div className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
             <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
                 <div className='border-l-[5px] border-[#1E2A38] px-[16px] ml-[30px]'>
                     <h1 className='text-[30px] leading-none text-[#1E2A38]'>
-                        {category.id}
+                        {category.name}
                     </h1>
                 </div>
             </div>
-            <ListProduct products={productByCategory} handleViewProduct={handleViewProduct} />
+            <ListProduct products={productByCategory[category.name]} handleViewProduct={handleViewProduct} />
 
             <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
                 <div className="h-fit w-fit">
