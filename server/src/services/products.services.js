@@ -465,7 +465,7 @@ const products = {
             description,
             final_avatar_img,
             category_id,
-            JSON.stringify(technicalDetails), // in case it's an object
+            technicalDetails,
             warranty,
             product_features,
             highlight_feature_ids,
@@ -565,7 +565,7 @@ const products = {
             description,
             final_avatar_img,
             category_id,
-            JSON.stringify(technicalDetails), // in case it's an object
+            technicalDetails,
             warranty,
             product_features,
             highlight_feature_ids,
