@@ -9,7 +9,7 @@ import useNews from '../../hooks/useNews';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { extractBlogImages } from '../../utils/handleImage';
 import { CancelPopup } from '../../components/Popup';
-
+import Loading from '../../components/Loading';
 const AddNews = () => {
     //useState
     const [form, setForm] = useState(null);
@@ -17,8 +17,7 @@ const AddNews = () => {
     const [recoverOpen, setRecoverOpen] = useState(false);
     //Call API
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
-    const postNews = useNews.news_contents.postOne()
-
+    const {mutate: mutateNews, isPending: isPendingNews} = useNews.news_contents.postOne()
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -100,7 +99,7 @@ const AddNews = () => {
         for(let [key, value] of formData.entries()){
             console.log(key, value)
         }
-        postNews.mutate(formData);     
+        mutateNews(formData);  
         setForm(initialForm);
         setSaveOpen(false);
     }
@@ -139,8 +138,8 @@ const AddNews = () => {
         buttonAction2: handleRecover
     };
     //Loading
-    if(isLoadingCategories || form === null){
-        return <></>
+    if(isLoadingCategories || form === null || isPendingNews){
+        return <Loading/>
     }
 
     return (

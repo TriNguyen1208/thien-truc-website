@@ -9,7 +9,7 @@ import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {extractBlogImages} from '../../utils/handleImage';
 import ProjectSetting from '../../components/ProjectSetting';
 import { CancelPopup } from '../../components/Popup';
-
+import Loading from '../../components/Loading';
 const AddProject = () => {
     //useState
     const [form, setForm] = useState(null);
@@ -18,8 +18,7 @@ const AddProject = () => {
 
     //Call API
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const postProject = useProjects.project_contents.postOne()
-
+    const {mutate: mutateProject, isPending: isPendingProject} = useProjects.project_contents.postOne()
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -99,7 +98,7 @@ const AddProject = () => {
                 formData.append(key, form[key]);
             }
         }
-        postProject.mutate(formData);     
+        mutateProject(formData)  
         setForm(initialForm);
         setSaveOpen(false);
     }
@@ -127,8 +126,8 @@ const AddProject = () => {
         buttonAction2: handleRecover
     };
     //Loading
-    if(isLoadingRegions || form === null){
-        return <></>
+    if(isLoadingRegions || form === null || isPendingProject){
+        return <Loading/>
     }
     const regionNames = regions.map(item => item.name);
     return (

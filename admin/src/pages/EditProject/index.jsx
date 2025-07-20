@@ -10,7 +10,7 @@ import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CancelPopup } from '../../components/Popup';
-
+import Loading from '../../components/Loading';
 const EditProject = () => {
     //navigate
     const navigate = useNavigate();
@@ -27,8 +27,8 @@ const EditProject = () => {
     //Call API
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
     const {data: project_contents, isLoading: isLoadingProjectContent} = useProjects.project_contents.getOne(project_id);
-    const updateProject = useProjects.project_contents.updateOne()
-    const deleteProject = useProjects.projects.deleteOne();
+    const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.project_contents.updateOne()
+    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -113,7 +113,7 @@ const EditProject = () => {
             }
         }
         if(project_id !== null)
-            updateProject.mutate({ id: project_id, formDataProject });
+            updateProject({ id: project_id, formDataProject })
         setInitialForm(form);
         setForm(form);
         setSaveOpen(false);
@@ -122,7 +122,7 @@ const EditProject = () => {
     //Helper function
     const handleDelete = () => {
         //Xoa bai viet hien tai
-        deleteProject.mutate(project_id);
+        deleteProject(project_id);
         navigate('/quan-ly-du-an');
     }
     const handleRecover = () => {
@@ -159,8 +159,8 @@ const EditProject = () => {
     };
 
     //Loading
-    if(isLoadingRegions || isLoadingProjectContent || form == null){
-        return <></>
+    if(isLoadingRegions || isLoadingProjectContent || form == null || isPendingDeleteProject || isPendingUpdateProject){
+        return <Loading/>
     }
     const regionNames = regions.map(item => item.name);
     return (

@@ -9,7 +9,7 @@ import Loading from '@/components/Loading'
 import { CancelPopup } from "../../components/Popup";
 const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
-  const patchRecruitment = useRecruitment.patch();
+  const {mutate: updateRecruitment, isPending: isPendingRecruitment} = useRecruitment.patch();
   const [saveOpenBanner, setSaveOpenBanner] = useState(false);
   const [saveOpenCulture, setSaveOpenCulture] = useState(false);
   const [banner, setBanner] = useState('');
@@ -22,12 +22,12 @@ const RecruitmentPageContent = () => {
   }, [])
 
   const handleButtonBanner = () => {
-    patchRecruitment.mutate(banner);
+    updateRecruitment(banner)
     setSaveOpenBanner(false);
     //Gửi API lên backend
   }
   const handleButtonCulture = () => {
-    patchRecruitment.mutate(culture);
+    updateRecruitment(culture)
     setSaveOpenCulture(false);
   }
   const saveBannerPopupData = {
@@ -49,7 +49,7 @@ const RecruitmentPageContent = () => {
     buttonAction2: handleButtonCulture
   };
   const {data: recruitment, isLoading: isLoadingRecruitment} = useRecruitment.getRecruitmentPage();
-  if(isLoadingRecruitment){
+  if(isLoadingRecruitment || isPendingRecruitment){
     return <Loading/>
   }
   const propsBanner = {

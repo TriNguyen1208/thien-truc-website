@@ -11,7 +11,7 @@ import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { CancelPopup } from '../../components/Popup';
-
+import Loading from '../../components/Loading';
 const EditNews = () => {
     //navigate
     const navigate = useNavigate();
@@ -24,10 +24,11 @@ const EditNews = () => {
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
     //Call API
+
     const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
-    const updateNews = useNews.news_contents.updateOne()
-    const deleteNews = useNews.news.deleteOne();
+    const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news_contents.updateOne()
+    const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne();
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -111,13 +112,13 @@ const EditNews = () => {
             console.log(key, value);
         }
         if(news_id !== null)
-            updateNews.mutate({ id: news_id, formDataNews });
+            updateNews({ id: news_id, formDataNews })
         setInitialForm(form);
         setForm(form);
         setSaveOpen(false);
     }
     const handleDelete = () => {
-        deleteNews.mutate(news_id);
+        deleteNews(news_id)
         navigate('/quan-ly-tin-tuc')
         //Xoa bai viet hien tai
     }
@@ -163,8 +164,8 @@ const EditNews = () => {
         buttonLabel2: 'Khôi phục',
         buttonAction2: handleRecover
     };
-    if(isLoadingCategories || isLoadingNewsContent || form == null){
-        return <></>
+    if(isLoadingCategories || isLoadingNewsContent || form == null || isPendingDeleteNews || isPendingUpdateNews){
+        return <Loading/>
     }
     return (
         <>
