@@ -79,12 +79,12 @@ const Product = () => {
       bool_featured = undefined
     }
   }
-  const { mutate: updateOneProduct, isLoading: isLoadingUpdateOneProduct } = useProducts.products.updateOne();
+  const { mutate: updateOneProduct, isPending: isPendingUpdateOneProduct } = useProducts.products.updateOne();
   const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(id, query, filter === categoriesDefault ? undefined : filter, bool_featured);
   const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
-  const { mutate: updateFeatureProduct, isLoading: isLoadingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
-  const { mutate: deleteOneProduct, isLoading: isLoadingDeleteOneProduct } = useProducts.products.deleteOne();
-  const { mutate: createOneProduct, isLoading: isLoadingCreateOneProduct } = useProducts.products.createOne();
+  const { mutate: updateFeatureProduct, isPending: isPendingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
+  const { mutate: deleteOneProduct, isPending: isPendingDeleteOneProduct } = useProducts.products.deleteOne();
+  const { mutate: createOneProduct, isPending: isPendingCreateOneProduct } = useProducts.products.createOne();
   const categories = useMemo(() => {
     if (!productCategoriesData) return [categoriesDefault];
     return [categoriesDefault, ...productCategoriesData.map(item => item.name)];
@@ -111,7 +111,7 @@ const Product = () => {
       { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
     ])
   }, [categories]);
-  if (isLoadingProductData || isLoadingProductCategoriesData || isLoadingUpdateFeatureOne || isLoadingDeleteOneProduct || isLoadingCreateOneProduct || isLoadingUpdateOneProduct) {
+  if (isLoadingProductData || isLoadingProductCategoriesData || isPendingUpdateFeatureOne || isPendingDeleteOneProduct || isPendingCreateOneProduct || isPendingUpdateOneProduct) {
     return (
       <Loading/>
     )

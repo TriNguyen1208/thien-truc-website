@@ -43,10 +43,10 @@ export default function ProjectDetail() {
                     <div className="text-4xl font-[700] mb-[15px] break-words">
                         {projectContentData.project.title}
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex flex-col sm:items-center sm:flex-row gap-3">
                         <div>
                             <div
-                                className="text-white px-[17px] pt-[4px] pb-[4px] rounded-full text-sm font-medium mr-[19px] flex items-center justify-center"
+                                className="max-w-max  text-white px-[17px] pt-[4px] pb-[4px] rounded-full text-sm font-medium  flex items-center justify-center"
                                 style={{ backgroundColor: projectContentData.project.region.rgb_color }}
                             >
                                 {projectContentData.project.region.name}

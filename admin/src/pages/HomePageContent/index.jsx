@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import EditBanner from "../../components/EditBanner"
 import FeatureCard from '../../components/FeatureCard';
 import Button from '@/components/Button'
-import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon } from '../../components/Icon';
+import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
 import SimpleForm from '../../components/SimpleForm'
 import { useState } from 'react';
 import { CancelPopup } from '../../components/Popup'
@@ -14,7 +14,17 @@ import useNews from '../../hooks/useNews';
 import AddHighlight from '../../components/AddHighlight';
 import Loading from '@/components/Loading'
 import { useNavigate } from 'react-router-dom';
+import { useLayout } from "@/layouts/LayoutContext"
 const HomePageContent = () => {
+    const { setLayoutProps } = useLayout()
+    useEffect(() => {
+      setLayoutProps({
+        title: "Nội dung Trang chủ",
+        description: "Quản lý nội dung hiển trị trên trang chủ",
+        hasButton: false,
+      })
+    }, []);
+
   const navigate = useNavigate();
   const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
   const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
@@ -44,26 +54,26 @@ const HomePageContent = () => {
 
 
   const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
-  const { mutate: updateBanner, isLoading: isLoadingUpdateBanner } = useHome.updateHomePage.updateBanner();
-  const { mutate: updateAboutUs, isLoading: isLoadingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
+  const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useHome.updateHomePage.updateBanner();
+  const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
 
 
   const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
-  const { mutate: updateHighlightFeature, isLoading: isLoadingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
-  const { mutate: createHighlightFeature, isLoading: isLoadingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
-  const { mutate: deleteHighlightFeature, isLoading: isLoadingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
+  const { mutate: updateHighlightFeature, isPending: isPendingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
+  const { mutate: createHighlightFeature, isPending: isPendingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
+  const { mutate: deleteHighlightFeature, isPending: isPendingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
   const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.getFeatureNews();
-  const { mutate: updateFeatureNews, isLoading: isLoadingUpdateFeatureNews } = useNews.updateFeatureNews();
+  const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.updateFeatureNews();
   const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
   useEffect(() => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
     setSwitchTime(highlightNewsData?.switch_time ?? 0);
   }, [highlightNewsData])
-  if (isLoadingHighlightFeature || isLoadingUpdateHighlightFeature ||
-    isLoadingCreateHighlightFeature || isLoadingDeleteHighlightFeature ||
-    isLoadingHighlightNews || isLoadingHomePageData || isLoadingUpdateBanner ||
-    isLoadingUpdateAboutUs || isLoadingNewsData || isLoadingUpdateFeatureNews) {
+  if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature ||
+    isPendingCreateHighlightFeature || isPendingDeleteHighlightFeature ||
+    isLoadingHighlightNews || isLoadingHomePageData || isPendingUpdateBanner ||
+    isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews) {
     return (
      <Loading/>
     )
@@ -305,8 +315,8 @@ const HomePageContent = () => {
     }
   }
   const handleDeleteFeatureNews = (item) => {
-    const arrayHighlightNews = arrayHighlightNews.filter(data => data.id != item.id);
-    setArrayHighlightNews(arrayHighlightNews);
+    const newArr = arrayHighlightNews.filter(data => data.id != item.id);
+    setArrayHighlightNews(newArr);
   }
   const convertHighlightNewsListToTableData = (highlightNewsList) => {
     return highlightNewsList.map((item, index) => {
@@ -418,7 +428,7 @@ const HomePageContent = () => {
                 }
                 buttonDelete={
                   <button onClick={() => handleDeleteButton(item)}>
-                    <SubtractIcon />
+                    <DeleteIcon />
                   </button>
                 }
               />
@@ -532,7 +542,6 @@ const HomePageContent = () => {
               newArray = [...filtered, newHighlightItem];
             }
 
-            // Cập nhật sort
             setArrayHighlightNews(newArray.map((item, index) => ({
               ...item,
               sort: index + 1,

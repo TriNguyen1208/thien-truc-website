@@ -110,15 +110,15 @@ const Form = ({ data }) => {
                 <div className="flex flex-col w-full bg-green-50 px-8 py-8 gap-5">
                     <h2 className="text-(--dark-green) text-3xl font-bold">{title}</h2>
                     <form action="" className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
-                        <div className="flex flex-row gap-10 justify-between">
-                            <div className="flex flex-col gap-3 w-[340px]">
-                                <label for = "name" className="text-sm font-medium text-[#374151]">
+                        <div className='grid grid-cols-12 gap-8'>
+                            <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
+                                <label for="name" className="text-sm font-medium text-[#374151]">
                                     Họ và tên <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="name"
-                                    id = "name"
+                                    id="name"
                                     value={formData.name}
                                     onChange={handleChangeDataForm}
                                     placeholder="Nguyễn Đức Trí"
@@ -127,14 +127,14 @@ const Form = ({ data }) => {
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-3 w-[340px]">
-                                <label for = "email" className="text-sm font-medium text-[#374151]">
+                            <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
+                                <label for="email" className="text-sm font-medium text-[#374151]">
                                     Email <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="email"
                                     name="email"
-                                    id = "email"
+                                    id="email"
                                     value={formData.email}
                                     onChange={handleChangeDataForm}
                                     placeholder="ductri0981@gmail.com"
@@ -142,17 +142,15 @@ const Form = ({ data }) => {
                                     className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500"
                                 />
                             </div>
-                        </div>
 
-                        <div className="flex flex-row gap-10 justify-between">
-                            <div className="flex flex-col gap-3 w-[340px]">
-                                <label htmlFor = "phone" className="text-sm font-medium text-[#374151]">
+                            <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
+                                <label htmlFor="phone" className="text-sm font-medium text-[#374151]">
                                     Số điện thoại
                                 </label>
                                 <input
                                     type="tel"
                                     name="phone"
-                                    id = "phone"
+                                    id="phone"
                                     value={formData.phone}
                                     onChange={handleChangeDataForm}
                                     placeholder="0906640981"
@@ -160,14 +158,14 @@ const Form = ({ data }) => {
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-3 w-[340px]">
-                                <label htmlFor = "title" className="text-sm font-medium text-[#374151]">
+                            <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
+                                <label htmlFor="title" className="text-sm font-medium text-[#374151]">
                                     Tiêu đề <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="title"
-                                    id = "title"
+                                    id="title"
                                     value={formData.title}
                                     onChange={handleChangeDataForm}
                                     placeholder="Nhập tiêu đề"
@@ -178,12 +176,12 @@ const Form = ({ data }) => {
                         </div>
 
                         <div className="flex flex-col gap-3">
-                            <label htmlFor = "content" className="text-sm font-medium text-[#374151]">
+                            <label htmlFor="content" className="text-sm font-medium text-[#374151]">
                                 Nội dung <span className="text-red-500">*</span>
                             </label>
                             <textarea
                                 name="content"
-                                id = "content"
+                                id="content"
                                 value={formData.content}
                                 onChange={handleChangeDataForm}
                                 rows={6}

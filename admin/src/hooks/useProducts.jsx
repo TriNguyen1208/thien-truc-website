@@ -210,7 +210,6 @@ const product_categories = {
     return useMutation({
       mutationFn: (data) => productsServices.product_categories.createOne(data),
 
-
       onSuccess: (success) => {
         toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_categories_list"] });

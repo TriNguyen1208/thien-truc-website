@@ -16,6 +16,8 @@ export default function News() {
 
   // Lấy giá trị từ URL và kiểm tra hợp lệ
   const query = searchParams.get("query") || "";
+  const is_published = searchParams.get('is_published') || "";
+  const limit = searchParams.get('limit') || "";
 
   const rawSortBy = searchParams.get("sort_by");
   const sortBy = sortBys.includes(rawSortBy) ? rawSortBy : "date_desc";
@@ -38,15 +40,16 @@ export default function News() {
   const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.news.getList(
     query,
     filter === "Tất cả thể loại" ? undefined : filter,
+    is_published,
     sortBy,
-    currentPage
+    currentPage,
+    limit
   );
   const idSelectedCategories = rawFilter ? categories.findIndex((name) => name === filter) : 0;
 
   if (isLoadingNewsPage || isLoadingfilter) return <Loading />;
 
   // Gọi API với params từ URL
-  
 
   
   // Helper cập nhật URL
