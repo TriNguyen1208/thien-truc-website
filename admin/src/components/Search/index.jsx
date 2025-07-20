@@ -152,7 +152,7 @@ const SearchBar = ({data}) => {
                                         handleEnter(item);
                                     }
                                 }else{
-                                    handleSearch(item.query, category, display)
+                                    handleSearch(item?.query ?? "", category, display)
                                 }
                             }
                         }}
