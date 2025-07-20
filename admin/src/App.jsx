@@ -1,12 +1,12 @@
-import RoutesElement from '@/routes'
-import { BrowserRouter } from 'react-router-dom';
+// import RoutesElement from '@/routes'
 import { LayoutProvider } from '@/layouts/LayoutContext';
 import {useDispatch} from 'react-redux'
 import { verifyFromToken } from './services/auth.api';
 import { useEffect } from 'react';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
 import { ToastContainer } from 'react-toastify';
-
+import { router } from '@/routes/router';
+import { RouterProvider } from 'react-router-dom';
 const queryClient = new QueryClient();
 import { NavigationGuardProvider } from './layouts/NavigatorProvider';
 export default function App() {
@@ -17,14 +17,12 @@ export default function App() {
 
   return (
     <NavigationGuardProvider>
-      <BrowserRouter>
         <QueryClientProvider client={queryClient}>
             <LayoutProvider>
-                <RoutesElement />
+              <RouterProvider router={router}/>
                 <ToastContainer/>
             </LayoutProvider>
         </QueryClientProvider>
-      </BrowserRouter>
     </NavigationGuardProvider>
   )
 }

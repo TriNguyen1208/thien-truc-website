@@ -25,7 +25,8 @@ import AddNews from "../pages/AddNews"
 import AddProject from "../pages/AddProject"
 import EditNews from "../pages/EditNews"
 import EditProject from "../pages/EditProject"
-export const routes = [
+import { createBrowserRouter } from "react-router-dom";
+export const router = createBrowserRouter([
     {
         path: "/",
         element: <ProtectedRoute>
@@ -134,4 +135,4 @@ export const routes = [
         path: "*",
         element: <PageNotFound />,
     },
-]
+])

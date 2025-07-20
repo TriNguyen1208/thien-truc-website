@@ -52,7 +52,8 @@ const EditProject = () => {
             main_image: "",
             link_image: project_contents.project.main_img ?? '',
             province: project_contents.project.province ?? '',
-            completeTime: project_contents.project.complete_time ?? ''
+            completeTime: project_contents.project.complete_time ?? '',
+            countWord: project_contents.content.replace(/<[^>]+>/g, '').trim().length
         })
     }, [isLoadingProjectContent])
 

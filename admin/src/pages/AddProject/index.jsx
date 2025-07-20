@@ -43,6 +43,7 @@ const AddProject = () => {
             main_image: "",
             link_image: "",
             province: "",
+            countWord: 0,
             completeTime: new Date()
         }
     }, [isLoadingRegions]);
@@ -68,6 +69,8 @@ const AddProject = () => {
                 // nếu có nhiều field HTML thì thêm normalize ở đây
             };
         }
+        console.log(normalizeForm(form))
+        console.log(normalizeForm(initialForm))
         const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
     }, [form]);
