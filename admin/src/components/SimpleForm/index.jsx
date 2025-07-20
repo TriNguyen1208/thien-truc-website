@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Modal } from 'antd';
 import { ChromePicker } from "react-color";
 
@@ -94,7 +94,66 @@ const SimpleForm = ({ data, config }) => {
                         : '1px solid #D1D5DB'
             }
         };
+        const [showPicker, setShowPicker] = useState(false);
+        const wrapperRef = useRef(null);
         switch (type) {
+           case 'color':
+
+            useEffect(() => {
+                const handleClickOutside = (event) => {
+                    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                        setShowPicker(false);
+                    }
+                };
+
+                document.addEventListener('mousedown', handleClickOutside);
+                return () => {
+                    document.removeEventListener('mousedown', handleClickOutside);
+                };
+            }, []);
+
+            return (
+                <div className="relative inline-block" ref={wrapperRef}>
+                    <div
+                        className="flex items-center border border-gray-300 rounded px-2 pr-53 py-2 cursor-pointer"
+                        onClick={() => setShowPicker(true)}
+                        // style={{backgroundColor: value}}
+                        >
+                        <div
+                            style={{
+                                width: '32px',  
+                                height: '32px',
+                                backgroundColor: value,
+                                border: '1px solid #ccc',
+                                borderRadius: '4px',
+                                marginRight: '8px'
+                            }}
+                        />
+                        <input
+                            {...commonProps}
+                            type="text"
+                            value={value}
+                            className=" font-normal w-full outline-none bg-transparent"
+                            style={{ width: '100px', cursor: 'pointer' }}   
+                        />
+                    </div>
+
+                    {showPicker && (
+                        <div className="absolute z-50 mt-2">
+                            <ChromePicker
+                                color={value}
+                                onChangeComplete={(color) => {
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        [nameColumn]: color.hex
+                                    }));
+                                }}
+                                disableAlpha={true}
+                            />
+                        </div>
+                    )}
+                </div>
+            );
             case 'checkbox':
                 return (
                     <input

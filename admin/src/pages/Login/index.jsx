@@ -1,116 +1,171 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon } from '../../components/Icon'
-import ButtonLayout from "../../components/ButtonLayout"
-import {useLocation, useNavigate} from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { loginUser } from '../../services/auth.api';
+// import React from 'react';
+// import { useDispatch } from 'react-redux';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import { toast } from 'react-toastify';
+
+// import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon } from '../../components/Icon'
+// import { loginUser } from '../../services/auth.api';
+// import PopupForm from './PopupForm';
+
+// const Login = () => {
+//   const dispatch = useDispatch();
+//   const location = useLocation();
+//   const navigate = useNavigate();
+
+//   const handleLogin = async ({ username, password }) => {
+//     try {
+//       await dispatch(loginUser(username, password));
+//       toast.success('Đăng nhập thành công!');
+//       navigate(location.state?.from?.pathname || '/');
+//     } catch {
+//       toast.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+//     }
+//   };
+
+//   return (
+//     <PopupForm
+//       icon={LockIconBackground}
+//       title="Đăng nhập"
+//       description="Nhập thông tin đăng nhập để truy cập hệ thống quản trị"
+//       buttonText="Đăng nhập"
+//       onSubmit={handleLogin}
+//       fields={[
+//         {
+//           name: 'username',
+//           label: 'Tên đăng nhập',
+//           placeholder: 'Nhập tên đăng nhập',
+//           type: 'text',
+//           icon: <AccountIcon />
+//         },
+//         {
+//           name: 'password',
+//           label: 'Mật khẩu',
+//           placeholder: 'Nhập mật khẩu',
+//           type: 'passwordToggle',
+//           eyeIcon: <EyeIcon />,
+//           eyeOffIcon: <EyeOffIcon />,
+//           icon: <LockIcon />
+//         }
+//       ]}
+//     extraAction={
+//         <div className="text-right mt-1 text-sm text-gray-500 hover:underline cursor-pointer">
+//         Quên mật khẩu?
+//         </div>
+//     }
+//     submitLabel='Đăng nhập'
+//     />
+//   );
+// };
+
+// export default Login;
+
+import React, { useState } from 'react';
+import PopupForm from './PopupForm';
+import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon, CheckCircleIcon } from '@/components/Icon';
+import { loginUser } from '@/services/auth.api';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-const Login = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [isFocusedUser, setIsFocusedUser] = useState(false);
-    const [isFocusedPassword, setIsFocusedPassword] = useState(false);
-    const [visible, setIsVisible] = useState(false);
+import { useLocation, useNavigate } from 'react-router-dom';
 
-    const wrapperUserRef = useRef();
-    const wrapperPasswordRef = useRef();
-    const dispatch = useDispatch();
+const AuthPopupManager = () => {
+  const [step, setStep] = useState('login'); // login | forgot | reset | success
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await dispatch(loginUser(username, password));
-            toast.success("Đăng nhập thành công!");
-            navigate(location.state?.from?.pathname || '/');
-        } catch{
-            toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
-        }
-    };
-    useEffect(()=>{
-        const handleClickOutside = (e) => {
-            if(wrapperUserRef.current && !wrapperUserRef.current.contains(e.target)){
-                setIsFocusedUser(false);
-            }   
-            if(wrapperPasswordRef.current && !wrapperPasswordRef.current.contains(e.target)){
-                setIsFocusedPassword(false);
-            } 
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    })
-    return (
-        <div 
-            className='w-screen h-screen flex justify-center items-center'
-            style={{
-                background: 'linear-gradient(to right, #eff6ff, #e0e7ff)',
-            }}
-        >
-            <div className='flex flex-col rounded-[8px] border border-[#e5e7eb] shadow-sm bg-white px-6 pb-10'>
-                <div className='flex flex-col p-6 text-center'>
-                    <div className="pb-4 flex justify-center">
-                        <LockIconBackground />
-                    </div>
-                    <div className='pt-1'>
-                        <h3 className='font-bold text-2xl'>Đăng nhập</h3>
-                    </div>
-                    <div className='pt-1'>
-                        <p className='text-[#71717A]'>Nhập thông tin đăng nhập để truy cập hệ thống quản trị</p>
-                    </div>
-                </div>
-                <form action="" onSubmit={handleSubmit} className='flex flex-col gap-4'>
-                    <div ref={wrapperUserRef} className='flex flex-col gap-3 pt-1'>
-                        <label htmlFor="username" className='text-sm text-[#09090b] font-medium'>Tên đăng nhập</label>
-                        <div className={`flex flex-row px-3 gap-4 border border-[#e4e4e7] ${isFocusedUser ? "border-gray-300 outline-none" : ""} h-10 rounded-md`}>
-                            <span className='flex items-center'><AccountIcon/></span>
-                            <input 
-                                type="text" 
-                                id='username' 
-                                className='w-full outline-none text-sm'
-                                value={username}
-                                onFocus={() => {
-                                    setIsFocusedUser(true);
-                                }}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                    <div ref={wrapperPasswordRef} className='flex flex-col gap-3 pt-1'>
-                        <label htmlFor="password" className='text-sm text-[#09090b] font-medium'>Mật khẩu</label>
-                        <div  className={`flex flex-row px-3 gap-4 border border-[#e4e4e7] ${isFocusedPassword ? "border-gray-300 outline-none" : ""} h-10 rounded-md`}>
-                            <span className='flex items-center'><LockIcon/></span>
-                            <input 
-                                type={`${visible ? "text": "password"}`} 
-                                id='password' 
-                                className='w-full outline-none text-sm'
-                                value={password}
-                                onFocus={() => {
-                                    setIsFocusedPassword(true);
-                                }}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <span
-                                onClick={() => setIsVisible(!visible)}
-                                className='flex items-center cursor-pointer'
-                            >
-                                {visible ? <EyeOffIcon/> : <EyeIcon/>}
-                            </span>
-                        </div>
-                    </div>
-                    <div className='mt-2'></div>
-                    <ButtonLayout
-                        paddingX={16}
-                        backgroundColor="#18181B"
-                        height={40}
-                        htmlType="submit"
-                    >
-                        Đăng nhập
-                    </ButtonLayout>
-                </form>
-            </div>
-        </div>  
-    )
-}
+  const handleLogin = async ({ username, password }) => {
+    try {
+      await dispatch(loginUser(username, password));
+      toast.success('Đăng nhập thành công!');
+      navigate(location.state?.from?.pathname || '/');
+      // điều hướng hoặc đóng popup
+    } catch {
+      toast.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+    }
+  };
 
-export default Login
+  const handleSendReset = async ({ username, email }) => {
+    try {
+    //   await sendResetEmail({ username, email });
+      setStep('reset');
+    } catch {
+      toast.error('Không thể gửi email khôi phục');
+    }
+  };
+
+  const handleResetPassword = async ({ newPassword, confirmPassword }) => {
+    if (newPassword !== confirmPassword) {
+      return toast.error('Mật khẩu không khớp');
+    }
+    try {
+    //   await resetPassword({ newPassword }); // giả định có token gửi từ link email
+      setStep('success');
+    } catch {
+      toast.error('Lỗi khi khôi phục mật khẩu');
+    }
+  };
+
+  const steps = {
+    login: {
+      icon: LockIconBackground,
+      title: 'Đăng nhập',
+      description: 'Nhập thông tin đăng nhập để truy cập hệ thống quản trị',
+      onSubmit: handleLogin,
+      submitLabel: 'Đăng nhập',
+      fields: [
+        { name: 'username', label: 'Tên đăng nhập', placeholder: 'Nhập tên đăng nhập', type: 'text', icon: <AccountIcon /> },
+        { name: 'password', label: 'Mật khẩu', placeholder: 'Nhập mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> }
+      ],
+      extraAction: 'Quên mật khẩu?',
+      onExtraAction: () => setStep('forgot')
+    },
+    forgot: {
+      icon: LockIconBackground,
+      title: 'Quên mật khẩu',
+      description: 'Nhập tên đăng nhập và email để khôi phục mật khẩu',
+      onSubmit: handleSendReset,
+      fields: [
+        { name: 'username', label: 'Tên đăng nhập', placeholder: 'Nhập tên đăng nhập', type: 'text', icon: <AccountIcon /> },
+        { name: 'email', label: 'Email', placeholder: 'Nhập email', type: 'email', icon: <LockIcon /> }
+      ],
+      extraAction: 'Trở lại đăng nhập',
+      onExtraAction: () => setStep('login'),
+      submitLabel: 'Gửi yêu cầu'
+    },
+    reset: {
+      icon: LockIconBackground,
+      title: 'Khôi phục mật khẩu',
+      description: 'Đặt lại mật khẩu mới cho tài khoản của bạn',
+      onSubmit: handleResetPassword,
+      fields: [
+        { name: 'newPassword', label: 'Mật khẩu mới', placeholder: 'Nhập mật khẩu mới', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> },
+        { name: 'confirmPassword', label: 'Xác nhận mật khẩu', placeholder: 'Nhập lại mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> }
+      ],
+      submitLabel: 'Xác nhận'
+    },
+    success: {
+      icon: CheckCircleIcon,
+      title: 'Khôi phục mật khẩu thành công!',
+      onSubmit: () => setStep('login'),
+      fields: [],
+      submitLabel: 'Về trang đăng nhập'
+    }
+  };
+
+  const currentStep = steps[step];
+  console.log(step);
+  return (
+    <PopupForm
+      icon={currentStep.icon}
+      title={currentStep.title}
+      description={currentStep.description}
+      fields={currentStep.fields}
+      onSubmit={currentStep.onSubmit}
+      submitLabel={currentStep.submitLabel}
+      extraAction={currentStep.extraAction}
+      onExtraAction={currentStep.onExtraAction}
+    />
+  );
+};
+
+export default AuthPopupManager;

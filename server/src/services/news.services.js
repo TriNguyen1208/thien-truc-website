@@ -478,7 +478,8 @@ const news_categories = {
     updateOne: async(data, id) => {
         const {name, rgb_color} = data;
 
-        const old_name = await pool.query(`SELECT name FROM news.news_categories WHERE id = $1`, [id]).rows?.[0]?.name;
+        const old_name = (await pool.query(`SELECT name FROM news.news_categories WHERE id = $1`, [id])).rows?.[0]?.name;
+
         if (!old_name) return {
             status: 404,
             message: "Không tìm thấy loại tin tức"

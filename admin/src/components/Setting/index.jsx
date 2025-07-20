@@ -324,7 +324,7 @@ const Setting = ({
     const [id, setId] = useState(null);
     const queryParam = searchParams.get('query') || "";
     const categoryParam = searchParams.get('category') || "Tất cả loại";
-    const displayParam = searchParams.get('display') || "Tất cả trạng thái";
+    const displayParam = searchParams.get('display') || "Chưa gán";
     const [filtersSearch, setFiltersSearch] = useState({
         query: queryParam,
         category: categoryParam,
@@ -337,6 +337,21 @@ const Setting = ({
     );
     const {data: data, isLoading: isLoadingData} = useData.getOne(id);
     const { data: dataCategories, isLoading: isLoadingCategories } = useDataCategories.getAll();
+
+    useEffect(() => {
+  let filteredDisplay = display;
+
+  if (filtersSearch.display !== "Tất cả trạng thái") {
+    filteredDisplay = display.filter(item => item.display === filtersSearch.display);
+  }
+
+  // Nếu không có dữ liệu, fallback về tất cả
+  if (filteredDisplay.length === 0 && display.length > 0) {
+    filteredDisplay = display;
+  }
+
+  setFiltered(filteredDisplay);
+}, [display, filtersSearch.display]);
 
     //Sử dụng useEffect để cập nhật state
     useEffect(()=>{
@@ -357,11 +372,11 @@ const Setting = ({
             };
         }
         const dataFetch = dataFetchFunc();
-        if(filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === dataFetch.display){
-            setFiltered([dataFetch])
-        }else{
-            setFiltered([]);
-        }
+        // if(filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === dataFetch.display){
+        //     setFiltered([dataFetch])
+        // }else{
+        //     setFiltered([]);
+        // }
         console.log(dataFetch)
         setDisplayMap(updatedMap)
         setSelectedId([]);
@@ -383,25 +398,25 @@ const Setting = ({
                 display: displayVal
             };
         });
-        const filteredDisplay = datasFetch.filter((data) => {
-            const matchDisplay = filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === data.display;
-            return matchDisplay;
-        });
+        // const filteredDisplay = datasFetch.filter((data) => {
+        //     const matchDisplay = filtersSearch.display === "Tất cả trạng thái" || filtersSearch.display === data.display;
+        //     return matchDisplay;
+        // });
 
-        setFiltered(filteredDisplay);
+        // setFiltered(filteredDisplay);
         setDisplay(datasFetch);  
         setDisplayMap(updatedMap)
         setSelectedId([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datas, filtersSearch.display, category]);
     
-    useEffect(() => {
-        const allDisplay = filtered.map(item => ({
-            id: item.id,
-            display: item.display
-        }));
-        setDisplay(allDisplay);
-    }, [filtered]); //khong biet de lam gi
+    // useEffect(() => {
+    //     const allDisplay = filtered.map(item => ({
+    //         id: item.id,
+    //         display: item.display
+    //     }));
+    //     setDisplay(allDisplay);
+    // }, [filtered]); //khong biet de lam gi
 
     useEffect(() => {
         const assign = display.filter(item => item.display === "Đã gán");

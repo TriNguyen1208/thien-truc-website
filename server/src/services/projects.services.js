@@ -680,6 +680,13 @@ const project_contents = {
         
         const projectResult = await pool.query(insertProjectSql, insertValues);
         const project_id = projectResult.rows[0].id;
+        if (region_id) {
+            await pool.query(`
+                UPDATE project.project_regions 
+                SET item_count = COALESCE(item_count, 0) + 1 
+                WHERE id = $1
+            `, [region_id]);
+        }
         const insertProjectContentSql = `
             INSERT INTO project.project_contents (project_id, content)
             values($1, $2)
