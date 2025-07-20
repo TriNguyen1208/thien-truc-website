@@ -672,12 +672,11 @@ const project_contents = {
             region_id,
             title,
             province,
-            new Date(completeTime).getFullYear(),
+            new Date(completeTime),
             main_image,
             main_content,
             isFeatured
         ];
-        
         const projectResult = await pool.query(insertProjectSql, insertValues);
         const project_id = projectResult.rows[0].id;
         const insertProjectContentSql = `
@@ -780,7 +779,7 @@ const project_contents = {
             region_id,
             title,
             province,
-            new Date(completeTime).getFullYear(),
+            new Date(completeTime),
             main_image,
             main_content,
             isFeatured,
