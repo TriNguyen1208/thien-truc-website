@@ -1,9 +1,10 @@
 import pool from '#@/config/db.js'
 import bcrypt from 'bcrypt';
 import authUtil from '#@/utils/auth.js'
-import { query } from 'express-validator';
+// import { query } from 'express-validator';
+import sendMail from '#@/utils/mailer.js'
 import jwt from 'jsonwebtoken';
-const { ACCESS_SECRET, REFRESH_SECRET } = process.env;
+const { ACCESS_SECRET, REFRESH_SECRET, RESET_SECRET } = process.env;
 
 if (!ACCESS_SECRET || !REFRESH_SECRET) {
     throw new Error('Thiếu ACCESS_SECRET hoặc REFRESH_SECRET trong biến môi trường');
@@ -210,4 +211,102 @@ const updatePassword = async (data, user) => {
     }
 }
 
-export default { isValidPassword, getUserByUsername, login, refreshToken, updateProfile, updatePassword };
+const sendResetPassword = async (data) => {
+    const { username = null, email = null } = data;
+    if (!username || !email) return {
+        status: 400,
+        message: "Thiếu thông tin username hoặc email"
+    }
+
+    const result = await pool.query(`
+        SELECT email
+        FROM admin.accounts
+        WHERE username = $1
+    `, [username]);
+
+    if (result.rowCount == 0) return {
+        status: 404,
+        message: "Username không tồn tại"
+    }
+
+    if (email != result.rows[0].email) return {
+        status: 409,
+        message: "Email không chính xác"
+    }
+
+    const token = jwt.sign(
+        { username },
+        RESET_SECRET,
+        { expiresIn: '15m' }
+    );
+
+    const resetUrl = `http://localhost:3001/reset-password?token=${token}`;
+
+    await sendMail({
+        to: email,
+        subject: 'Yêu cầu đặt lại mật khẩu',
+        html: `
+        <p>Xin chào <b>${username}</b>,</p>
+        <p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào liên kết dưới đây để tiến hành:</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+        <p><i>Lưu ý: Liên kết sẽ hết hạn sau 15 phút.</i></p>
+        `,
+    });
+
+    return {
+        status: 200,
+        message: 'Link khôi phục mật khẩu đã được gửi về email',
+    };
+}
+
+const resetPassword = async (data) => {
+    const { token, newPassword } = data;
+    
+    if (!token || !newPassword) {
+        return {
+            status: 400,
+            message: "Thiếu token hoặc mật khẩu mới"
+        }
+    }
+
+    // 1. Giải mã token
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.RESET_SECRET);
+    } catch (err) {
+        return {
+            status: 401,
+            message: 'Token không hợp lệ hoặc đã hết hạn'
+        }
+    }
+    const { username } = decoded;
+
+    // 2. Kiểm tra user có tồn tại
+    const result = await pool.query(
+      `SELECT username FROM admin.accounts WHERE username = $1`,
+      [username]
+    );
+
+    if (result.rowCount === 0) {
+        return {
+            status: 404,
+            message: "Tài khoản không tồn tại"
+        }
+    }
+
+    // 3. Băm mật khẩu mới
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // 4. Cập nhật mật khẩu
+    await pool.query(
+        `UPDATE admin.accounts SET password = $1 WHERE username = $2`,
+        [hashedPassword, username]
+    );
+
+    return {
+        status: 200,
+        message: "Reset mật khẩu thành công"
+    }
+}
+
+export default { isValidPassword, getUserByUsername, login, refreshToken, updateProfile, updatePassword, sendResetPassword, resetPassword };

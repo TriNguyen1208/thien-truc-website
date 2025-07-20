@@ -9,6 +9,7 @@ import { useState } from 'react';
 import Button from '@/components/Button'
 import useAboutUs from '../../hooks/useAboutUs';
 import { CancelPopup } from '../../components/Popup'
+import Loading from '@/components/Loading'
 const AboutUsPageContent = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -19,24 +20,13 @@ const AboutUsPageContent = () => {
     })
   }, []);
 
-  function renameKeysByNames(obj, newKeys) {
-    const originalKeys = Object.keys(obj); // Lấy thứ tự key gốc
-    const result = {};
-
-    newKeys.forEach((newKey, index) => {
-      const oldKey = originalKeys[index];
-      result[newKey] = obj[oldKey];
-    });
-
-    return result;
-  }
 
   const [isModalOpenAddDutyAndResponsibility, setIsModalOpenAddDutyAndResponsibility] = useState(false);
   const [isModalOpenEditDutyAndResponsibility, setIsModalOpenEditDutyAndResponsibility] = useState(false);
   const [isOpenCancelDutyAndResponsibility, setIsOpenCancelDutyAndResponsibility] = useState(false);
   const [dataEditDutyAndResponsibility, setDataEditDutyAndResponsibility] = useState([
-    { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
-    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
+    { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị", maxLength: 50  },
+    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4, maxLength: 200  },
     { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
   ]);
 
@@ -45,8 +35,8 @@ const AboutUsPageContent = () => {
   const [isModalOpenEditWhyChooseUs, setIsModalOpenEditWhyChooseUs] = useState(false);
   const [isOpenCancelWhyChooseUs, setIsOpenCancelWhyChooseUs] = useState(false);
   const [dataEditWhyChooseUs, setDataEditWhyChooseUs] = useState([
-    { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
-    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
+    { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị", maxLength: 50  },
+    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4, maxLength: 200 },
     { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
   ]);
   const [dataCurrent, setDataCurrent] = useState(null);
@@ -71,28 +61,21 @@ const AboutUsPageContent = () => {
     || isLoadingAboutUsPageData || isLoadingUpdateBanner || isLoadingUpdateOurStory
   ) {
     return (
-      <>
-        is loading...
-      </>
+      <Loading/>
     )
   }
-  console.log(aboutUsPageData);
 
 
   const configAboutUsBanner = {
     title: "Banner trang về chúng tôi",
     description: "Chỉnh sửa tiêu đề và mô tả banner",
     listInput: [
-      { label: 'Tiêu đề banner', placeholder: 'Nhập nội dung tiêu đề...', contentCurrent: aboutUsPageData.banner_title , isRequire: true },
-      { label: 'Mô tả banner', placeholder: 'Nhập nội dung mô tả...', contentCurrent: aboutUsPageData.banner_description, isRequire: true },
+      { name: "title", label: 'Tiêu đề banner', placeholder: 'Nhập nội dung tiêu đề...', contentCurrent: aboutUsPageData.banner_title , isRequire: true, rows: 1, maxLength: 100 },
+      { name: "description", label: 'Mô tả banner', placeholder: 'Nhập nội dung mô tả...', contentCurrent: aboutUsPageData.banner_description, isRequire: true, rows: 3, maxLength: 300},
 
     ],
     handleSave: (values) => {
-      const newValues = renameKeysByNames(values, ["title", "description"]);
-      console.log(newValues);
-      updateBanner(newValues);
-      console.log('Giá trị đã lưu:', values);
-      // Gửi dữ liệu lên server hoặc cập nhật state
+      updateBanner(values);
     }
   }
 
@@ -100,15 +83,11 @@ const AboutUsPageContent = () => {
     title: "Câu chuyện của chúng tôi",
     description: "Chỉnh sửa tiêu đề và mô tả banner",
     listInput: [
-      { label: 'Nội dung câu chuyện', placeholder: 'Nhập nội dung câu chuyện...', contentCurrent: aboutUsPageData.our_story_content, isRequire: true },
+      { name: "our_story_content", label: 'Nội dung câu chuyện', placeholder: 'Nhập nội dung câu chuyện...', contentCurrent: aboutUsPageData.our_story_content, isRequire: true, rows: 5 },
 
     ],
     handleSave: (values) => {
-      const newValues = renameKeysByNames(values, ["our_story_content"]);
-      updateOurStory(newValues);
-      console.log(newValues);
-      // console.log('Giá trị đã lưu:', values);
-      // Gửi dữ liệu lên server hoặc cập nhật state
+      updateOurStory(values);
     }
   }
 
@@ -117,18 +96,14 @@ const AboutUsPageContent = () => {
 
   // ================= DUTY AND RESPONSIBILITY =================== 
 
-  console.log(dutyAndResponsibilityData);
   const handleSubmitButtonAddDutyAndResponsibility = (valueForm) => {
-    console.log('Day la button submit', valueForm)
     createDutyAndResponsibility(valueForm);
     setIsModalOpenAddDutyAndResponsibility(false)
   }
   const handleCancelButtonAddDutyAndResponsibility = () => {
-    console.log('Day la button cancle')
     setIsModalOpenAddDutyAndResponsibility(false)
   }
   const handleSubmitButtonEditDutyAndResponsibility = (valueForm) => {
-    console.log('Day la button submit', valueForm)
     updateDutyAndResponsibility({
       id: dataCurrent.id,
       data: valueForm,
@@ -136,7 +111,6 @@ const AboutUsPageContent = () => {
     setIsModalOpenEditDutyAndResponsibility(false)
   }
   const handleCancelButtonEditDutyAndResponsibility = () => {
-    console.log('Day la button cancle')
     setIsModalOpenEditDutyAndResponsibility(false)
   }
 
@@ -174,8 +148,8 @@ const AboutUsPageContent = () => {
       setIsModalOpen: setIsModalOpenEditDutyAndResponsibility,
     },
     dataAddDutyAndResponsibility: [
-      { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
-      { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
+      { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị", maxLength: 50 },
+      { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4,  maxLength: 200 },
       { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
     ],
     card: dutyAndResponsibilityData,
@@ -189,12 +163,10 @@ const AboutUsPageContent = () => {
       setDataEditDutyAndResponsibility(updatedForm);
       setIsModalOpenEditDutyAndResponsibility(true);
       setDataCurrent(item);
-      console.log(dataEditDutyAndResponsibility);
     },
     handleDeleteButton: (item) => {
       setIsOpenCancelDutyAndResponsibility(true);
       setDataCurrent(item);
-      console.log(item);
     },
     cancelPopub: {
       open: isOpenCancelDutyAndResponsibility,
@@ -214,19 +186,15 @@ const AboutUsPageContent = () => {
   // ================= WHY ABOUT US =================== 
 
 
-  console.log(whyChooseUsData);
 
   const handleSubmitButtonAddWhyChooseUs = (valueForm) => {
-    console.log('Day la button submit', valueForm)
     createWhyChooseUs(valueForm);
     setIsModalOpenAddWhyChooseUs(false)
   }
   const handleCancelButtonAddWhyChooseUs = () => {
-    console.log('Day la button cancle')
     setIsModalOpenAddWhyChooseUs(false)
   }
   const handleSubmitButtonEditWhyChooseUs = (valueForm) => {
-    console.log('Day la button submit', valueForm)
     updateWhyChooseUs({
       id: dataCurrent.id,
       data: valueForm,
@@ -234,7 +202,6 @@ const AboutUsPageContent = () => {
     setIsModalOpenEditWhyChooseUs(false)
   }
   const handleCancelButtonEditWhyChooseUs = () => {
-    console.log('Day la button cancle')
     setIsModalOpenEditWhyChooseUs(false)
   }
 
@@ -272,8 +239,8 @@ const AboutUsPageContent = () => {
       setIsModalOpen: setIsModalOpenEditWhyChooseUs,
     },
     dataAddWhyChooseUs: [
-      { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị" },
-      { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4 },
+      { name: 'title', label: 'Tên nhiệm vụ', type: 'text', width: 12, isRequired: true, placeholder: "VD: lắp đặt thiết bị", maxLength: 50  },
+      { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false, numberRows: 4, maxLength: 200  },
       { type: 'dynamicFields', name: 'details', label: 'Danh sách mô tả chi tiết (tối đa 5 dòng)', isRequired: false, isSingleColumn: true, width: 12, isCheckbox: false, limitRowDynamicFields: 5 },
     ],
     card: whyChooseUsData,
@@ -288,12 +255,10 @@ const AboutUsPageContent = () => {
       setDataEditWhyChooseUs(updatedForm);
       setIsModalOpenEditWhyChooseUs(true);
       setDataCurrent(item);
-      console.log(dataEditWhyChooseUs);
     },
     handleDeleteButton: (item) => {
       setIsOpenCancelWhyChooseUs(true);
       setDataCurrent(item);
-      console.log(item);
     },
     cancelPopub: {
       open: isOpenCancelWhyChooseUs,

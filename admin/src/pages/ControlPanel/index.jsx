@@ -3,6 +3,7 @@ import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon, PulseIcon, Activity
 import { useEffect } from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useLayout} from '@/layouts/LayoutContext'
+import Loading from '@/components/Loading'
 import useProjects from '@/hooks/useProjects'
 import useProducts from '@/hooks/useProducts'
 import useNews from '@/hooks/useNews'
@@ -31,7 +32,7 @@ function ItemActivity({data})
         <div className='absolute left-[12px] top-[16px]'><ActivityIcon/></div>
         <div className='flex flex-col'>
               <div className='font-medium text-black text-[14px]'> {data.content} </div>
-              <div className='text-[#71717A] text-[13px] font-regular '> Thực hiện bởi: {data.username} </div>
+              <div className='text-[#71717A] text-[13px] font-regular '> Thực hiện bởi: {data.username} - {data.fullname} </div>
         </div>
         <div className='absolute top-[12px] right-[12px] text-[#71717A] text-[13px] font-regular '>{data.time} - {data.date}</div>
     </div>
@@ -60,7 +61,7 @@ const ControlPanel = () => {
 
   if(isLoadingQuantityProject || isLoadingQuantityProduct || isLoadingQuantityNews || isLoadingQuantityAdmin || isLoadingQuantityContact || isLoadingActivity)
     {
-      return(<div>Dang load</div>)
+      return(<Loading/>)
     }
   
   const members = {

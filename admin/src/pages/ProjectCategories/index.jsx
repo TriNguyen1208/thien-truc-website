@@ -9,7 +9,7 @@
   import useProjects from '@/hooks/useProjects';
   import {CancelPopup} from '@/components/Popup';
   import { toast } from 'react-toastify';
-
+  import Loading from '@/components/Loading'
   // Còn sự kiện  sự kiện lưu thay đổi trong cài đặt loại tin tức
   export default function ProjectCategories () {
     // Lấy hàm từ hook
@@ -162,7 +162,7 @@
     }
 
     const projectRegionsList = Array.isArray(projectRegions) ? projectRegions : projectRegions?.results ?? (projectRegions ? [projectRegions] : []);
-    if (isLoadingProjectRegions) return <div>Loading...</div>;
+    if (isLoadingProjectRegions) return <Loading/>;
 
 
 

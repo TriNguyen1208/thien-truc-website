@@ -6,7 +6,7 @@ import { CancelPopup } from '@/components/Popup';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import SearchBar from '@/components/Search';
 import useNews from '@/hooks/useNews';
-
+import Loading from '@/components/Loading'
 // Còn api xóa tin tứcs
 export default function News() {
 
@@ -89,7 +89,7 @@ export default function News() {
   const display = ['Tất cả trạng thái', 'Đã xuất bản', 'Bản nháp'];
 
   if (isLoadingNews || isLoadingNewsCategories) 
-    return <div>Loading...</div>;
+    return <Loading/>;
 
   
   // Handler

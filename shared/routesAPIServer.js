@@ -87,7 +87,7 @@ const API_ROUTES = {
         update_price_page: `${PRODUCT_BASE}/price_page`, // patch
         highlight_products: `${PRODUCT_BASE}/highlight_products`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
-        search_categories_suggestions: (id='', query='') => `${PRODUCT_BASE}/search_categories_suggestions?id=${uri(id)}&query=${uri(query)}`,
+        search_categories_suggestions: (query='') => `${PRODUCT_BASE}/search_categories_suggestions?query=${uri(query)}`,
         count: `${PRODUCT_BASE}/count`
     },
     project: {
@@ -219,9 +219,11 @@ const API_ROUTES = {
         login: `${AUTH_BASE}/login`,
         refreshToken: `${AUTH_BASE}/refresh-token`,
         verifyLogin: `${AUTH_BASE}/login-result`,
+        sendResetPassword: `${AUTH_BASE}/send-reset-password`,
         // patch
         updateProfile: `${AUTH_BASE}/update-profile`,
-        updatePassword: `${AUTH_BASE}/update-password`
+        updatePassword: `${AUTH_BASE}/update-password`,
+        resetPassword: `${AUTH_BASE}/reset-password`,
     }
 };
 

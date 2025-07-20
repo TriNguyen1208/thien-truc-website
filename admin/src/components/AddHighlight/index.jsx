@@ -129,7 +129,8 @@ const AddHighlight = ({
     };
 
     const handleSave = () => {
-        if (!selectedId || !isHighlightChecked) {
+
+        if (!selectedId) {
             onSave(null); // Không tick checkbox thì trả về null
         } else {
             // Tìm item được chọn
@@ -137,7 +138,7 @@ const AddHighlight = ({
             if (selectedItem) {
                 onSave({
                     data: selectedItem,
-                    isCheckbox: true
+                    isCheckbox: isHighlightChecked
                 });
             } else {
                 onSave(null);

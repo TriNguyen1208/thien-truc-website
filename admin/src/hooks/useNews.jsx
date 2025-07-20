@@ -178,8 +178,9 @@ function useSearchSuggest(query, filter){
 
 function useGetFeatureNews() {
   return useQuery({
+
     queryKey: ["admin_feature_news"],
-    queryFn: newsServices.getFeatureNews,
+    queryFn: () => newsServices.getFeatureNews(),
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -187,7 +188,7 @@ function useGetFeatureNews() {
  function useUpdateFeatureNews(){
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: () => newsServices.updateFeatureNews,
+      mutationFn: (data) => newsServices.updateFeatureNews(data),
       onSuccess: (success) => {
         toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });

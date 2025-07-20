@@ -9,7 +9,7 @@ import { DeleteIcon, EditIcon } from '@/components/Icon'
 import DynamicForm from '@/components/DynamicForm'
 import { toast } from 'react-toastify';
 import changeToFormData from '@/utils/changeToFormData'
-
+import Loading from '@/components/Loading'
 
 const Contact = () => {
   const {setLayoutProps} = useLayout();
@@ -49,7 +49,7 @@ const handleAddContact= ()=>
   
   if(isLoadingSupportAgent)
   {
-    return(<div>loading</div>)
+    return(<Loading/>)
   }
   
 

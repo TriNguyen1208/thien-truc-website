@@ -5,7 +5,7 @@ function Card({card,iconTitle, width="100%", height="100%", padding="25px"}){
     if (!card) {
         return <p>No card data available</p>;
     }
-    const details = card.details.split('\n')
+   
     return (
         <div 
             className={`flex flex-col bg-white gap-[16px] rounded-[8px] hover:shadow-lg transform hover:scale-105  transition-all duration-300 ease-in-out `}
@@ -29,7 +29,7 @@ function Card({card,iconTitle, width="100%", height="100%", padding="25px"}){
             <div>
                     <ul className="flex flex-col gap-[12px]  ">
                         {
-                            details.map((detail, index) =>{
+                            card.details.map((detail, index) =>{
                             return (
                                 <li key = {index} className="flex flex-row gap-[8px] text-[15px] text-[#166534]">
                                 <div>

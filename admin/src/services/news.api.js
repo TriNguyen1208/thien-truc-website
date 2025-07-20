@@ -109,6 +109,7 @@ const getFeatureNews = async () => {
 }
 
 const updateFeatureNews = async (data) => {
+    console.log("Day la update", data);
     const res = await axios.patch(API_ROUTES.news.updateFeaturedNews, data)
     return res.data;
 }

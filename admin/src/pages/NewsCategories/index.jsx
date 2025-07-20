@@ -9,7 +9,7 @@ import SearchBar from '@/components/Search';
 import SimpleForm from '@/components/SimpleForm';
 import useNews from '@/hooks/useNews';
 import { toast } from 'react-toastify';
-
+import Loading from '@/components/Loading'
 // Còn api thêm loại tin tức, chỉnh sửa loại tin tức, xóa loại tin tức, cài đặt loại tin tức
 export default function NewsCategories() {
 
@@ -161,7 +161,7 @@ export default function NewsCategories() {
       isLoadingNewsCategories = result.isLoading;
     }
   const newsCategoriesList = Array.isArray(newsCategories) ? newsCategories : newsCategories?.results ?? (newsCategories ? [newsCategories] : []);
-  if (isLoadingNewsCategories) return <div>Loading...</div>;
+  if (isLoadingNewsCategories) return <Loading/>;
 
 
    // Handler cho tìm kiếm và điều hướng
