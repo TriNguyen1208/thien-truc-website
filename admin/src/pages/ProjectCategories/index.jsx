@@ -65,7 +65,7 @@
         type: 'text',
         isRequired: true,
         width: 12,
-        placeholder: 'VD: Miền Nam, Tây Nguyên...',
+        value: '',
       },
       {
         name: 'rgb_color',
@@ -83,7 +83,7 @@
       widthModal: 430,
       title: 'Chỉnh sửa khu vực',
       description: 'Chỉnh sửa thông tin khu vực và màu sắc đại diện',
-      contentSubmitButton :'Cập nhật',
+      contentSubmitButton: 'Cập nhật',
       handleSubmitButton: async (data) => {
         await updateOne({...data, id: currentEditId},{
           onSuccess: (success)=> { toast.success(success ? success.message: "Cập nhật thành công!")},
@@ -249,7 +249,7 @@
                               onClick={() => {
                                   setFormEditData(prev => {
                                     const newData = [...prev];
-                                    newData[0] = { ...newData[0], placeholder: item.name };
+                                    newData[0] = { ...newData[0], value: item.name };
                                     newData[1] = { ...newData[1], value: item.rgb_color };
                                     return newData;
                                 });

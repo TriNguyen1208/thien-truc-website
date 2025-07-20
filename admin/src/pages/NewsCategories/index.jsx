@@ -63,7 +63,7 @@ export default function NewsCategories() {
       label: 'Tên loại tin tức',
       isRequired: true,
       width: 12,
-      placeholder: 'VD: Tin công ty, Tin ngành...',
+      value: 'VD: Tin công ty, Tin ngành...',
     },
     {
       name: 'rgb_color',
@@ -81,6 +81,7 @@ export default function NewsCategories() {
     widthModal: 430,
     title: 'Chỉnh sửa loại tin tức',
     description: 'Chỉnh sửa thông tin loại tin tức và màu sắc đại diện',
+    contentSubmitButton: "Cập nhật",
     handleSubmitButton: async (data) => {
       await updateOne({...data, id: currentEditId});
       queryClient.invalidateQueries(['admin_news_categories']);
@@ -200,10 +201,10 @@ export default function NewsCategories() {
           <thead className='text-left border-b border-gray-200 text-[14px] font-normal text-gray-500'>
             <tr>
               <th className='w-[10%] py-3 pl-4'>Mã loại</th>
-              <th className='w-[30%] px-4 py-3'>Tên loại tin tức</th>
-              <th className='w-[20%] py-3 px-9'>Màu sắc</th>
-              <th className='w-[20%] py-3 px-4'>Số lượng</th>
-              <th className='w-[20%] py-3 px-4'>Thao tác</th>
+              <th className='w-[40%] px-4 py-3'>Tên loại tin tức</th>
+              <th className='w-[20%] py-3 px-12'>Màu sắc</th>
+              <th className='w-[20%] py-3 px-10'>Số lượng</th>
+              <th className='w-[20%] py-3 px-14'>Thao tác</th>
             </tr>
           </thead>
           <tbody className="text-left">
@@ -211,12 +212,12 @@ export default function NewsCategories() {
                <tr key={item.id} className='border-b border-gray-200 hover:bg-gray-100'>
                 <td className='w-[10%] py-5 pl-4 font-medium'>{item.id}</td>
                 <td className='w-[30%] py-5 px-4 font-medium'>{query ==='' ? item.name : item.query}</td>
-                <td className='w-[20%] py-5 px-6'>
+                <td className='w-[20%] py-5 px-8'>
                   <span className='inline-block w-4 py-2 mt-2 mr-2' style={{ backgroundColor: item.rgb_color }}></span>
                   {item.rgb_color}
                 </td>
-                <td className='w-[20%] py-5 pl-10'>{item.item_count}</td>
-                <td className='w-[20%] py-5 flex items-center gap-3'>
+                <td className='w-[20%] py-5 pl-16'>{item.item_count}</td>
+                <td className='w-[20%] py-5 pl-4 flex items-center gap-3'>
                   <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' 
                     onClick={() => {
                           setSelectedCategoryId(item.id);
@@ -232,7 +233,7 @@ export default function NewsCategories() {
                     onClick={() => {
                       setEditFormData(prev => {
                         const newData = [...prev];
-                        newData[0] = { ...newData[0], placeholder: item.name };
+                        newData[0] = { ...newData[0], value: item.name };
                         newData[1] = { ...newData[1], value: item.rgb_color };
                         return newData;
                     });   
