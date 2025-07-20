@@ -56,11 +56,11 @@ const ProductCategories = () => {
   var id = searchParams.get('id') || undefined;
 
   const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll(id, query);
-  const { mutate: updateOneProductCategories, isLoading: isLoadingUpdateProductCategories } = useProducts.product_categories.updateOne();
-  const { mutate: createOneProductCategories, isLoading: isLoadingCreateOneProductCategories } = useProducts.product_categories.createOne();
-  const { mutate: deleteOneProductCategories, isLoading: isLoadingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
+  const { mutate: updateOneProductCategories, isPending: isPendingUpdateProductCategories } = useProducts.product_categories.updateOne();
+  const { mutate: createOneProductCategories, isPending: isPendingCreateOneProductCategories } = useProducts.product_categories.createOne();
+  const { mutate: deleteOneProductCategories, isPending: isPendingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
   const { mutateAsync: updateCategory } = useProduct.products.updateCategory();
-  if (isLoadingProductCategoriesData || isLoadingUpdateProductCategories || isLoadingCreateOneProductCategories || isLoadingDeleteOneProductCategories) {
+  if (isLoadingProductCategoriesData || isPendingUpdateProductCategories || isPendingCreateOneProductCategories || isPendingDeleteOneProductCategories) {
     return (
       <>
         is loading

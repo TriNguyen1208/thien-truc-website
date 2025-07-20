@@ -17,7 +17,7 @@ const updateHomePage = {
             mutationFn: (data) => homeServices.updateHomePage.banner(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_home_page"] });
+                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -30,7 +30,7 @@ const updateHomePage = {
             mutationFn: (data) => homeServices.updateHomePage.aboutUs(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_home_page"] });
+                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
             },
             onError: (error) => {
                 toast.error(error.message);

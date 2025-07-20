@@ -1,7 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Modal } from 'antd';
 import SimpleForm from "../SimpleForm"
-import { ChromePicker } from 'react-color';
 import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
@@ -29,8 +28,6 @@ const DynamicForm = ({ data, config }) => {
         contentSubmitButton: 'Tạo mới'
     }
     const [urlInput, setUrlInput] = useState('');
-    const [isModalOpenSimple, setIsModalOpenSimple] = useState(false);
-    const [simpleFormData, setSimpleFormData] = useState([]);
     const initialValues = useMemo(() => {
         const result = {};
         data.forEach(field => {
@@ -207,20 +204,7 @@ const DynamicForm = ({ data, config }) => {
             return { ...prev, [fieldName]: specs };
         });
     };
-    const handleAddButtonSelect = () => {
-        const formData = [
-            {
-                name: 'create-category-product',
-                label: 'Tên loại sản phẩm',
-                type: 'text',
-                width: 12,
-                isRequired: false,
-                placeholder: "VD: Điện thoại, laptop",
-            }
-        ];
-        setSimpleFormData(formData);
-        setIsModalOpenSimple(true);
-    };
+
     const renderInput = (item) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
@@ -282,13 +266,6 @@ const DynamicForm = ({ data, config }) => {
                             ))}
 
                         </select>
-                        <button
-                            type="button"
-                            onClick={handleAddButtonSelect}
-                            className="px-3 py-2  border  border-gray-300 rounded-md "
-                        >
-                            +
-                        </button>
                     </div>
 
                 );
@@ -582,23 +559,6 @@ const DynamicForm = ({ data, config }) => {
                 </div>
             </Modal>
 
-            {/* Nên đặt ở đây */}
-            <SimpleForm
-                data={simpleFormData}
-                config={{
-                    title: "Thêm dữ liệu mới",
-                    description: "Nhập thông tin cần thêm",
-                    widthModal: 600,
-                    isModalOpenSimple,
-                    setIsModalOpenSimple,
-                    handleSubmitButton: (valueForm) => {
-                        setIsModalOpenSimple(false);
-                    },
-                    handleCancelButton: () => {
-                        setIsModalOpenSimple(false);
-                    }
-                }}
-            />
         </>
     )
 }

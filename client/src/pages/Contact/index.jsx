@@ -55,7 +55,7 @@ export default function Contact() {
                 <div className="font-[600] flex justify-center text-[30px] text-[var(--dark-green)] mb-[30px]">
                     Đội ngũ của chúng tôi
                 </div>
-                <div className="flex justify-center flex-wrap">
+                <div className="grid grid-cols-12 gap-6">
                     {(supportAgentsData || []).map((item) => {
                         const dataUserCard = {
                             image_avatar: item.avatar_img,
@@ -65,15 +65,15 @@ export default function Contact() {
                             url_facebook: item.facebook_url,
                         }
                         return (
-                            <div key={item.id} className="w-[260px] mr-[20px] mb-[20px]">
+                            <div key={item.id} className="col-span-12 md:col-span-6 lg:col-span-3" >
                                 <UserCard data={dataUserCard} />
                             </div>
                         )
                     })}
                 </div>
             </div>
-            <div ref={sectionRef} className="container-fluid flex py-[70px] ">
-                <div className="w-1/2 text-[var(--dark-green)] font-[400] ">
+            <div ref={sectionRef} className="container-fluid flex py-[70px] grid grid-cols-12 gap-10">
+                <div className="col-span-12 lg:col-span-6 text-[var(--dark-green)] font-[400] ">
                     <div className="text-[30px] font-[600] mb-[15px]">
                         Liên hệ về chúng tôi
                     </div>
@@ -171,7 +171,7 @@ export default function Contact() {
                         </a>
                     </div>
                 </div>
-                <div className="ml-[50px]">
+                <div className="col-span-12 lg:col-span-6">
                     <Form data={dataForm} />
                 </div>
             </div >

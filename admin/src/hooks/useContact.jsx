@@ -31,7 +31,7 @@ const updateContactPage = {
             mutationFn: (data) => contactServices.updateContactPage.banner(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
+                queryClient.invalidateQueries({ queryKey: ['admin_contact_page'] });
             },
             onError: (error) => {
                 toast.error(error.message);

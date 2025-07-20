@@ -20,21 +20,26 @@ export default function Project() {
     }, [searchParams]);
 
     // Lay params
-    const filter = searchParams.get('filter') || undefined;
     var query = searchParams.get('query') || undefined;
+    const filter = searchParams.get('filter') || undefined;
+    const is_featured = searchParams.get('is_featured') || undefined;
     const page = Number(searchParams.get('page')) || 1;
+    const limit = searchParams.get('limit') || undefined;
+
 
     // fetch data 
     const { data: projectPageData, isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
     const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.getAll();
-    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter === "Tất cả dự án" ? undefined : filter, page);
-
-
+    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter === "Tất cả dự án" ? undefined : filter, is_featured,  page, limit);
+    
     if (isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject) {
         return (
             <Loading />
         )
     }
+    console.log("Day la page: ", query, filter === "Tất cả dự án" ? undefined : filter , page);
+    console.log(projectData);
+    console.log(projectRegionData);
 
     // Khai bao bien 
     let categoriesData = projectRegionData.map(item => item.name);
@@ -145,7 +150,7 @@ export default function Project() {
                         {projectPageData.banner_description}
                     </div>
                 </div>
-                <div className="flex flex-wrap gap-[30px]">
+                <div className="grid grid-cols-12 gap-10">
                     {(projectData.results || []).map((item, index) => {
                         const complete_time = String(item.complete_time)
                         const dataProject = {
@@ -160,10 +165,9 @@ export default function Project() {
                         }
                         return (
                             <Link key={index} to={`/du-an/${item.id}`}
-                                style={{ width: 'calc(100% / 3 - 20px)' }}
+                            className="col-span-12 lg:col-span-4 md:col-span-6"
                             >
-                                <div className=" mb-[30px]"
-                                    style={{ width: '100%' }}
+                                <div    
                                 >
                                     <ItemPost data={dataProject}/>
                                 </div>

@@ -50,7 +50,7 @@ export default function EditBanner({title, description, listInput,saveButton})
         text: "Lưu thay đổi",
         colorText: "#ffffff",
         colorBackground: "#000000",
-        padding : 8,
+        padding : 10,
     }
     return(
         <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]">

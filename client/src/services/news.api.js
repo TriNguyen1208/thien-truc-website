@@ -12,8 +12,8 @@ const getNewsPage = async() => {
 }
 
 const news = {
-    getList: async (query = '', filter = '', sort_by = '', page = 1) => {
-        const res = await axios.get(API_ROUTES.news.news.getList(query, filter, sort_by, page));
+    getList: async (query = '', filter = '', is_published = '', sort_by = '', page = 1, limit = undefined) => {
+        const res = await axios.get(API_ROUTES.news.news.getList(query, filter, is_published, sort_by, page, limit));
         return res.data;
     },
     getOne: async (id) => {

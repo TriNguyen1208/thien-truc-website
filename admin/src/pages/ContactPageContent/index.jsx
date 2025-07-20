@@ -13,15 +13,14 @@ const ContactPageContent = () => {
   }, []);
 
   const { data: bannerData, isLoading: isLoadingBanner } = useContact.getContactPage();
-  const { mutate: updateBanner, isLoading: isLoadingUpdateBanner } = useContact.updateContactPage.updateBanner();
-  if (isLoadingBanner || isLoadingUpdateBanner) {
+  const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
+  if (isLoadingBanner || isPendingUpdateBanner) {
     return (
       <>
         is loading..
       </>
     )
   }
-  console.log(bannerData, isLoadingBanner);
   const configAboutUsBanner = {
     title: "Banner Trang liên hệ",
     description: "Chỉnh sửa tiêu đề và mô tả banner",

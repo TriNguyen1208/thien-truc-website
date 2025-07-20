@@ -41,23 +41,23 @@ const AboutUsPageContent = () => {
   const [dataCurrent, setDataCurrent] = useState(null);
 
   const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData } = useAboutUs.getAboutUsPage();
-  const { mutate: updateBanner, isLoading: isLoadingUpdateBanner } = useAboutUs.updateAboutUsPage.updateBanner();
-  const { mutate: updateOurStory, isLoading: isLoadingUpdateOurStory } = useAboutUs.updateAboutUsPage.updateOurStory();
+  const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useAboutUs.updateAboutUsPage.updateBanner();
+  const { mutate: updateOurStory, isPending: isPendingUpdateOurStory } = useAboutUs.updateAboutUsPage.updateOurStory();
 
   const { data: dutyAndResponsibilityData, isLoading: isLoadingDutyAndResponsibility } = useAboutUs.company_services.getAll();
-  const { mutate: updateDutyAndResponsibility, isLoading: isLoadingUpdateDutyAndResponsibility } = useAboutUs.company_services.updateOne();
-  const { mutate: createDutyAndResponsibility, isLoading: isLoadingCreateDutyAndResponsibility } = useAboutUs.company_services.createOne();
-  const { mutate: deleteDutyAndResponsibility, isLoading: isLoadingDeleteDutyAndResponsibility } = useAboutUs.company_services.deleteOne();
+  const { mutate: updateDutyAndResponsibility, isPending: isPendingUpdateDutyAndResponsibility } = useAboutUs.company_services.updateOne();
+  const { mutate: createDutyAndResponsibility, isPending: isPendingCreateDutyAndResponsibility } = useAboutUs.company_services.createOne();
+  const { mutate: deleteDutyAndResponsibility, isPending: isPendingDeleteDutyAndResponsibility } = useAboutUs.company_services.deleteOne();
 
 
   const { data: whyChooseUsData, isLoading: isLoadingWhyChooseUs } = useAboutUs.why_choose_us.getAll();
-  const { mutate: updateWhyChooseUs, isLoading: isLoadingUpdateWhyChooseUs } = useAboutUs.why_choose_us.updateOne();
-  const { mutate: createWhyChooseUs, isLoading: isLoadingCreateWhyChooseUs } = useAboutUs.why_choose_us.createOne();
-  const { mutate: deleteWhyChooseUs, isLoading: isLoadingDeleteWhyChooseUs } = useAboutUs.why_choose_us.deleteOne();
+  const { mutate: updateWhyChooseUs, isPending: isPendingUpdateWhyChooseUs } = useAboutUs.why_choose_us.updateOne();
+  const { mutate: createWhyChooseUs, isPending: isPendingCreateWhyChooseUs } = useAboutUs.why_choose_us.createOne();
+  const { mutate: deleteWhyChooseUs, isPending: isPendingDeleteWhyChooseUs } = useAboutUs.why_choose_us.deleteOne();
 
-  if (isLoadingDutyAndResponsibility || isLoadingCreateDutyAndResponsibility || isLoadingUpdateDutyAndResponsibility || isLoadingDeleteDutyAndResponsibility
-    || isLoadingCreateWhyChooseUs || isLoadingDeleteWhyChooseUs || isLoadingUpdateWhyChooseUs || isLoadingWhyChooseUs
-    || isLoadingAboutUsPageData || isLoadingUpdateBanner || isLoadingUpdateOurStory
+  if (isLoadingDutyAndResponsibility || isPendingCreateDutyAndResponsibility || isPendingUpdateDutyAndResponsibility || isPendingDeleteDutyAndResponsibility
+    || isPendingCreateWhyChooseUs || isPendingDeleteWhyChooseUs || isPendingUpdateWhyChooseUs || isLoadingWhyChooseUs
+    || isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory
   ) {
     return (
       <>
