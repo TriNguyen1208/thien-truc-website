@@ -16,10 +16,10 @@ function useGetProductPage(){
     })
 }
 const products = {
-    useGetList: (query = '', filter = '' , page = 1)=>{
+    useGetList: (query = '', filter = '', is_featured, page = 1, limit)=>{
         return useQuery({
-            queryKey: ["product-list", query, filter, page],
-            queryFn: ()=> productsServices.products.getList(query, filter , page),
+            queryKey: ["product-list", query, filter, is_featured, page, limit],
+            queryFn: ()=> productsServices.products.getList(query, filter, is_featured, page, limit),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -44,6 +44,13 @@ const product_categories = {
         return useQuery({
             queryKey: ["product_categories"],
             queryFn: productsServices.product_categories.getAll,
+            staleTime: 5 * 60 * 1000,
+        })
+    },
+    useGetList: (id, query)=>{
+        return useQuery({
+            queryKey: ["product_categories", id, query],
+            queryFn: productsServices.product_categories.getList(id, query),
             staleTime: 5 * 60 * 1000,
         })
     },
@@ -105,6 +112,7 @@ export default {
     },
     product_categories: {
         getAll: product_categories.useGetAll,
+        getList: product_categories.useGetList,
         getOne: product_categories.useGetOne
     },
     product_prices: {

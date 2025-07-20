@@ -51,6 +51,8 @@ const manager = {
 
 function useGetQuantity()
 {
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(['admin_admin_quantity']);
     return useQuery({
         queryKey: ['admin_admin_quantity'],
         queryFn: adminServices.getQuantity,
@@ -59,6 +61,8 @@ function useGetQuantity()
 }
 function useGetActivityLogs()
 {
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(['admin_admin_activity_logs']);
     return useQuery({
         queryKey: ['admin_admin_activity_logs'],
         queryFn: adminServices.getActivityLogs,

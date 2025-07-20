@@ -216,7 +216,7 @@ export default function AboutUs(){
                         Những giá trị định hướng mọi hoạt động và quyết định của chúng tôi.
                     </span>
                 </div>
-                <div className='flex flex-row  gap-[30px] justify-center'> 
+                <div className='flex flex-row  gap-[30px] justify-center '> 
                         {
                             listValues.map((value, index) =>{
                                 return(
@@ -241,11 +241,11 @@ export default function AboutUs(){
                         Chúng tôi mang đến những giá trị khác biệt để trở thành đối tác lý tưởng cho doanh nghiệp của bạn.
                     </span>
                 </div>
-                <div className='flex flex-row  gap-[30px] justify-center'> 
+                <div className='flex flex-row  gap-[30px] justify-center flex-wrap'> 
                         {
                             aboutusChoose.map((service, index) =>{
                                 return(
-                                   <div key = {index} className='mx-auto w-[363px] h-[320px] '>
+                                   <div key = {index} className=' w-[363px] h-[320px] '>
                                      <Card  card = {service}/>
                                    </div>
                                 )

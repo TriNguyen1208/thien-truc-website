@@ -161,6 +161,8 @@ function useSearchSuggest(query, filter, is_featured){
 }
 function useGetQuantity()
 {
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(['admin_project_quantity']);
     return useQuery({
         queryKey: ['admin_project_quantity'],
         queryFn: projectsServices.getQuantity,

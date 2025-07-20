@@ -6,57 +6,21 @@ import Loading from '@/components/Loading'
 import {
     ProductOutlined
 } from '@ant-design/icons';
-function ListPicture({ urls, id }) {
+function Picture({ url }) {
 
-    return (urls.length != 0 ?
+    return (
         <div className="h-[845px] flex flex-col ">
-            <div data-index={id} className="h-[668px] w-full p-[15px] border-[#E5E7EB] border-[1px] rounded-[8px]">
-                <img data-index={id}
-                    src={urls[id]}
+            <div className="h-[668px] w-full p-[15px] border-[#E5E7EB] border-[1px] rounded-[8px]">
+                <img 
+                    src={url}
                     alt={''}
                     className="w-full h-full object-cover rounded-t-[6px]" />
-
             </div>
-            <div className='h-[150px] grid grid-cols-4 gap-[10px] mt-[10px]'>
-                {
-                    urls.map((url, index) => {
-                        return (id != index ?
-                            <div key={index} data-index={index} className='h-[170px] w-[170px] overflow-hidden p-[10px]  border-[#E5E7EB] border-[1px] rounded-[8px] cursor-pointer '>
-                                <img data-index={index}
-                                    src={url}
-                                    alt={''}
-                                    className="w-full h-full object-cover " />
-                            </div>
-                            : (null)
-
-                        )
-                    })
-                }
-
-            </div>
-        </div> : (
-            <div className="h-[668px] w-full bg-gray-200 flex items-center justify-center border border-dashed border-gray-400 rounded-md">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-12 w-12 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 5h18M3 19h18M4 7h16v10H4V7zm4 4a2 2 0 100-4 2 2 0 000 4z"
-                    />
-                </svg>
-            </div>
-        )
+        </div>
     )
 }
 export default function ProductDetail() {
     const { id } = useParams();
-    const [selectPicture, setSelectPicture] = useState(0);
     const navigate = useNavigate();
     if (id === '') {
         return (<>Không có sản phẩm</>)
@@ -69,41 +33,30 @@ export default function ProductDetail() {
     console.log(product)
 
     const goBack = () => {
-        navigate('/san-pham')
+        navigate(-1)
     }
 
 
-    const listPicture = [
-        "https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg",
-        'https://tse2.mm.bing.net/th?id=OIP.PthCEIQk0yqgru8L_e4r8gHaJP&pid=Api&P=0&h=180',
-        "https://tse2.mm.bing.net/th?id=OIP.BCnlaNQFI8ofLz6aPHV8fwHaGh&pid=Api&P=0&h=180",
-        "https://www.ldg.com.vn/media/uploads/uploads/27130501-gai-xinh-che-mat-anh-avatar-dep-cho-con-gai-1.jpg",
-        "https://tse4.mm.bing.net/th?id=OIP.Vuy4J9rJfgqqwk_heaKCygHaE8&pid=Api&P=0&h=180",
-    ]
-    const pickPicture = (e) => {
-        if (e) {
-            if (e.target.dataset.index) {
-                setSelectPicture(e.target.dataset.index)
-            }
-        }
-    }
 
-    // <ListPicture urls = {product.product_img || listPicture} id = {selectPicture}/>
+  
+
+
 
     return (
         <>
             <div className="container-fluid pt-[30px]">
                 <div onClick={goBack} className="flex flex-row w-full h-[20px] my-[15px] gap-[10px] leading-none items-center text-[#14532D] font-medium cursor-pointer">
                     <ArrowLeftOutlined />
-                    <span>Quay lại danh sách sản phẩm</span>
+                    <span>Quay lại</span>
                 </div>
                 <div className="grid grid-cols-2 grid-rows-2 gap-[30px]">
-                    <div onClick={pickPicture}>
-                        {product.product_img ? (<ListPicture urls={product.product_img || listPicture} id={selectPicture} />)
+                    <div>
+                        {product.product_img ? (<Picture url={product.product_img} />)
                             :
                             (<div className="w-full h-[668px] flex items-center justify-center border border-gray-300">
                                 <ProductOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
-                            </div>)}
+                            </div>)
+                        }
                             
 
                     </div>
@@ -152,7 +105,7 @@ export default function ProductDetail() {
                             <ul>
                                 {
                                     Object.entries(product.product_specifications).map((spec, index) => {
-
+                                            console.log('hi')
                                         return (
                                             <li key={index} className={` flex flex-row h-[40px]  items-center p-[10px] my-[5px] ${index % 2 == 0 ? 'bg-[#F9FAFB]' : ''}`}>
                                                 <div className="w-[33%]">{spec[0]}</div>

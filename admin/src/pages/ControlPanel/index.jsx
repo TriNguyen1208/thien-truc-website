@@ -105,8 +105,8 @@ const ControlPanel = () => {
       handleClick: ()=>{navigate("/quan-ly-du-an")}
     },
     {
-      title: "Bài báo",
-      description: "Tổng số bài báo", 
+      title: "Tin tức",
+      description: "Tổng số tin tức", 
       quanlity: quantityNews.news_count,
       quanCategory: `${quantityNews.categories_count} loại`,
       icon: <NewsIcon/> ,

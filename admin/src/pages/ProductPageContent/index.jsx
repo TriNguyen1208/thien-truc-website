@@ -8,7 +8,7 @@ const ProductPageContent = () => {
 
   const {setLayoutProps} = useLayout()
   const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
-  const { mutate: updateProductPage, isPending } = useProducts.patchProductPage();
+  const { mutate: updateProductPage, isPending: isLoadingUpdateProductPage } = useProducts.patchProductPage();
     useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang sản phẩm",
@@ -16,7 +16,7 @@ const ProductPageContent = () => {
       hasButton: false,
     })
   },[])
-  if(isLoadingProductPage)
+  if(isLoadingProductPage || isLoadingUpdateProductPage)
   {
     return(<Loading/>)
   }

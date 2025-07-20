@@ -17,38 +17,67 @@ function GoBackListProduct({goBack ,categorySelected ,query}){
         </div> : <div></div>
     )
 }
-function ListByCategories({ filter, query, page,categories, handleViewMore, handleViewProduct, handlePageChange }) {
-    
-    if(filter === '')
+function ProductsContainter({ filter, query, page,categories, handleViewMore, handleViewProduct, handlePageChange }) {
+  
+    let props
+    if(filter === 'Tất cả sản phẩm' && query === '')
     {
         return(
             categories.map((category, index)=>{
-                const props = {
+                     props = {
                      category: category, 
-                     handleViewMore : null, 
+                     handleViewMore : handleViewMore,
+                     handleViewProduct: handleViewProduct,
+                     limit: 4
                 }
                 return(
-                    <Category {...props}/>
+                  <div key = {index}>
+                      <Category {...props}/>
+                  </div>
                 )
             })
         )
+    }else if(query === '')
+    {
+         props = {
+            category: categories.find(obj => obj.name === filter),
+            handleViewMore : null,
+            isPaging: true,
+            page: page,
+            handlePageChange: handlePageChange,
+            handleViewProduct: handleViewProduct
+        }
+       
+    }else
+    {
+        if(filter === 'Tất cả sản phẩm')
+        {
+             props = {
+            category: categories.find(obj => obj.name === filter),
+            handleViewMore : null,
+            isPaging: true,
+            isQuery: true,
+            query: query,
+            page: page,
+            handlePageChange: handlePageChange,
+            handleViewProduct: handleViewProduct
+        }
+          
+        }else
+        {
+             props = {
+            category: categories.find(obj => obj.name === filter),
+            handleViewMore : null,
+            isPaging: true,
+            page: page,
+            query: query,
+            handlePageChange: handlePageChange,
+            handleViewProduct: handleViewProduct
+             }
+      
+        }
     }
-    
-    return (
-        Object.entries(data).map((objectCategory, index) => {
-
-            const props = {
-                category: objectCategory[0],
-                products: objectCategory[1],
-                handleViewMore: handleViewMore,
-                handleViewProduct: handleViewProduct,
-                handlePageChange: handlePageChange
-            }
-            return (<div key={index}>
-                <Category {...props} />
-            </div>)
-        })
-    )
+    return(<Category {...props}/>)
 }
 
 function ListProduct({ products, handleViewProduct }) {
@@ -71,32 +100,38 @@ function ListProduct({ products, handleViewProduct }) {
         </div>
     )
 }
-function Category({ category, handleViewProduct  }) {
-    const {data: productByCategory, isLoading: isLoadingProductByCategory} = useProducts.products.getListByCategory('','',category.name, false,4)
+function Category({ category,query = '', limit = '', handleViewProduct, handleViewMore ,handlePageChange ,isPaging = false,isQuery = false, page =1 }) {
+    
+    
+    const {data: products, isLoading: isLoadingProductByCategory} = useProducts.products.getList(query,(category|| { name:''}).name,false,page, limit)
     if(isLoadingProductByCategory)
     {
-        return(<div>Loading</div>)
+        return(<Loading />)
     }
-    if(Object.keys(productByCategory).length === 0)
+    if(products.results.length == 0)
     {
-        return(<></>)
+        return(limit === 4 ? <></> : <div className='mb-[20px]'>Không có sản phẩm</div>)
     }
     return (
 
         <div className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
             <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
-                <div className='border-l-[5px] border-[#1E2A38] px-[16px] ml-[30px]'>
+                {
+                    isQuery ? <></> : (
+                        <div className='border-l-[5px] border-[#1E2A38] px-[16px] ml-[30px]'>
                     <h1 className='text-[30px] leading-none text-[#1E2A38]'>
                         {category.name}
                     </h1>
                 </div>
+                    )
+                }
             </div>
-            <ListProduct products={productByCategory[category.name]} handleViewProduct={handleViewProduct} />
+            <ListProduct products={products.results} handleViewProduct={handleViewProduct} />
 
             <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
                 <div className="h-fit w-fit">
                     {
-                        <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(category)} /> 
+                      isPaging ?<Paging data = {{numberPagination: Math.ceil(products.totalCount / 12)}} onPageChange = {handlePageChange} currentPage = {products.page} />: <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(category)} /> 
                     }
 
                 </div>
@@ -112,7 +147,7 @@ export default function Product() {
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
-    const filter = searchParams.get('filter') || "";
+    const filter = searchParams.get('filter') || "Tất cả sản phẩm";
     const page = parseInt(searchParams.get('page')) || 1;
     const query = searchParams.get('query') || "";
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
@@ -134,7 +169,7 @@ export default function Product() {
     }
     const handleViewMore = (category) => {
         const newParams = new URLSearchParams();
-        newParams.set("filter", category);
+        newParams.set("filter", category.name);
         newParams.set("page", "1");
         setSearchParams(newParams);
         setTimeout(() => {
@@ -142,8 +177,8 @@ export default function Product() {
         }, 0);
     }
     const handleViewProduct = (product) => {
+        console.log(product)
         const path = location.pathname;
-
         navigate(`${path}/${product.id}`)
     }
     const goBack = () => {
@@ -165,7 +200,7 @@ export default function Product() {
          return (category.name)
         }) 
     categoriesName.unshift("Tất cả sản phẩm")
-    const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
+    const idSelectedCategories = filter ? categoriesName.findIndex((name) => name === filter) : 0;
     const handleSearch = (category, query) => {
         const newParams = new URLSearchParams();
         newParams.set("query", query);
@@ -256,7 +291,7 @@ export default function Product() {
                     <GoBackListProduct goBack={goBack} categorySelected={filter} query={query} />
                 </div>
 
-               <ListByCategories filter ={filter} query= {query} page={page} categories = {productCategories} handleViewMore = {null} handleViewProduct = {null}  handlePageChange = {null}  />
+               <ProductsContainter filter ={filter} query= {query} page={page} categories = {productCategories} handleViewMore = {handleViewMore} handleViewProduct = {handleViewProduct}  handlePageChange = {handlePageChange}  />
 
             </div>
 

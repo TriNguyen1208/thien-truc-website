@@ -45,8 +45,12 @@
       widthModal: 430,
       title: 'Thêm khu vực mới',
       description: 'Thêm khu vực và màu sắc đại diện',
+      contentSubmitButton :'Thêm mới',
       handleSubmitButton: async (data) => {
-        await createOne(data);
+        await createOne(data, {
+          onSuccess: (success)=> { toast.success(success ? success.message: "Thêm thành công!")},
+          onError:(error)=>{toast.error(error ?  error.message: "Thêm thất bại!") }
+        });
         queryClient.invalidateQueries(['admin_project_regions']);
         setIsModalOpen(false);
       },
@@ -79,8 +83,12 @@
       widthModal: 430,
       title: 'Chỉnh sửa khu vực',
       description: 'Chỉnh sửa thông tin khu vực và màu sắc đại diện',
+      contentSubmitButton :'Cập nhật',
       handleSubmitButton: async (data) => {
-        await updateOne({...data, id: currentEditId});
+        await updateOne({...data, id: currentEditId},{
+          onSuccess: (success)=> { toast.success(success ? success.message: "Cập nhật thành công!")},
+          onError:(error)=>{toast.error(error ?  error.message: "Cập nhật thất bại!") }
+        });
         queryClient.invalidateQueries(['admin_project_regions']);
         setIsModalEditOpen(false);
       },
@@ -97,7 +105,10 @@
       buttonLabel1: 'Hủy',
       buttonLabel2: 'Xoá',
       buttonAction2: async () => {
-        await deleteOne(currentDeleteID);
+        await deleteOne(currentDeleteID, {
+            onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
+            onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
+        });
         queryClient.invalidateQueries(['admin_project_list'])
         setIsModalDeleteOpen(false);
       }

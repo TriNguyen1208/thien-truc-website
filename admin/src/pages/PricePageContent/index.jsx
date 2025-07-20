@@ -7,7 +7,7 @@ import Loading from '@/components/Loading'
 const PricePageContent = () => {
   const {setLayoutProps} = useLayout()
   const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
-  const { mutate: updatePricePage, isPending } = useProducts.patchPricePage();
+  const { mutate: updatePricePage, isPending: isLoadingUpdatePricePage } = useProducts.patchPricePage();
     useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang bảng giá",
@@ -15,7 +15,7 @@ const PricePageContent = () => {
       hasButton: false,
     })
   },[])
-  if(isLoadingPricePage)
+  if(isLoadingPricePage || isLoadingUpdatePricePage)
   {
     return(<Loading/>)
   }
