@@ -8,10 +8,13 @@ import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { extractBlogImages } from '../../utils/handleImage';
+import { CancelPopup } from '../../components/Popup';
+
 const AddNews = () => {
     //useState
     const [form, setForm] = useState(null);
-    
+    const [saveOpen, setSaveOpen] = useState(false);
+    const [recoverOpen, setRecoverOpen] = useState(false);
     //Call API
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     const postNews = useNews.news_contents.postOne()
@@ -73,10 +76,12 @@ const AddNews = () => {
     const handleSave = async () => {
         if(form.isPublished == "Trưng bày" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
             alert("Chưa nhập những nội dung bắt buộc")
+            setSaveOpen(false);
             return;
         }
         if(form == initialForm){
             alert("❌ Chưa có sự thay đổi nào");
+            setSaveOpen(false);
             return;
         }
         //Them bai viet, call database
@@ -97,9 +102,11 @@ const AddNews = () => {
         }
         postNews.mutate(formData);     
         setForm(initialForm);
+        setSaveOpen(false);
     }
     const handleRecover = () => {
         setForm(initialForm)
+        setRecoverOpen(false);
     }
 
     //Prop setting
@@ -112,7 +119,25 @@ const AddNews = () => {
             "Trưng bày"
         ]
     }
-    
+    //Popup
+    const savePopupData = {
+        open: saveOpen,
+        setOpen: setSaveOpen,
+        notification: 'Bạn có chắc chắn muốn lưu tin tức này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Lưu',
+        buttonAction2: handleSave
+    };
+    const recoverPopupData = {
+        open: recoverOpen,
+        setOpen: setRecoverOpen,
+        notification: 'Bạn có chắc chắn muốn khôi phục tin tức này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Khôi phục',
+        buttonAction2: handleRecover
+    };
     //Loading
     if(isLoadingCategories || form === null){
         return <></>
@@ -127,7 +152,7 @@ const AddNews = () => {
                     <UploadImage form={form} setForm={setForm}/>
                     <div className='flex flex-col gap-2'>
                         <CustomButton
-                            onClick={handleSave}
+                            onClick={() => setSaveOpen(true)}
                         >
                             <div className='flex gap-4 items-center'>
                                 <SaveIcon/>
@@ -136,7 +161,7 @@ const AddNews = () => {
                             </div>
                         </CustomButton>
                         <CustomButton
-                            onClick={handleRecover}
+                            onClick={() => setRecoverOpen(true)}
                         >
                             <div className='flex gap-6 items-center'>
                                 <RecoveryIcon/>
@@ -147,6 +172,8 @@ const AddNews = () => {
                     </div>
                 </div>
             </div>
+            <CancelPopup {...savePopupData}/>
+            <CancelPopup {...recoverPopupData}/>
         </>
     )
 }

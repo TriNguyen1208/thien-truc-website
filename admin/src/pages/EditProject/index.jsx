@@ -9,6 +9,7 @@ import useProjects from '../../hooks/useProjects';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams, useNavigate } from 'react-router-dom';
+import { CancelPopup } from '../../components/Popup';
 
 const EditProject = () => {
     //navigate
@@ -17,6 +18,9 @@ const EditProject = () => {
     const {id: project_id} = useParams();
 
     //useState
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [saveOpen, setSaveOpen] = useState(false);
+    const [recoverOpen, setRecoverOpen] = useState(false);
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
     
@@ -81,11 +85,13 @@ const EditProject = () => {
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){
-            alert("Chưa nhập những nội dung bắt buộc")
+            alert("Chưa nhập những nội dung bắt buộc");
+            setSaveOpen(false);
             return;
         }
         if(form == initialForm){
             alert("❌ Chưa có sự thay đổi nào");
+            setSaveOpen(false);
             return;
         }
         //Them bai viet, call database
@@ -109,6 +115,7 @@ const EditProject = () => {
             updateProject.mutate({ id: project_id, formDataProject });
         setInitialForm(form);
         setForm(form);
+        setSaveOpen(false);
     }
 
     //Helper function
@@ -116,11 +123,39 @@ const EditProject = () => {
         //Xoa bai viet hien tai
         deleteProject.mutate(project_id);
         navigate('/quan-ly-du-an');
-        console.log("huuhh")
     }
     const handleRecover = () => {
-        setForm(initialForm)
+        setForm(initialForm);
+        setRecoverOpen(false);
     }
+    //Popup
+    const deletePopupData = {
+        open: deleteOpen,
+        setOpen: setDeleteOpen,
+        notification: 'Bạn có chắc chắn muốn xóa dự án này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Xóa',
+        buttonAction2: handleDelete
+    };
+    const savePopupData = {
+        open: saveOpen,
+        setOpen: setSaveOpen,
+        notification: 'Bạn có chắc chắn muốn lưu dự án này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Lưu',
+        buttonAction2: handleSave
+    };
+    const recoverPopupData = {
+        open: recoverOpen,
+        setOpen: setRecoverOpen,
+        notification: 'Bạn có chắc chắn muốn khôi phục dự án này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Khôi phục',
+        buttonAction2: handleRecover
+    };
 
     //Loading
     if(isLoadingRegions || isLoadingProjectContent || form == null){
@@ -136,7 +171,7 @@ const EditProject = () => {
                     <UploadImage form={form} setForm={setForm}/>
                     <div className='flex flex-col gap-2'>
                         <CustomButton
-                            onClick={handleSave}
+                            onClick={() => setSaveOpen(true)}
                         >
                             <div className='flex gap-4 items-center'>
                                 <SaveIcon/>
@@ -145,7 +180,7 @@ const EditProject = () => {
                             </div>
                         </CustomButton>
                         <CustomButton
-                            onClick={handleRecover}
+                            onClick={() => setRecoverOpen(true)}
                         >
                             <div className='flex gap-6 items-center'>
                                 <RecoveryIcon/>
@@ -161,7 +196,7 @@ const EditProject = () => {
                             hoverTextColor="#ffffff"
                             paddingX={16}
                             height={45}
-                            onClick={handleDelete}
+                            onClick={() => setDeleteOpen(true)}
                         >
                             <div className='flex gap-11 items-center'>
                                 <DeleteIcon/>
@@ -172,6 +207,9 @@ const EditProject = () => {
                     </div>
                 </div>
             </div>
+            <CancelPopup {...deletePopupData}/>
+            <CancelPopup {...savePopupData}/>
+            <CancelPopup {...recoverPopupData}/>
         </>
     )
 }

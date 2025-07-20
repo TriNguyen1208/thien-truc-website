@@ -10,12 +10,17 @@ import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { CancelPopup } from '../../components/Popup';
+
 const EditNews = () => {
     //navigate
     const navigate = useNavigate();
     //getID URL
     const {id: news_id} = useParams();
     //useState
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [saveOpen, setSaveOpen] = useState(false);
+    const [recoverOpen, setRecoverOpen] = useState(false);
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
     //Call API
@@ -79,10 +84,12 @@ const EditNews = () => {
     const handleSave = async () => {
         if(form.isPublished == "Trưng bày" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
             alert("Chưa nhập những nội dung bắt buộc")
+            setSaveOpen(false);
             return;
         }
         if(form == initialForm){
             alert("❌ Chưa có sự thay đổi nào");
+            setSaveOpen(false);
             return;
         }
         //Them bai viet, call database
@@ -107,6 +114,7 @@ const EditNews = () => {
             updateNews.mutate({ id: news_id, formDataNews });
         setInitialForm(form);
         setForm(form);
+        setSaveOpen(false);
     }
     const handleDelete = () => {
         deleteNews.mutate(news_id);
@@ -115,6 +123,7 @@ const EditNews = () => {
     }
     const handleRecover = () => {
         setForm(initialForm)
+        setRecoverOpen(false);
     }
     //Prop setting
     const props = {
@@ -125,13 +134,35 @@ const EditNews = () => {
             "Bản nháp",
             "Trưng bày"
         ],
-        currentCategory: "Công Ty",
-        currentDisplay: "Bản nháp",
-        onSave: handleSave,
-        onRecover: handleRecover,
-        onDelete: handleDelete
     }
-    
+    //Popup
+    const deletePopupData = {
+        open: deleteOpen,
+        setOpen: setDeleteOpen,
+        notification: 'Bạn có chắc chắn muốn xóa tin tức này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Xóa',
+        buttonAction2: handleDelete
+    };
+    const savePopupData = {
+        open: saveOpen,
+        setOpen: setSaveOpen,
+        notification: 'Bạn có chắc chắn muốn lưu tin tức này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Lưu',
+        buttonAction2: handleSave
+    };
+    const recoverPopupData = {
+        open: recoverOpen,
+        setOpen: setRecoverOpen,
+        notification: 'Bạn có chắc chắn muốn khôi phục tin tức này?',
+        subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+        buttonLabel1: 'Hủy',
+        buttonLabel2: 'Khôi phục',
+        buttonAction2: handleRecover
+    };
     if(isLoadingCategories || isLoadingNewsContent || form == null){
         return <></>
     }
@@ -144,7 +175,7 @@ const EditNews = () => {
                     <UploadImage form={form} setForm={setForm}/>
                     <div className='flex flex-col gap-2'>
                         <CustomButton
-                            onClick={handleSave}
+                            onClick={() => setSaveOpen(true)}
                         >
                             <div className='flex gap-4 items-center'>
                                 <SaveIcon/>
@@ -153,7 +184,7 @@ const EditNews = () => {
                             </div>
                         </CustomButton>
                         <CustomButton
-                            onClick={handleRecover}
+                            onClick={() => setRecoverOpen(true)}
                         >
                             <div className='flex gap-6 items-center'>
                                 <RecoveryIcon/>
@@ -169,7 +200,7 @@ const EditNews = () => {
                             hoverTextColor="#ffffff"
                             paddingX={16}
                             height={45}
-                            onClick={handleDelete}
+                            onClick={() => setDeleteOpen(true)}
                         >
                             <div className='flex gap-11 items-center'>
                                 <DeleteIcon/>
@@ -180,6 +211,9 @@ const EditNews = () => {
                     </div>
                 </div>
             </div>
+            <CancelPopup {...deletePopupData}/>
+            <CancelPopup {...savePopupData}/>
+            <CancelPopup {...recoverPopupData}/>
         </>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState} from 'react'
 import { useLayout } from '../../layouts/layoutcontext'
 import CustomButton from '@/components/ButtonLayout'
 import {SaveIcon} from "@/components/Icon"
@@ -6,10 +6,14 @@ import DynamicForm from "@/components/DynamicForm"
 import EditBanner from '../../components/EditBanner'
 import useRecruitment from '../../hooks/useRecruitment'
 import Loading from '@/components/Loading'
-import { SuccessPopup, CancelPopup } from "../../components/Popup";
+import { CancelPopup } from "../../components/Popup";
 const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
   const patchRecruitment = useRecruitment.patch();
+  const [saveOpenBanner, setSaveOpenBanner] = useState(false);
+  const [saveOpenCulture, setSaveOpenCulture] = useState(false);
+  const [banner, setBanner] = useState('');
+  const [culture, setCulture] = useState('');
   useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang tuyển dụng",
@@ -17,14 +21,33 @@ const RecruitmentPageContent = () => {
     })
   }, [])
 
-  const handleButtonBanner = (result) => {
-    patchRecruitment.mutate(result);
+  const handleButtonBanner = () => {
+    patchRecruitment.mutate(banner);
+    setSaveOpenBanner(false);
     //Gửi API lên backend
   }
-  const handleButtonCulture = (result) => {
-    patchRecruitment.mutate(result);
+  const handleButtonCulture = () => {
+    patchRecruitment.mutate(culture);
+    setSaveOpenCulture(false);
   }
-
+  const saveBannerPopupData = {
+    open: saveOpenBanner,
+    setOpen: setSaveOpenBanner,
+    notification: 'Bạn có chắc chắn muốn lưu banner của trang tuyển dụng này?',
+    subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+    buttonLabel1: 'Hủy',
+    buttonLabel2: 'Lưu',
+    buttonAction2: handleButtonBanner
+  };
+  const saveCulturePopupData = {
+    open: saveOpenCulture,
+    setOpen: setSaveOpenCulture,
+    notification: 'Bạn có chắc chắn muốn lưu văn hóa của trang tuyển dụng này?',
+    subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+    buttonLabel1: 'Hủy',
+    buttonLabel2: 'Lưu',
+    buttonAction2: handleButtonCulture
+  };
   const {data: recruitment, isLoading: isLoadingRecruitment} = useRecruitment.getRecruitmentPage();
   if(isLoadingRecruitment){
     return <Loading/>
@@ -52,7 +75,10 @@ const RecruitmentPageContent = () => {
         maxLength: 200
       }
     ],
-    saveButton: handleButtonBanner
+    saveButton: (result) => {
+      setBanner(result);
+      setSaveOpenBanner(true);
+    }
   }
   const propsCulture = {
     title: "Văn hóa của chúng tôi",
@@ -67,7 +93,10 @@ const RecruitmentPageContent = () => {
         rows: 6,
       },
     ],
-    saveButton: handleButtonCulture
+    saveButton: (result) => {
+      setCulture(result);
+      setSaveOpenCulture(true);
+    }
   }
   return (
     <>
@@ -75,6 +104,8 @@ const RecruitmentPageContent = () => {
         <EditBanner {...propsBanner}/>
         <EditBanner {...propsCulture}/>
       </div>
+      <CancelPopup {...saveBannerPopupData}/>
+      <CancelPopup {...saveCulturePopupData}/>
     </>
     
     
