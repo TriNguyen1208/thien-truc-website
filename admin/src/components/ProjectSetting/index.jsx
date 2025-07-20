@@ -10,15 +10,6 @@ const ProjectSetting = ({
 }) => {
     const [dropdownOpenRegions, setDropDownOpenRegions] = useState(false);
     const wrapperRegionRef = useRef();
-    const truncateRegions = useMemo(()=>{
-            if(!regions){
-                return;
-            }
-            return regions.map((region)=>{
-                return region.slice(0, 20);
-            });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     useEffect(()=>{
         const handleClickOutside = (e) => {
@@ -38,58 +29,48 @@ const ProjectSetting = ({
             <div className='flex flex-col gap-4'>
                 <div className='flex flex-col gap-3 pt-1'>
                     <label htmlFor="" className='text-sm font-medium '>Khu vực dự án <span style={{color: "red"}}>*</span></label>
-                    <div className='flex flex-row gap-2'>
-                        <CustomButton
-                            backgroundColor="white"
-                            borderColor="#e4e4e7"
-                            hoverBackgroundColor="#f3f4f6"
-                            textColor="#364153"
-                            hoverTextColor="#364153"
-                            height={45}
-                            paddingX={0}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                setDropDownOpenRegions(!dropdownOpenRegions);
-                            }}
-                        >
-                            <div ref={wrapperRegionRef} className='flex flex-row gap-2 items-center justify-center relative w-42 px-5'>
-                                <span>{truncateRegions[regions.indexOf(form.region_name)]}</span>
-                                <OpenIcon/>
-                                {
-                                    dropdownOpenRegions && (
-                                        <ul className="absolute z-10 left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
-                                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                                        >
-                                            {regions.map((item, index) => (
-                                                <li
-                                                    key={index}
-                                                    className='py-2 hover:bg-gray-100 cursor-pointer text-sm text-center text-gray-700'
-                                                    onClick={(e)=> {
-                                                        e.preventDefault();
-                                                        setForm((prev) => ({...prev, ["region_name"]: item}));
-                                                        setDropDownOpenRegions(false);
-                                                    }}
-                                                >
-                                                    <span className='break-words'>{item}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) 
-                                }
-                            </div>
-                            
-                        </CustomButton>
-                        <CustomButton
-                            backgroundColor="white"
-                            borderColor="#e4e4e7"
-                            hoverBackgroundColor="#f3f4f6"
-                            textColor="#364153"
-                            hoverTextColor="#364153"
-                            paddingX={16}
-                            height={45}
-                        ><PlusIcon/></CustomButton>
-                    </div>
+                    <CustomButton
+                        backgroundColor="white"
+                        borderColor="#e4e4e7"
+                        hoverBackgroundColor="#f3f4f6"
+                        textColor="#364153"
+                        hoverTextColor="#364153"
+                        height={45}
+                        paddingX={0}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setDropDownOpenRegions(!dropdownOpenRegions);
+                        }}
+                    >
+                        <div ref={wrapperRegionRef} className='flex flex-row gap-14 items-center justify-center relative px-5'>
+                            <span></span>
+                            <span className='line-clamp-1'>{form.region_name}</span>
+                            <OpenIcon/>
+                            {
+                                dropdownOpenRegions && (
+                                    <ul className="absolute z-10 left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
+                                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                                    >
+                                        {regions.map((item, index) => (
+                                            <li
+                                                key={index}
+                                                className='py-2 hover:bg-gray-100 cursor-pointer text-sm text-center text-gray-700'
+                                                onClick={(e)=> {
+                                                    e.preventDefault();
+                                                    setForm((prev) => ({...prev, ["region_name"]: item}));
+                                                    setDropDownOpenRegions(false);
+                                                }}
+                                            >
+                                                <span className='break-words'>{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) 
+                            }
+                        </div>
+                        
+                    </CustomButton>
                 </div>
                 <div className='flex flex-col gap-3 pt-1'>
                     <label htmlFor="" className='text-sm font-medium'>Vị trí cụ thể</label> 
@@ -113,7 +94,7 @@ const ProjectSetting = ({
                         }}
                         maxDate={new Date()}
                         dateFormat="dd/MM/yyyy"
-                        className="px-4 h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none"
+                        className="px-4 w-full h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none"
                         placeholderText="Chọn ngày hoàn thành"
                     />
                 </div>

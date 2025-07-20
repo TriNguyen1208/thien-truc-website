@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLayout } from "@/layouts/layoutcontext";
 import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon, DeleteIcon } from '../../components/Icon';
+import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import ProjectSetting from '../../components/ProjectSetting';
 import useProjects from '../../hooks/useProjects';
@@ -147,8 +147,12 @@ const EditProject = () => {
                         <CustomButton
                             onClick={handleRecover}
                         >
-                            <span>Khôi phục</span>
-                        </CustomButton>  
+                            <div className='flex gap-6 items-center'>
+                                <RecoveryIcon/>
+                                <span>Khôi phục</span>
+                                <span></span>
+                            </div>
+                        </CustomButton>   
                         <CustomButton
                             backgroundColor="white"
                             borderColor="#e4e4e7"

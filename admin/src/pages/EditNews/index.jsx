@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLayout } from "@/layouts/layoutcontext";
 import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon, DeleteIcon } from '../../components/Icon';
+import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
@@ -155,8 +155,12 @@ const EditNews = () => {
                         <CustomButton
                             onClick={handleRecover}
                         >
-                            <span>Khôi phục</span>
-                        </CustomButton>
+                            <div className='flex gap-6 items-center'>
+                                <RecoveryIcon/>
+                                <span>Khôi phục</span>
+                                <span></span>
+                            </div>
+                        </CustomButton> 
                         <CustomButton
                             backgroundColor="white"
                             borderColor="#e4e4e7"

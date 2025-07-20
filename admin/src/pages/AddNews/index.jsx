@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useLayout } from "@/layouts/layoutcontext";
 import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon } from '../../components/Icon';
+import { SaveIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
@@ -138,7 +138,11 @@ const AddNews = () => {
                         <CustomButton
                             onClick={handleRecover}
                         >
-                            <span>Khôi phục</span>
+                            <div className='flex gap-6 items-center'>
+                                <RecoveryIcon/>
+                                <span>Khôi phục</span>
+                                <span></span>
+                            </div>
                         </CustomButton>                    
                     </div>
                 </div>
