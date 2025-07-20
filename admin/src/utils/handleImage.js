@@ -39,7 +39,7 @@ const addDeleteImage = (initialForm, form, formData) => {
     const oldImages = extractAllImages(initialForm.content).images; //day la hinh cu ban dau. Phai check xem hinh cu va hinh moi
     const newImages = extractAllImages(form.content).images //day la hinh moi
     //Neu nhu hinh cu co ma hinh moi khong co thi xoa
-    if(initialForm.link_image.includes('res.cloudinary.com') && initialForm.link_image != form.link_image){
+    if(initialForm.link_image != null && initialForm.link_image.includes('res.cloudinary.com') && initialForm.link_image != form.link_image){
         formData.append('delete_images', initialForm.link_image);
     }
     const oldSrcs = oldImages.map(img => img.getAttribute('src')).filter(Boolean);
