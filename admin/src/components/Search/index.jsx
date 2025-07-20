@@ -51,33 +51,6 @@ const SearchBar = ({data}) => {
 
     //using useRef
     const wrapperRef = useRef(null);
-
-    //Xu ly truncate
-    const truncateCategories = useMemo(()=>{
-        if(!categories){
-            return;
-        }
-        return categories.map((category)=>{
-            if(Array.from(category).length >= 20){
-                return category.slice(0, 20) + '...';
-            }
-            return category
-        });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    const truncateDisplays = useMemo(()=>{
-        if(!displays){
-            return;
-        }
-        return displays.map((display)=>{
-            if(Array.from(display).length >= 20){
-                return display.slice(0, 17) + "...";
-            }
-            return display;
-        })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
     //function
     //debounced query 100ms
     useEffect(()=> {
@@ -236,14 +209,14 @@ const SearchBar = ({data}) => {
                         <div className='flex flex-row gap-4 justify-between'>
                             {hasButtonCategory && (<div className='relative h-full rounded-sm flex flex-row'>
                                 <button
-                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer border border-gray-200'
+                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex gap-1 items-center justify-between bg-[#F9FAFB] cursor-pointer border border-gray-200'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setDropDownOpenCategory(!dropdownOpenCategory);
                                     }}
                                 >
                                     <FilterIcon/>
-                                    <span>{truncateCategories[categories.indexOf(category)]}</span>
+                                    <span className='line-clamp-1'>{category}</span>
                                     <OpenIcon/>
                                 </button>
                                 {
@@ -271,14 +244,14 @@ const SearchBar = ({data}) => {
                             </div>)}
                             {hasButtonDisplay && (<div className='relative h-full rounded-sm flex flex-row'>
                                 <button
-                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex items-center justify-between bg-[#F9FAFB] cursor-pointer border border-gray-200'
+                                    className='rounded-sm w-48 h-full px-[13px] py-[9px] text-gray-700 hover:bg-gray-100 flex gap-1 items-center justify-between bg-[#F9FAFB] cursor-pointer border border-gray-200'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setDropDownOpenDisplay(!dropdownOpenDisplay);
                                     }}
                                 >
                                     <FilterIcon/>
-                                    <span>{truncateDisplays[displays.indexOf(display)]}</span>
+                                    <span className='line-clamp-1'>{display}</span>
                                     <OpenIcon/>
                                 </button>
                                 {
