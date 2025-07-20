@@ -22,8 +22,7 @@ const deleteImage = async(image_url_array) => {
     }
     if (url_array.length === 0) return;
     try {
-        const result = await cloudinary.api.delete_resources(url_array);
-        console.log("Delete result:", result);
+        await cloudinary.api.delete_resources(url_array);
     } catch (error) {
         console.error("Delete error:", error);
     }

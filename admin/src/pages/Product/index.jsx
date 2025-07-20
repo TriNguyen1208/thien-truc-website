@@ -255,7 +255,7 @@ const Product = () => {
                       status: !product.is_featured,
                     });
                   }}
-                  disabled={isLoadingUpdateFeatureOne}
+                  disabled={isPendingUpdateFeatureOne}
                   className={`
                     w-5 h-5 appearance-none cursor-pointer rounded-[3px]
                     transition-all duration-200
