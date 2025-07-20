@@ -72,6 +72,10 @@ const DynamicForm = ({ data, config }) => {
                 result[name] = value !== undefined ? value : '';
             }
         });
+        if(result.img != null){
+            setUrlInput(result.img);
+        }
+        console.log(result);
         return result;
     }, [data]);
 
