@@ -9,8 +9,8 @@ import {
 function Picture({ url }) {
 
     return (
-        <div className="h-[845px] flex flex-col ">
-            <div className="h-[668px] w-full p-[15px] border-[#E5E7EB] border-[1px] rounded-[8px]">
+        <div className=" flex flex-col ">
+            <div className=" w-full p-[15px] border-[#E5E7EB] border-[1px] rounded-[8px]">
                 <img 
                     src={url}
                     alt={''}
@@ -44,29 +44,29 @@ export default function ProductDetail() {
 
     return (
         <>
-            <div className="container-fluid pt-[30px]">
+            <div className="container-fluid py-[30px]">
                 <div onClick={goBack} className="flex flex-row w-full h-[20px] my-[15px] gap-[10px] leading-none items-center text-[#14532D] font-medium cursor-pointer">
                     <ArrowLeftOutlined />
                     <span>Quay lại</span>
                 </div>
-                <div className="grid grid-cols-2 grid-rows-2 gap-[30px]">
+                <div className="grid grid-cols-1 gap-[30px] lg:grid-cols-2">
                     <div>
                         {product.product_img ? (<Picture url={product.product_img} />)
                             :
-                            (<div className="w-full h-[668px] flex items-center justify-center border border-gray-300">
+                            (<div className="w-full aspect-square flex items-center justify-center border border-gray-300">
                                 <ProductOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
                             </div>)
                         }
                             
 
                     </div>
-                    <div className="flex flex-col h-[845px]">
+                    <div className="flex flex-col">
                         <div className="pb-[10px] ">
-                            <span className="font-bold text-[30px] leading-none ">
+                            <span className="font-bold text-[20px] sm:text-[24px]  leading-none ">
                                 {product.name}
                             </span>
                         </div>
-                        <div className="border-[#E5E7EB] border-y-[1px] py-[15px] line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
+                        <div className="border-[#E5E7EB] border-y-[1px] py-[15px]  my-[15px] line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
                             {typeof product.price === 'number' ? product.price.toLocaleString('vi-VN') + " ₫" : 'Chưa có giá'}
                         </div>
                         <div className="py-[10px]">
@@ -75,7 +75,7 @@ export default function ProductDetail() {
                             </span>
                         </div>
                     </div>
-                    <div className="h-[566px] p-[20px] border-[#E5E7EB] border-[1px] rounded-[8px]">
+                    <div className="p-[20px] border-[#E5E7EB] border-[1px] rounded-[8px]">
                         <div className="border-l-[5px] border-[#14532D] px-[20px] my-[20px]">
                             <span className="text-[#14532D] text-[20px] font-bold">
                                 Tính năng nổi bật
@@ -95,7 +95,7 @@ export default function ProductDetail() {
                             </ul>
                         </div>
                     </div>
-                    <div className="h-[566px] p-[20px] border-[#E5E7EB] border-[1px] rounded-[8px]">
+                    <div className="p-[20px] border-[#E5E7EB] border-[1px] rounded-[8px]">
                         <div className="border-l-[5px] border-[#14532D] px-[20px] my-[20px]">
                             <span className="text-[#14532D] text-[20px] font-bold">
                                 Thông số kỹ thuật

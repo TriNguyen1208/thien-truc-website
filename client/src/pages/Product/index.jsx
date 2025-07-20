@@ -82,11 +82,11 @@ function ProductsContainter({ filter, query, page,categories, handleViewMore, ha
 
 function ListProduct({ products, handleViewProduct }) {
     return (
-        <div className='grid grid-cols-4 py-[20px] mx-[30px] gap-y-[20px]'>
+        <div className=' grid grid-cols-1 place-items-center py-[20px] gap-y-[20px] md:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4'>
             {
                 products.map((product, i) => {
                     return (
-                        <div key={i} className='w-[330px] h-[620px]'>
+                        <div key={i} className='h-[620px] w-[90%] sm:w-[70%] md:w-[90%]'>
                             <ItemProduct product={products[i]}
                                 handleClick={() => handleViewProduct(product)}
                             />
@@ -114,7 +114,7 @@ function Category({ category,query = '', limit = '', handleViewProduct, handleVi
     }
     return (
 
-        <div className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
+        <div className='flex flex-col  border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
             <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
                 {
                     isQuery ? <></> : (
@@ -275,7 +275,7 @@ export default function Product() {
             <Banner data={bannerMain} />
             <Banner data={bannerViewPrices} />
             <div className="container-fluid flex flex-col ">
-                <div className='flex flex-grow justify-between py-[45px]  '>
+                <div className='grid grid-cols-1 gap-[24px] place-items-center py-[24px] md:grid-cols-2 lg:py-[48px] xl:grid-cols-4'>
                     {
                         contentCenterCards.map((card, index) => {
                             return (

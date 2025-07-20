@@ -36,7 +36,7 @@ export default function Button({ Icon, text, colorText, colorBackground, padding
         justifyContent: text && Icon ? 'flex-start' : 'center',
       }}
     >
-     <div className="flex flex-row mx-auto gap-[4px]"> {Icon && <div className="flex items-center"><Icon /></div>}
+     <div className="flex flex-row mx-auto gap-[12px]"> {Icon && <div className="flex items-center"><Icon /></div>}
       {text && <p className="text-[14px] font-medium">{text}</p>} </div>
     </div>
   );
