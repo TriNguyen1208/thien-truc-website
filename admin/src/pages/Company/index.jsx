@@ -41,7 +41,7 @@ const Company = () => {
 
     const { setLayoutProps } = useLayout();
     const {data: companyInfo, isLoading: isLoadingCompanyInfo} = useContact.getCompanyInfo()
-    const {mutate: updateCompanyInfo} = useContact.patchCompanyInfo()
+    const {mutate: updateCompanyInfo, isPending: isLoadingUpdateCompanyInfo} = useContact.patchCompanyInfo()
 
     const [companyAddressList , setCompanyAddressList] = useState([])
     const [companyHourList , setCompanyHourList] = useState([])
@@ -104,7 +104,7 @@ const Company = () => {
           setCompanyEmbedUrl(companyInfo.googlemaps_embed_url)
         }
     },[companyInfo])
-    if(isLoadingCompanyInfo)
+    if(isLoadingCompanyInfo || isLoadingUpdateCompanyInfo)
     {
       return(<Loading/>)
     }

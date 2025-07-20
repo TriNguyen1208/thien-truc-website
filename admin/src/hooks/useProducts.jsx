@@ -13,6 +13,8 @@ function usePatchPricePage() {
   })
 }
 function useGetProductPage(){
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(['admin_product_page']);
     return useQuery({
         queryKey: ["admin_product_page"],
         queryFn: productsServices.getProductPage,
@@ -25,13 +27,15 @@ function usePatchProductPage() {
   return useMutation({
     mutationFn: (updatedPage)=> productsServices.patchProductPage(updatedPage),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["product_page"] });
+      queryClient.invalidateQueries({ queryKey: ["admin_product_page"] });
     },
   });
 }
 
 function useGetQuantity()
 {
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(['admin_product_quantity']);
     return useQuery({
         queryKey: ['admin_product_quantity'],
         queryFn: productsServices.getQuantity,
@@ -49,6 +53,8 @@ function useGetAll() {
 }
 
 function useGetPricePage() {
+  const queryClient = useQueryClient();
+  queryClient.invalidateQueries(['admin_price_page']);
   return useQuery({
     queryKey: ["admin_price_page"],
     queryFn: productsServices.getPricePage,

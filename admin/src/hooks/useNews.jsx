@@ -3,6 +3,8 @@ import newsServices from "@/services/news.api.js";
 import { toast } from 'react-toastify';
 function useGetQuantity()
 {
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(['admin_news_quantity']);
     return useQuery({
         queryKey: ['admin_news_quantity'],
         queryFn: newsServices.getQuantity,

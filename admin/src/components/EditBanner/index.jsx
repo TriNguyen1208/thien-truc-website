@@ -86,7 +86,7 @@ export default function EditBanner({title, description, listInput,saveButton})
 
             </div>
             <div className='w-[145px] h-40[px]'>
-              <button type = "submit"> <Button {...propsButton}/></button>
+              <button className='w-full' type = "submit"> <Button {...propsButton}/></button>
             </div>                
             </form>
            

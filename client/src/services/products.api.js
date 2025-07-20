@@ -12,9 +12,13 @@ const getProductPage = async () => {
     return res.data;
 }
 const products = {
-    getList: async (query = '', filter = '', page = 1) => {
-        const res = await axios.get(API_ROUTES.product.products.getList(query, filter, page));
+    getList: async (query = '', filter = '', is_featured, page = 1, limit) => {
+        const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured, page, limit));
         return res.data;
+    },
+    getListByCategory: async(id, query ='', filter ='', is_featured, limit) =>{
+        const res = await axios.get(API_ROUTES.product.products.getListByCategory(id, query, filter, is_featured, limit))
+        return res.data
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.product.products.getOne(id));
@@ -25,6 +29,10 @@ const product_categories = {
     getAll: async () => {
         const res = await axios.get(API_ROUTES.product.product_categories.getAll);
         return res.data;
+    },
+    getList: async (id, query)=>{
+        const res = await axios.get(API_ROUTES.product.product_categories.getList(id, query))
+        return res.data
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.product.product_categories.getOne(id));

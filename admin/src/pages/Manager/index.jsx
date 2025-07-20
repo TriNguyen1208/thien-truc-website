@@ -11,9 +11,9 @@ import Loading from '@/components/Loading'
 const Manager = () => {
 
   const { data: managers, isLoading: isLoadingManagers } = useAdmin.manager.getAll();
-  const { mutate: createManager } = useAdmin.manager.createOne();
-  const { mutate: updateManager } = useAdmin.manager.updateOne();
-  const { mutate: deleteManager } = useAdmin.manager.deleteOne();
+  const { mutate: createManager , isPending: isLoadingCreateManager } = useAdmin.manager.createOne();
+  const { mutate: updateManager, isPending: isLoadingUpdateManager  } = useAdmin.manager.updateOne();
+  const { mutate: deleteManager, isPending: isLoadingDeleteManager } = useAdmin.manager.deleteOne();
 
   const {setLayoutProps} = useLayout();
   const [listManagers , setListManagers] = useState([])
@@ -44,7 +44,7 @@ const Manager = () => {
   }
 }, [managers]);
   
-  if(isLoadingManagers)
+  if(isLoadingManagers || isLoadingCreateManager || isLoadingUpdateManager ||isLoadingDeleteManager)
   {
     return(<Loading/>)
   }
@@ -95,7 +95,7 @@ const Manager = () => {
       }
     )
     setIsModalOpenAdd(false)
-    
+  
   }
    const handleSubmitButtonEdit = (valueForm) => {
     updateManager( {
@@ -181,12 +181,12 @@ const Manager = () => {
   }
    const dataTable = (listManagers || []).map((manager, index)=>{
         return([ 
-        {type: "text",content: manager.username}, 
-        {type: "text", content: manager.fullname},
-        {type: "text", content: manager.phone}, 
-        {type: "text", content: manager.email},
-        {type: "text", content: manager.position},
-        {type: "text", content: manager.description},
+        {type: "text",content: manager.username === '' ? 'Cập nhật sau': manager.username}, 
+        {type: "text", content: manager.fullname === '' ? 'Cập nhật sau': manager.fullname},
+        {type: "text", content: manager.phone === '' ? 'Cập nhật sau': manager.phone}, 
+        {type: "text", content: manager.email === '' ? 'Cập nhật sau': manager.email},
+        {type: "text", content: manager.position === '' ? 'Cập nhật sau': manager.position},
+        {type: "text", content: manager.description === '' ? 'Cập nhật sau': manager.description},
         {type: "array-components", components: [ <div data-key={index} className='w-[44px] h-[40px]'><Button {...editButton} /></div>, <div data-key={index} className='w-[44px] h-[40px]'><Button {...delButton} /></div> ]}
         
     ])

@@ -3,6 +3,8 @@ import contactServices from "@/services/contact.api.js";
 import { toast } from "react-toastify";
 
 function useGetQuantity() {
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(['admin_contact_quantity']);
     return useQuery({
         queryKey: ['admin_contact_quantity'],
         queryFn: contactServices.getQuantity,

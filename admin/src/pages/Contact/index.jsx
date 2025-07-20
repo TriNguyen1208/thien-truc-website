@@ -22,9 +22,9 @@ const Contact = () => {
   const [isOpenDeletePopup, setIsOpenDeletePopup] = useState(false)
 
   const {data: supportAgents, isLoading: isLoadingSupportAgent} = useContact.support_agents.getAll()
-  const {mutate: addAgent} = useContact.support_agents.createOne()
-  const {mutate: deleteAgent} = useContact.support_agents.deleteOne()
-  const {mutate: updateAgent} = useContact.support_agents.updateOne()
+  const {mutate: addAgent,isPending : isLoadingCreateAgent} = useContact.support_agents.createOne()
+  const {mutate: deleteAgent,isPending : isLoadingDeleteAgent} = useContact.support_agents.deleteOne()
+  const {mutate: updateAgent, isPending : isLoadingUpdateAgent} = useContact.support_agents.updateOne()
  
 const handleAddContact= ()=>
   {
@@ -47,7 +47,7 @@ const handleAddContact= ()=>
     }
   },[supportAgents])
   
-  if(isLoadingSupportAgent)
+  if(isLoadingSupportAgent || isLoadingCreateAgent || isLoadingDeleteAgent|| isLoadingUpdateAgent)
   {
     return(<Loading/>)
   }
@@ -197,10 +197,10 @@ const handleAddContact= ()=>
  const dataTable = listContacts.map((contact, index)=>{
         return([ {type: "text",content: index+1}, 
       {type: "component", component: <div> <ProductImageCell imageUrl = {contact.avatar_img} productName = {"Nhân viên"} /> </div>},
-      {type: "text", content: contact.name}, 
-      {type: "text", content: contact.role},
-      {type: "text", content: contact.phone_number},
-      {type: "text", content: contact.facebook_url},
+      {type: "text", content: contact.name === '' ? 'Cập nhật sau': contact.name}, 
+      {type: "text", content: contact.role  === '' ? 'Cập nhật sau': contact.role},
+      {type: "text", content: contact.phone_number  === '' ? 'Cập nhật sau': contact.phone_number},
+      {type: "text", content: contact.facebook_url  === '' ? 'Cập nhật sau': contact.facebook_url},
       {type: "array-components", components: [ <div data-key={index} className='w-[44px] h-[40px]'><Button {...editButton} /></div>, <div data-key={index} className='w-[44px] h-[40px]'><Button {...delButton} /></div> ]}
         
     ])

@@ -17,72 +17,76 @@ function GoBackListProduct({goBack ,categorySelected ,query}){
         </div> : <div></div>
     )
 }
-function DisplayByCategories({ data, handleViewMore, handleViewProduct, handlePageChange }) {
-    return (
-        Object.entries(data).map((objectCategory, index) => {
-
-            const props = {
-                category: objectCategory[0],
-                products: objectCategory[1],
-                handleViewMore: handleViewMore,
-                handleViewProduct: handleViewProduct,
-                handlePageChange: handlePageChange
-            }
-            return (<div key={index}>
-                <Category {...props} />
-            </div>)
-        })
-    )
-}
-
-function DisplayProduct({ dataAll, categorySelected, query, handleViewMore, handleViewProduct, handlePageChange }) {
-    if (!Array.isArray(dataAll)) {
-        const props = {
-            data: dataAll,
-            handleViewMore: handleViewMore,
-            handleViewProduct: handleViewProduct,
-            handlePageChange: handlePageChange
-        }
-        return (<DisplayByCategories {...props} />)
-    } else if (query == '') {
-        if (dataAll.length == 0)
-            return (<div className='py-[20px]'>
-                <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
-            </div>)
-        const props = {
-            category: categorySelected,
-            allCategories: false,
-            products: dataAll,
-            handleViewProduct: handleViewProduct,
+function ProductsContainter({ filter, query, page,categories, handleViewMore, handleViewProduct, handlePageChange }) {
+  
+    let props
+    if(filter === 'Tất cả sản phẩm' && query === '')
+    {
+        return(
+            categories.map((category, index)=>{
+                     props = {
+                     category: category, 
+                     handleViewMore : handleViewMore,
+                     handleViewProduct: handleViewProduct,
+                     limit: 4
+                }
+                return(
+                  <div key = {index}>
+                      <Category {...props}/>
+                  </div>
+                )
+            })
+        )
+    }else if(query === '')
+    {
+         props = {
+            category: categories.find(obj => obj.name === filter),
+            handleViewMore : null,
+            isPaging: true,
+            page: page,
             handlePageChange: handlePageChange,
-
-        }
-        return (<Category {...props} paging={<Paging onPageChange={handlePageChange} currentPage={1} />} />)
-
-
-    } else {
-        if (dataAll.length == 0)
-            return (<div className='py-[20px]'>
-                <p className='text-[20px] px-[20px] text-[#16A34A]'>Không có sản phẩm</p>
-            </div>)
-        const props = {
-            products: dataAll,
             handleViewProduct: handleViewProduct
         }
-        return (<div className='flex flex-col my-[20px]'>
-            <ListProduct {...props} />
-            <Paging  onPageChange={ handlePageChange} currentPage={1} />
-        </div>)
+       
+    }else
+    {
+        if(filter === 'Tất cả sản phẩm')
+        {
+             props = {
+            category: categories.find(obj => obj.name === filter),
+            handleViewMore : null,
+            isPaging: true,
+            isQuery: true,
+            query: query,
+            page: page,
+            handlePageChange: handlePageChange,
+            handleViewProduct: handleViewProduct
+        }
+          
+        }else
+        {
+             props = {
+            category: categories.find(obj => obj.name === filter),
+            handleViewMore : null,
+            isPaging: true,
+            page: page,
+            query: query,
+            handlePageChange: handlePageChange,
+            handleViewProduct: handleViewProduct
+             }
+      
+        }
     }
-
+    return(<Category {...props}/>)
 }
+
 function ListProduct({ products, handleViewProduct }) {
     return (
-        <div className='grid grid-cols-4 py-[20px] mx-[30px] gap-y-[20px]'>
+        <div className=' grid grid-cols-1 place-items-center py-[20px] gap-y-[20px] md:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4'>
             {
                 products.map((product, i) => {
                     return (
-                        <div key={i} className='w-[330px] h-[620px]'>
+                        <div key={i} className='h-[620px] w-[90%] sm:w-[70%] md:w-[90%]'>
                             <ItemProduct product={products[i]}
                                 handleClick={() => handleViewProduct(product)}
                             />
@@ -96,24 +100,38 @@ function ListProduct({ products, handleViewProduct }) {
         </div>
     )
 }
-function Category({ category, allCategories = true, products, handleViewMore = null, handleViewProduct, paging = <></> }) {
-
+function Category({ category,query = '', limit = '', handleViewProduct, handleViewMore ,handlePageChange ,isPaging = false,isQuery = false, page =1 }) {
+    
+    
+    const {data: products, isLoading: isLoadingProductByCategory} = useProducts.products.getList(query,(category|| { name:''}).name,false,page, limit)
+    if(isLoadingProductByCategory)
+    {
+        return(<Loading />)
+    }
+    if(products.results.length == 0)
+    {
+        return(limit === 4 ? <></> : <div className='mb-[20px]'>Không có sản phẩm</div>)
+    }
     return (
 
-        <div className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
+        <div className='flex flex-col  border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
             <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
-                <div className='border-l-[5px] border-[#1E2A38] px-[16px] ml-[30px]'>
+                {
+                    isQuery ? <></> : (
+                        <div className='border-l-[5px] border-[#1E2A38] px-[16px] ml-[30px]'>
                     <h1 className='text-[30px] leading-none text-[#1E2A38]'>
-                        {category}
+                        {category.name}
                     </h1>
                 </div>
+                    )
+                }
             </div>
-            <ListProduct products={products} handleViewProduct={handleViewProduct} />
+            <ListProduct products={products.results} handleViewProduct={handleViewProduct} />
 
             <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
                 <div className="h-fit w-fit">
                     {
-                        allCategories ? <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(category)} /> : paging
+                      isPaging ?<Paging data = {{numberPagination: Math.ceil(products.totalCount / 12)}} onPageChange = {handlePageChange} currentPage = {products.page} />: <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(category)} /> 
                     }
 
                 </div>
@@ -129,20 +147,14 @@ export default function Product() {
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
-    const filter = searchParams.get('filter') || "";
+    const filter = searchParams.get('filter') || "Tất cả sản phẩm";
     const page = parseInt(searchParams.get('page')) || 1;
     const query = searchParams.get('query') || "";
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage() 
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll() 
-    const {data: dataAll , isLoading : isLoadingProduct} =  useProducts.products.getList(query, filter =='Tất cả sản phẩm' ?"":filter , page)
-  
-   
-   
 
 
-
-
-    if (isLoadingPage || isLoadingCategories || isLoadingProduct) {
+    if (isLoadingPage || isLoadingCategories) {
         return (<div >
             <Loading />
         </div>)
@@ -157,7 +169,7 @@ export default function Product() {
     }
     const handleViewMore = (category) => {
         const newParams = new URLSearchParams();
-        newParams.set("filter", category);
+        newParams.set("filter", category.name);
         newParams.set("page", "1");
         setSearchParams(newParams);
         setTimeout(() => {
@@ -165,8 +177,8 @@ export default function Product() {
         }, 0);
     }
     const handleViewProduct = (product) => {
+        console.log(product)
         const path = location.pathname;
-
         navigate(`${path}/${product.id}`)
     }
     const goBack = () => {
@@ -184,11 +196,11 @@ export default function Product() {
         newParams.set("query", query);
         setSearchParams(newParams);
     }   
-     const categories = productCategories.map((category) => {
+     const categoriesName = productCategories.map((category) => {
          return (category.name)
         }) 
-    categories.unshift("Tất cả sản phẩm")
-    const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
+    categoriesName.unshift("Tất cả sản phẩm")
+    const idSelectedCategories = filter ? categoriesName.findIndex((name) => name === filter) : 0;
     const handleSearch = (category, query) => {
         const newParams = new URLSearchParams();
         newParams.set("query", query);
@@ -210,7 +222,7 @@ export default function Product() {
         value: query,
         idCategories: idSelectedCategories,
         handleButton: handleSearch,
-        categories: categories,
+        categories: categoriesName,
         contentPlaceholder: 'Tìm kiếm sản phẩm...',
         handleSearchSuggestion: handleSearchSuggestion,
         handleEnter: handleEnterSearch
@@ -256,21 +268,14 @@ export default function Product() {
 
 
 
-    const propsDisplayProduct = {
-        dataAll: dataAll,
-        categorySelected: filter,
-        query: query,
-        handleViewMore: handleViewMore,
-        handleViewProduct: handleViewProduct,
-        handlePageChange: handlePageChange
-    }
+ 
     return (
 
         <>
             <Banner data={bannerMain} />
             <Banner data={bannerViewPrices} />
             <div className="container-fluid flex flex-col ">
-                <div className='flex flex-grow justify-between py-[45px]  '>
+                <div className='grid grid-cols-1 gap-[24px] place-items-center py-[24px] md:grid-cols-2 lg:py-[48px] xl:grid-cols-4'>
                     {
                         contentCenterCards.map((card, index) => {
                             return (
@@ -286,7 +291,7 @@ export default function Product() {
                     <GoBackListProduct goBack={goBack} categorySelected={filter} query={query} />
                 </div>
 
-                <DisplayProduct {...propsDisplayProduct} />
+               <ProductsContainter filter ={filter} query= {query} page={page} categories = {productCategories} handleViewMore = {handleViewMore} handleViewProduct = {handleViewProduct}  handlePageChange = {handlePageChange}  />
 
             </div>
 
