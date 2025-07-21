@@ -149,9 +149,10 @@ const project_contents = {
             onSuccess: (success) => {
                 console.log(success.message)
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_project_contents"] });
-                queryClient.invalidateQueries({ queryKey: ["admin_projects"] });
+                queryClient.invalidateQueries({ queryKey: ["admin_project_contents"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_projects"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_projects_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_project_content"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -166,8 +167,10 @@ const project_contents = {
             },
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_project"], exact: false});
+                queryClient.invalidateQueries({ queryKey: ["admin_project_contents"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_project"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_projects_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_project_content"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);

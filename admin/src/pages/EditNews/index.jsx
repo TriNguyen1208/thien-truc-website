@@ -25,7 +25,7 @@ const EditNews = () => {
     const [initialForm, setInitialForm] = useState(null);
     //Call API
 
-    const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
+    const {data: news_contents, isLoading: isLoadingNewsContent, isFetching: isFetchingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news_contents.updateOne()
     const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne();
@@ -42,8 +42,9 @@ const EditNews = () => {
     //check is change
     const { setShouldWarn } = useNavigationGuardContext();
     useEffect(() => {
-        if (isLoadingNewsContent) return;
-        setInitialForm({
+        if (isLoadingNewsContent || isFetchingNewsContent) return;
+        if (!news_contents) return;
+        const initialForm = {
             title: news_contents.news.title ?? '',
             main_content: news_contents.news.main_content ?? '',
             content: news_contents.content ?? '',
@@ -52,14 +53,11 @@ const EditNews = () => {
             main_image: '',
             link_image: news_contents.news.main_img ?? null,
             countWord: news_contents.content.replace(/<[^>]+>/g, '').trim().length
-        });
-    }, [isLoadingNewsContent]) 
+        };
+        setInitialForm(initialForm);
+        setForm(initialForm);
+    }, [isLoadingNewsContent, isFetchingNewsContent, news_contents]) 
 
-    useEffect(() => {
-        if (initialForm) {
-            setForm(initialForm);
-        }
-    }, [initialForm]);
     useEffect(() => {
         if(form == null || initialForm == null){
             return;
@@ -79,7 +77,7 @@ const EditNews = () => {
         }
         const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
-    }, [form, initialForm]);
+    }, [form, initialForm, setShouldWarn]);
     
     //Helper function
     const handleSave = async () => {
@@ -108,13 +106,8 @@ const EditNews = () => {
                 formDataNews.append(key, form[key]);
             }
         }
-        for(let [key, value] of formDataNews.entries()){
-            console.log(key, value);
-        }
         if(news_id !== null)
             updateNews({ id: news_id, formDataNews })
-        setInitialForm(form);
-        setForm(form);
         setSaveOpen(false);
     }
     const handleDelete = () => {
@@ -164,7 +157,7 @@ const EditNews = () => {
         buttonLabel2: 'Khôi phục',
         buttonAction2: handleRecover
     };
-    if(isLoadingCategories || isLoadingNewsContent || form == null || isPendingDeleteNews || isPendingUpdateNews){
+    if(isLoadingCategories || isLoadingNewsContent || form == null || isPendingDeleteNews || isPendingUpdateNews || isFetchingNewsContent){
         return <Loading/>
     }
     return (

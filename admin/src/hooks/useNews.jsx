@@ -124,7 +124,7 @@ const news_contents = {
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["news_content", id],
+            queryKey: ["admin_news_content", id],
             queryFn: () => newsServices.new_contents.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
@@ -137,8 +137,9 @@ const news_contents = {
             },
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_news_contents"] });
-                queryClient.invalidateQueries({ queryKey: ["admin_news"] });
+                queryClient.invalidateQueries({ queryKey: ["admin_news_content"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_news_contents"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news_list"], exact: false });
             },
             onError: (error) => {
@@ -154,6 +155,7 @@ const news_contents = {
             },
             onSuccess: (success) => {
                 toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["admin_news_content"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news_contents"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news_list"], exact: false });
