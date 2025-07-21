@@ -11,6 +11,19 @@ import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CancelPopup } from '../../components/Popup';
 import Loading from '../../components/Loading';
+function normalizeContent(content = '') {
+    return content
+        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+        .trim();
+}
+function normalizeForm(form) {
+    return {
+        ...form,
+        content: normalizeContent(form.content),
+        // nếu có nhiều field HTML thì thêm normalize ở đây
+    };
+}
 const EditProject = () => {
     //navigate
     const navigate = useNavigate();
@@ -54,33 +67,19 @@ const EditProject = () => {
             link_image: project_contents.project.main_img ?? '',
             province: project_contents.project.province ?? '',
             completeTime: project_contents.project.complete_time ?? '',
-            countWord: project_contents.content.replace(/<[^>]+>/g, '').trim().length
+            countWord: normalizeContent(project_contents.content).replace(/<[^>]+>/g, '').trim().length
         }
         setInitialForm(initialForm);
         setForm(initialForm);
     }, [isLoadingProjectContent, isFetchingProjectContent, project_contents])
-
+    
     useEffect(() => {
         if(form == null || initialForm == null){
             return;
         }
-        function normalizeContent(content = '') {
-            return content
-                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-                .trim();
-        }
-        function normalizeForm(form) {
-            return {
-                ...form,
-                content: normalizeContent(form.content),
-                // nếu có nhiều field HTML thì thêm normalize ở đây
-            };
-        }
         const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
     }, [form, initialForm, setShouldWarn]);
-
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){

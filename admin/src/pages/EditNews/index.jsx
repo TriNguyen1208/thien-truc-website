@@ -12,6 +12,19 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { CancelPopup } from '../../components/Popup';
 import Loading from '../../components/Loading';
+function normalizeContent(content = '') {
+    return content
+        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+        .trim();
+}
+function normalizeForm(form) {
+    return {
+        ...form,
+        content: normalizeContent(form.content),
+        // nếu có nhiều field HTML thì thêm normalize ở đây
+    };
+}
 const EditNews = () => {
     //navigate
     const navigate = useNavigate();
@@ -52,28 +65,14 @@ const EditNews = () => {
             isPublished: news_contents.news.is_published ? "Trưng bày" : "Bản nháp",
             main_image: '',
             link_image: news_contents.news.main_img ?? null,
-            countWord: news_contents.content.replace(/<[^>]+>/g, '').trim().length
+            countWord: normalizeContent(news_contents.content).replace(/<[^>]+>/g, '').trim().length
         };
         setInitialForm(initialForm);
         setForm(initialForm);
     }, [isLoadingNewsContent, isFetchingNewsContent, news_contents]) 
-
     useEffect(() => {
         if(form == null || initialForm == null){
             return;
-        }
-        function normalizeContent(content = '') {
-            return content
-                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-                .trim();
-        }
-        function normalizeForm(form) {
-            return {
-                ...form,
-                content: normalizeContent(form.content),
-                // nếu có nhiều field HTML thì thêm normalize ở đây
-            };
         }
         const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);

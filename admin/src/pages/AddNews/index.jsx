@@ -10,6 +10,19 @@ import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { extractBlogImages } from '../../utils/handleImage';
 import { CancelPopup } from '../../components/Popup';
 import Loading from '../../components/Loading';
+function normalizeContent(content = '') {
+    return content
+        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+        .trim();
+}
+function normalizeForm(form) {
+    return {
+        ...form,
+        content: normalizeContent(form.content),
+        // nếu có nhiều field HTML thì thêm normalize ở đây
+    };
+}
 const AddNews = () => {
     //useState
     const [form, setForm] = useState(null);
@@ -52,21 +65,6 @@ const AddNews = () => {
         if(form == null || initialForm == null){
             return;
         }
-        function normalizeContent(content = '') {
-            return content
-                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-                .trim();
-        }
-        function normalizeForm(form) {
-            return {
-                ...form,
-                content: normalizeContent(form.content),
-                // nếu có nhiều field HTML thì thêm normalize ở đây
-            };
-        }
-        console.log(normalizeForm(form))
-        console.log(normalizeForm(initialForm))
         const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
     }, [form]);
@@ -95,9 +93,6 @@ const AddNews = () => {
             } else {
                 formData.append(key, form[key]);
             }
-        }
-        for(let [key, value] of formData.entries()){
-            console.log(key, value)
         }
         mutateNews(formData);  
         setForm(initialForm);

@@ -16,6 +16,7 @@ const UploadImage = ({
             setFile(file)
             setForm((prev) => ({ ...prev, "main_image": file }));
         }
+        e.target.value = null;
     }
     useEffect(() => {
         if (form.main_image !== "" && form.link_image !== "") {
