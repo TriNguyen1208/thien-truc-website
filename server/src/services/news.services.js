@@ -1,5 +1,5 @@
 import pool from '#@/config/db.js'
-import { uploadImage, deleteImage } from '#@/utils/image.js';
+import { uploadImage, deleteImage, extractAllImages, isCloudinary } from '#@/utils/image.js';
 const getAllTables = async () => {
     const _news_page = await getNewsPage();
     const _news = await news.getList();
@@ -398,7 +398,23 @@ const news = {
 
         try {
             await client.query('BEGIN');
-
+            //Xoa anh trong html tren cloudinary
+            const sql = `
+                select 
+                    nc.content,
+                    n.main_img
+                from news.news_contents nc 
+                join news.news n on nc.news_id = n.id
+                where nc.news_id = $1
+            `
+            const row = (await pool.query(sql, [id])).rows[0]
+            const content = row.content;
+            const image = row.main_img;
+            const cloudinary_images = extractAllImages(content);
+            if(isCloudinary(image)){
+                cloudinary_images.push(image);
+            }
+            await deleteImage(cloudinary_images);
             // Giảm item_count trong news_categories
             await client.query(`
             UPDATE news.news_categories
