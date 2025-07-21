@@ -14,9 +14,6 @@ const changeToFormData = (object) => {
             formData.append(key, value);
         }
     }
-    for(const [key, value] of formData.entries()){
-        // console.log(key, value);
-    }
     return formData;
 }
 export default changeToFormData;
