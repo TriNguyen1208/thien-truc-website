@@ -7,6 +7,7 @@ import EditBanner from '../../components/EditBanner'
 import useRecruitment from '../../hooks/useRecruitment'
 import Loading from '@/components/Loading'
 import { CancelPopup } from "../../components/Popup";
+import { useMemo } from 'react'
 const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
   const {mutate: updateRecruitment, isPending: isPendingRecruitment} = useRecruitment.patch();
@@ -48,37 +49,37 @@ const RecruitmentPageContent = () => {
     buttonLabel2: 'Lưu',
     buttonAction2: handleButtonCulture
   };
-  const {data: recruitment, isLoading: isLoadingRecruitment} = useRecruitment.getRecruitmentPage();
-  if(isLoadingRecruitment || isPendingRecruitment){
+  const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
+  if(isLoadingRecruitment || isPendingRecruitment || isFetchingRecruitment){
     return <Loading/>
   }
   const propsBanner = {
-    title: "Nội dung Trang tuyển dụng",
-    description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
-    listInput: [
-      {
-        name: "banner_title",
-        label: "Tiêu đề Banner",
-        placeholder: "Nhập tiêu đề tuyển dụng",
-        contentCurrent: recruitment.banner_title,
-        isRequire: true,
-        rows: 1,
-        maxLength: 100
-      },
-      {
-        name:"banner_description",
-        label: "Mô tả Banner",
-        placeholder: "Nhập mô tả Banner",
-        contentCurrent: recruitment.banner_description,
-        isRequire: true,
-        rows: 3,
-        maxLength: 200
+      title: "Nội dung Trang tuyển dụng",
+      description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
+      listInput: [
+        {
+          name: "banner_title",
+          label: "Tiêu đề Banner",
+          placeholder: "Nhập tiêu đề tuyển dụng",
+          contentCurrent: recruitment?.banner_title ?? "",
+          isRequire: true,
+          rows: 1,
+          maxLength: 100
+        },
+        {
+          name:"banner_description",
+          label: "Mô tả Banner",
+          placeholder: "Nhập mô tả Banner",
+          contentCurrent: recruitment?.banner_description ?? "",
+          isRequire: true,
+          rows: 3,
+          maxLength: 200
+        }
+      ],
+      saveButton: (result) => {
+        setBanner(result);
+        setSaveOpenBanner(true);
       }
-    ],
-    saveButton: (result) => {
-      setBanner(result);
-      setSaveOpenBanner(true);
-    }
   }
   const propsCulture = {
     title: "Văn hóa của chúng tôi",
@@ -88,7 +89,7 @@ const RecruitmentPageContent = () => {
         name: "culture_content",
         label: "Nội dung văn hóa công ty",
         placeholder: "Nhập tiêu đề tuyển dụng",
-        contentCurrent: recruitment.culture_content,
+        contentCurrent: recruitment?.culture_content ?? "",
         isRequire: true,
         rows: 6,
       },
@@ -98,6 +99,7 @@ const RecruitmentPageContent = () => {
       setSaveOpenCulture(true);
     }
   }
+  
   return (
     <>
       <div className='flex flex-col gap-5'>
