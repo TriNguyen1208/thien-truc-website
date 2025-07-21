@@ -57,11 +57,7 @@ const getProjectPage = async () => {
     if(!project_page){
         throw new Error("Can't get project_page");
     }
-    return {
-        status: 200,
-        message: "Cập nhật Banner thành công",
-        action: "Cập nhật Banner trang Dự Án"
-    };
+    return project_page;
 }
 
 const updateProjectPage = async (data) => {
@@ -77,7 +73,11 @@ const updateProjectPage = async (data) => {
             banner_description = $2
     `, [title, description]);
 
-    return result;
+    return {
+        status: 200,
+        message: "Cập nhật Banner thành công",
+        action: "Cập nhật Banner trang Dự Án"
+    };
 }
 
 const projects = {
