@@ -1,6 +1,6 @@
 import pool from '#@/config/db.js'
 import sendMail from '#@/utils/mailer.js'
-
+import { updateImage } from '#@/utils/image.js';
 const getAllTables = async (req, res) => {
     const _recruitment_page = await getRecruitmentPage();
     return {
@@ -51,16 +51,48 @@ const postSubmitApplication = async (applicationData) => {
 
      return { success: true, message: "Ứng tuyển thành công" };
 }
-const patchRecruitment = async (data) => {
-    const entries = Object.entries(data); //chuyen object thanh array dang [key, value]
-    const setClause = entries.map(([key], i) => `${key} = $${i + 1}`).join(', ');
-    const values = entries.map(([_, value]) => value);
-    const query =  `
-        update recruitment.recruitment_page
-        set ${setClause}
-        returning *;
-    `
-    await pool.query(query, values);
+const patchRecruitment = async (data, files) => {
+    const old_img = (await pool.query(`
+        SELECT
+            culture_img_1 img_1,
+            culture_img_2 img_2,
+            culture_img_3 img_3,
+            culture_img_4 img_4
+        FROM recruitment.recruitment_page
+    `)).rows[0]; // <-- Lấy phần tử đầu tiên
+
+    const updatedImages = [];
+    for (let i = 1; i <= 4; i++) {
+        const key = `culture_img_${i}`;
+        const old = old_img[`img_${i}`];
+        const local = files[key]?.[0] ?? null; // ảnh mới ở vị trí i, có thể undefined nếu không upload ảnh mới
+        const external = data[key] ?? null;
+        const updated = await updateImage(old, local, external, 'recruitment');
+        updatedImages.push(updated);
+    }
+    // Sau khi update xong:
+    const [
+        final_culture_img_1,
+        final_culture_img_2,
+        final_culture_img_3,
+        final_culture_img_4
+    ] = updatedImages;
+    const {
+        banner_title,
+        banner_description,
+        culture_content,
+    } = data;
+    await pool.query(`
+        UPDATE recruitment.recruitment_page
+        SET 
+            banner_title = $1,
+            banner_description = $2,
+            culture_content = $3,
+            culture_img_1 = $4, 
+            culture_img_2 = $5,
+            culture_img_3 = $6,
+            culture_img_4 = $7
+    `, [banner_title, banner_description, culture_content, final_culture_img_1, final_culture_img_2, final_culture_img_3, final_culture_img_4]);
 
     return {
         status: 200,

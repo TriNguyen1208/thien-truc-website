@@ -10,32 +10,33 @@ import { CancelPopup } from "../../components/Popup";
 import { useMemo, useRef } from 'react'
 import { UploadIcon } from '../../components/Icon'
 import Button from '@/components/Button'
+import changeToFormData from '../../utils/changeToFormData'
 
-function UploadImage({images, setImages, keyImage}){
+function UploadImage({form, setForm, keyImage}){
   const fileInputRef = useRef();
   const [file, setFile] = useState(null);
   const hasSetUrlRef = useRef(false);
   const [urlInput, setUrlInput] = useState('');
 
   useEffect(() => {
-    setFile(images?.[keyImage] ?? null)
+    setFile(form?.[keyImage] ?? null)
     
-    if (!hasSetUrlRef.current && images?.[keyImage]) {
-      setUrlInput(images[keyImage]);
+    if (!hasSetUrlRef.current && form?.[keyImage]) {
+      setUrlInput(form[keyImage]);
       hasSetUrlRef.current = true;
     }
-  }, [images, keyImage])
+  }, [form, keyImage])
 
   const handleChange = (e) => {
     const file = e.target.files[0];
     if(file){
         setFile(file)
-        setImages((prev) => ({...prev, [keyImage]: file}))
+        setForm((prev) => ({...prev, [keyImage]: file}))
     }
     e.target.value = null;
   }
   const removeImage = (fieldName) => {
-    setImages((prev) => {
+    setForm((prev) => {
         if (prev[fieldName]?.startsWith?.('blob:')) {
             URL.revokeObjectURL(prev[fieldName]);
         }
@@ -52,7 +53,7 @@ function UploadImage({images, setImages, keyImage}){
                 value={urlInput} //Chỉ có khi nhập tay(nếu như fetch ban đầu thì thay đổi cái này)
                 onChange={(e) => {
                     setUrlInput(e.target.value)
-                    setImages((prev) => ({
+                    setForm((prev) => ({
                         ...prev,
                         [keyImage]: e.target.value
                     }));
@@ -104,24 +105,43 @@ const RecruitmentPageContent = () => {
   const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
   const [saveOpenBanner, setSaveOpenBanner] = useState(false);
   const [saveOpenCulture, setSaveOpenCulture] = useState(false);
-  const [banner, setBanner] = useState('');
-  const [culture, setCulture] = useState('');
-  const [images, setImages] = useState(null);
+  const [form, setForm] = useState(null);
   useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang tuyển dụng",
       description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
     })
   }, [])
+  useEffect(() => {
+    if(isLoadingRecruitment || isFetchingRecruitment){
+      return;
+    }
+    const initialForm = {
+      banner_title: recruitment?.banner_title ?? "",
+      banner_description: recruitment?.banner_description ?? "",
+      culture_content: recruitment?.culture_content ?? "",
+      culture_img_1: recruitment?.culture_img_1 ?? "",
+      culture_img_2: recruitment?.culture_img_2 ?? "",
+      culture_img_3: recruitment?.culture_img_3 ?? "",
+      culture_img_4: recruitment?.culture_img_4 ?? "",
+    }
+    setForm(initialForm);
+  }, [isLoadingRecruitment, isFetchingRecruitment])
 
   const handleButtonBanner = () => {
-    updateRecruitment(banner)
+    const formData = changeToFormData(form);
+    updateRecruitment(formData)
     setSaveOpenBanner(false);
     //Gửi API lên backend
   }
   const handleButtonCulture = () => {
-    updateRecruitment(culture)
+    const formData = changeToFormData(form);
+    updateRecruitment(formData)
     setSaveOpenCulture(false);
+  }
+  const handleSubmit = () => {
+    const formData = changeToFormData(form);
+    updateRecruitment(formData);
   }
   const saveBannerPopupData = {
     open: saveOpenBanner,
@@ -141,17 +161,6 @@ const RecruitmentPageContent = () => {
     buttonLabel2: 'Lưu',
     buttonAction2: handleButtonCulture
   };
-  useEffect(() => {
-    if(isLoadingRecruitment || isFetchingRecruitment) return;
-    if(!recruitment) return;
-    setImages({
-      culture_img_1: recruitment?.culture_img_1 ?? "",
-      culture_img_2: recruitment?.culture_img_2 ?? "",
-      culture_img_3: recruitment?.culture_img_3 ?? "",
-      culture_img_4: recruitment?.culture_img_4 ?? "",
-    })
-  }, [isLoadingRecruitment, isFetchingRecruitment, recruitment])
-  console.log(images);
   const propsBanner = {
       title: "Nội dung Trang tuyển dụng",
       description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
@@ -176,7 +185,7 @@ const RecruitmentPageContent = () => {
         }
       ],
       saveButton: (result) => {
-        setBanner(result);
+        setForm((prev) => ({...prev, ...result}));
         setSaveOpenBanner(true);
       }
   }
@@ -194,7 +203,7 @@ const RecruitmentPageContent = () => {
       },
     ],
     saveButton: (result) => {
-      setCulture(result);
+      setForm((prev) => ({...prev, ...result}));
       setSaveOpenCulture(true);
     }
   }
@@ -213,18 +222,18 @@ const RecruitmentPageContent = () => {
       <div className='flex flex-col gap-5'>
         <EditBanner {...propsBanner}/>
         <EditBanner {...propsCulture}/>
-        <form className='flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]'>
+        <form onSubmit={handleSubmit} className='flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]'>
           <div className="flex flex-col mb-[16px]">
             <label className="mb-[8px] font-medium">Ảnh văn hóa công ty</label>
             <div className='grid grid-cols-2 gap-3'>
-              <UploadImage images={images} setImages={setImages} keyImage="culture_img_1"/>
-              <UploadImage images={images} setImages={setImages} keyImage="culture_img_2"/>
-              <UploadImage images={images} setImages={setImages} keyImage="culture_img_3"/>
-              <UploadImage images={images} setImages={setImages} keyImage="culture_img_4"/>
+              <UploadImage form={form} setForm={setForm} keyImage="culture_img_1"/>
+              <UploadImage form={form} setForm={setForm} keyImage="culture_img_2"/>
+              <UploadImage form={form} setForm={setForm} keyImage="culture_img_3"/>
+              <UploadImage form={form} setForm={setForm} keyImage="culture_img_4"/>
             </div>
           </div>
           <div className='w-[145px] h-40[px]'>
-              <button className='w-full' type = "submit"> <Button {...propsButton}/></button>
+              <button className='w-full' type='submit'> <Button {...propsButton}/></button>
           </div>                
         </form>
       </div>
