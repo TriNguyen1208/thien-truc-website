@@ -30,29 +30,7 @@
 
   const [isOpenNotification, setIsOpenNotification] = useState(false)
   const [isOpenCancelPopup, setIsOpenCancelPopup] = useState(false)
- 
-
-   useEffect(()=>{
-    setLayoutProps({
-      title: "Quản lý Manager",
-      description: "Quản lý tài khoản của các Manager",
-      hasButton: true,
-      buttonLabel: "Thêm Manager",
-      buttonAction:()=>{
-          setIsModalOpenAdd(true)
-      }
-    })
-  },[])
-  useEffect(() => {
-  if (managers) {
-    setListManagers(managers);
-  }
-}, [managers]);
-  
-  if(isLoadingManagers || isLoadingCreateManager || isLoadingUpdateManager ||isLoadingDeleteManager)
-  {
-    return(<Loading/>)
-  }
+  const [listManagers , setListManagers] = useState([])
   
   const handleConfirmNotification = ()=>{
     setIsOpenNotification(false)
@@ -100,11 +78,11 @@
               navigate('/');
           }
       }, [user, navigate]);
-
-      // Tất cả hook đã được gọi, giờ return sớm là an toàn
-      if (!user || user.role !== 'admin') {
-          return null; 
-      }
+    
+    // Tất cả hook đã được gọi, giờ return sớm là an toàn
+    if (!user || user.role !== 'admin') {
+        return null; 
+    }
 
     useEffect(() => {
       setLayoutProps({
@@ -131,6 +109,23 @@
     useEffect(() => {
       if (!isModalOpenEdit) setPendingItemEdit(-1);
     }, [isModalOpenEdit]);
+
+    useEffect(()=>{
+        setLayoutProps({
+          title: "Quản lý Manager",
+          description: "Quản lý tài khoản của các Manager",
+          hasButton: true,
+          buttonLabel: "Thêm Manager",
+          buttonAction:()=>{
+              setIsModalOpenAdd(true)
+          }
+        })
+      },[])
+      useEffect(() => {
+      if (managers) {
+        setListManagers(managers);
+      }
+    }, [managers]);
 
     if(isLoadingManagers || isLoadingCreateManager || isLoadingUpdateManager ||isLoadingDeleteManager)
     {
