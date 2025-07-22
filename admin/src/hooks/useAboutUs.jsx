@@ -20,8 +20,8 @@ const updateAboutUsPage = {
         toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_about_us_page"] });
       },
-      onError: () => {
-        toast.error("Cập nhật banner thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },
@@ -29,12 +29,12 @@ const updateAboutUsPage = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (data) => aboutUsServices.updateAboutUsPage.ourStory(data),
-      onSuccess: () => {
-        toast.success("Cập nhật câu chuyện thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_about_us_page"] });
       },
-      onError: () => {
-        toast.error("Cập nhật câu chuyện thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },
@@ -60,12 +60,12 @@ const company_services = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: aboutUsServices.company_services.createOne,
-      onSuccess: () => {
-        toast.success("Thêm dịch vụ thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_company_services"] });
       },
-      onError: () => {
-        toast.error("Thêm dịch vụ thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },
@@ -74,12 +74,12 @@ const company_services = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: ({ id, data }) => aboutUsServices.company_services.updateOne(id, data),
-      onSuccess: () => {
-        toast.success("Cập nhật dịch vụ thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_company_services"] });
       },
-      onError: () => {
-        toast.error("Cập nhật dịch vụ thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },
@@ -88,12 +88,12 @@ const company_services = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: aboutUsServices.company_services.deleteOne,
-      onSuccess: () => {
-        toast.success("Xóa dịch vụ thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_company_services"] });
       },
-      onError: () => {
-        toast.error("Xóa dịch vụ thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },
@@ -119,12 +119,12 @@ const why_choose_us = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: aboutUsServices.why_choose_us.createOne,
-      onSuccess: () => {
-        toast.success("Thêm lý do chọn chúng tôi thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_why_choose_us"] });
       },
-      onError: () => {
-        toast.error("Thêm lý do chọn chúng tôi thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },
@@ -133,12 +133,12 @@ const why_choose_us = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: ({ id, data }) => aboutUsServices.why_choose_us.updateOne(id, data),
-      onSuccess: () => {
-        toast.success("Cập nhật thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_why_choose_us"] });
       },
-      onError: () => {
-        toast.error("Cập nhật thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },
@@ -147,12 +147,12 @@ const why_choose_us = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: aboutUsServices.why_choose_us.deleteOne,
-      onSuccess: () => {
-        toast.success("Xóa thành công");
+      onSuccess: (success) => {
+        toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_why_choose_us"] });
       },
-      onError: () => {
-        toast.error("Xóa thất bại");
+      onError: (error) => {
+        toast.error(error.message);
       },
     });
   },

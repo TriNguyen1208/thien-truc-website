@@ -234,7 +234,7 @@ const ProductCategories = () => {
         open={openCancel}
         setOpen={setOpenCancel}
         notification="Xác nhận xóa"
-        subTitle={`Bạn có chắc muốn xoá loại sản phẩm "${productCategoriesToDelete?.name}" không?`}
+        subTitle={`Bạn có chắc muốn xoá loại sản phẩm "${productCategoriesToDelete?.name}" và XÓA TẨT CẢ SẢN PHẨM THUỘC LOẠI "${productCategoriesToDelete?.name}" không?`}
         buttonAction2={() => {
           if (productCategoriesToDelete) {
             deleteOneProductCategories(productCategoriesToDelete.id);

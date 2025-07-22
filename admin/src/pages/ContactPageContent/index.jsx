@@ -13,9 +13,9 @@ const ContactPageContent = () => {
     })
   }, []);
 
-  const { data: bannerData, isLoading: isLoadingBanner } = useContact.getContactPage();
+  const { data: bannerData, isLoading: isLoadingBanner, isFetching: isFetchingBanner } = useContact.getContactPage();
   const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
-  if (isLoadingBanner || isPendingUpdateBanner) {
+  if (isLoadingBanner || isPendingUpdateBanner || isFetchingBanner) {
     return (
      <Loading/>
     )

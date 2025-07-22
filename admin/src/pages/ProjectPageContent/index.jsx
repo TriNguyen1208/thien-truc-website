@@ -7,27 +7,23 @@ import Loading from '@/components/Loading'
 const ProjectPageContent = () => {
 
   const {setLayoutProps} = useLayout()
-  const {data: projectPage, isLoading: isLoadingProjectPage} = useProjects.getProjectPage()
-  const { mutate: updateProjectPage, isPending } = useProjects.patchProjectPage();
-    useEffect(()=>{
+  useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang dự án",
       description: "Quản lý nội dung hiển thị trên trang dự án",
       hasButton: false,
     })
   },[])
-  if(isLoadingProjectPage)
+  const {data: projectPage, isLoading: isLoadingProjectPage, isFetching: isFetchingProjectPage} = useProjects.getProjectPage()
+  const { mutate: updateProjectPage, isPending: isPendingProjectPage } = useProjects.patchProjectPage();
+  if(isLoadingProjectPage || isPendingProjectPage || isFetchingProjectPage)
   {
     return(<Loading/>)
   }
-  
+  console.log("Gia tri lay ve:", projectPage);
   const handleSave = (data)=>{
-    updateProjectPage(data, 
-    {
-      onSuccess: () => toast.success("Cập nhật thành công"),
-      onError: () => toast.error("Cập nhật thất bại"),
-    }
-);
+    console.log("Gia tri data gui len: ", data);
+    updateProjectPage(data)
   }
   const bannerProps = {
       title: "Banner Trang dự án",

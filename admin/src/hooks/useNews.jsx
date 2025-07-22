@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
 import { toast } from 'react-toastify';
-function useGetQuantity()
-{
+function useGetQuantity() {
     const queryClient = useQueryClient();
     queryClient.invalidateQueries(['admin_news_quantity']);
     return useQuery({
@@ -12,14 +11,14 @@ function useGetQuantity()
     })
 }
 
-function useGetAll(){
+function useGetAll() {
     return useQuery({
         queryKey: ["admin_news"],
         queryFn: newsServices.getAll,
         staleTime: 5 * 60 * 1000,
     })
 }
-function useGetNewsPage(){
+function useGetNewsPage() {
     return useQuery({
         queryKey: ["admin_news_page"],
         queryFn: newsServices.getNewsPage,
@@ -28,13 +27,17 @@ function useGetNewsPage(){
 }
 
 function usePatchNewsPage() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (updatedPage)=> newsServices.patchNewsPage(updatedPage),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["news_page"] });
-    },
-  });
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedPage) => newsServices.patchNewsPage(updatedPage),
+        onSuccess: (success) => {
+            queryClient.invalidateQueries({ queryKey: ["news_page"] });
+            toast.success(success.message);
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    });
 }
 
 const news = {
@@ -58,23 +61,23 @@ const news = {
         return useMutation({
             mutationFn: () => newsServices.news.updateNumReaders(id),
             onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["admin_news_list"], // match theo prefix
-                exact: false,            // cho phép match tất cả ["news_list", ...]
-            });
-        }
+                queryClient.invalidateQueries({
+                    queryKey: ["admin_news_list"], // match theo prefix
+                    exact: false,            // cho phép match tất cả ["news_list", ...]
+                });
+            }
         })
     },
     useUpdateCategory: () => {
-            return useMutation({
-                mutationFn: (changedItems) =>
+        return useMutation({
+            mutationFn: (changedItems) =>
                 newsServices.news.updateCategory(changedItems)
-            });
+        });
     },
     useDeleteOne: (id) => {
         return useMutation({
-            mutationFn: (id) => 
-            newsServices.news.deleteOne(id)
+            mutationFn: (id) =>
+                newsServices.news.deleteOne(id)
         })
     }
 }
@@ -95,21 +98,42 @@ const news_categories = {
         })
     },
     useCreateOne: (name = "", rgb_color = "") => {
+        const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: ({ name, rgb_color }) => 
-            newsServices.new_categories.createOne(name, rgb_color)
+            mutationFn: ({ name, rgb_color }) => newsServices.new_categories.createOne(name, rgb_color),
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ["admin_news_categories"] });
+                toast.success(success.message);
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     },
     useUpdateOne: (name = "", rgb_color = "", id) => {
+        const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: ({ name, rgb_color, id }) => 
-            newsServices.new_categories.updateOne(name, rgb_color, id)
+            mutationFn: ({ name, rgb_color, id }) => newsServices.new_categories.updateOne(name, rgb_color, id),
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ["admin_news_categories"] });
+                toast.success(success.message);
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     },
     useDeleteOne: (id) => {
+        const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: (id) => 
-            newsServices.new_categories.deleteOne(id)
+            mutationFn: (id) => newsServices.new_categories.deleteOne(id),
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ["admin_news_categories"] });
+                toast.success(success.message);
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
         })
     }
 }
@@ -149,7 +173,7 @@ const news_contents = {
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: ({id, formDataNews}) => {
+            mutationFn: ({ id, formDataNews }) => {
                 return newsServices.new_contents.updateOne(id, formDataNews)
             },
             onSuccess: (success) => {
@@ -164,7 +188,7 @@ const news_contents = {
         })
     }
 }
-function useGetSearchCategoriesSuggest(query){
+function useGetSearchCategoriesSuggest(query) {
     return useQuery({
         queryKey: ['admin_news-categories-suggestions', query],
         queryFn: () => newsServices.getSearchCategoriesSuggestions(query),
@@ -172,7 +196,7 @@ function useGetSearchCategoriesSuggest(query){
     })
 }
 
-function useSearchSuggest(query, filter){
+function useSearchSuggest(query, filter) {
     return useQuery({
         queryKey: ['admin_news-suggestions', query, filter],
         queryFn: () => newsServices.getSearchSuggestions(query, filter),
@@ -181,28 +205,28 @@ function useSearchSuggest(query, filter){
 }
 
 function useGetFeatureNews() {
-  return useQuery({
+    return useQuery({
 
-    queryKey: ["admin_feature_news"],
-    queryFn: () => newsServices.getFeatureNews(),
-    staleTime: 5 * 60 * 1000,
-  });
+        queryKey: ["admin_feature_news"],
+        queryFn: () => newsServices.getFeatureNews(),
+        staleTime: 5 * 60 * 1000,
+    });
 }
 
- function useUpdateFeatureNews(){
+function useUpdateFeatureNews() {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: (data) => newsServices.updateFeatureNews(data),
-      onSuccess: (success) => {
-        toast.success(success.message);
-        queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
-      },
-       onError: (error) => {
-        toast.error(error.message);
-        queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
-      },
+        mutationFn: (data) => newsServices.updateFeatureNews(data),
+        onSuccess: (success) => {
+            toast.success(success.message);
+            queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
+        },
+        onError: (error) => {
+            toast.error(error.message);
+            queryClient.invalidateQueries({ queryKey: ["admin_feature_news"] });
+        },
     })
-  }
+}
 export default {
     getQuantity: useGetQuantity,
     getAll: useGetAll,
@@ -210,21 +234,21 @@ export default {
     getFeatureNews: useGetFeatureNews,
     updateFeatureNews: useUpdateFeatureNews,
     patchNewsPage: usePatchNewsPage,
-    news:{
+    news: {
         getList: news.useGetList,
         getOne: news.useGetOne,
         updateNumReaders: news.useUpdateNumReaders,
         deleteOne: news.useDeleteOne,
         updateCategory: news.useUpdateCategory,
     },
-    news_categories:{
+    news_categories: {
         getAll: news_categories.useGetAll,
         getOne: news_categories.useGetOne,
         createOne: news_categories.useCreateOne,
         updateOne: news_categories.useUpdateOne,
         deleteOne: news_categories.useDeleteOne,
     },
-    news_contents:{
+    news_contents: {
         getAll: news_contents.useGetAll,
         getOne: news_contents.useGetOne,
         postOne: news_contents.usePostOne,

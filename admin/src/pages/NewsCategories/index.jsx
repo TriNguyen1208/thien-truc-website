@@ -15,9 +15,9 @@ export default function NewsCategories() {
 
   // Lay ham tu hook
   const queryClient = useQueryClient();
-  const { mutateAsync: createOne } = useNews.news_categories.createOne();
-  const { mutateAsync: updateOne } = useNews.news_categories.updateOne();
-  const { mutateAsync: deleteOne } = useNews.news_categories.deleteOne();
+  const { mutateAsync: createOne, isPending: isPendingCreateCategories } = useNews.news_categories.createOne();
+  const { mutateAsync: updateOne, isPending: isPendingUpdateCategories } = useNews.news_categories.updateOne();
+  const { mutateAsync: deleteOne, isPending: isPendingCategories } = useNews.news_categories.deleteOne();
   const { mutateAsync: updateCategory } = useNews.news.updateCategory();
 
   // Thông tin của form thêm loại tin tức
@@ -95,7 +95,7 @@ export default function NewsCategories() {
   const cancelPopupData = {
     open: cancelOpen,
     setOpen: setCancelOpen,
-    notification: 'Bạn có chắc chắn muốn xóa loại tin tức này?',
+    notification: 'Xác nhận xóa?',
     subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
     buttonLabel1: 'Hủy',
     buttonLabel2: 'Xóa',

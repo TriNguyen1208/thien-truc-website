@@ -41,7 +41,7 @@ const AboutUsPageContent = () => {
   ]);
   const [dataCurrent, setDataCurrent] = useState(null);
 
-  const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData } = useAboutUs.getAboutUsPage();
+  const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData, isFetching: isFetchingAboutUsPageData} = useAboutUs.getAboutUsPage();
   const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useAboutUs.updateAboutUsPage.updateBanner();
   const { mutate: updateOurStory, isPending: isPendingUpdateOurStory } = useAboutUs.updateAboutUsPage.updateOurStory();
 
@@ -58,7 +58,7 @@ const AboutUsPageContent = () => {
 
   if (isLoadingDutyAndResponsibility || isPendingCreateDutyAndResponsibility || isPendingUpdateDutyAndResponsibility || isPendingDeleteDutyAndResponsibility
     || isPendingCreateWhyChooseUs || isPendingDeleteWhyChooseUs || isPendingUpdateWhyChooseUs || isLoadingWhyChooseUs
-    || isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory
+    || isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory || isFetchingAboutUsPageData
   ) {
     return (
       <Loading/>

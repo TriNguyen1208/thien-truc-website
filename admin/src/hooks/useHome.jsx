@@ -15,11 +15,11 @@ const updateHomePage = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => homeServices.updateHomePage.banner(data),
-            onSuccess: (success) => {
+            onSuccess:  (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
             },
-            onError: (error) => {
+            onError:  (error) => {
                 toast.error(error.message);
             }
         });
