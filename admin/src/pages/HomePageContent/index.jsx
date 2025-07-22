@@ -112,8 +112,8 @@ const HomePageContent = () => {
     notificationProps:{
      open: homeNotification, 
      setOpen: setHomeNotification, 
-     notification: "Xác nhận lưu thây đổi!", 
-     subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+     notification: "Xác nhận lưu thay đổi!", 
+     subTitle:"Bạn có chắc chắn muốn lưu thay đổi.", 
      buttonLabel1:"Hủy", 
      buttonAction1: handleCancleHome, 
      buttonLabel2: "Xác nhận", 
@@ -145,8 +145,8 @@ const HomePageContent = () => {
     notificationProps:{
      open: aboutusNotification, 
      setOpen: setAboutusNotification, 
-     notification: "Xác nhận lưu thây đổi!", 
-     subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+     notification: "Xác nhận lưu thay đổi!", 
+     subTitle:"Bạn có chắc chắn muốn lưu thay đổi.", 
      buttonLabel1:"Hủy", 
      buttonAction1: handleCancleAboutus, 
      buttonLabel2: "Xác nhận", 

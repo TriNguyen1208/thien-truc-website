@@ -17,7 +17,7 @@ const SearchBar = ({data}) => {
         displayMap = null
     } = data;
     //using useState
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = useState(currentQuery);
     const [isFocus, setIsFocus] = useState(false);
     const [showSuggestions, setShowSuggestion] = useState(false);
     const [highlightIndex, setHighlightIndex] = useState(0);
@@ -232,7 +232,7 @@ const SearchBar = ({data}) => {
                                                         e.preventDefault();
                                                         setCategory(item);
                                                         setDropDownOpenCategory(false);
-                                                        handleSearch(undefined, item, display)
+                                                        handleSearch(query, item, display)
                                                     }}
                                                 >
                                                     <span className='break-words'>{item}</span>
@@ -267,7 +267,7 @@ const SearchBar = ({data}) => {
                                                         e.preventDefault();
                                                         setDisplay(item);
                                                         setDropDownOpenDisplay(false);
-                                                        handleSearch(undefined, category, item)
+                                                        handleSearch(query, category, item)
                                                     }}
                                                 >
                                                     <span className='break-words'>{item}</span>

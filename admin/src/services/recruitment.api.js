@@ -14,7 +14,11 @@ const postRecruitmentForm = async (formData) => {
     return res.data;
 }
 const patchRecruitment = async (data) => {
-    const res = await axios.patch(API_ROUTES.recruitment.base, data);
+    const res = await axios.patch(API_ROUTES.recruitment.base, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
     return res.data;
 }
 export default {getAll, getRecruitmentPage, postRecruitmentForm, patchRecruitment};

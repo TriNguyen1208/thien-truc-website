@@ -1,6 +1,6 @@
 import cloudinary from '#@/config/cloudinary.js';
 import fs from 'fs'
-
+import { JSDOM } from 'jsdom';
 const uploadImage = async (image, type) => {
     const imageUpload = await cloudinary.uploader.upload(image.path, { 
         resource_type: "image",
@@ -49,5 +49,17 @@ const updateImage = async (old, new_local, new_external, type) => {
     // Không có gì thay đổi
     return old;
 };
-
-export {uploadImage, deleteImage, updateImage, isCloudinary};
+const extractAllImages = (htmlContent) => {
+    const dom = new JSDOM(htmlContent);
+    const document = dom.window.document;
+    const images = Array.from(document.querySelectorAll('img'));
+    const cloudinary_images = [];
+    for(const image of images){
+        const src = image.getAttribute('src');
+        if(isCloudinary(src)){
+            cloudinary_images.push(src);
+        }
+    }
+    return cloudinary_images;
+}
+export {uploadImage, deleteImage, updateImage, isCloudinary, extractAllImages};

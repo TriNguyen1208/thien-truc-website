@@ -11,6 +11,19 @@ import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams, useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
+function normalizeContent(content = '') {
+    return content
+        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+        .trim();
+}
+function normalizeForm(form) {
+    return {
+        ...form,
+        content: normalizeContent(form.content),
+        // nếu có nhiều field HTML thì thêm normalize ở đây
+    };
+}
 const EditProject = () => {
     //navigate
     const navigate = useNavigate();
@@ -26,7 +39,7 @@ const EditProject = () => {
     
     //Call API
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const {data: project_contents, isLoading: isLoadingProjectContent} = useProjects.project_contents.getOne(project_id);
+    const {data: project_contents, isLoading: isLoadingProjectContent, isFetching: isFetchingProjectContent} = useProjects.project_contents.getOne(project_id);
     const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.project_contents.updateOne()
     const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
     //set layout 
@@ -42,8 +55,9 @@ const EditProject = () => {
     //check is change
     const { setShouldWarn } = useNavigationGuardContext(); 
     useEffect(() => {
-        if (isLoadingProjectContent) return;
-        setInitialForm({
+        if (isLoadingProjectContent || isFetchingProjectContent) return;
+        if (!project_contents) return;
+        const initialForm = {
             title: project_contents.project.title ?? '',
             main_content: project_contents.project.main_content ?? '',
             content: project_contents.content ?? '',
@@ -53,36 +67,19 @@ const EditProject = () => {
             link_image: project_contents.project.main_img ?? '',
             province: project_contents.project.province ?? '',
             completeTime: project_contents.project.complete_time ?? '',
-            countWord: project_contents.content.replace(/<[^>]+>/g, '').trim().length
-        })
-    }, [isLoadingProjectContent])
-
-    useEffect(() => {
-        if (initialForm) {
-            setForm(initialForm);
+            countWord: normalizeContent(project_contents.content).replace(/<[^>]+>/g, '').trim().length
         }
-    }, [initialForm]);
+        setInitialForm(initialForm);
+        setForm(initialForm);
+    }, [isLoadingProjectContent, isFetchingProjectContent, project_contents])
+    
     useEffect(() => {
         if(form == null || initialForm == null){
             return;
         }
-        function normalizeContent(content = '') {
-            return content
-                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-                .trim();
-        }
-        function normalizeForm(form) {
-            return {
-                ...form,
-                content: normalizeContent(form.content),
-                // nếu có nhiều field HTML thì thêm normalize ở đây
-            };
-        }
         const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
-    }, [form, initialForm]);
-
+    }, [form, initialForm, setShouldWarn]);
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){
@@ -114,8 +111,6 @@ const EditProject = () => {
         }
         if(project_id !== null)
             updateProject({ id: project_id, formDataProject })
-        setInitialForm(form);
-        setForm(form);
         setSaveOpen(false);
     }
 
@@ -162,7 +157,7 @@ const EditProject = () => {
     };
 
     //Loading
-    if(isLoadingRegions || isLoadingProjectContent || form == null || isPendingDeleteProject || isPendingUpdateProject){
+    if(isLoadingRegions || isLoadingProjectContent || form == null || isPendingDeleteProject || isPendingUpdateProject || isFetchingProjectContent){
         return <Loading/>
     }
     const regionNames = regions.map(item => item.name);

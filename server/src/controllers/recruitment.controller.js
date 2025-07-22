@@ -24,7 +24,7 @@ const postSubmitApplication = async (req, res) => {
 
 const patchRecruitment = async (req, res) => {
   try {
-    const { status, message, action = null } = await recruitmentServices.patchRecruitment(req.body);
+    const { status, message, action = null } = await recruitmentServices.patchRecruitment(req.body, req.files);
     if (status == 200) logActivity(req.user.username, action);
     res.status(status).json({ success: true, message });
   } catch (error) {

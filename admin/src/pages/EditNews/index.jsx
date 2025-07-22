@@ -12,6 +12,19 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
+function normalizeContent(content = '') {
+    return content
+        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
+        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
+        .trim();
+}
+function normalizeForm(form) {
+    return {
+        ...form,
+        content: normalizeContent(form.content),
+        // nếu có nhiều field HTML thì thêm normalize ở đây
+    };
+}
 const EditNews = () => {
     //navigate
     const navigate = useNavigate();
@@ -25,7 +38,7 @@ const EditNews = () => {
     const [initialForm, setInitialForm] = useState(null);
     //Call API
 
-    const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
+    const {data: news_contents, isLoading: isLoadingNewsContent, isFetching: isFetchingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news_contents.updateOne()
     const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne();
@@ -42,8 +55,9 @@ const EditNews = () => {
     //check is change
     const { setShouldWarn } = useNavigationGuardContext();
     useEffect(() => {
-        if (isLoadingNewsContent) return;
-        setInitialForm({
+        if (isLoadingNewsContent || isFetchingNewsContent) return;
+        if (!news_contents) return;
+        const initialForm = {
             title: news_contents.news.title ?? '',
             main_content: news_contents.news.main_content ?? '',
             content: news_contents.content ?? '',
@@ -51,35 +65,18 @@ const EditNews = () => {
             isPublished: news_contents.news.is_published ? "Trưng bày" : "Bản nháp",
             main_image: '',
             link_image: news_contents.news.main_img ?? null,
-            countWord: news_contents.content.replace(/<[^>]+>/g, '').trim().length
-        });
-    }, [isLoadingNewsContent]) 
-
-    useEffect(() => {
-        if (initialForm) {
-            setForm(initialForm);
-        }
-    }, [initialForm]);
+            countWord: normalizeContent(news_contents.content).replace(/<[^>]+>/g, '').trim().length
+        };
+        setInitialForm(initialForm);
+        setForm(initialForm);
+    }, [isLoadingNewsContent, isFetchingNewsContent, news_contents]) 
     useEffect(() => {
         if(form == null || initialForm == null){
             return;
         }
-        function normalizeContent(content = '') {
-            return content
-                .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-                .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-                .trim();
-        }
-        function normalizeForm(form) {
-            return {
-                ...form,
-                content: normalizeContent(form.content),
-                // nếu có nhiều field HTML thì thêm normalize ở đây
-            };
-        }
         const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
         setShouldWarn(isDirty);
-    }, [form, initialForm]);
+    }, [form, initialForm, setShouldWarn]);
     
     //Helper function
     const handleSave = async () => {
@@ -108,13 +105,8 @@ const EditNews = () => {
                 formDataNews.append(key, form[key]);
             }
         }
-        for(let [key, value] of formDataNews.entries()){
-            console.log(key, value);
-        }
         if(news_id !== null)
             updateNews({ id: news_id, formDataNews })
-        setInitialForm(form);
-        setForm(form);
         setSaveOpen(false);
     }
     const handleDelete = () => {
@@ -167,7 +159,7 @@ const EditNews = () => {
         buttonLabel2: 'Khôi phục',
         buttonAction2: handleRecover
     };
-    if(isLoadingCategories || isLoadingNewsContent || form == null || isPendingDeleteNews || isPendingUpdateNews){
+    if(isLoadingCategories || isLoadingNewsContent || form == null || isPendingDeleteNews || isPendingUpdateNews || isFetchingNewsContent){
         return <Loading/>
     }
     return (

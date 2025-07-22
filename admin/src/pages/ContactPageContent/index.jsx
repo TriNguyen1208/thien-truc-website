@@ -35,8 +35,8 @@ const ContactPageContent = () => {
     const notificationProps = {
       open: openNotification, 
        setOpen: setOpenNotification, 
-       notification: "Xác nhận lưu thây đổi!", 
-       subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+       notification: "Xác nhận lưu thay đổi!", 
+       subTitle:"Bạn có chắc chắn muốn lưu thay đổi.", 
        buttonLabel1:"Hủy", 
        buttonAction1:handleCancleNotification, 
        buttonLabel2: "Xác nhận", 
