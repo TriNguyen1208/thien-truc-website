@@ -160,8 +160,8 @@ const RecruitmentPageContent = () => {
   const saveBannerPopupData = {
     open: saveOpenBanner,
     setOpen: setSaveOpenBanner,
-    notification: 'Bạn có chắc chắn muốn lưu banner của trang tuyển dụng này?',
-    subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+    notification: 'Xác nhận lưu thay đổi!',
+    subTitle: 'Bạn có chắc chắn muốn lưu thay đổi.',
     buttonLabel1: 'Hủy',
     buttonAction1: ()=>{setSaveOpenBanner(false)},
     buttonLabel2: 'Lưu',
@@ -170,8 +170,8 @@ const RecruitmentPageContent = () => {
   const saveCulturePopupData = {
     open: saveOpenCulture,
     setOpen: setSaveOpenCulture,
-    notification: 'Bạn có chắc chắn muốn lưu văn hóa của trang tuyển dụng này?',
-    subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+    notification: 'Xác nhận lưu thay đổi!',
+    subTitle: 'Bạn có chắc chắn muốn lưu thay đổi.',
     buttonLabel1: 'Hủy',
     buttonAction1: ()=>{setSaveOpenCulture(false)},
     buttonLabel2: 'Lưu',
@@ -180,8 +180,8 @@ const RecruitmentPageContent = () => {
   const saveImage = {
     open: saveOpenImage,
     setOpen: setSaveOpenImage,
-    notification: 'Bạn có chắc chắn muốn lưu ảnh văn hóa công ty của trang tuyển dụng này?',
-    subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+    notification: 'Xác nhận lưu thay đổi!',
+    subTitle: 'Bạn có chắc chắn muốn lưu thay đổi.',
     buttonLabel1: 'Hủy',
     buttonAction1: ()=>{setSaveOpenImage(false)},
     buttonLabel2: 'Lưu',

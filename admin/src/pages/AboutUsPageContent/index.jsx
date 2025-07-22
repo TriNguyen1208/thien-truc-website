@@ -89,7 +89,7 @@ const AboutUsPageContent = () => {
      notificationProps:{
          open: bannerNotification, 
          setOpen: setBannerNotification, 
-         notification: "Xác nhận lưu thây đổi!", 
+         notification: "Xác nhận lưu thay đổi!", 
          subTitle:"Bạn có chắc chắn muốn lưu thay đổi.", 
          buttonLabel1:"Hủy", 
          buttonAction1: handleCancleBanner, 
