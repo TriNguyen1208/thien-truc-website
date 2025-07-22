@@ -71,7 +71,7 @@ const AddNews = () => {
 
     //Helper function
     const handleSave = async () => {
-        if(form.isPublished == "Trưng bày" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
+        if(form.isPublished == "Đã xuất bản" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
             alert("Chưa nhập những nội dung bắt buộc")
             setSaveOpen(false);
             return;
@@ -110,7 +110,7 @@ const AddNews = () => {
         ],
         displays: [
             "Bản nháp",
-            "Trưng bày"
+            "Đã xuất bản"
         ]
     }
     //Popup
