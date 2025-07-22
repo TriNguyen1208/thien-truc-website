@@ -35,7 +35,7 @@ const PostSettings = ({
     })
     
     return (
-        <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden overflow-y-hidden h-85'>
+        <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-visible'>
             <h3 className='text-2xl font-semibold text-[#09090B]'>Cài đặt bài viết</h3>
             <div className='flex flex-col gap-4'>
                 <div className='flex flex-col gap-3 pt-1'>
@@ -60,7 +60,7 @@ const PostSettings = ({
                             <OpenIcon/>
                             {
                                 dropdownOpenCategory && (
-                                    <ul className="absolute z-10 left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
+                                    <ul className="absolute z-[100] left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
                                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                     >
                                         {categories.map((item, index) => (

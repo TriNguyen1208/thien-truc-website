@@ -146,9 +146,7 @@ const RecruitmentPageContent = () => {
     updateRecruitment(formData)
     setSaveOpenCulture(false);
   }
-  const handleButtonImage = (e) => {
-    setSaveOpenImage(true);
-    e.preventDefault();
+  const handleButtonImage = () => {
     const formData = changeToFormData(form);
     for(const [_, value] of formData.entries()){
       if(value == ''){
@@ -157,6 +155,7 @@ const RecruitmentPageContent = () => {
       }
     }
     updateRecruitment(formData);
+    setSaveOpenImage(false);
   }
   const saveBannerPopupData = {
     open: saveOpenBanner,
@@ -249,7 +248,7 @@ const RecruitmentPageContent = () => {
       <div className='flex flex-col gap-5'>
         <EditBanner {...propsBanner}/>
         <EditBanner {...propsCulture}/>
-        <form onSubmit={handleButtonImage} className='flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]'>
+        <form onSubmit={(e) => {e.preventDefault(); setSaveOpenImage(true)}} className='flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]'>
           <div className="flex flex-col mb-[16px]">
             <label className="mb-[8px] font-medium">Ảnh văn hóa công ty <span className='text-red-500 ml-1'>*</span></label>
             <div className='grid grid-cols-2 gap-3'>
