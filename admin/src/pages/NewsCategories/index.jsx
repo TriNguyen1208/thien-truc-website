@@ -107,15 +107,18 @@ export default function NewsCategories() {
   };
   
   // Thông tin cho setting
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [settingFormData, setSettingFormData] = useState({
     isOpen: false,
-    onClose: () => setSettingFormData(prev => ({ ...prev, isOpen: false })),
+    onClose: () => {
+            setSettingFormData(prev => ({ ...prev, isOpen: false }));
+            setSelectedCategory(null); // Reset khi đóng
+        },
     content: {
       title: 'Quản lý danh sách thuộc loại',
-      description: 'Chọn các tin tức muốn thêm hoặc xóa khỏi loại',
+      description: 'Chọn các tin tức muốn thêm vào loại',
       type: 'tin tức',
-      category: '',
+      category: '', 
       header: ['', 'Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
     },
     useData: useNews.news,
@@ -220,11 +223,16 @@ export default function NewsCategories() {
                 <td className='w-[20%] py-5 pl-4 flex items-center gap-3'>
                   <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' 
                     onClick={() => {
-                          setSelectedCategoryId(item.id);
+                          setSelectedCategory(item);
                           setSettingFormData(prev => ({
                             ...prev,
                             isOpen: true,
-                            content: { ...prev.content, category: item.name }
+                            content: {
+                                ...prev.content,
+                                category: item.name,
+                                title: `Quản lý tin tức thuộc loại: ${item.name}`,
+                                description: `Chọn hoặc bỏ chọn các tin tức thuộc loại ${item.name}`
+                            }
                           }));
                         }}>
                     <SettingIcon />
@@ -273,7 +281,7 @@ export default function NewsCategories() {
           const mappedItems = changedItems
             .map(item => ({
               id: item.id,
-              category_id: selectedCategoryId
+              category_id: item.display === 'Đã gán' ? selectedCategory.id : null
             }));
 
             try {

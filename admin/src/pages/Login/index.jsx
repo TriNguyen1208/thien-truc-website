@@ -1,95 +1,51 @@
-// import React from 'react';
-// import { useDispatch } from 'react-redux';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import { toast } from 'react-toastify';
 
-// import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon } from '../../components/Icon'
-// import { loginUser } from '../../services/auth.api';
-// import PopupForm from './PopupForm';
-
-// const Login = () => {
-//   const dispatch = useDispatch();
-//   const location = useLocation();
-//   const navigate = useNavigate();
-
-//   const handleLogin = async ({ username, password }) => {
-//     try {
-//       await dispatch(loginUser(username, password));
-//       toast.success('Đăng nhập thành công!');
-//       navigate(location.state?.from?.pathname || '/');
-//     } catch {
-//       toast.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
-//     }
-//   };
-
-//   return (
-//     <PopupForm
-//       icon={LockIconBackground}
-//       title="Đăng nhập"
-//       description="Nhập thông tin đăng nhập để truy cập hệ thống quản trị"
-//       buttonText="Đăng nhập"
-//       onSubmit={handleLogin}
-//       fields={[
-//         {
-//           name: 'username',
-//           label: 'Tên đăng nhập',
-//           placeholder: 'Nhập tên đăng nhập',
-//           type: 'text',
-//           icon: <AccountIcon />
-//         },
-//         {
-//           name: 'password',
-//           label: 'Mật khẩu',
-//           placeholder: 'Nhập mật khẩu',
-//           type: 'passwordToggle',
-//           eyeIcon: <EyeIcon />,
-//           eyeOffIcon: <EyeOffIcon />,
-//           icon: <LockIcon />
-//         }
-//       ]}
-//     extraAction={
-//         <div className="text-right mt-1 text-sm text-gray-500 hover:underline cursor-pointer">
-//         Quên mật khẩu?
-//         </div>
-//     }
-//     submitLabel='Đăng nhập'
-//     />
-//   );
-// };
-
-// export default Login;
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PopupForm from './PopupForm';
 import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon, CheckCircleIcon } from '@/components/Icon';
-import { loginUser } from '@/services/auth.api';
+import { loginUser, sendResetPassword, resetPassword } from '@/services/auth.api';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+
 
 const AuthPopupManager = () => {
   const [step, setStep] = useState('login'); // login | forgot | reset | success
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const rawToken = searchParams.get('token');
+  const token = rawToken?.trim();
+  useEffect(() => {
+    if (token && step !== 'reset') {
+      setStep('reset');
+    }
+  }, [token, step]);
+
 
   const handleLogin = async ({ username, password }) => {
     try {
-      await dispatch(loginUser(username, password));
-      toast.success('Đăng nhập thành công!');
+      const res = await dispatch(loginUser(username, password));
+      toast.success(res?.message || 'Đăng nhập thành công');
       navigate(location.state?.from?.pathname || '/');
-      // điều hướng hoặc đóng popup
-    } catch {
-      toast.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+    } catch (err) {
+      const message = err?.response?.data?.message || err?.message || "Đăng nhập thất bại";
+      toast.error(message);
     }
   };
 
   const handleSendReset = async ({ username, email }) => {
     try {
-    //   await sendResetEmail({ username, email });
-      setStep('reset');
-    } catch {
-      toast.error('Không thể gửi email khôi phục');
+      const res = await dispatch(sendResetPassword(username, email)); // <-- lấy res
+      if (res.status === 200) {
+        toast.success(res.data?.message || 'Đã gửi email khôi phục mật khẩu');
+        setStep('sendSuccess');
+      } else {
+        toast.error(res.data?.message || 'Không thể gửi email khôi phục');
+      }
+    } catch (err) {
+      const message = err?.response?.data?.message || err?.message || "Khôi phục thất bại";
+      toast.error(message);
     }
   };
 
@@ -98,10 +54,18 @@ const AuthPopupManager = () => {
       return toast.error('Mật khẩu không khớp');
     }
     try {
-    //   await resetPassword({ newPassword }); // giả định có token gửi từ link email
-      setStep('success');
-    } catch {
-      toast.error('Lỗi khi khôi phục mật khẩu');
+      const res = await dispatch(resetPassword(token, newPassword)); // <-- lấy res
+      if (res.status === 200) {
+        toast.success(res.data?.message || 'Khôi phục mật khẩu thành công');
+        searchParams.delete('token');
+        navigate({ search: searchParams.toString() });
+        setStep('success');
+      } else {
+        toast.error(res?.message || 'Lỗi khi khôi phục mật khẩu');
+      }
+    } catch (err) {
+      const message = err?.response?.data?.message || err?.message || "Lỗi khi khôi phục mật khẩu";
+      toast.error(message);
     }
   };
 
@@ -131,6 +95,14 @@ const AuthPopupManager = () => {
       extraAction: 'Trở lại đăng nhập',
       onExtraAction: () => setStep('login'),
       submitLabel: 'Gửi yêu cầu'
+    },
+    sendSuccess: {
+      icon: LockIconBackground,
+      title: 'Yêu cầu đã được gửi',
+      description: 'Vui lòng kiểm tra email để khôi phục mật khẩu',
+      onSubmit: () => setStep('login'),
+      fields: [],
+      submitLabel: 'Trở lại đăng nhập',
     },
     reset: {
       icon: LockIconBackground,
