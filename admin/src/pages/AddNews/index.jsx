@@ -110,11 +110,7 @@ const AddNews = () => {
         ],
         displays: [
             "Bản nháp",
-<<<<<<< HEAD
             "Đã xuất bản"
-=======
-            "Đã xuất bản"
->>>>>>> eab3b66084df61597e77d6e3be9d94a94e841590
         ]
     }
     //Popup
