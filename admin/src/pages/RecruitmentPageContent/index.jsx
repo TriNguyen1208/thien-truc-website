@@ -12,20 +12,23 @@ import { UploadIcon } from '../../components/Icon'
 import Button from '@/components/Button'
 import changeToFormData from '../../utils/changeToFormData'
 
-function UploadImage({form, setForm, keyImage}){
+function UploadImage({
+  form, 
+  setForm, 
+  initialForm,
+  keyImage
+}){
   const fileInputRef = useRef();
   const [file, setFile] = useState(null);
-  const hasSetUrlRef = useRef(false);
   const [urlInput, setUrlInput] = useState('');
 
   useEffect(() => {
     setFile(form?.[keyImage] ?? null)
-    
-    if (!hasSetUrlRef.current && form?.[keyImage]) {
-      setUrlInput(form[keyImage]);
-      hasSetUrlRef.current = true;
-    }
   }, [form, keyImage])
+
+  useEffect(() => {
+    setUrlInput(form?.[keyImage] ?? "");
+  }, [initialForm]);
 
   const handleChange = (e) => {
     const file = e.target.files[0];
@@ -106,6 +109,7 @@ const RecruitmentPageContent = () => {
   const [saveOpenBanner, setSaveOpenBanner] = useState(false);
   const [saveOpenCulture, setSaveOpenCulture] = useState(false);
   const [form, setForm] = useState(null);
+  const [initialForm, setInitialForm] = useState(null);
   useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang tuyển dụng",
@@ -126,6 +130,7 @@ const RecruitmentPageContent = () => {
       culture_img_4: recruitment?.culture_img_4 ?? "",
     }
     setForm(initialForm);
+    setInitialForm(initialForm);
   }, [isLoadingRecruitment, isFetchingRecruitment])
 
   const handleButtonBanner = () => {
@@ -139,8 +144,15 @@ const RecruitmentPageContent = () => {
     updateRecruitment(formData)
     setSaveOpenCulture(false);
   }
-  const handleSubmit = () => {
+  const handleButtonImage = (e) => {
+    e.preventDefault();
     const formData = changeToFormData(form);
+    for(const [_, value] of formData.entries()){
+      if(value == ''){
+        alert("Chưa nhập dữ liệu bắt buộc");
+        return;
+      }
+    }
     updateRecruitment(formData);
   }
   const saveBannerPopupData = {
@@ -222,14 +234,14 @@ const RecruitmentPageContent = () => {
       <div className='flex flex-col gap-5'>
         <EditBanner {...propsBanner}/>
         <EditBanner {...propsCulture}/>
-        <form onSubmit={handleSubmit} className='flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]'>
+        <form onSubmit={handleButtonImage} className='flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]'>
           <div className="flex flex-col mb-[16px]">
-            <label className="mb-[8px] font-medium">Ảnh văn hóa công ty</label>
+            <label className="mb-[8px] font-medium">Ảnh văn hóa công ty <span className='text-red-500 ml-1'>*</span></label>
             <div className='grid grid-cols-2 gap-3'>
-              <UploadImage form={form} setForm={setForm} keyImage="culture_img_1"/>
-              <UploadImage form={form} setForm={setForm} keyImage="culture_img_2"/>
-              <UploadImage form={form} setForm={setForm} keyImage="culture_img_3"/>
-              <UploadImage form={form} setForm={setForm} keyImage="culture_img_4"/>
+              <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="culture_img_1"/>
+              <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="culture_img_2"/>
+              <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="culture_img_3"/>
+              <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="culture_img_4"/>
             </div>
           </div>
           <div className='w-[145px] h-40[px]'>
