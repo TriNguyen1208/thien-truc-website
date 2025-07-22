@@ -47,41 +47,19 @@ const projects = {
             enabled: id != null
         })
     },
-        useUpdateFeatureOne: () => {
-            const queryClient = useQueryClient();
-            return useMutation({
+    useUpdateFeatureOne: () => {
+        const queryClient = useQueryClient();
+        return useMutation({
             mutationFn: ({ id, status }) => projectsServices.projects.updateFeatureOne(id, status),
-            onMutate: async ({ id, status }) => {
-                await queryClient.cancelQueries({ queryKey: ["admin_projects_list"] });
-
-                const previousData = queryClient.getQueryData(["admin_projects_list"]);
-
-                queryClient.setQueryData(["admin_projects_list"], (old) => {
-                    if (!old?.results) return old;
-                    return {
-                    ...old,
-                    results: old.results.map((proj) =>
-                        proj.id === id ? { ...proj, is_featured: status } : proj
-                    ),
-                    };
-                });
-
-                return { previousData };
-            },
-
-                // 🔁 Rollback nếu có lỗi
-                onError: (_err, _variables, context) => {
-                if (context?.previousData) {
-                    queryClient.setQueryData(["admin_projects_list"], context.previousData);
-                }
-                },
-
-                // ✅ Refetch lại cho chắc
-                onSettled: () => {
+            onSuccess: (success) => {
+                toast.success(success?.message ?? "Cập nhật checkbox thành công");
                 queryClient.invalidateQueries({ queryKey: ["admin_projects_list"] });
-                },
-            });
-        },
+            },
+            onError: (error) => {
+                toast.error(error?.message ?? "Cập nhật checkbox không thành công");
+            } 
+        });
+    },
     useUpdateRegion: () => {
         return useMutation({
             mutationFn: (changedItems) =>

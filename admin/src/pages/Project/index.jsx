@@ -90,6 +90,7 @@ export default function Project () {
   const filter = searchParams.get('filter') || 'Tất cả khu vực';
   const is_featured = searchParams.get('is_featured') || 'Tất cả hiển thị';
   const id = searchParams.get('id') || '';
+
   let projects = null;
   let isLoadingProjects = false;
 
@@ -108,7 +109,10 @@ export default function Project () {
   }
 
   const projectsList = Array.isArray(projects) ? projects : projects?.results ?? (projects ? [projects] : []);
-  const projectPage = projectsList.reduce((acc, project) => {
+
+  const sortedProjects = [...projectsList].sort((a, b) => a.id.localeCompare(b.id));
+
+  const projectPage = sortedProjects.reduce((acc, project) => {
     const region = project.region || { id: 'unknown', name: 'Không rõ khu vực' };
     if (!acc[region.id]) {
       acc[region.id] = {
@@ -119,7 +123,7 @@ export default function Project () {
     acc[region.id].projects.push(project);
     return acc;
   }, {});
-  console.log('projectPage', projectPage);
+
   const { data: projectRegions, isLoading: isLoadingProjectRegions } = useProjects.project_regions.getAll();
   const regions = [
     'Tất cả khu vực',
@@ -205,7 +209,6 @@ export default function Project () {
                       <button
                         onClick={() => {
                           updateFeatureOne({ id: item.id, status: !item.is_featured });
-                          console.log('projects', projects); // ✅ chạy đúng chỗ
                         }}
                       >
                         <StatusBox isFeatured={item.is_featured} />

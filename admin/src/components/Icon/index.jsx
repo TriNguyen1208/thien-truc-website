@@ -300,9 +300,9 @@ export const CheckCircleIcon = () => (
   <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="24" cy="24" r="24" fill="#28a745" />
     <path
-      d="M7 12.5L10.5 16L17 9.5"
+      d="M15 24L21 30L33 18" // <-- Đã cập nhật tọa độ để căn giữa
       stroke="white"
-      strokeWidth="3"
+      strokeWidth="4" // Tăng độ dày một chút cho cân xứng hơn
       strokeLinecap="round"
       strokeLinejoin="round"
     />
