@@ -53,14 +53,13 @@ const PostSettings = ({
                             e.preventDefault();
                             setDropDownOpenCategory(!dropdownOpenCategory);
                         }}
+                        position='relative'
                     >
-                        <div ref={wrapperCategoryRef} className='flex flex-row gap-14 items-center justify-center relative px-5'>
-                            <span></span>
+                        <div ref={wrapperCategoryRef} className='flex flex-row items-center justify-center px-5'>
                             <span className='line-clamp-1'>{form.category_name}</span>
-                            <OpenIcon/>
                             {
                                 dropdownOpenCategory && (
-                                    <ul className="absolute z-[100] left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
+                                    <ul className="absolute z-[100] left-0 py-2 top-12 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
                                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                     >
                                         {categories.map((item, index) => (
@@ -96,14 +95,13 @@ const PostSettings = ({
                             e.stopPropagation();
                             setDropDownOpenDisplay(!dropdownOpenDisplay);
                         }}
+                        position='relative'
                     >
-                        <div ref={wrapperDisplayRef} className='flex flex-row gap-14 items-center justify-center relative px-5'>
-                            <span></span>
+                        <div ref={wrapperDisplayRef} className='flex flex-row items-center justify-center px-5'>
                             <span className='line-clamp-1'>{form.isPublished}</span>
-                            <OpenIcon/>
                             {
                                 dropdownOpenDisplay && (
-                                    <ul className="absolute z-10 left-0 py-2 top-9 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
+                                    <ul className="absolute z-10 left-0 py-2 top-12 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
                                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                     >
                                         {displays.map((item, index) => (
