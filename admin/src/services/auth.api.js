@@ -10,17 +10,42 @@ export const loginUser = (username, password) => async (dispatch) => {
         });
         const { accessToken, refreshToken } = res.data.token;
         const user = res.data.user;
-        console.log(user);
+
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('user', JSON.stringify(user)); 
         dispatch(setCredentials({accessToken, refreshToken, user}));
+
+        return res.data; // { status, message, token: { accessToken, refreshToken }, user }
         // Chuyển hướng sang trang chính sau khi login
     } catch (err) {
-        console.error('Đăng nhập thất bại:', err);
         throw err;
     }
 };
+export const sendResetPassword = (username, email) => async (dispatch) => {
+    try {
+        const res = await axios.post(API_ROUTES.auth.sendResetPassword, {
+            username,
+            email
+        });
+        return res; 
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const resetPassword = (token, newPassword) => async (dispatch) => {
+    try {
+        const res = await axios.patch(API_ROUTES.auth.resetPassword, {
+            token,
+            newPassword
+        });
+        return res; // { status, message }
+    } catch (err) {
+        throw err;
+    }
+};
+
 export const verifyFromToken = () => async (dispatch) => {
     dispatch(setLoading(true));
     try{

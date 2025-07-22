@@ -240,7 +240,7 @@ const sendResetPassword = async (data) => {
         { expiresIn: '15m' }
     );
 
-    const resetUrl = `http://localhost:3001/reset-password?token=${token}`;
+    const resetUrl = `http://localhost:3001/dang-nhap?token=${token}`;
 
     await sendMail({
         to: email,
