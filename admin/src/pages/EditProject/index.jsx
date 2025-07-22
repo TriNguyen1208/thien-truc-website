@@ -9,7 +9,7 @@ import useProjects from '../../hooks/useProjects';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CancelPopup } from '../../components/Popup';
+import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
 const EditProject = () => {
     //navigate
@@ -136,6 +136,7 @@ const EditProject = () => {
         notification: 'Bạn có chắc chắn muốn xóa dự án này?',
         subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
         buttonLabel1: 'Hủy',
+        buttonAction1: ()=>{setDeleteOpen(false)},
         buttonLabel2: 'Xóa',
         buttonAction2: handleDelete
     };
@@ -145,6 +146,7 @@ const EditProject = () => {
         notification: 'Bạn có chắc chắn muốn lưu dự án này?',
         subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
         buttonLabel1: 'Hủy',
+        buttonAction1: ()=>{setSaveOpen(false)},
         buttonLabel2: 'Lưu',
         buttonAction2: handleSave
     };
@@ -154,6 +156,7 @@ const EditProject = () => {
         notification: 'Bạn có chắc chắn muốn khôi phục dự án này?',
         subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
         buttonLabel1: 'Hủy',
+        buttonAction1: ()=>{setRecoverOpen(false)},
         buttonLabel2: 'Khôi phục',
         buttonAction2: handleRecover
     };
@@ -208,9 +211,9 @@ const EditProject = () => {
                     </div>
                 </div>
             </div>
-            <CancelPopup {...deletePopupData}/>
-            <CancelPopup {...savePopupData}/>
-            <CancelPopup {...recoverPopupData}/>
+            <Notification {...deletePopupData}/>
+            <Notification {...savePopupData}/>
+            <Notification {...recoverPopupData}/>
         </>
     )
 }

@@ -3,10 +3,11 @@ import { useLayout } from '@/layouts/layoutcontext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
-import { CancelPopup } from '@/components/Popup';
+import Notification from '../../components/Notification';
 import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
+import { toast } from 'react-toastify';
 // Còn sự kiện ấn vào nút trưng bày
 const StatusBox = ({ isFeatured }) => {
   return (
@@ -55,10 +56,14 @@ export default function Project () {
     notification: 'Bạn có chắc chắn muốn xóa dự án này?',
     subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
     buttonLabel1: 'Hủy',
-    buttonLabel2: 'Xóa',
+    buttonAction1: ()=>{setCancelOpen(false)},
+    buttonLabel2: 'Xóa dự án',
     buttonAction2: async () => 
       {
-        await deleteOne(currentDeleteID);
+        await deleteOne(currentDeleteID, {
+        onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
+        onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
+        });
         queryClient.invalidateQueries(['admin_projects']);
         setCancelOpen(false)
       }
@@ -189,7 +194,11 @@ export default function Project () {
                     <td className="py-4 px-4">
                       <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded" />
                     </td>
-                    <td className="py-4 px-1 text-black max-w-[530px] overflow-hidden text-ellipsis line-clamp-2">{item.title}</td>
+                    <td className="py-4 px-1 text-black max-w-[530px] ">
+                         <div className="line-clamp-2 overflow-hidden text-ellipsis">
+                          {item.title}
+                        </div>
+                      </td>
                     <td className="py-4 px-4 text-gray-800">{item.province}</td>
                     <td className="py-4 px-4 text-gray-800">{new Date(item.complete_time).toLocaleDateString('vi-VN')}</td>
                     <td className="py-4 px-9 item-center">
@@ -229,7 +238,7 @@ export default function Project () {
           </div>
         ))}
       </div>
-      <CancelPopup {...cancelPopupData} />
+      <Notification {...cancelPopupData} />
     </div>
   );
 }

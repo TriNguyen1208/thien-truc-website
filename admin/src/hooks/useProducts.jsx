@@ -23,7 +23,6 @@ function useGetProductPage(){
 }
 function usePatchProductPage() {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (updatedPage)=> productsServices.patchProductPage(updatedPage),
     onSuccess: () => {

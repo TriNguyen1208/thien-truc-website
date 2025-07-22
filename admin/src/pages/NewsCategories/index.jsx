@@ -3,7 +3,7 @@ import { useLayout } from '@/layouts/layoutcontext';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { SettingIcon, DeleteIcon, EditIcon } from '@/components/Icon';
-import { CancelPopup } from '@/components/Popup';
+import Notification from '@/components/Notification'
 import Setting from '@/components/Setting';
 import SearchBar from '@/components/Search';
 import SimpleForm from '@/components/SimpleForm';
@@ -90,19 +90,22 @@ export default function NewsCategories() {
   };
 
   // Thong tin của popup xác nhận xóa loại tin tức
-  const [cancelOpen, setCancelOpen] = useState(false);
+  const [openNotification, setOpenNotification] = useState(false);
   const[currentDeleteID, setCurrentDeleteId] = useState(null);
-  const cancelPopupData = {
-    open: cancelOpen,
-    setOpen: setCancelOpen,
+  const notificationProps = {
+    open: openNotification,
+    setOpen: setOpenNotification,
     notification: 'Bạn có chắc chắn muốn xóa loại tin tức này?',
     subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
     buttonLabel1: 'Hủy',
+    buttonAction1: ()=>{
+      setOpenNotification(false);
+    },
     buttonLabel2: 'Xóa',
     buttonAction2: async () => {
       await deleteOne(currentDeleteID);
       queryClient.invalidateQueries(['admin_news_list'])
-      setCancelOpen(false);
+      setOpenNotification(false);
     },
   };
   
@@ -245,7 +248,7 @@ export default function NewsCategories() {
                   <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' onClick={() => 
                     {
                       setCurrentDeleteId(item.id);
-                      setCancelOpen(true)
+                      setOpenNotification(true)
                     }
                     }>
                     <DeleteIcon />
@@ -264,8 +267,8 @@ export default function NewsCategories() {
         data={editFormData}
         config={editFormConfig}
       />
-      <CancelPopup
-        {...cancelPopupData}
+      <Notification
+        {...notificationProps}
       />
      <Setting {...settingFormData} 
         onSave={async (changedItems) => {

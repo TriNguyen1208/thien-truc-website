@@ -1,8 +1,9 @@
 import EditBanner from '../../components/EditBanner'
 import { useLayout } from "@/layouts/LayoutContext"
-import { useEffect } from "react"
+import { useEffect, useState } from 'react'
 import useContact from '../../hooks/useContact';
 import Loading from '@/components/Loading'
+import Notification from '@/components/Notification'
 const ContactPageContent = () => {
   const { setLayoutProps } = useLayout()
   useEffect(() => {
@@ -15,11 +16,32 @@ const ContactPageContent = () => {
 
   const { data: bannerData, isLoading: isLoadingBanner } = useContact.getContactPage();
   const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
+  const [valuesBanner, setValuesBanner] = useState(null)
+  const [openNotification, setOpenNotification] = useState(false)
   if (isLoadingBanner || isPendingUpdateBanner) {
     return (
      <Loading/>
     )
   }
+    const handleCancleNotification = ()=>{
+      setOpenNotification(false)
+    }
+    const handleConfirmNotification =()=>{
+     
+      setOpenNotification(false)
+         updateBanner(valuesBanner);
+    }
+    
+    const notificationProps = {
+      open: openNotification, 
+       setOpen: setOpenNotification, 
+       notification: "Xác nhận lưu thây đổi!", 
+       subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+       buttonLabel1:"Hủy", 
+       buttonAction1:handleCancleNotification, 
+       buttonLabel2: "Xác nhận", 
+       buttonAction2: handleConfirmNotification
+    }
   const configAboutUsBanner = {
     title: "Banner Trang liên hệ",
     description: "Chỉnh sửa tiêu đề và mô tả banner",
@@ -28,7 +50,8 @@ const ContactPageContent = () => {
       { name: "description", label: 'Mô tả banner', placeholder: 'Nhập nội dung mô tả...', contentCurrent: bannerData.banner_description, isRequire: true, rows: 3, maxLength: 300},
     ],
     handleSave: (values) => {
-      updateBanner(values);
+      setValuesBanner(values)
+     setOpenNotification(true)
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
@@ -40,6 +63,7 @@ const ContactPageContent = () => {
         listInput={configAboutUsBanner.listInput}
         saveButton={configAboutUsBanner.handleSave}
       />
+      <Notification {...notificationProps}/>
     </>
   )
 }

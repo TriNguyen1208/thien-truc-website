@@ -3,7 +3,7 @@ import useContact from '@/hooks/useContact';
 import { useEffect,useState } from 'react'
 import Table from '@/components/Table'
 import Button from '@/components/Button'
-import { CancelPopup } from '@/components/Popup'
+import Notification from '@/components/Notification'
 import ProductImageCell from '@/components/ProductImageCell'
 import { DeleteIcon, EditIcon } from '@/components/Icon'
 import DynamicForm from '@/components/DynamicForm'
@@ -19,7 +19,7 @@ const Contact = () => {
 
   const [pendingItemDel, setPendingItemDel] = useState(null)
   const [pendingItemEdit, setPendingItemEdit] = useState(null)
-  const [isOpenDeletePopup, setIsOpenDeletePopup] = useState(false)
+  const [isOpenNotification, setIsOpenNotification] = useState(false)
 
   const {data: supportAgents, isLoading: isLoadingSupportAgent} = useContact.support_agents.getAll()
   const {mutate: addAgent,isPending : isLoadingCreateAgent} = useContact.support_agents.createOne()
@@ -107,7 +107,12 @@ const handleAddContact= ()=>
     setIsModalOpenEdit(false)
 
   }
- 
+  const handleCancelButonAdd = ()=>{
+      setIsModalOpenAdd(false)
+    }
+  const handleCancelButonEdit = ()=>{
+      setIsModalOpenEdit(false)
+  }
   const configAdd = {
     title: "Thêm người liên lạc mới",
     description: "Điền thông tin để thêm người liên lạc mới",
@@ -116,6 +121,8 @@ const handleAddContact= ()=>
     contentSubmitButton: "Tạo mới người liên lạc",
     isModalOpen: isModalOpenAdd,
     handleSubmitButton: handleSubmitButtonAdd,
+    handleCancelButton: handleCancelButonAdd,
+    handleCancelModal: handleCancelButonAdd,
     setIsModalOpen: setIsModalOpenAdd
   }
 
@@ -127,6 +134,8 @@ const handleAddContact= ()=>
     contentSubmitButton: "Cập nhật",
     isModalOpen: isModalOpenEdit,
     handleSubmitButton: handleSubmitButtonEdit,
+    handleCancelButton: handleCancelButonEdit,
+    handleCancelModal: handleCancelButonEdit,
     setIsModalOpen: setIsModalOpenEdit
   }
   const dataAdd = [
@@ -146,35 +155,35 @@ const handleAddContact= ()=>
   //====================================================End Form=========================================================
   //====================================================Start Table=======================================================
  
- const handleConfirmDeletePopup = ()=>{
+ const handleConfirmNotification= ()=>{
     deleteAgent(listContacts[pendingItemDel].id,
       {
         onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
         onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
       }
     )
-    setIsOpenDeletePopup(false)
+    setIsOpenNotification(false)
   }
-  const handleCancelDeletePopup = ()=>{
-    setIsOpenDeletePopup(false)
+  const handleCancelNotification= ()=>{
+    setIsOpenNotification(false)
   }
   
-  const deleteProps={
-     open: isOpenDeletePopup, 
-     setOpen: setIsOpenDeletePopup, 
+  const notificationProps={
+     open: isOpenNotification, 
+     setOpen: setIsOpenNotification, 
      notification: "Xác nhận xóa nhân viên!", 
      subTitle:"Bạn có chắc chắn muốn xóa nhân viên này.", 
      buttonLabel1:"Hủy", 
-     buttonAction1:handleCancelDeletePopup, 
+     buttonAction1:handleCancelNotification, 
      buttonLabel2: "Xác nhận xóa", 
-     buttonAction2: handleConfirmDeletePopup
+     buttonAction2: handleConfirmNotification
   }
   
   const handleDelItem = (e)=> {
     
     const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
         setPendingItemDel(index)
-        setIsOpenDeletePopup(true)
+        setIsOpenNotification(true)
     }
   const delButton = {
     Icon: DeleteIcon, 
@@ -227,7 +236,7 @@ const handleAddContact= ()=>
 
       <DynamicForm data={dataAdd} config={configAdd} />
       <DynamicForm data={dataEdit} config={configEdit} />
-      <CancelPopup {...deleteProps}/>
+      <Notification {...notificationProps}/>
     </div>
   )
 }

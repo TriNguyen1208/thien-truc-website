@@ -8,7 +8,7 @@ import { useState } from 'react';
 import useProduct from "../../hooks/useProducts";
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, SettingIcon } from "../../components/Icon"
-import { CancelPopup } from '../../components/Popup'
+import Notification from '@/components/Notification'
 import Setting from '../../components/Setting';
 import useProducts from '../../hooks/useProducts';
 import { toast } from 'react-toastify';
@@ -36,7 +36,7 @@ const ProductCategories = () => {
   const [isModalOpenEditProductCategories, setIsModalOpenEditProductCategories] = useState(false);
   const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
   const [idCurrentEditProductCategories, setIdCurrentEditProductCategories] = useState(null);
-  const [openCancel, setOpenCancel] = useState(false);
+  const [openNotificaiton, setOpenNotificaiton] = useState(false);
   const [dataEditProductCategories, setDataEditProductCategories] = useState([
     { name: 'productNameCategories', label: 'Tên loại sản phẩm', type: 'text', width: 12, isRequired: true, maxLength: 300 },
   ]);
@@ -187,7 +187,7 @@ const ProductCategories = () => {
               className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
               onClick={() => {
                 setProductCategoriesToDelete(item);
-                setOpenCancel(true)
+                setOpenNotificaiton(true)
               }
               }
             >
@@ -230,15 +230,16 @@ const ProductCategories = () => {
 
       <SimpleForm data={dataEditProductCategories} config={configProductCategories.form.configEdit} />
       <SimpleForm data={configProductCategories.form.dataAdd} config={configProductCategories.form.configAdd} />
-      <CancelPopup
-        open={openCancel}
-        setOpen={setOpenCancel}
+      <Notification
+        open={openNotificaiton}
+        setOpen={setOpenNotificaiton}
         notification="Xác nhận xóa"
         subTitle={`Bạn có chắc muốn xoá loại sản phẩm "${productCategoriesToDelete?.name}" không?`}
+        buttonAction1 = {()=>{setOpenNotificaiton(false)}}
         buttonAction2={() => {
           if (productCategoriesToDelete) {
             deleteOneProductCategories(productCategoriesToDelete.id);
-            setOpenCancel(false);
+            setOpenNotificaiton(false);
           }
         }}
       />

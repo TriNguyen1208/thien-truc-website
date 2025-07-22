@@ -72,9 +72,13 @@ const news = {
             });
     },
     useDeleteOne: (id) => {
+        const queryClient = useQueryClient()
         return useMutation({
-            mutationFn: (id) => 
-            newsServices.news.deleteOne(id)
+            mutationFn: (id) => newsServices.news.deleteOne(id),
+            onSuccess: ()=>{
+                queryClient.invalidateQueries(['admin_news']);
+            }
+
         })
     }
 }

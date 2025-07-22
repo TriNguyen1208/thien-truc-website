@@ -8,7 +8,7 @@ import useProjects from '../../hooks/useProjects';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {extractBlogImages} from '../../utils/handleImage';
 import ProjectSetting from '../../components/ProjectSetting';
-import { CancelPopup } from '../../components/Popup';
+import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
 const AddProject = () => {
     //useState
@@ -113,6 +113,7 @@ const AddProject = () => {
         notification: 'Bạn có chắc chắn muốn lưu dự án này?',
         subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
         buttonLabel1: 'Hủy',
+        buttonAction1: ()=>{setSaveOpen(false)},
         buttonLabel2: 'Lưu',
         buttonAction2: handleSave
     };
@@ -122,6 +123,7 @@ const AddProject = () => {
         notification: 'Bạn có chắc chắn muốn khôi phục dự án này?',
         subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
         buttonLabel1: 'Hủy',
+        buttonAction1: ()=>{setRecoverOpen(false)},
         buttonLabel2: 'Khôi phục',
         buttonAction2: handleRecover
     };
@@ -159,8 +161,8 @@ const AddProject = () => {
                     </div>
                 </div>
             </div>
-            <CancelPopup {...savePopupData}/>
-            <CancelPopup {...recoverPopupData}/>
+            <Notification {...savePopupData}/>
+            <Notification {...recoverPopupData}/>
         </>
     )
 }

@@ -6,7 +6,7 @@ import DynamicForm from "@/components/DynamicForm"
 import EditBanner from '../../components/EditBanner'
 import useRecruitment from '../../hooks/useRecruitment'
 import Loading from '@/components/Loading'
-import { CancelPopup } from "../../components/Popup";
+import Notification from '@/components/Notification'
 const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
   const {mutate: updateRecruitment, isPending: isPendingRecruitment} = useRecruitment.patch();
@@ -36,6 +36,7 @@ const RecruitmentPageContent = () => {
     notification: 'Bạn có chắc chắn muốn lưu banner của trang tuyển dụng này?',
     subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
     buttonLabel1: 'Hủy',
+    buttonAction1: ()=>{setSaveOpenBanner(false)},
     buttonLabel2: 'Lưu',
     buttonAction2: handleButtonBanner
   };
@@ -45,6 +46,7 @@ const RecruitmentPageContent = () => {
     notification: 'Bạn có chắc chắn muốn lưu văn hóa của trang tuyển dụng này?',
     subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
     buttonLabel1: 'Hủy',
+    buttonAction1: ()=>{setSaveOpenCulture(false)},
     buttonLabel2: 'Lưu',
     buttonAction2: handleButtonCulture
   };
@@ -104,8 +106,8 @@ const RecruitmentPageContent = () => {
         <EditBanner {...propsBanner}/>
         <EditBanner {...propsCulture}/>
       </div>
-      <CancelPopup {...saveBannerPopupData}/>
-      <CancelPopup {...saveCulturePopupData}/>
+      <Notification {...saveBannerPopupData}/>
+      <Notification {...saveCulturePopupData}/>
     </>
     
     

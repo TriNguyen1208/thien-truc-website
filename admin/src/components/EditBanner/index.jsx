@@ -3,8 +3,11 @@ import {SaveIcon}  from '../Icon';
 import { useRef, useState, useEffect } from 'react';
 function Input({label, placeholder, rows,maxLength, contentCurrent,inputRef, isRequire} )
 {
-     const [value, setValue] = useState(contentCurrent || '');
+    const [value, setValue] = useState(contentCurrent || '');
 
+        useEffect(() => {
+            setValue(contentCurrent || '');
+        }, [contentCurrent]);
         useEffect(() => {
             if (inputRef) inputRef.current = { value }; // gán lại giá trị vào ref cho component cha
         }, [value]);
@@ -85,7 +88,7 @@ export default function EditBanner({title, description, listInput,saveButton})
                 }
 
             </div>
-            <div className='w-[145px] h-40[px]'>
+            <div className='w-fit h-40[px]'>
               <button className='w-full' type = "submit"> <Button {...propsButton}/></button>
             </div>                
             </form>

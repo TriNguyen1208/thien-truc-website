@@ -8,7 +8,7 @@ import DynamicForm from '../../components/DynamicForm'
 import { useState } from 'react';
 import Button from '@/components/Button'
 import useAboutUs from '../../hooks/useAboutUs';
-import { CancelPopup } from '../../components/Popup'
+import Notification from '@/components/Notification'
 import Loading from '@/components/Loading'
 const AboutUsPageContent = () => {
   const { setLayoutProps } = useLayout()
@@ -56,6 +56,11 @@ const AboutUsPageContent = () => {
   const { mutate: createWhyChooseUs, isPending: isPendingCreateWhyChooseUs } = useAboutUs.why_choose_us.createOne();
   const { mutate: deleteWhyChooseUs, isPending: isPendingDeleteWhyChooseUs } = useAboutUs.why_choose_us.deleteOne();
 
+    const [bannerNotification, setBannerNotification] = useState(false)
+    const [valuesBanner, setValuesBanner] = useState(null)
+    const [storyNotification, setStoryNotification] = useState(false)
+    const [valuesStory, setValuesStory] = useState(null)
+
   if (isLoadingDutyAndResponsibility || isPendingCreateDutyAndResponsibility || isPendingUpdateDutyAndResponsibility || isPendingDeleteDutyAndResponsibility
     || isPendingCreateWhyChooseUs || isPendingDeleteWhyChooseUs || isPendingUpdateWhyChooseUs || isLoadingWhyChooseUs
     || isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory
@@ -66,6 +71,13 @@ const AboutUsPageContent = () => {
   }
 
 
+  const handleCancleBanner= ()=>{
+    setBannerNotification(false)
+  }
+  const handleConfirmBanner= ()=>{
+    updateBanner(valuesBanner);
+    setBannerNotification(false)
+  }
   const configAboutUsBanner = {
     title: "Banner trang về chúng tôi",
     description: "Chỉnh sửa tiêu đề và mô tả banner",
@@ -74,11 +86,29 @@ const AboutUsPageContent = () => {
       { name: "description", label: 'Mô tả banner', placeholder: 'Nhập nội dung mô tả...', contentCurrent: aboutUsPageData.banner_description, isRequire: true, rows: 3, maxLength: 300},
 
     ],
+     notificationProps:{
+         open: bannerNotification, 
+         setOpen: setBannerNotification, 
+         notification: "Xác nhận lưu thây đổi!", 
+         subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+         buttonLabel1:"Hủy", 
+         buttonAction1: handleCancleBanner, 
+         buttonLabel2: "Xác nhận", 
+         buttonAction2: handleConfirmBanner
+        },
     handleSave: (values) => {
-      updateBanner(values);
+      setValuesBanner(values)
+      setBannerNotification(true)
+     
     }
   }
-
+ const handleCancleStory= ()=>{
+    setStoryNotification(false)
+  }
+  const handleConfirmStory= ()=>{
+    updateOurStory(valuesStory);
+    setStoryNotification(false)
+  }
   const configOutStoryBanner = {
     title: "Câu chuyện của chúng tôi",
     description: "Chỉnh sửa tiêu đề và mô tả banner",
@@ -86,8 +116,19 @@ const AboutUsPageContent = () => {
       { name: "our_story_content", label: 'Nội dung câu chuyện', placeholder: 'Nhập nội dung câu chuyện...', contentCurrent: aboutUsPageData.our_story_content, isRequire: true, rows: 5 },
 
     ],
+     notificationProps:{
+         open: storyNotification, 
+         setOpen: setBannerNotification, 
+         notification: "Xác nhận lưu thây đổi!", 
+         subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+         buttonLabel1:"Hủy", 
+         buttonAction1: handleCancleStory, 
+         buttonLabel2: "Xác nhận", 
+         buttonAction2: handleConfirmStory
+        },
     handleSave: (values) => {
-      updateOurStory(values);
+      setValuesStory(values)
+      setStoryNotification(true)
     }
   }
 
@@ -173,6 +214,9 @@ const AboutUsPageContent = () => {
       setOpen: setIsOpenCancelDutyAndResponsibility,
       notification: "Xác nhận xóa",
       subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
+      buttonAction1:()=>{
+           setIsOpenCancelDutyAndResponsibility(false);
+      },
       buttonAction2: () => {
         if (dataCurrent) {
           deleteDutyAndResponsibility(dataCurrent.id);
@@ -265,6 +309,9 @@ const AboutUsPageContent = () => {
       setOpen: setIsOpenCancelWhyChooseUs,
       notification: "Xác nhận xóa",
       subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
+      buttonAction1:()=>{
+        setIsOpenCancelWhyChooseUs(false);
+      },
       buttonAction2: () => {
         if (dataCurrent) {
           deleteWhyChooseUs(dataCurrent.id);
@@ -305,8 +352,8 @@ const AboutUsPageContent = () => {
               </p>
             </div>
           </div>
-          <div className='w-[160px] h-40[px] '>
-            <button type="submit" className='w-[170px]' onClick={() => setIsModalOpenAddDutyAndResponsibility(true)}> <Button {...configDutyAndResponsibility.propsAddButton} /></button>
+          <div className='h-40[px] '>
+            <button type="submit" className='' onClick={() => setIsModalOpenAddDutyAndResponsibility(true)}> <Button {...configDutyAndResponsibility.propsAddButton} /></button>
           </div>
         </div>
         <div className='grid grid-cols-12 gap-6'>
@@ -350,8 +397,8 @@ const AboutUsPageContent = () => {
               </p>
             </div>
           </div>
-          <div className='w-[160px] h-40[px] '>
-            <button type="submit" className='w-[170px]' onClick={() => setIsModalOpenAddWhyChooseUs(true)}> <Button {...configWhyChooseUs.propsAddButton} /></button>
+          <div className=' h-40[px] '>
+            <button type="submit" className='' onClick={() => setIsModalOpenAddWhyChooseUs(true)}> <Button {...configWhyChooseUs.propsAddButton} /></button>
           </div>
         </div>
         <div className='grid grid-cols-12 gap-6'>
@@ -380,20 +427,24 @@ const AboutUsPageContent = () => {
       </div>
       <DynamicForm data={configWhyChooseUs.dataAddWhyChooseUs} config={configWhyChooseUs.configAddWhyChooseUs} />
       <DynamicForm data={dataEditWhyChooseUs} config={configWhyChooseUs.configEditWhyChooseUs} />
-      <CancelPopup
+      <Notification
         open={configDutyAndResponsibility.cancelPopub.open}
         setOpen={configDutyAndResponsibility.cancelPopub.setOpen}
         notification={configDutyAndResponsibility.cancelPopub.notification}
         subTitle={configDutyAndResponsibility.cancelPopub.subTitle}
+        buttonAction1 = {configDutyAndResponsibility.cancelPopub.buttonAction1}
         buttonAction2={configDutyAndResponsibility.cancelPopub.buttonAction2}
       />
-      <CancelPopup
+      <Notification
         open={configWhyChooseUs.cancelPopub.open}
         setOpen={configWhyChooseUs.cancelPopub.setOpen}
         notification={configWhyChooseUs.cancelPopub.notification}
         subTitle={configWhyChooseUs.cancelPopub.subTitle}
+        buttonAction1 = {configWhyChooseUs.cancelPopub.buttonAction1}
         buttonAction2={configWhyChooseUs.cancelPopub.buttonAction2}
       />
+      <Notification {...configAboutUsBanner.notificationProps} />
+      <Notification {...configOutStoryBanner.notificationProps} />
     </>
   )
 }

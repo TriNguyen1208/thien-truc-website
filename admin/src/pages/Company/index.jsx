@@ -3,7 +3,7 @@ import { useLayout } from '@/layouts/layoutcontext';
 import Button from '@/components/Button';
 import { DeleteIcon, PlusIcon, SaveIcon } from '@/components/Icon';
 import useContact from '@/hooks/useContact'
-import { CancelPopup } from '@/components/Popup';
+import Notification from '@/components/Notification'
 import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'
 function Address({index,address,isChecked, isMultiple, handleDelete, handleChange ,handleChecked})
@@ -56,9 +56,9 @@ const Company = () => {
 
     const [selectedAddressId, setSelectedAddressId] = useState(null);
 
-    const [openCancelPopup, setOpenCancelPopup] = useState(false)
+    const [openNotification, setOpenNotification] = useState(false)
     const [pendingDeleteId, setPendingDeleteId] = useState(null);
-    const [popupType, setPopupType] = useState(null); // "address" | "hour" | "phone"
+    const [notificationType, setNotificationType] = useState(null); // "address" | "hour" | "phone"
 
     useEffect(() => {
       setLayoutProps({
@@ -109,14 +109,14 @@ const Company = () => {
       return(<Loading/>)
     }
   
-    const handleCanclePopup = ()=>{
-        setOpenCancelPopup(false)
+    const handleCancleNotification = ()=>{
+        setOpenNotification(false)
   
     }
-     const handleConfirmPopup = ()=>{
-        setOpenCancelPopup(false)
+     const handleConfirmNotification = ()=>{
+        setOpenNotification(false)
 
-        if(popupType == "address")
+        if(notificationType == "address")
         {
             setCompanyAddressList(prev=> 
         {
@@ -128,8 +128,8 @@ const Company = () => {
           return news
         } 
         )
-        }else if(popupType == "hour") setCompanyHourList(prev=>prev.filter(hour => hour.id != pendingDeleteId))
-         else if(popupType == "phone")setCompanyPhoneList(prev=>prev.filter(phone => phone.id != pendingDeleteId))
+        }else if(notificationType == "hour") setCompanyHourList(prev=>prev.filter(hour => hour.id != pendingDeleteId))
+         else if(notificationType == "phone")setCompanyPhoneList(prev=>prev.filter(phone => phone.id != pendingDeleteId))
     }
     const handleSubmit = (e)=>{
         e.preventDefault()
@@ -165,22 +165,22 @@ const Company = () => {
     
     //===========Addresss=====================
    
-  const cancelProps = {
-     open:openCancelPopup, 
-     setOpen :setOpenCancelPopup,
+  const notificationProps = {
+     open:openNotification, 
+     setOpen :setOpenNotification,
      notification:"Xác nhận xóa", 
      subTitle: "Bạn có chắc chắn muốn xóa? Hành động này không thể hoàn tác.", 
      buttonLabel1 : "Hủy", 
-     buttonAction1: handleCanclePopup, 
+     buttonAction1: handleCancleNotification, 
      buttonLabel2: "Xác nhận xóa", 
-     buttonAction2: handleConfirmPopup
+     buttonAction2: handleConfirmNotification
   }
   const handleDeleteAddress = (e)=>{
       const parentWithDataIndex = e.target.closest('[data-index]');
       const index = parentWithDataIndex.getAttribute('data-index');
         setPendingDeleteId(index)
-        setPopupType("address")
-        setOpenCancelPopup(true)
+        setNotificationType("address")
+        setOpenNotification(true)
        
     }
     const handleAddAddress = ()=>{
@@ -231,8 +231,8 @@ const handleSelectMainAddress = (id) => {
       const parentWithDataIndex = e.target.closest('[data-index]');
       const index = parentWithDataIndex.getAttribute('data-index');
        setPendingDeleteId(index)
-        setPopupType("hour")
-        setOpenCancelPopup(true)
+        setNotificationType("hour")
+        setOpenNotification(true)
      
   }
   const handleHourChange = (id, value) => {
@@ -260,8 +260,8 @@ const handleSelectMainAddress = (id) => {
       const parentWithDataIndex = e.target.closest('[data-index]');
       const index = parentWithDataIndex.getAttribute('data-index');
       setPendingDeleteId(index)
-      setPopupType("phone")
-      setOpenCancelPopup(true)
+      setNotificationType("phone")
+      setOpenNotification(true)
       
   }
   const handlePhoneChange = (id, value) => {
@@ -297,7 +297,7 @@ const handleSelectMainAddress = (id) => {
           <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
             Địa chỉ công ty<span className="text-red-500 ml-1">*</span>
           </h2>
-          <div className='w-[141px] h-[36px]'>
+          <div className=' h-[36px]'>
             <Button  {...addressButton}/>
           </div>
 
@@ -337,7 +337,7 @@ const handleSelectMainAddress = (id) => {
                   <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
                   Giờ làm việc<span className="text-red-500 ml-1">*</span>
                   </h2>
-              <div className='w-[180px] h-[36px]'>
+              <div className=' h-[36px]'>
                 <Button  {...hourButton}/>
               </div>
 
@@ -377,7 +377,7 @@ const handleSelectMainAddress = (id) => {
                 <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
                   Số điện thoại hotline<span className="text-red-500 ml-1">*</span>
                 </h2>
-                <div className='w-[180px] h-[36px]'>
+                <div className=' h-[36px]'>
                   <Button  {...phoneButton}/>
                 </div>
 
@@ -413,7 +413,7 @@ const handleSelectMainAddress = (id) => {
             <Button {...submitButton} />
         </button>
           <div className='absolute'>
-            <CancelPopup {...cancelProps}/>
+            <Notification {...notificationProps}/>
           </div>
     </form>
   )

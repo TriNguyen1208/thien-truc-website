@@ -8,7 +8,7 @@ import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
 import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { extractBlogImages } from '../../utils/handleImage';
-import { CancelPopup } from '../../components/Popup';
+import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
 const AddNews = () => {
     //useState
@@ -125,6 +125,7 @@ const AddNews = () => {
         notification: 'Bạn có chắc chắn muốn lưu tin tức này?',
         subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
         buttonLabel1: 'Hủy',
+        buttonAction1: ()=>{setSaveOpen(false)},
         buttonLabel2: 'Lưu',
         buttonAction2: handleSave
     };
@@ -134,6 +135,7 @@ const AddNews = () => {
         notification: 'Bạn có chắc chắn muốn khôi phục tin tức này?',
         subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
         buttonLabel1: 'Hủy',
+        buttonAction1: ()=>{setRecoverOpen(false)},
         buttonLabel2: 'Khôi phục',
         buttonAction2: handleRecover
     };
@@ -171,8 +173,8 @@ const AddNews = () => {
                     </div>
                 </div>
             </div>
-            <CancelPopup {...savePopupData}/>
-            <CancelPopup {...recoverPopupData}/>
+            <Notification {...savePopupData}/>
+            <Notification {...recoverPopupData}/>
         </>
     )
 }

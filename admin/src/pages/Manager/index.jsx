@@ -4,7 +4,7 @@ import Table from '@/components/Table'
 import Button from '@/components/Button'
 import { DeleteIcon, EditIcon } from '@/components/Icon'
 import DynamicForm from '@/components/DynamicForm'
-import { CancelPopup } from '@/components/Popup'
+import Notification from '@/components/Notification'
 import useAdmin from '@/hooks/useAdmin'
 import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'
@@ -24,7 +24,7 @@ const Manager = () => {
   const [pendingItemDel, setPendingItemDel] = useState(null)
   const [pendingItemEdit, setPendingItemEdit] = useState(null)
 
-  const [isOpenCancelPopup, setIsOpenCancelPopup] = useState(false)
+  const [isOpenNotification, setIsOpenNotification] = useState(false)
  
 
    useEffect(()=>{
@@ -49,8 +49,8 @@ const Manager = () => {
     return(<Loading/>)
   }
   
-  const handleConfirmPopup = ()=>{
-    setIsOpenCancelPopup(false)
+  const handleConfirmNotification = ()=>{
+    setIsOpenNotification(false)
     setListManagers(prev => prev.filter(mgr => prev.indexOf(mgr) !== pendingItemDel))
     deleteManager(managers[pendingItemDel].username,{
       onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
@@ -61,19 +61,19 @@ const Manager = () => {
         
 
   }
-  const handleCanclePopup = ()=>{
-    setIsOpenCancelPopup(false)
+  const handleCancleNotification = ()=>{
+    setIsOpenNotification(false)
   }
 
-  const cancelProps={
-     open: isOpenCancelPopup, 
-     setOpen: setIsOpenCancelPopup, 
+  const notificationProps={
+     open: isOpenNotification, 
+     setOpen: setIsOpenNotification, 
      notification: "Xác nhận xóa Manager!", 
      subTitle:"Bạn có chắc chắn muốn xóa Manager này.", 
      buttonLabel1:"Hủy", 
-     buttonAction1:handleCanclePopup, 
+     buttonAction1:handleCancleNotification, 
      buttonLabel2: "Xác nhận xóa", 
-     buttonAction2: handleConfirmPopup
+     buttonAction2: handleConfirmNotification
   }
 
  
@@ -115,6 +115,12 @@ const Manager = () => {
     setIsModalOpenEdit(false)
 
   }
+  const handleCancelButonAdd = ()=>{
+    setIsModalOpenAdd(false)
+  }
+  const handleCancelButonEdit = ()=>{
+    setIsModalOpenEdit(false)
+  }
   const configAdd = {
     title: "Thêm Manager mới",
     description: "Điền thông tin để thêm Manager mới",
@@ -123,6 +129,8 @@ const Manager = () => {
     contentSubmitButton: "Tạo mới Manager",
     isModalOpen: isModalOpenAdd,
     handleSubmitButton: handleSubmitButtonAdd,
+    handleCancelButton: handleCancelButonAdd,
+    handleCancelModal: handleCancelButonAdd,
     setIsModalOpen: setIsModalOpenAdd
   }
 
@@ -134,6 +142,8 @@ const Manager = () => {
     contentSubmitButton: "Cập nhật",
     isModalOpen: isModalOpenEdit,
     handleSubmitButton: handleSubmitButtonEdit,
+    handleCancelButton: handleCancelButonEdit,
+    handleCancelModal: handleCancelButonEdit,
     setIsModalOpen: setIsModalOpenEdit
   }
   const dataAdd = [
@@ -159,7 +169,7 @@ const Manager = () => {
     
       const index = parseInt(e.target.closest("[data-key]").getAttribute("data-key")) ;
       setPendingItemDel(index)
-      setIsOpenCancelPopup(true)
+      setIsOpenNotification(true)
          
     }
   const delButton = {
@@ -208,7 +218,7 @@ const Manager = () => {
       </div>
       <DynamicForm data={dataAdd} config={configAdd}/>
       <DynamicForm data={dataEdit} config={configEdit}/>
-      <CancelPopup {...cancelProps}/>
+      <Notification {...notificationProps}/>
     </div>
   )
 }

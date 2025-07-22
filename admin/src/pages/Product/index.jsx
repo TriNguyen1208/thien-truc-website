@@ -11,7 +11,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
-import { CancelPopup } from '../../components/Popup'
+import Notification from '@/components/Notification'
 import ProductImageCell from '../../components/ProductImageCell'
 import changeToFormData from '../../utils/changeToFormData'
 import Loading from '@/components/Loading'
@@ -51,7 +51,7 @@ const Product = () => {
 
 
 
-  const [openCancel, setOpenCancel] = useState(false);
+  const [openNotification, setOpenNotification] = useState(false);
 
   const handleCancelButtonAddProduct = () => {
     setIsModalOpenAddProduct(false)
@@ -172,6 +172,7 @@ const Product = () => {
         isModalOpen: isModalOpenAddProduct,
         handleSubmitButton: handleSubmitButtonAddProduct,
         handleCancelButton: handleCancelButtonAddProduct,
+        handleCancelModal: handleCancelButtonAddProduct,
         setIsModalOpen: setIsModalOpenAddProduct,
       },
       configEditProduct: {
@@ -183,6 +184,7 @@ const Product = () => {
         isModalOpen: isModalOpenEditProduct,
         handleSubmitButton: handleSubmitButtonEditProduct,
         handleCancelButton: handleCancelButtonEditProduct,
+        handleCancelModal: handleCancelButtonEditProduct,
         setIsModalOpen: setIsModalOpenEditProduct,
       },
       dataAddProduct: [
@@ -298,7 +300,7 @@ const Product = () => {
               className="px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
               onClick={() => {
                 setProductToDelete(product);
-                setOpenCancel(true)
+                setOpenNotification(true)
               }
               }
             >
@@ -375,15 +377,16 @@ const Product = () => {
 
       <DynamicForm data={dataEditProduct} config={configProduct.form.configEditProduct} />
       <DynamicForm data={configProduct.form.dataAddProduct} config={configProduct.form.configAddProduct} />
-      <CancelPopup
-        open={openCancel}
-        setOpen={setOpenCancel}
+      <Notification
+        open={openNotification}
+        setOpen={setOpenNotification}
         notification="Xác nhận xóa"
         subTitle={`Bạn có chắc muốn xoá sản phẩm "${productToDelete?.name}" không?`}
+        buttonAction1 = {()=>{  setOpenNotification(false);}}
         buttonAction2={() => {
           if (productToDelete) {
             deleteOneProduct(productToDelete.id);
-            setOpenCancel(false);
+            setOpenNotification(false);
           }
         }}
 

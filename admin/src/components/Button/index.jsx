@@ -29,7 +29,10 @@ export default function Button({ Icon, text, colorText, colorBackground, padding
       style={{
         color: colorText,
         backgroundColor: disable ? '#d3d3d3' : colorBackground, 
-        padding: padding,
+        paddingTop: padding,
+        paddingBottom: padding,
+        paddingLeft: padding + 16,
+        paddingRight: padding + 16,
         ...(!disable ? hoverStyle : {}), 
         cursor: disable ? 'not-allowed' : hoverStyle.cursor || 'pointer',
         display: 'flex',

@@ -5,7 +5,7 @@ import Button from '@/components/Button'
 import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon } from '../../components/Icon';
 import SimpleForm from '../../components/SimpleForm'
 import { useState } from 'react';
-import { CancelPopup } from '../../components/Popup'
+import Notification from '@/components/Notification'
 import Table from "../../components/Table"
 import SearchBar from '../../components/Search'
 import ProductImageCell from '../../components/ProductImageCell'
@@ -15,6 +15,7 @@ import AddHighlight from '../../components/AddHighlight';
 import Loading from '@/components/Loading'
 import { useNavigate } from 'react-router-dom';
 import { useLayout } from "@/layouts/LayoutContext"
+import { notification } from 'antd';
 const HomePageContent = () => {
     const { setLayoutProps } = useLayout()
     useEffect(() => {
@@ -66,6 +67,13 @@ const HomePageContent = () => {
   const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.getFeatureNews();
   const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.updateFeatureNews();
   const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
+
+  const [aboutusNotification, setAboutusNotification] = useState(false)
+  const [valuesAboutus, setValuesAboutus] = useState(null)
+  const [homeNotification, setHomeNotification] = useState(false)
+  const [valuesHome, setValuesHome] = useState(null)
+
+
   useEffect(() => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
     setSwitchTime(highlightNewsData?.switch_time ?? 0);
@@ -86,6 +94,14 @@ const HomePageContent = () => {
 
 
   // ============= BANNER TRANG CHU ===================== 
+
+  const handleCancleHome= ()=>{
+    setHomeNotification(false)
+  }
+  const handleConfirmHome= ()=>{
+    updateBanner(valuesHome)
+    setHomeNotification(false)
+  }
   const configHomePage = {
     title: "Banner Trang chủ",
     description: "Chỉnh sửa tiêu đề và mô tả banner",
@@ -93,14 +109,32 @@ const HomePageContent = () => {
       { name: "Tiêu đề Banner", label: 'Tiêu đề Banner', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.banner_title, isRequire: true, rows: 1, maxLength: 100 },
       { name: "Mô tả Banner", label: 'Mô tả Banner', placeholder: 'Nhập mô tả...', contentCurrent: homePageData.banner_description, isRequire: true, rows: 3, maxLength: 300 },
     ],
+    notificationProps:{
+     open: homeNotification, 
+     setOpen: setHomeNotification, 
+     notification: "Xác nhận lưu thây đổi!", 
+     subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+     buttonLabel1:"Hủy", 
+     buttonAction1: handleCancleHome, 
+     buttonLabel2: "Xác nhận", 
+     buttonAction2: handleConfirmHome
+    },
     handleSave: (values) => {
-      updateBanner(values);
+      setValuesHome(values)
+      setHomeNotification(true)
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
 
 
   // ============= BANNER ABOUT US  ===================== 
+   const handleCancleAboutus= ()=>{
+    setAboutusNotification(false)
+  }
+  const handleConfirmAboutus= ()=>{
+    updateAboutUs(valuesAboutus)
+    setAboutusNotification(false)
+  }
   const configAboutUs = {
     title: "Giới thiệu về công ty Thiên Trúc",
     description: "Đoạn văn và ảnh đại diện công ty",
@@ -108,8 +142,19 @@ const HomePageContent = () => {
       { name: "Nội dung giới thiệu", label: 'Nội dung giới thiệu', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.aboutus_content, isRequire: true, rows: 1 },
       { name: "Ảnh đại diện (URL)", label: 'Ảnh đại diện (URL)', placeholder: 'Nhập url...', contentCurrent: homePageData.aboutus_img, isRequire: false, rows: 3 },
     ],
+    notificationProps:{
+     open: aboutusNotification, 
+     setOpen: setAboutusNotification, 
+     notification: "Xác nhận lưu thây đổi!", 
+     subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+     buttonLabel1:"Hủy", 
+     buttonAction1: handleCancleAboutus, 
+     buttonLabel2: "Xác nhận", 
+     buttonAction2: handleConfirmAboutus
+    },
     handleSave: (values) => {
-      updateAboutUs(values);
+      setValuesAboutus(values)
+      setAboutusNotification(true)
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
@@ -185,6 +230,9 @@ const HomePageContent = () => {
       setOpen: setIsOpenCancelHighlightFeature,
       notification: "Xác nhận xóa",
       subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
+      buttonAction1:()=>{
+        setIsOpenCancelHighlightFeature(false);
+      },
       buttonAction2: () => {
         if (highlightFeatureToDelete) {
           deleteHighlightFeature(highlightFeatureToDelete.id);
@@ -399,9 +447,9 @@ const HomePageContent = () => {
               </p>
             </div>
           </div>
-          <div className='w-[160px] h-40[px]'>
+          <div className=' h-40[px]'>
             <button type="submit"
-              className='w-[170px]'
+              className=''
               onClick={() => {
                 setIsModalOpenAddHighlightFeature(true)
 
@@ -451,8 +499,8 @@ const HomePageContent = () => {
               </p>
             </div>
           </div>
-          <div className='w-[160px] h-[40px]'>
-            <button type="submit" className='w-[155px]' onClick={() => setIsModalOpenSetting(true)}> <Button {...configHighlightNews.propsAddButton} /></button>
+          <div className='h-[40px]'>
+            <button type="submit" className='' onClick={() => setIsModalOpenSetting(true)}> <Button {...configHighlightNews.propsAddButton} /></button>
           </div>
 
         </div>
@@ -501,13 +549,16 @@ const HomePageContent = () => {
       <SimpleForm data={configHighlightFeature.dataAddHighlightFeature} config={configHighlightFeature.configAddHighlightFeature} />
       <SimpleForm data={dataEditHighlightFeature} config={configHighlightFeature.configEditHighlightFeature} />
       <SimpleForm data={configHighlightNews.dataAddHighlightNews} config={configHighlightNews.configAddHighlightNews} />
-      <CancelPopup
+      <Notification
         open={configHighlightFeature.cancelPopub.open}
         setOpen={configHighlightFeature.cancelPopub.setOpen}
         notification={configHighlightFeature.cancelPopub.notification}
+        buttonAction1 = {configHighlightFeature.cancelPopub.buttonAction1}
         subTitle={configHighlightFeature.cancelPopub.subTitle}
         buttonAction2={configHighlightFeature.cancelPopub.buttonAction2}
       />
+      <Notification  {...configHomePage.notificationProps}/>
+      <Notification  {...configAboutUs.notificationProps}/>
       <AddHighlight
         isOpen={isModalOpenSetting}
         onClose={() => setIsModalOpenSetting(false)}

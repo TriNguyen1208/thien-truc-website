@@ -216,7 +216,7 @@ const SearchBar = ({data}) => {
                                     }}
                                 >
                                     <FilterIcon/>
-                                    <span className='line-clamp-1'>{category}</span>
+                                    <span className='line-clamp-1 max-w-[120px]'>{category}</span>
                                     <OpenIcon/>
                                 </button>
                                 {

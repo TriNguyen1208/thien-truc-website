@@ -7,7 +7,7 @@
   import SearchBar from '@/components/Search';
   import SimpleForm from '@/components/SimpleForm';
   import useProjects from '@/hooks/useProjects';
-  import {CancelPopup} from '@/components/Popup';
+  import Notification from '@/components/Notification'
   import { toast } from 'react-toastify';
   import Loading from '@/components/Loading'
   // Còn sự kiện  sự kiện lưu thay đổi trong cài đặt loại tin tức
@@ -95,22 +95,23 @@
     };
 
     // Thông tin của pop up xóa loại dự án
-    const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+    const [openNotificaton, setOpenNotificaton] = useState(false);
     const[currentDeleteID, setCurrentDeleteId] = useState(null);
-    const formDelete = {
-      open: isModalDeleteOpen,
-      setOpen: setIsModalDeleteOpen,
+    const notificationProps = {
+      open: openNotificaton,
+      setOpen: setOpenNotificaton,
       notification: 'Bạn có chắc chắn muốn xoá khu vực này?',
       subTitle: 'Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xoá khu vực này?',
       buttonLabel1: 'Hủy',
       buttonLabel2: 'Xoá',
+      buttonAction1: ()=>{setOpenNotificaton(false)},
       buttonAction2: async () => {
         await deleteOne(currentDeleteID, {
             onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
             onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
         });
         queryClient.invalidateQueries(['admin_project_list'])
-        setIsModalDeleteOpen(false);
+        setOpenNotificaton(false)
       }
     }
 
@@ -261,7 +262,7 @@
                       <button className='border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200' onClick={() => 
                       {
                         setCurrentDeleteId(item.id)
-                        setIsModalDeleteOpen(true)
+                        setOpenNotificaton(true)
                       }
                       }>
                         <DeleteIcon />
@@ -280,7 +281,7 @@
           data={formEditData}
           config={formEditConfig}
         />
-        <CancelPopup {...formDelete} />
+        <Notification {...notificationProps} />
         <Setting {...settingFormData}
            onSave={async (changedItems) => {
             // Map từ { id, state } -> { id, category_id }
