@@ -14,11 +14,11 @@ const ContactPageContent = () => {
     })
   }, []);
 
-  const { data: bannerData, isLoading: isLoadingBanner } = useContact.getContactPage();
+  const { data: bannerData, isLoading: isLoadingBanner, isFetching: isFetchingBanner } = useContact.getContactPage();
   const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
-  if (isLoadingBanner || isPendingUpdateBanner) {
+  if (isLoadingBanner || isPendingUpdateBanner || isFetchingBanner) {
     return (
      <Loading/>
     )

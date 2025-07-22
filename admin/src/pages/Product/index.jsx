@@ -7,7 +7,7 @@ import SearchBar from '../../components/Search'
 import { useState } from 'react';
 import { Button, Modal } from 'antd';
 import useProducts from '../../hooks/useProducts';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import ColorBlock from '../../components/ColorBlock';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
@@ -210,7 +210,16 @@ const Product = () => {
   }
 
   const handleEditButton = (item) => {
-
+    var valueCharacteristic = (item.product_features || []).map(item => (
+      {
+        value: item,
+        isCheckbox: false,
+      }
+    ));
+    (item.highlight_features || []).forEach(item => {
+      valueCharacteristic[item].isCheckbox = true;
+    })
+ 
     const updatedForm = [
       { ...dataEditProduct[0], value: item.name },
       { ...dataEditProduct[1], value: item.category.name },
@@ -218,7 +227,7 @@ const Product = () => {
       { ...dataEditProduct[3], value: item.warranty_period },
       { ...dataEditProduct[4], value: item.description },
       { ...dataEditProduct[5], value: item.product_specifications },
-      { ...dataEditProduct[6], value: item.product_features },
+      { ...dataEditProduct[6], value: valueCharacteristic},
       { ...dataEditProduct[7], value: item.product_img },
       { ...dataEditProduct[8], value: item.is_featured },
 
@@ -242,7 +251,7 @@ const Product = () => {
           ),
         },
         { type: "text", content: product.name },
-        { type: "text", content: `${product.price !== "" ? Number(product.price).toLocaleString() + ' đ': 'Cập nhật sau'} ` },
+        { type: "text", content: `${product.price !== "" ? Number(product.price).toLocaleString('vi-VN') + ' đ': 'Cập nhật sau'} ` },
         { type: "text", content: `${product.warranty_period !== ""  ? product.warranty_period + ' tháng' : "Cập nhật sau"}` },
           {
             type: "component",

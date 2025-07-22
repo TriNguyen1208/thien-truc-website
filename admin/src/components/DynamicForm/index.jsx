@@ -30,6 +30,7 @@ const DynamicForm = ({ data, config }) => {
     const [urlInput, setUrlInput] = useState('');
     const initialValues = useMemo(() => {
         const result = {};
+        console.log("Gia tri data: ", data);
         data.forEach(field => {
             const { name, type, value, isSingleColumn, options } = field;
             // console.log("Gia tri name va value khoi tao form: ", name, value);
@@ -62,7 +63,6 @@ const DynamicForm = ({ data, config }) => {
             } else if (type === 'select') {
                 result[name] = value !== undefined ? value : options?.[0]?.value || '';
             } else if (type === 'image_upload') {
-                console.log(name, value);
                 result[name] = value !== undefined ? value : "";
             }
             else {
@@ -72,7 +72,6 @@ const DynamicForm = ({ data, config }) => {
         if(result.img != null){
             setUrlInput(result.img);
         }
-        console.log(result);
         return result;
     }, [data]);
 
@@ -573,182 +572,3 @@ export default DynamicForm
 
 
 
-
-/*
-
-case 'dynamicFields': {
-                const specs = formData[nameColumn] || [];
-                const isSingle = item.isSingleColumn;
-                const field = data.find(item => item.name === nameColumn);
-                const limit = field?.limitRowDynamicFields || Infinity;
-                return (
-                    <div>
-                        {specs.map((entry, index) => (
-                            <div key={index} className="flex gap-2 mb-2">
-                                {!isSingle && (
-                                    <input
-                                        type="text"
-                                        value={entry.name || ''}
-                                        required={item.isRequired || defaultField.isRequired}
-                                        onChange={(e) =>
-                                            handleDynamicFieldsChange(
-                                                nameColumn,
-                                                index,
-                                                'name',
-                                                e.target.value,
-                                                false
-                                            )
-                                        }
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                        placeholder={item.placeholder?.[0] ?? defaultField.placeholder}
-                                    />
-                                )}
-                                <input
-                                    type="text"
-                                    value={entry.name || ''}
-                                    required={item.isRequired || defaultField.isRequired}
-                                    onChange={(e) =>
-                                        handleDynamicFieldsChange(
-                                            nameColumn,
-                                            index,
-                                            'name',
-                                            e.target.value,
-                                            false
-                                        )
-                                    }
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                    placeholder={isSingle ? item.placeholder : item.placeholder[1]}
-                                />
-
-                                {item.isCheckbox && (
-                                    <input
-                                        type="checkbox"
-                                        checked={typeof entry === 'object' && entry !== null ? entry.isCheckbox : false}
-                                        onChange={(e) =>
-                                            handleDynamicFieldsChange(
-                                                nameColumn,
-                                                index,
-                                                'isCheckbox',
-                                                e.target.checked,
-                                                isSingle,
-                                                true
-                                            )
-                                        }
-                                    />
-                                )}
-
-                                {specs.length < limit && (
-                                    <button
-                                        type="button"
-                                        onClick={() => addDynamicFields(nameColumn, isSingle)}
-                                        className="px-3 py-2  border  border-gray-300 rounded-md cursor-pointer"
-                                    >
-                                        +
-                                    </button>
-                                )}
-                                {specs.length > 1 && (
-                                    <button
-                                        type="button"
-                                        onClick={() => removeDynamicFields(nameColumn, index)}
-                                        className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
-                                    >
-                                        <DeleteIcon />
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                );
-            }
-*/
-
-
-
-
-
-/*
-
-import React from 'react'
-import DynamicForm from '../../components/DynamicForm'
-import { useState } from 'react';
-import { Button, Modal } from 'antd';
-const Manager = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const data = [
-    { name: 'username', label: 'Tên đăng nhập', type: 'text', width: 6, isRequired: false, placeholder: "VD: 123", value: "123", maxLength: 10},
-    { name: 'password', label: 'Mat khau', type: 'password', width: 6, isRequired: true },
-    { name: 'fullName', label: 'Họ Tên', type: 'text', width: 12, isRequired: false, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
-    { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5, maxLength: 10},
-    {
-      name: 'role', label: 'Chức vụ', type: 'select', width: 6, isRequired: true,
-      options: [
-        { value: "male", label: "Nam" },
-        { value: "female", label: "Nữ" },
-      ],
-      value: 'male'
-    },
-    { name: 'agree', label: 'Đồng ý điều khoản', type: 'checkbox', width: 12 },
-    {
-      type: 'dynamicFields',
-      name: 'technicalDetailsdfsf',
-      label: 'Thông số kỹ thuậtdfdsf',
-      isRequired: true,
-      isSingleColumn: false,
-
-      width: 6,
-    },
-    {
-      type: 'dynamicFields',
-      name: 'technicalDetails',
-      label: 'Thông số kỹ thuật',
-      isRequired: true,
-      isSingleColumn: false,
-      value: {
-        "CPU": 'Intel i5',
-        "RAM": '8GB',
-      },
-      placeholder: ["VD: 1", "VD: 2"],
-      width: 12,
-    },
-    {
-      type: 'dynamicFields',
-      name: '123',
-      label: 'Thông số',
-      isRequired: true,
-      isSingleColumn: true,
-      placeholder: "VD: Toi la",
-      width: 6,
-    },
-    { name: 'Trine123', label: 'Mô tả', type: 'image_upload', width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
-  ]
-  const handleSubmitButton = (valueForm) => {
-    console.log('Day la button submit', valueForm)
-    setIsModalOpen(false)
-  }
-  const handleCancelButton = () => {
-    console.log('Day la button cancle')
-    setIsModalOpen(false)
-  }
-  const config = {
-    title: "123",
-    description: "456",
-    widthModal: 800,
-    isModalOpen,
-    handleSubmitButton,
-    handleCancelButton,
-    setIsModalOpen
-
-  }
-  return (
-    <>
-      <Button type="primary" onClick={() => setIsModalOpen(true)}>
-        Open Modal
-      </Button>
-      <DynamicForm data={data} config={config} />
-    </>
-  )
-}
-
-export default Manager
-*/

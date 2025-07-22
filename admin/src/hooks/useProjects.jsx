@@ -21,9 +21,13 @@ function usePatchProjectPage() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (updatedPage)=> projectsServices.patchProjectPage(updatedPage),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["project_page"] });
+    onSuccess: (success) => {
+      queryClient.invalidateQueries({ queryKey: ["admin_project_page"] });
+      toast.success(success.message);
     },
+    onError: (error) => {
+        toast.success(error.message);
+    }
   });
 }
 

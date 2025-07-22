@@ -54,7 +54,7 @@ const HomePageContent = () => {
   });
 
 
-  const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
+  const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
   const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useHome.updateHomePage.updateBanner();
   const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
 
@@ -78,10 +78,11 @@ const HomePageContent = () => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
     setSwitchTime(highlightNewsData?.switch_time ?? 0);
   }, [highlightNewsData])
+  console.log(isLoadingHomePageData, isFetchingHomePageData, isPendingUpdateBanner)
   if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature ||
     isPendingCreateHighlightFeature || isPendingDeleteHighlightFeature ||
     isLoadingHighlightNews || isLoadingHomePageData || isPendingUpdateBanner ||
-    isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews) {
+    isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews || isFetchingHomePageData ) {
     return (
      <Loading/>
     )
@@ -125,6 +126,7 @@ const HomePageContent = () => {
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
+  console.log(homePageData.banner_title);
 
 
   // ============= BANNER ABOUT US  ===================== 

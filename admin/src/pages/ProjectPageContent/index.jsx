@@ -8,18 +8,18 @@ import Notification from '@/components/Notification'
 const ProjectPageContent = () => {
 
   const {setLayoutProps} = useLayout()
-  const {data: projectPage, isLoading: isLoadingProjectPage} = useProjects.getProjectPage()
-  const { mutate: updateProjectPage, isPending } = useProjects.patchProjectPage();
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
-    useEffect(()=>{
+  useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang dự án",
       description: "Quản lý nội dung hiển thị trên trang dự án",
       hasButton: false,
     })
   },[])
-  if(isLoadingProjectPage)
+  const {data: projectPage, isLoading: isLoadingProjectPage, isFetching: isFetchingProjectPage} = useProjects.getProjectPage()
+  const { mutate: updateProjectPage, isPending: isPendingProjectPage } = useProjects.patchProjectPage();
+  if(isLoadingProjectPage || isPendingProjectPage || isFetchingProjectPage)
   {
     return(<Loading/>)
   }
@@ -29,12 +29,7 @@ const ProjectPageContent = () => {
   const handleConfirmNotification =()=>{
     
     setOpenNotification(false)
-       updateProjectPage(valuesBanner, 
-   {
-      onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
-      onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
-    }
-);
+       updateProjectPage(valuesBanner);
   }
   const handleSave = (data)=>{
     setValuesBanner(data)
@@ -43,8 +38,8 @@ const ProjectPageContent = () => {
   const notificationProps = {
     open: openNotification, 
      setOpen: setOpenNotification, 
-     notification: "Xác nhận lưu thây đổi!", 
-     subTitle:"Bạn có chắc chắn muốn lưu thây đổi.", 
+     notification: "Xác nhận lưu thay đổi!", 
+     subTitle:"Bạn có chắc chắn muốn lưu thay đổi.", 
      buttonLabel1:"Hủy", 
      buttonAction1:handleCancleNotification, 
      buttonLabel2: "Xác nhận", 

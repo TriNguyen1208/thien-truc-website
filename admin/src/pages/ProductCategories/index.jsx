@@ -234,7 +234,7 @@ const ProductCategories = () => {
         open={openNotificaiton}
         setOpen={setOpenNotificaiton}
         notification="Xác nhận xóa"
-        subTitle={`Bạn có chắc muốn xoá loại sản phẩm "${productCategoriesToDelete?.name}" không?`}
+        subTitle={`Bạn có chắc muốn xoá loại sản phẩm "${productCategoriesToDelete?.name}" và XÓA TẨT CẢ SẢN PHẨM THUỘC LOẠI "${productCategoriesToDelete?.name}" không?`}
         buttonAction1 = {()=>{setOpenNotificaiton(false)}}
         buttonAction2={() => {
           if (productCategoriesToDelete) {

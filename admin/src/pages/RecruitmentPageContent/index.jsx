@@ -109,6 +109,7 @@ const RecruitmentPageContent = () => {
   const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
   const [saveOpenBanner, setSaveOpenBanner] = useState(false);
   const [saveOpenCulture, setSaveOpenCulture] = useState(false);
+  const [saveOpenImage, setSaveOpenImage] = useState(false);
   const [form, setForm] = useState(null);
   const [initialForm, setInitialForm] = useState(null);
   useEffect(()=>{
@@ -146,6 +147,7 @@ const RecruitmentPageContent = () => {
     setSaveOpenCulture(false);
   }
   const handleButtonImage = (e) => {
+    setSaveOpenImage(true);
     e.preventDefault();
     const formData = changeToFormData(form);
     for(const [_, value] of formData.entries()){
@@ -175,6 +177,16 @@ const RecruitmentPageContent = () => {
     buttonAction1: ()=>{setSaveOpenCulture(false)},
     buttonLabel2: 'Lưu',
     buttonAction2: handleButtonCulture
+  };
+  const saveImage = {
+    open: saveOpenImage,
+    setOpen: setSaveOpenImage,
+    notification: 'Bạn có chắc chắn muốn lưu ảnh văn hóa công ty của trang tuyển dụng này?',
+    subTitle: 'Hành động này sẽ không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?',
+    buttonLabel1: 'Hủy',
+    buttonAction1: ()=>{setSaveOpenImage(false)},
+    buttonLabel2: 'Lưu',
+    buttonAction2: handleButtonImage
   };
   const propsBanner = {
       title: "Nội dung Trang tuyển dụng",
@@ -247,13 +259,14 @@ const RecruitmentPageContent = () => {
               <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="culture_img_4"/>
             </div>
           </div>
-          <div className='w-[145px] h-40[px]'>
-              <button className='w-full' type='submit'> <Button {...propsButton}/></button>
+          <div className='h-40[px]'>
+              <button type='submit'> <Button {...propsButton}/></button>
           </div>                
         </form>
       </div>
       <Notification {...saveBannerPopupData}/>
       <Notification {...saveCulturePopupData}/>
+      <Notification {...saveImage}/>
     </>
     
     

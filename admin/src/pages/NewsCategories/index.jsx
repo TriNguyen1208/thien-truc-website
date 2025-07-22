@@ -15,9 +15,9 @@ export default function NewsCategories() {
 
   // Lay ham tu hook
   const queryClient = useQueryClient();
-  const { mutateAsync: createOne } = useNews.news_categories.createOne();
-  const { mutateAsync: updateOne } = useNews.news_categories.updateOne();
-  const { mutateAsync: deleteOne } = useNews.news_categories.deleteOne();
+  const { mutateAsync: createOne, isPending: isPendingCreateCategories } = useNews.news_categories.createOne();
+  const { mutateAsync: updateOne, isPending: isPendingUpdateCategories } = useNews.news_categories.updateOne();
+  const { mutateAsync: deleteOne, isPending: isPendingCategories } = useNews.news_categories.deleteOne();
   const { mutateAsync: updateCategory } = useNews.news.updateCategory();
 
   // Thông tin của form thêm loại tin tức
