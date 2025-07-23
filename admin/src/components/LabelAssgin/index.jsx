@@ -5,7 +5,6 @@ const LabelAssgin = ({current, onAssign}) => {
     useEffect(() => {
         setAssign(current);
     }, [current]);
-
     const handleAssignClick = () => {
         const newState = assign === "Đã gán" ? "Chưa gán" : "Đã gán";
         setAssign(newState);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLayout } from '@/layouts/layoutcontext';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -75,6 +75,11 @@ export default function NewsCategories() {
     }
   ]);
   const [currentEditId, setCurrentEditId] = useState(null); 
+  const searchSettingRef = useRef({
+      query: "",
+      category: "Tất cả loại",
+      display: "Tất cả trạng thái"
+  });
   const editFormConfig = {
     isModalOpenSimple: isEditModalOpen,
     setIsModalOpenSimple: setIsEditModalOpen,
@@ -114,19 +119,26 @@ export default function NewsCategories() {
   const [settingFormData, setSettingFormData] = useState({
     isOpen: false,
     onClose: () => {
-            setSettingFormData(prev => ({ ...prev, isOpen: false }));
-            setSelectedCategory(null); // Reset khi đóng
-        },
+        setSettingFormData(prev => ({ ...prev, isOpen: false }));
+        setSelectedCategory(null); // Reset khi đóng
+        searchSettingRef.current = {
+          query: "",
+          category: "Tất cả loại",
+          display: "Tất cả trạng thái"
+        }
+    },
     content: {
       title: 'Quản lý danh sách thuộc loại',
       description: 'Chọn các tin tức muốn thêm vào loại',
       type: 'tin tức',
       category: '', 
-      header: ['', 'Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
+      category_id: '',
+      header: ['Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
     },
     useData: useNews.news,
     useDataSuggestion: useNews,
     useDataCategories: useNews.news_categories,
+    searchSettingRef: searchSettingRef
   });
 
   // Set prop cho trang
@@ -233,6 +245,7 @@ export default function NewsCategories() {
                             content: {
                                 ...prev.content,
                                 category: item.name,
+                                category_id: item.id,
                                 title: `Quản lý tin tức thuộc loại: ${item.name}`,
                                 description: `Chọn hoặc bỏ chọn các tin tức thuộc loại ${item.name}`
                             }
@@ -278,17 +291,11 @@ export default function NewsCategories() {
       <Notification
         {...notificationProps}
       />
-     <Setting {...settingFormData} 
+      {settingFormData.isOpen && <Setting {...settingFormData} 
         onSave={async (changedItems) => {
           // Map từ { id, state } -> { id, category_id }
-          const mappedItems = changedItems
-            .map(item => ({
-              id: item.id,
-              category_id: item.display === 'Đã gán' ? selectedCategory.id : null
-            }));
-
             try {
-              await updateCategory({ changedItems: mappedItems });
+              await updateCategory({ changedItems: changedItems });
               toast.success("Cập nhật khu vực thành công");
               queryClient.invalidateQueries(['admin_news_list']);
             } catch (err) {
@@ -296,6 +303,7 @@ export default function NewsCategories() {
               console.error("Lỗi khi cập nhật:", err);
             }
         }}/>
+      }
     </div>
   )
 }

@@ -72,6 +72,7 @@ const products = {
         return res.data;
     },
     updateCategory: async (changedItems) => {
+        console.log(changedItems)
         const res = await axios.patch(API_ROUTES.product.products.updateCategory, changedItems);
         return res.data;
     },
