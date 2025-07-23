@@ -61,9 +61,17 @@ const projects = {
         });
     },
     useUpdateRegion: () => {
+        const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (changedItems) =>
-            projectsServices.projects.updateRegion(changedItems)
+                projectsServices.projects.updateRegion(changedItems),
+            onSuccess: (success) => {
+                toast.success(success?.message ?? "Cập nhật khu vực thành công");
+                queryClient.invalidateQueries({ queryKey: ["admin_projects_list"] });
+            },
+            onError: (error) => {
+                toast.error(error.response.data.message);
+            }
         });
     },
     useDeleteOne: (id) => {

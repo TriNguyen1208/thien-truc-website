@@ -294,14 +294,7 @@ export default function NewsCategories() {
       {settingFormData.isOpen && <Setting {...settingFormData} 
         onSave={async (changedItems) => {
           // Map từ { id, state } -> { id, category_id }
-            try {
-              await updateCategory({ changedItems: changedItems });
-              toast.success("Cập nhật khu vực thành công");
-              queryClient.invalidateQueries(['admin_news_list']);
-            } catch (err) {
-              toast.error("Cập nhật khu vực thất bại");
-              console.error("Lỗi khi cập nhật:", err);
-            }
+          await updateCategory({ changedItems: changedItems });            
         }}/>
       }
     </div>

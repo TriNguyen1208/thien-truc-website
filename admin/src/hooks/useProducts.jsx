@@ -164,10 +164,19 @@ const products = {
       } 
     });
   },
+
   useUpdateCategory: () => {
+      const queryClient = useQueryClient();
       return useMutation({
-          mutationFn: (changedItems) =>
-          productsServices.products.updateCategory(changedItems)
+          mutationFn: (changedItems) => 
+              productsServices.products.updateCategory(changedItems),
+          onSuccess: (success) => {
+              toast.success(success?.message ?? "Cập nhật khu vực thành công");
+              queryClient.invalidateQueries(['admin_product_by_category']);
+          },
+          onError: (error) => {
+              toast.error(error.response.data.message);
+          }
       });
   },
 

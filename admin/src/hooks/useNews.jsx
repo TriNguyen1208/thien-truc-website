@@ -69,9 +69,17 @@ const news = {
         })
     },
     useUpdateCategory: () => {
+        const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: (changedItems) =>
-                newsServices.news.updateCategory(changedItems)
+            mutationFn: (changedItems) => 
+                newsServices.news.updateCategory(changedItems),
+            onSuccess: (success) => {
+                toast.success(success?.message ?? "Cập nhật khu vực thành công");
+                queryClient.invalidateQueries(['admin_news_list']);
+            },
+            onError: (error) => {
+                toast.error(error.response.data.message);
+            }
         });
     },
     useDeleteOne: (id) => {

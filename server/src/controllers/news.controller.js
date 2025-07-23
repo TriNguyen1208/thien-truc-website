@@ -48,8 +48,8 @@ const news = {
         const { changedItems } = req.body; 
         try {
             const { status, message, action = null } = await newsServices.news.updateCategory(changedItems);
-            if (status == 200) logActivity(req.user.username, action)
-            res.status(status).json({ message });
+            if (status == 200) logActivity(req.user.username, action);
+            res.status(status).json({ message: message });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});

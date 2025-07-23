@@ -29,7 +29,6 @@ const news = {
         return res.data;
     },
     updateCategory: async (changedItems) => {
-        console.log("Updating category with changed items:", changedItems);
         const res = await axios.patch(API_ROUTES.news.news.updateCategory, changedItems);
         return res.data;
     },

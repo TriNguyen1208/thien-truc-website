@@ -330,10 +330,11 @@ const news = {
     updateCategory: async (changedItems) => {
         if (!Array.isArray(changedItems)) {
             throw new Error("Invalid input");
-        }
+        } 
 
         if (changedItems.length == 0) return {
             status: 400,
+            
             message: "Không có dữ liệu cần cập nhật"
         }
 
