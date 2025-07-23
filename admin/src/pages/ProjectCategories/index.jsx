@@ -1,4 +1,4 @@
-  import { React, useState, useEffect} from 'react'
+  import { React, useState, useEffect, useRef} from 'react'
   import { useNavigate, useSearchParams } from 'react-router-dom';
   import { useLayout } from '@/layouts/layoutcontext';
   import { EditIcon, DeleteIcon, SettingIcon } from '@/components/Icon';
@@ -14,10 +14,10 @@
   export default function ProjectCategories () {
     // Lấy hàm từ hook
     const queryClient = useQueryClient();
-    const { mutateAsync: createOne } = useProjects.project_regions.createOne();
-    const { mutateAsync: updateOne } = useProjects.project_regions.updateOne();
-    const { mutateAsync: deleteOne } = useProjects.project_regions.deleteOne();
-    const { mutateAsync: updateRegion } = useProjects.projects.updateRegion();
+    const { mutateAsync: createOne, isPending: isPendingCreateOne } = useProjects.project_regions.createOne();
+    const { mutateAsync: updateOne, isPending: isPendingUpdateOne } = useProjects.project_regions.updateOne();
+    const { mutateAsync: deleteOne, isPending: isPendingDeleteOne } = useProjects.project_regions.deleteOne();
+    const { mutateAsync: updateRegion, isPending: isPendingUpdateRegion } = useProjects.projects.updateRegion();
 
     // Thông tin của form thêm loại dự án
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -117,19 +117,33 @@
 
     // Thông tin của form cài đặt loại dự án
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const searchSettingRef = useRef({
+      query: "",
+      category: "Tất cả loại",
+      display: "Tất cả trạng thái"
+    })
     const [settingFormData, setSettingFormData] = useState({
       isOpen: false,
-      onClose: () => setSettingFormData(prev => ({ ...prev, isOpen: false })),
+      onClose: () => {
+        setSettingFormData(prev => ({ ...prev, isOpen: false }))
+        searchSettingRef.current = {
+          query: "",
+          category: "Tất cả loại",
+          display: "Tất cả trạng thái"
+        }
+      },
       content: {
         title: 'Quản lý danh sách thuộc loại',
         description: 'Chọn các tin tức muốn thêm hoặc xóa khỏi loại',
         type: 'tin tức',
         category: '',
-        header: ['', 'Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
+        category_id: '',
+        header: ['Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
       },
       useData: useProjects.projects,
       useDataSuggestion: useProjects,
       useDataCategories: useProjects.project_regions,
+      searchSettingRef: searchSettingRef
     });
 
 
@@ -173,7 +187,7 @@
     }
 
     const projectRegionsList = Array.isArray(projectRegions) ? projectRegions : projectRegions?.results ?? (projectRegions ? [projectRegions] : []);
-    if (isLoadingProjectRegions) return <Loading/>;
+    if (isLoadingProjectRegions || isPendingCreateOne || isPendingDeleteOne || isPendingUpdateOne || isPendingUpdateRegion) return <Loading/>;
 
 
 
@@ -241,7 +255,13 @@
                             setSettingFormData(prev => ({
                               ...prev,
                               isOpen: true,
-                              content: { ...prev.content, category: item.name }
+                              content: {
+                                ...prev.content,
+                                category: item.name,
+                                category_id: item.id,
+                                title: `Quản lý dự án thuộc loại: ${item.name}`,
+                                description: `Chọn hoặc bỏ chọn các dự án thuộc loại ${item.name}`
+                              }
                             }));
                           }}>
                         <SettingIcon />
@@ -282,17 +302,11 @@
           config={formEditConfig}
         />
         <Notification {...notificationProps} />
-        <Setting {...settingFormData}
+        {settingFormData.isOpen && <Setting {...settingFormData}
            onSave={async (changedItems) => {
             // Map từ { id, state } -> { id, category_id }
-            const mappedItems = changedItems
-              .map(item => ({
-                id: item.id,
-                category_id: selectedCategoryId
-              }));
-
              try {
-                await updateRegion({ changedItems: mappedItems });
+                await updateRegion({ changedItems: changedItems });
                 toast.success("Cập nhật khu vực thành công");
                 queryClient.invalidateQueries(['admin_projects_list']);
               } catch (err) {
@@ -300,7 +314,7 @@
                 console.error("Lỗi khi cập nhật:", err);
               }
           }}
-        />
+        />}
       </div>
     );
   }

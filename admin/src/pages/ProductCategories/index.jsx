@@ -1,7 +1,7 @@
 import React from 'react'
 import EditBanner from '../../components/EditBanner'
 import { useLayout } from "@/layouts/LayoutContext"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import SimpleForm from '../../components/SimpleForm'
 import SearchBar from '../../components/Search'
 import { useState } from 'react';
@@ -29,7 +29,11 @@ const ProductCategories = () => {
       }
     })
   }, []);
-
+  const searchSettingRef = useRef({
+      query: "",
+      category: "Tất cả loại",
+      display: "Tất cả trạng thái"
+  })
   // ========= PRODUCT CATEGORIES ================= 
   const [productCategoriesToDelete, setProductCategoriesToDelete] = useState(null);
   const [isModalOpenAddProductCategories, setIsModalOpenAddProductCategories] = useState(false);
@@ -46,6 +50,8 @@ const ProductCategories = () => {
     title: `Quản lý danh sách sản phẩm `,
     description: `Chọn các sản phẩm muốn thêm hoặc xóa  khỏi danh mục`,
     type: "sản phẩm",
+    category: "",
+    category_id: "",
     header: [
       "Mã sản phẩm",
       "Tên sản phẩm",
@@ -60,8 +66,8 @@ const ProductCategories = () => {
   const { mutate: updateOneProductCategories, isPending: isPendingUpdateProductCategories } = useProducts.product_categories.updateOne();
   const { mutate: createOneProductCategories, isPending: isPendingCreateOneProductCategories } = useProducts.product_categories.createOne();
   const { mutate: deleteOneProductCategories, isPending: isPendingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
-  const { mutateAsync: updateCategory } = useProduct.products.updateCategory();
-  if (isLoadingProductCategoriesData || isPendingUpdateProductCategories || isPendingCreateOneProductCategories || isPendingDeleteOneProductCategories) {
+  const { mutateAsync: updateCategory, isPending: isPendingUpdateCategory } = useProduct.products.updateCategory();
+  if (isLoadingProductCategoriesData || isPendingUpdateProductCategories || isPendingCreateOneProductCategories || isPendingDeleteOneProductCategories || isPendingUpdateCategory) {
     return (
       <Loading/>
     )
@@ -168,7 +174,10 @@ const ProductCategories = () => {
                 setSelectedCategoryId(item.id);
                 setContentSetting(prev => ({
                   ...prev,
-                  category: item.name
+                  category: item.name,
+                  category_id: item.id,
+                  title: `Quản lý sản phẩm thuộc loại: ${item.name}`,
+                  description: `Chọn hoặc bỏ chọn các sản phẩm thuộc loại ${item.name}`
                 }));
                 setIsModalOpenSetting(true);
 
@@ -210,7 +219,6 @@ const ProductCategories = () => {
     setIsModalOpenEditProductCategories(true);
   }
   const dataTable = convertProductCategoriesListToTableData(configProductCategories.data);
-
   return (
     <>
       <div className="bg-white px-6 py-6 rounded-lg shadow-sm border border-gray-200  mb-[25px]">
@@ -243,30 +251,32 @@ const ProductCategories = () => {
           }
         }}
       />
-      <Setting
+      {isModalOpenSetting && <Setting
         isOpen={isModalOpenSetting}
-        onClose={() => setIsModalOpenSetting(false)}
+        onClose={() => {
+          setIsModalOpenSetting(false)
+          searchSettingRef.current = {
+            query: "",
+            category: "Tất cả loại",
+            display: "Tất cả trạng thái"
+          }
+        }}
         content={contentSetting}
         useData={useProduct.products}
         useDataSuggestion={useProduct}
         useDataCategories={useProduct.product_categories}
+        searchSettingRef={searchSettingRef}
         onSave={async (changedItems) => {
           // Map từ { id, state } -> { id, category_id }
-          const mappedItems = changedItems
-            .map(item => ({
-              id: item.id,
-              category_id: selectedCategoryId
-            }));
-
           try {
-            await updateCategory({ changedItems: mappedItems });
-            toast.success("Cập nhật khu vực thành công");
+            await updateCategory({ changedItems: changedItems });
+            toast.success("Cập nhật sản phẩm thành công");
             queryClient.invalidateQueries(['admin_product_list']);
           } catch (err) {
-            toast.error("Cập nhật khu vực thất bại");
+            toast.error("Cập nhật sản phẩm thất bại");
             console.error("Lỗi khi cập nhật:", err);
           }
-        }} />
+        }} />}
     </>
   )
 }
