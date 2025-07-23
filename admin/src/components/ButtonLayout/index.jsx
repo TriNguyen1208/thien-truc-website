@@ -15,6 +15,7 @@ const CustomButton = ({
   paddingX = 24,
   borderRadius = 6,
   htmlType = "button",
+  position = "",
   ...rest
 }) => {
   const [hovered, setHovered] = useState(false);
@@ -35,6 +36,7 @@ const CustomButton = ({
         display: 'flex',
         alignItems: 'center',
         transition: 'all 0.2s ease',
+        position: position
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
