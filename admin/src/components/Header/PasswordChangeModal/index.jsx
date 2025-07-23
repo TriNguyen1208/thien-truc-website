@@ -26,6 +26,10 @@ export default function PasswordChangeModal({ open, onClose, role }) {
     }
   };
 
+  const handleForgotPassword = () => {
+    // Logic to handle forgot password
+    message.info('Chức năng quên mật khẩu chưa được triển khai');
+  }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       {/* Khung modal */}
@@ -48,7 +52,7 @@ export default function PasswordChangeModal({ open, onClose, role }) {
         <div className="space-y-5">
           {/* Tên tài khoản */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-2">
               Mật khẩu cũ
             </label>
             <div className="flex gap-2">
@@ -57,18 +61,17 @@ export default function PasswordChangeModal({ open, onClose, role }) {
                 className="flex-1 px-3 py-2 border border-gray-300  rounded w-full text-sm"
                 placeholder="Nhập mật khẩu cũ"
                 onChange={(e) => setOldPassword(e.target.value)}
-              />
-              {role === 'admin' && (
-              <button className="px-3 py-2 text-sm border border-gray-200 shadow-md rounded hover:bg-gray-100 whitespace-nowrap">
+              />   
+              <button className="px-3 py-2 text-sm border border-gray-300 shadow-sm rounded hover:bg-gray-100 whitespace-nowrap"
+                  onClick={handleForgotPassword} >
                 Quên mật khẩu
               </button>
-          )} 
             </div>
           </div>
 
           {/* Họ và tên */}
           <div>
-            <label className="block text-sm font-medium mb-1">Mật khẩu mới</label>
+            <label className="block text-sm font-medium mb-2">Mật khẩu mới</label>
             <input
               type="text"
               className="px-3 py-2 border border-gray-300 rounded w-full text-sm mb-3"
@@ -85,7 +88,7 @@ export default function PasswordChangeModal({ open, onClose, role }) {
         </div>
 
         {/* Nút hành động */}
-        <div className="flex justify-end gap-2 mt-28">
+        <div className="flex justify-end gap-2 mt-15">
           <button
             onClick={onClose}
             className="px-4 py-2 rounded border border-gray-400 text-sm hover:bg-gray-100"

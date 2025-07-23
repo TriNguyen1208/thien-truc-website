@@ -6,7 +6,7 @@ import { loginUser, sendResetPassword, resetPassword } from '@/services/auth.api
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useLocation, useNavigate, useSearchParams} from 'react-router-dom';
-
+import Loading from '@/components/Loading'
 
 const AuthPopupManager = () => {
   const [step, setStep] = useState('login'); // login | forgot | reset | success
@@ -16,6 +16,7 @@ const AuthPopupManager = () => {
   const [searchParams] = useSearchParams();
   const rawToken = searchParams.get('token');
   const token = rawToken?.trim();
+  const [send, isSending] = useState(false);
   useEffect(() => {
     if (token && step !== 'reset') {
       setStep('reset');
@@ -55,6 +56,7 @@ const AuthPopupManager = () => {
     }
     try {
       const res = await dispatch(resetPassword(token, newPassword)); // <-- lấy res
+
       if (res.status === 200) {
         toast.success(res.data?.message || 'Khôi phục mật khẩu thành công');
         searchParams.delete('token');
@@ -97,7 +99,7 @@ const AuthPopupManager = () => {
       submitLabel: 'Gửi yêu cầu'
     },
     sendSuccess: {
-      icon: LockIconBackground,
+      icon: CheckCircleIcon,
       title: 'Yêu cầu đã được gửi',
       description: 'Vui lòng kiểm tra email để khôi phục mật khẩu',
       onSubmit: () => setStep('login'),
