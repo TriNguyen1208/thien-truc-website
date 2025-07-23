@@ -24,12 +24,10 @@ const Banner = ({data}) =>{
             style={{ background: colorBackground, color: colorText }}
             className='flex flex-col pt-18 pb-15 w-full items-center'
         >
-            <div className='flex flex-col gap-3 items-center'>
-                <div className='flex flex-col gap-5 w-full'>
-                    <div className='flex flex-col gap-3 w-4xl mx-auto text-center'>
-                        <h1 className='text-5xl font-semibold break-words leading-15'>{title}</h1>
-                        <p className='font-normal leading-[28px] break-words'>{description}</p>
-                    </div>
+            <div className='flex flex-col gap-3 items-center w-full px-4 sm:px-6 lg:px-8 mx-auto'>
+                <div className='flex flex-col gap-3 w-full max-w-4xl mx-auto text-center'>
+                    <h1 className='text-4xl md:text-5xl font-bold break-all leading-15'>{title}</h1>
+                    <p className='text-lg md:text-xl font-normal leading-[28px] break-all'>{description}</p>
                 </div>
                 <div className='mt-3 px-10 w-full text-center'>
                     {hasButton ? (

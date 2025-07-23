@@ -11,14 +11,6 @@ const SearchBar = ({ data }) => {
     handleSearchSuggestion,
     handleEnter
   } = data;
-  const truncateCategories = useMemo(() => {
-    return categories.map((category) => {
-      if (Array.from(category).length >= 20) {
-        return category.slice(0, 20) + '...';
-      }
-      return category;
-    });
-  }, []);
   const [category, setCategory] = useState();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -97,23 +89,23 @@ const SearchBar = ({ data }) => {
   if (!categories || !contentPlaceholder) return null;
 
   return (
-    <div ref={wrapperRef} className="flex bg-white rounded-md max-w-3xl h-12">
+    <div ref={wrapperRef} className="flex bg-white rounded-md max-w-3xl h-12 mx-auto">
       {/* Dropdown chọn category */}
       <div className="relative">
         <button
-          className="rounded-tl-md rounded-bl-md w-44 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
+          className="rounded-tl-md rounded-bl-md lg:w-44 w-30 h-full pl-[16px] pr-[17px] text-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 bg-[#F9FAFB] cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             setDropdownOpen(!dropdownOpen);
           }}
         >
-          <span>{truncateCategories[categories.indexOf(category)]}</span>
+          <span className='line-clamp-1'>{category}</span>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         {dropdownOpen && (
-          <ul className="absolute z-10 left-0 py-2 mt-1 w-38 bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
+          <ul className="absolute z-10 left-0 py-2 mt-1 lg:w-44 w-30 bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {categories.map((r) => (
               <li
@@ -212,7 +204,7 @@ const SearchBar = ({ data }) => {
 
       {/* Nút tìm kiếm */}
       <button
-        className="bg-[#ffc107] hover:bg-[#EBBE1C] text-black px-6 py-2 font-medium text-sm flex items-center gap-2 rounded-r-md cursor-pointer"
+        className="bg-[#ffc107] hidden  hover:bg-[#EBBE1C] text-black px-6 py-2 font-medium text-sm md:flex items-center gap-2 rounded-r-md cursor-pointer"
         onClick={() => handleSearch(query, category)}
       >
         <SearchOutlined style={{ fontSize: '16px', position: 'relative', top: '1px' }} />
