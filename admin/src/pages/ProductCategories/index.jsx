@@ -66,8 +66,8 @@ const ProductCategories = () => {
   const { mutate: updateOneProductCategories, isPending: isPendingUpdateProductCategories } = useProducts.product_categories.updateOne();
   const { mutate: createOneProductCategories, isPending: isPendingCreateOneProductCategories } = useProducts.product_categories.createOne();
   const { mutate: deleteOneProductCategories, isPending: isPendingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
-  const { mutateAsync: updateCategory } = useProduct.products.updateCategory();
-  if (isLoadingProductCategoriesData || isPendingUpdateProductCategories || isPendingCreateOneProductCategories || isPendingDeleteOneProductCategories) {
+  const { mutateAsync: updateCategory, isPending: isPendingUpdateCategory } = useProduct.products.updateCategory();
+  if (isLoadingProductCategoriesData || isPendingUpdateProductCategories || isPendingCreateOneProductCategories || isPendingDeleteOneProductCategories || isPendingUpdateCategory) {
     return (
       <Loading/>
     )

@@ -5,6 +5,7 @@ import Table from '../Table'
 import { AcceptIcon, ExitIcon } from '../Icon'
 import LabelAssign from "../LabelAssgin"
 import { Modal } from 'antd'
+import Loading from '@/components/Loading'
 // import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 
 const Setting = ({
@@ -265,7 +266,7 @@ const Setting = ({
             }
         ])
     ];
-    if (isLoadingDatas || isLoadingCategories || isLoadingData) return <></>;
+    if (isLoadingDatas || isLoadingCategories || isLoadingData) return <Loading/>;
 
     const width = ['10%', '50%', '20%', '20%'];
    

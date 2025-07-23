@@ -18,7 +18,7 @@ export default function NewsCategories() {
   const { mutateAsync: createOne, isPending: isPendingCreateCategories } = useNews.news_categories.createOne();
   const { mutateAsync: updateOne, isPending: isPendingUpdateCategories } = useNews.news_categories.updateOne();
   const { mutateAsync: deleteOne, isPending: isPendingCategories } = useNews.news_categories.deleteOne();
-  const { mutateAsync: updateCategory } = useNews.news.updateCategory();
+  const { mutateAsync: updateCategory, isPending: isPendingUpdateCategory } = useNews.news.updateCategory();
 
   // Thông tin của form thêm loại tin tức
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -179,7 +179,7 @@ export default function NewsCategories() {
       isLoadingNewsCategories = result.isLoading;
     }
   const newsCategoriesList = Array.isArray(newsCategories) ? newsCategories : newsCategories?.results ?? (newsCategories ? [newsCategories] : []);
-  if (isLoadingNewsCategories) return <Loading/>;
+  if (isLoadingNewsCategories || isPendingCategories || isPendingCreateCategories || isPendingUpdateCategories || isPendingUpdateCategory) return <Loading/>;
 
 
    // Handler cho tìm kiếm và điều hướng

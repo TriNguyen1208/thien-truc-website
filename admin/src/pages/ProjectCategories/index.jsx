@@ -14,10 +14,10 @@
   export default function ProjectCategories () {
     // Lấy hàm từ hook
     const queryClient = useQueryClient();
-    const { mutateAsync: createOne } = useProjects.project_regions.createOne();
-    const { mutateAsync: updateOne } = useProjects.project_regions.updateOne();
-    const { mutateAsync: deleteOne } = useProjects.project_regions.deleteOne();
-    const { mutateAsync: updateRegion } = useProjects.projects.updateRegion();
+    const { mutateAsync: createOne, isPending: isPendingCreateOne } = useProjects.project_regions.createOne();
+    const { mutateAsync: updateOne, isPending: isPendingUpdateOne } = useProjects.project_regions.updateOne();
+    const { mutateAsync: deleteOne, isPending: isPendingDeleteOne } = useProjects.project_regions.deleteOne();
+    const { mutateAsync: updateRegion, isPending: isPendingUpdateRegion } = useProjects.projects.updateRegion();
 
     // Thông tin của form thêm loại dự án
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -187,7 +187,7 @@
     }
 
     const projectRegionsList = Array.isArray(projectRegions) ? projectRegions : projectRegions?.results ?? (projectRegions ? [projectRegions] : []);
-    if (isLoadingProjectRegions) return <Loading/>;
+    if (isLoadingProjectRegions || isPendingCreateOne || isPendingDeleteOne || isPendingUpdateOne || isPendingUpdateRegion) return <Loading/>;
 
 
 
