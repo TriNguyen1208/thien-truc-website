@@ -14,7 +14,7 @@ export const loginUser = (username, password) => async (dispatch) => {
         localStorage.setItem('user', JSON.stringify(user));
         dispatch(setCredentials({ user }));
 
-        return res.data; // { status, message, token: { accessToken, refreshToken }, user }
+        return res.data; // { status, message, user }
         // Chuyển hướng sang trang chính sau khi login
     } catch (err) {
         throw err;

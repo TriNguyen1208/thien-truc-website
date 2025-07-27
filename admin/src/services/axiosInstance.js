@@ -16,7 +16,7 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const res = await api.post('/auth/refresh-token');
+                const res = await api.post('/auth/admin/refresh-token');
 
                 if (res.status === 200) {
                     return api(originalRequest);
