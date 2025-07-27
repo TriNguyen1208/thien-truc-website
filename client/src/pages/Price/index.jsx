@@ -152,23 +152,23 @@
     <div className="w-screen">
         <Banner data={bannerHead} />
       </div>
-    <div className="container-fluid flex flex-col gap-10 py-10">
-    <div className="bg-[#F0FDF4] pt-20 px-6 md:px-[80px] shadow-md rounded-xl">
-      <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto rounded-xl shadow-2xl overflow-hidden">
-        <div className="text-center font-bold text-3xl py-7 bg-white">
+    <div className=" flex flex-col  p-[16px] lg:p-[32px]">
+    <div className="bg-[#F0FDF4]  shadow-md rounded-xl xl:pt-[48px]">
+      <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto mb-[16px] rounded-xl shadow-2xl overflow-hidden">
+        <div className=" font-bold text-[20px]  bg-white p-[24px] ">
           BẢNG GIÁ SẢN PHẨM
         </div>
 
 
-          <div className="overflow-y-auto max-h-[600px] px-7 md:px-10">
-            <table className="min-w-full text-base">
-              <thead className="sticky top-0 z-20 bg-[#00A651] text-white shadow-md">
-                <tr>
-                  <th className="px-4 py-[15px] text-left rounded-tl-lg rounded-bl-md  w-[5%]">STT</th>
-                  <th className="pl-14 pr-4 py-4 text-left  w-[45%]">TÊN SẢN PHẨM</th>            
-                  <th className="px-4 py-4 text-left  w-[15%]">GIÁ (VND)</th>
-                  <th className="px-4 py-4 text-center  w-[15%]">BẢO HÀNH</th>
-                  <th className="px-4 py-4 text-center  w-[15%] rounded-tr-lg rounded-br-md">CHI TIẾT</th>
+          <div className="overflow-y-auto max-h-[600px]  ">
+            <table className="min-w-full text-base table-fixed">
+              <thead className="hidden md:table-header-group sticky top-0 z-20 bg-[#00A651] text-white shadow-md ">
+                <tr className='w-full'>
+                  <th className="text-center rounded-tl-lg rounded-bl-md  w-[8%] md:p-[12px] ">STT</th>
+                  <th className="text-left  w-[40%] md:p-[12px]">TÊN SẢN PHẨM</th>            
+                  <th className="text-center  w-[15%] md:p-[12px] ">GIÁ (VND)</th>
+                  <th className="text-center  w-[17% md:p-[12px] ">BẢO HÀNH</th>
+                  <th className="text-center  w-[20%] rounded-tr-lg rounded-br-md md:p-[12px]">CHI TIẾT</th>
                 </tr>
               </thead>
 
@@ -179,12 +179,12 @@
                     <tr>
                       <td colSpan={5}>
                         <div
-                          className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[21px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"
+                          className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[16px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"
                           onClick={() => toggleCategory(cat.category)}
                         >
                           <div className="flex items-center gap-1">
                             <ChevronDownIcon
-                              className={`w-9 h-10 transform transition-transform duration-300 ${
+                              className={`w-5 h-7 transform transition-transform duration-300 ${
                                 openCategories[cat.category] ? 'rotate-180' : ''
                               }`}
                             />
@@ -207,7 +207,7 @@
                             style={{ overflow: 'hidden' }}
                           >
                             <table className="w-full text-sm md:text-[14px]">
-                              <tbody>
+                              <tbody className=''>
                                 {cat.products.map((product, idx) => (
                                   <tr
                                     key={product.id}
@@ -215,17 +215,36 @@
                                       idx !== cat.products.length - 1
                                         ? 'border-b border-gray-300'
                                         : ''
-                                    } hover:bg-gray-200 transition-colors duration-200`}
+                                    } hover:bg-gray-200 transition-colors duration-200 grid grid-cols-1s p-[12px] gap-y-[12px] md:flex md:p-0`}
                                   >
-                                    <td className="px-4 py-5 w-[5%]">{idx + 1}</td>
-                                    <td className="pl-13 py-5 w-[36%]">{product.name}</td>
-                                    <td className="px-2 py-5 font-semibold text-center text-green-800 w-[31%]">
-                                      {product.price.toLocaleString('vi-VN')}
+                                    <div className='flex flex-row justify-between md:hidden'>
+                                      <td className=" "><span>#</span>{idx + 1}</td>
+                                          <td className=" font-semibold  text-[#ff0000] ">
+                                          {product.price.toLocaleString('vi-VN')}
+                                          </td>
+                                    </div>
+                                     <td className=" hidden md:table-cell md:w-[8%] md:p-[12px] md:text-center">{idx + 1}</td>
+                                     <td className=" md:w-[40%] md:p-[12px] ">{product.name}</td>
+                                     <td className=" font-semibold  text-[#ff0000]  hidden md:table-cell  md:w-[15%] md:p-[12px] md:text-center">{product.price.toLocaleString('vi-VN')} </td>
+                                    <td className=" hidden md:table-cell  md:w-[17%] md:p-[12px] text-center">  {product.warranty ||0}  </td>
+                                    <td className=" hidden md:table-cell text-green-800  md:w-[20%] md:p-[12px] ">
+                                     <div className='w-full md:flex md:justify-center'>
+                                       <Button
+                                        type="default"
+                                        style={{
+                                          borderColor: '#00c37e',
+                                          color: '#00c37e',
+                                        }}
+                                        className="border border-[#00c37e] text-[#00c37e] hover:!bg-[#00c37e] hover:!text-white active:!bg-green-900"
+                                        onClick={() => navigate(`/san-pham/${product.id}`)}
+                                      >
+                                        Xem chi tiết
+                                      </Button>
+                                     </div>
                                     </td>
-                                    {/* <td className="px-6 py-2 w-[15%]">{product.warranty}</td> */}
-                                    <td className="px-6 py-2 w-[15%]">{product.warranty}</td>
-
-                                    <td className="px-4 py-2 w-[15%] text-green-800">
+                                   <div className='flex flex-row justify-between md:hidden'>
+                                     <td className=""> <span>Bảo hành: </span> {product.warranty ||0} <span> tháng</span></td>
+                                    <td className=" text-green-800">
                                       <Button
                                         type="default"
                                         style={{
@@ -238,6 +257,7 @@
                                         Xem chi tiết
                                       </Button>
                                     </td>
+                                   </div>
                                   </tr>
                                 ))}
                                 {cat.products.length === 0 && (
