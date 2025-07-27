@@ -10,7 +10,8 @@ export const loginUser = (username, password) => async (dispatch) => {
         });
 
         const user = res.data.user;
-
+        
+        localStorage.setItem('user', JSON.stringify(user));
         dispatch(setCredentials({ user }));
 
         return res.data; // { status, message, token: { accessToken, refreshToken }, user }
