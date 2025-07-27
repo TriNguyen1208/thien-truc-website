@@ -12,16 +12,15 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        if (error.response?.status === 403 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
-                const res = await api.post('/auth/admin/refresh-token');
-
+                const res = await axios.post(API_ROUTES.auth.refreshToken, { refreshToken });
                 if (res.status === 200) {
                     return api(originalRequest);
                 }
-            } catch{
+            } catch {
                 window.location.href = '/dang-nhap';
             }
         }
