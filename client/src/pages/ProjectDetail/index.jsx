@@ -40,7 +40,7 @@ export default function ProjectDetail() {
                 <div className="w-3/4 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
                 >
-                    <div className="text-4xl font-[700] mb-[15px] break-words">
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-[700] mb-[15px] break-words">
                         {projectContentData.project.title}
                     </div>
                     <div className="flex flex-col sm:items-center sm:flex-row gap-3">
@@ -52,7 +52,7 @@ export default function ProjectDetail() {
                                 {projectContentData.project.region.name}
                             </div>
                         </div>
-                        <div className="flex">
+                        {/* <div className="flex"> */}
                             <div className="flex">
                                 <div className="mr-[5px]">
                                     <EnvironmentOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
@@ -65,7 +65,7 @@ export default function ProjectDetail() {
                                 </div>
                                 <div className="mr-[10px]">Hoàn thành {projectContentData.project.complete_time}</div>
                             </div>
-                        </div>
+                        {/* </div> */}
                     </div>
                 </div>
                 <div className="w-3/4 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[50px]"

@@ -59,20 +59,21 @@ export default function Contact() {
                     {(supportAgentsData || []).map((item) => {
                         const dataUserCard = {
                             image_avatar: item.avatar_img,
+                            // name: item.name,
                             name: item.name,
                             role: item.role,
                             sdt: item.phone_numer,
                             url_facebook: item.facebook_url,
                         }
                         return (
-                            <div key={item.id} className="col-span-12 md:col-span-6 lg:col-span-3" >
+                            <div key={item.id} className="col-span-12 md:col-span-6 lg:col-span-3 h-[320px]" >
                                 <UserCard data={dataUserCard} />
                             </div>
                         )
                     })}
                 </div>
             </div>
-            <div ref={sectionRef} className="container-fluid flex py-[70px] grid grid-cols-12 gap-10">
+            <div ref={sectionRef} className="container-fluid flex py-[70px] grid grid-cols-12 gap-5 sm:gap-10">
                 <div className="col-span-12 lg:col-span-6 text-[var(--dark-green)] font-[400] ">
                     <div className="text-[30px] font-[600] mb-[15px]">
                         Liên hệ về chúng tôi

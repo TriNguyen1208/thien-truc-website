@@ -36,9 +36,8 @@ export default function NewsDetail(){
                         </div>
                         <div className="flex flex-col gap-3">
                             <h2 className="font-bold text-3xl ">{news.news.title}</h2>
-                            <div className="flex flex-row gap-3 text-[#6B7280]">
+                            <div className="flex flex-col sm:flex-row gap-3 text-[#6B7280]">
                                 <span className="">Ngày {day}, tháng {month}, năm {year}</span>
-                                <span>&bull;</span>
                                 <span>Khoảng {news.news.measure_time} phút đọc</span>
                             </div>
                         </div>

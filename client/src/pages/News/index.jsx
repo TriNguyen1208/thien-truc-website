@@ -112,8 +112,8 @@ export default function News() {
         <Banner data={bannerData} />
       </div>
       <div className="container-fluid flex flex-col gap-10 pt-10">
-        <div className="flex flex-row items-center">
-          <div className="flex-1" />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0">
+          <div className="lg:flex-1" />
           <div className="flex-shrink-0">
             <ItemByType
               types={["Mới nhất", "Phổ Biến"]}
@@ -121,7 +121,7 @@ export default function News() {
               current={sortBys.indexOf(sortBy)}
             />
           </div>
-          <div className="flex-1 flex justify-end w-[500px]">
+          <div className="flex-1 flex justify-start sm:justify-end w-[500px]">
             <ListType
               categories={categories}
               handleClick={handleClickfilter}
@@ -130,7 +130,7 @@ export default function News() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-10 mx-auto px-4">
+        <div className="grid grid-cols-12 gap-5 md:gap-10 mx-auto px-4">
           {isLoadingDataFilter ? (
             <Loading/>
           ) : (
@@ -148,7 +148,9 @@ export default function News() {
                 },
               };
               return (
-                <Link to={`${location.pathname}/${item.id}`} key={item.id}>
+                <Link to={`${location.pathname}/${item.id}`} key={item.id}
+                className="col-span-12 lg:col-span-4 md:col-span-6"
+                >
                   <ItemPost data={data} id={item.id}/>
                 </Link>
               );

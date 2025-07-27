@@ -150,7 +150,7 @@ export default function Project() {
                         {projectPageData.banner_description}
                     </div>
                 </div>
-                <div className="grid grid-cols-12 gap-10">
+                <div className="grid grid-cols-12 gap-5 md:gap-10">
                     {(projectData.results || []).map((item, index) => {
                         const complete_time = String(item.complete_time)
                         const dataProject = {
