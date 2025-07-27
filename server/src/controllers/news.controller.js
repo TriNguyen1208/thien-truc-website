@@ -12,6 +12,11 @@ const getNewsPage = async (req, res) => {
     res.status(200).json(data);
 }
 
+const getHighlightNews = async (req, res) => {
+    const data = await newsServices.getHighlightNews();
+    res.status(200).json(data);
+}
+
 const updateNewsPage = async (req, res) => {
     try {
         const { status, message, action } = await newsServices.updateNewsPage(req.body);
@@ -183,4 +188,4 @@ const featured_news = {
         }
     }
 }
-export default { getAllTables, getNewsPage, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news};
+export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news};

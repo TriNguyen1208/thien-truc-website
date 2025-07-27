@@ -143,6 +143,7 @@ const project_contents = {
                 queryClient.invalidateQueries({ queryKey: ["admin_projects"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_projects_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_project_content"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_project_regions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);

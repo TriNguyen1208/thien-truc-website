@@ -3,9 +3,12 @@ import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { updatePassword } from '@/services/auth.api';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function PasswordChangeModal({ open, onClose, role }) {
   if (!open) return null;
+  const navigate = useNavigate();
   const [old_password, setOldPassword] = useState('');
   const [new_password, setNewPassword] = useState('');
   const [verify_password, setConfirmPassword] = useState('');
@@ -27,9 +30,9 @@ export default function PasswordChangeModal({ open, onClose, role }) {
   };
 
   const handleForgotPassword = () => {
-    // Logic to handle forgot password
-    message.info('Chức năng quên mật khẩu chưa được triển khai');
-  }
+    onClose(); // đóng modal
+    navigate('/dang-nhap?step=forgot'); // điều hướng tới AuthPopupManager với bước quên mật khẩu
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       {/* Khung modal */}

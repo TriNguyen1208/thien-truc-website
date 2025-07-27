@@ -11,6 +11,12 @@ const getNewsPage = async() => {
     return res.data;
 }
 
+// const getHighlightNews = async () => {
+//     console.log("Fetching highlight news from API");
+//     const res = await axios.get(API_ROUTES.news.highlight_news);
+//     return res.data;
+// }
+
 const news = {
     getList: async (query = '', filter = '', is_published = '', sort_by = '', page = 1, limit = undefined) => {
         const res = await axios.get(API_ROUTES.news.news.getList(query, filter, is_published, sort_by, page, limit));

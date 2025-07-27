@@ -15,6 +15,14 @@ function useGetNewsPage(){
         staleTime: 5 * 60 * 1000,
     })
 }
+// function useGetHighlightNews() {
+//     return useQuery({
+//         queryKey: ["highlight_news"],
+//         queryFn: newsServices.getHighlightNews,
+//         staleTime: 5 * 60 * 1000,
+//     })
+// }   
+
 const news = {
     useGetList: (query = '', filter = '', is_published = '', sort_by = '', page = 1, limit = undefined) => {
         return useQuery({
@@ -88,6 +96,7 @@ function useSearchSuggest(query, filter){
 export default {
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
+    //getHighlightNews: useGetHighlightNews,
     news:{
         getList: news.useGetList,
         getOne: news.useGetOne,

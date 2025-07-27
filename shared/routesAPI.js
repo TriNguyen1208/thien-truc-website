@@ -66,6 +66,7 @@ const API_ROUTES = {
     news: {
         base: NEWS_BASE,
         news_page: `${NEWS_BASE}/news_page`,
+        highlight_news: `${NEWS_BASE}/highlight_news`,
         news: {
             getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&limit=${limit}`,

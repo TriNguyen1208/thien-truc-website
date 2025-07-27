@@ -17,11 +17,17 @@ const AuthPopupManager = () => {
   const rawToken = searchParams.get('token');
   const token = rawToken?.trim();
   const [send, isSending] = useState(false);
+  const urlStep = searchParams.get('step');
   useEffect(() => {
-    if (token && step !== 'reset') {
+    if (urlStep === 'forgot') {
+      setStep('forgot');
+      searchParams.delete('step'); // xóa param khỏi URL
+      navigate({ search: searchParams.toString() }, { replace: true });
+    } else if (token && step !== 'reset') {
       setStep('reset');
     }
-  }, [token, step]);
+  }, [token, step, urlStep]);
+  
 
 
   const handleLogin = async ({ username, password }) => {
@@ -36,6 +42,7 @@ const AuthPopupManager = () => {
   };
 
   const handleSendReset = async ({ username, email }) => {
+    isSending(true);
     try {
       const res = await dispatch(sendResetPassword(username, email)); // <-- lấy res
       if (res.status === 200) {
@@ -47,6 +54,8 @@ const AuthPopupManager = () => {
     } catch (err) {
       const message = err?.response?.data?.message || err?.message || "Khôi phục thất bại";
       toast.error(message);
+    } finally {
+      isSending(false);
     }
   };
 
@@ -127,7 +136,8 @@ const AuthPopupManager = () => {
   };
 
   const currentStep = steps[step];
-  console.log(step);
+
+  if (step === 'forgot' && send) return <Loading />;
   return (
     <PopupForm
       icon={currentStep.icon}

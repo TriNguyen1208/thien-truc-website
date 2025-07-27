@@ -177,6 +177,7 @@ const news_contents = {
                 queryClient.invalidateQueries({ queryKey: ["admin_news_contents"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["admin_news_categories"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);

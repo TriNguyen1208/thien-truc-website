@@ -6,6 +6,7 @@ import GreenButton from "@/components/GreenButton";
 import Loading from "@/components/Loading";
 import { Link } from "react-router-dom";
 import homeQueries from "@/hooks/useHome";
+import TopNews from "@/components/TopNews";
 
 const slideData = [
     {
@@ -76,7 +77,7 @@ export default function Home() {
                 <div className="mb-[30px]">
                     <PostCategory categories={categories} handleClick={handleClick} />
                 </div>
-                <div className="w-[900px] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px]"
+                <div className="w-full max-w-[900px] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
                 >
                     <Carousel autoplay arrows dots={{ className: 'custom-dots' }}>
@@ -114,59 +115,58 @@ export default function Home() {
                     </div>
                 </div>
                 <div>
-                    <div className="flex justify-between">
-                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton}/>
-                        </div>
-                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton}/>
-                        </div>
-                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton}/>
-                        </div>
-                        <div style={{ width: `calc((100% - 80px) / ${numberItemProduct})` }}>
-                            <ItemProduct product={product} handleClick={handleClickButton}/>
-                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                    {[...Array(4)].map((_, i) => (
+                        <ItemProduct key={i} product={product} handleClick={handleClickButton} />
+                    ))}
                     </div>
                 </div>
             </div>
-            <div className="container-fluid flex mb-[100px]  items-center mt-[50px]">
-                <div className="w-[50%]">
-                    <div className="text-[40px] font-[600] text-[var(--dark-green)] mb-[20px]">
-                        Công ty thiên trúc
-                    </div>
-                    <div className="text-[20px] mb-[20px]">
-                        {homePageData.aboutus_content}
-                    </div>
-                    <div className="flex flex-wrap">
-                        {(highlightStatsAboutUsData || []).map((item) => {
-                            return (
-                                <div key = {item.id} className="mr-[20px] mb-[20px]">
-                                    <div className="text-[25px] text-[var(--green-bg)] font-[600]">
-                                        {item.number_text}
-                                    </div>
-                                    <div className="text-[20px]">
-                                        {item.label}
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div>
-                        <Link to="/ve-chung-toi">
-                            <GreenButton content={"Tìm hiểu về chúng tôi"} width="200px" />
-                        </Link>
-                    </div>
+            <div className="container-fluid flex flex-col lg:flex-row mb-[100px] items-center mt-[50px] px-4">
+            {/* Left content */}
+            <div className="w-full lg:w-1/2">
+                <div className="text-[32px] md:text-[36px] lg:text-[40px] font-[600] text-[var(--dark-green)] mb-[20px] text-center lg:text-left">
+                Công ty thiên trúc
                 </div>
-                <div className="ml-[30px] w-[50%]">
-                    <div className="aspect-[16/9] w-full rounded-[20px]"
-                        style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 12px 58px 5px' }}>
-                        <img src= {homePageData.aboutus_img}
-                            className="w-full h-full rounded-[20px] object-cover"
-                        />
+                <div className="text-[16px] md:text-[18px] lg:text-[20px] mb-[20px] text-justify lg:text-left">
+                {homePageData.aboutus_content}
+                </div>
+                <div className="flex flex-wrap justify-center lg:justify-start">
+                {(highlightStatsAboutUsData || []).map((item) => {
+                    return (
+                    <div key={item.id} className="mr-[20px] mb-[20px]">
+                        <div className="text-[22px] md:text-[24px] lg:text-[25px] text-[var(--green-bg)] font-[600] text-center lg:text-left">
+                        {item.number_text}
+                        </div>
+                        <div className="text-[16px] md:text-[18px] lg:text-[20px] text-center lg:text-left">
+                        {item.label}
+                        </div>
                     </div>
+                    );
+                })}
+                </div>
+                <div className="flex justify-center lg:justify-start mt-4">
+                <Link to="/ve-chung-toi">
+                    <GreenButton content={"Tìm hiểu về chúng tôi"} width="200px" />
+                </Link>
                 </div>
             </div>
+
+            {/* Right image */}
+            <div className="w-full lg:w-1/2 mt-8 lg:mt-0 lg:ml-[30px]">
+                <div
+                className="aspect-[16/9] w-full rounded-[20px]"
+                style={{ boxShadow: "rgba(100, 100, 111, 0.2) -3px 12px 58px 5px" }}
+                >
+                <img
+                    src={homePageData.aboutus_img}
+                    className="w-full h-full rounded-[20px] object-cover"
+                    alt="About us"
+                />
+                </div>
+            </div>
+            </div>
+
         </>
     )
 };

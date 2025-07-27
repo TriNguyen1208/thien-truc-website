@@ -64,6 +64,24 @@ const getNewsPage = async () => {
     }
 }
 
+const getHighlightNews = async () => {
+    const sql = `
+        SELECT id, title, main_img, public_date, measure_time, num_readers
+        FROM news.news
+        ORDER BY num_readers DESC
+        LIMIT 5
+        `
+    const { rows } = await pool.query(sql);
+    return rows.map(row => ({
+        id: row.id,
+        title: row.title,
+        main_img: row.main_img,
+        public_date: row.public_date ? new Date(row.public_date).toLocaleDateString('vi-VN') : 'Chưa xuất bản',
+        measure_time: row.measure_time,
+        num_readers: row.num_readers
+    }));
+}
+
 const updateNewsPage = async (data) => {
     const {
         title,
@@ -734,6 +752,13 @@ const news_contents = {
         ];
         const newsResult = await pool.query(insertNewsSql, insertValues);
         const news_id = newsResult.rows[0].id;
+        if (news_id) {
+            await pool.query(`
+                UPDATE news.news_categories
+                SET item_count = COALESCE(item_count, 0) + 1 
+                WHERE id = $1
+            `, [category_id]);
+        }
         const news_title = newsResult.rows[0].title;
         const insertNewsContentSql = `
             INSERT INTO news.news_contents (news_id, content)
@@ -995,4 +1020,4 @@ const featured_news = {
     }
 }
 
-export default { getAllTables, getNewsPage, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};
+export default { getAllTables, getNewsPage, getHighlightNews,updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};
