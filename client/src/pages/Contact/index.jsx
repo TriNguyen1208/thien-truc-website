@@ -62,7 +62,7 @@ export default function Contact() {
                             // name: item.name,
                             name: item.name,
                             role: item.role,
-                            sdt: item.phone_numer,
+                            sdt: item.phone_number,
                             url_facebook: item.facebook_url,
                         }
                         return (
