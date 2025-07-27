@@ -64,7 +64,7 @@ const ItemPost = ({ data, id= "", width = "100%"}) => {
             <div className='bottom-3 left-0 absolute w-full px-4'>
 
                 {/* Location và Date */}
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-500 mb-2 gap-3 sm:gap-0">
                     {location && (
                         <div className="flex items-center gap-1">
                             <EnvironmentOutlined style={{ fontSize: '16px' }} />
@@ -110,8 +110,8 @@ const ItemPost = ({ data, id= "", width = "100%"}) => {
 
     return (
         <div
-            className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-102 transition-transform transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
-            style={{ width }}
+            className="w-full bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-102 transition-transform transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
+           
         >
             {renderImage()}
             {renderContent()}
@@ -121,28 +121,3 @@ const ItemPost = ({ data, id= "", width = "100%"}) => {
 };
 
 export default ItemPost;
-// const projectData = {
-//     type: 'project',
-//     title: 'Trung tâm thương mại Golden Plaza',
-//     description: 'Trung tâm thương mại 10 tầng với diện tích 60,000m² được thiết kế hiện đại, sang trọng và tiện nghi.',
-//     location: 'Hải Châu, Đà Nẵng',
-//     date: '2024',
-//     tag: 'Miền Bắc',
-//     tagColor: '#10B981',
-//     image: ""
-// };
-
-
-// const newsData = {
-//     type: 'news',
-//     title: 'Mở Rộng Chi Nhánh Mới Tại Đà Nẵng',
-//     description: 'Công ty Thiên Trúc chính thức khai trương chi nhánh mới tại Đà Nẵng, mở rộng mạng lưới phục vụ khách hàng khu vực miền Trung với dịch vụ lắp đặt LED chuyên nghiệp.',
-//     date: '2025-06-08T17:00:00.000Z',
-//     tag: 'Công Ty',
-//     tagColor: '#3B82F6',
-//     status: {
-//         duration: '4 phút đọc',
-//         views: '858'
-//     }
-//     image: ""
-// };
