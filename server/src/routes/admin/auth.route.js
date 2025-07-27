@@ -11,6 +11,7 @@ router.get('/login-result', authenticateToken, authController.getLoginResult);
 router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 router.post('/send-reset-password', authController.sendResetPassword);
+router.post('/logout', authController.logout);
 
 router.patch('/update-profile', authenticateToken, authController.updateProfile);
 router.patch('/update-password', authenticateToken, authController.updatePassword);
