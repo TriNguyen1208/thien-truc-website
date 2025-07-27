@@ -8,15 +8,13 @@ export const loginUser = (username, password) => async (dispatch) => {
             username,
             password
         });
-        const { accessToken, refreshToken } = res.data.token;
+
         const user = res.data.user;
+        
+        localStorage.setItem('user', JSON.stringify(user));
+        dispatch(setCredentials({ user }));
 
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('user', JSON.stringify(user)); 
-        dispatch(setCredentials({accessToken, refreshToken, user}));
-
-        return res.data; // { status, message, token: { accessToken, refreshToken }, user }
+        return res.data; // { status, message, user }
         // Chuyển hướng sang trang chính sau khi login
     } catch (err) {
         throw err;
@@ -51,8 +49,6 @@ export const verifyFromToken = () => async (dispatch) => {
     try{
         await axios.get(API_ROUTES.auth.verifyLogin);
         dispatch(setCredentials({
-            accessToken: localStorage.getItem('accessToken'),
-            refreshToken: localStorage.getItem('refreshToken'),
             user: JSON.parse(localStorage.getItem('user')) || null
         }));
     }catch{

@@ -78,9 +78,7 @@ const login = async (loginData) => {
     }
 };
 
-const refreshToken = async (tokenData) => {
-    const { refreshToken } = tokenData;
-
+const refreshToken = async (refreshToken) => {
     if (!refreshToken) {
         return {
             status: 401,
