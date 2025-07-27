@@ -66,19 +66,17 @@ const getNewsPage = async () => {
 
 const getHighlightNews = async () => {
     const sql = `
-        SELECT id, title, main_img, public_date, measure_time, num_readers
-        FROM news.news
-        ORDER BY num_readers DESC
+        SELECT n.id, n.title, n.main_img, n.main_content
+        FROM news.news n
+        ORDER BY n.num_readers DESC
         LIMIT 5
-        `
+        `;
     const { rows } = await pool.query(sql);
     return rows.map(row => ({
         id: row.id,
         title: row.title,
         main_img: row.main_img,
-        public_date: row.public_date ? new Date(row.public_date).toLocaleDateString('vi-VN') : 'Chưa xuất bản',
-        measure_time: row.measure_time,
-        num_readers: row.num_readers
+        main_content: row.main_content
     }));
 }
 
@@ -1020,4 +1018,4 @@ const featured_news = {
     }
 }
 
-export default { getAllTables, getNewsPage, getHighlightNews,updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};
+export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};

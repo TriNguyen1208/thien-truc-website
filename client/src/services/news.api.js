@@ -11,11 +11,11 @@ const getNewsPage = async() => {
     return res.data;
 }
 
-// const getHighlightNews = async () => {
-//     console.log("Fetching highlight news from API");
-//     const res = await axios.get(API_ROUTES.news.highlight_news);
-//     return res.data;
-// }
+const getHighlightNews = async () => {
+    console.log("Fetching highlight news from API");
+    const res = await axios.get(API_ROUTES.news.highlight_news);
+    return res.data;
+}
 
 const news = {
     getList: async (query = '', filter = '', is_published = '', sort_by = '', page = 1, limit = undefined) => {
@@ -59,4 +59,4 @@ const getSearchSuggestions = async (query, filter) => {
     const res = await axios.get(API_ROUTES.news.search_suggestions(query, filter))
     return res.data;
 }
-export default {getAll, getNewsPage, news, new_categories, new_contents, getSearchSuggestions};
+export default {getAll, getNewsPage, getHighlightNews, news, new_categories, new_contents, getSearchSuggestions};

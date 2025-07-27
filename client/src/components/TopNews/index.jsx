@@ -1,33 +1,45 @@
-// // src/components/TopNews.jsx
-// import React from 'react';
-// import useNews from "@/hooks/useNews";
-
-// const TopNews = () => {
-//   const { data: topNews, isLoading } = useNews.getHighlightNews();
-
-//   if (isLoading) return <div>Đang tải tin nổi bật...</div>;
-
-//   return (
-//     <section className="highlight-news">
-//       <h2>Tin Tức Nổi Bật</h2>
-//       <div className="news-grid">
-//         {topNews?.map((news) => (
-//           <div className="news-card" key={news.id}>
-//             <img src={news.main_img} alt="main image" />
-//             <h3>{news.title}</h3>
-//             <p>{news.main_content}</p>
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// };
-
+// src/components/TopNews.jsx
 import React from 'react';
+import { useState, useEffect } from 'react';
+import useNews from "@/hooks/useNews";
 
-const TopNews = ({ news }) => {
+const TopNews = () => {
+  const { data: topNews, isLoading, error } = useNews.getHighlightNews();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalTime = 3500; // 3.5 giây
+
+  useEffect(() => {
+    if (!topNews || topNews.length === 0) return;
+
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % topNews.length);
+    }, intervalTime);
+
+    // Dọn dẹp interval khi component unmount
+    return () => clearInterval(intervalId);
+  }, [topNews]);
+
+  if (isLoading) return <div>Đang tải tin nổi bật...</div>;
+  if (error) return <div>Không thể tải tin tức. Vui lòng thử lại sau.</div>;
+  if (!topNews || topNews.length === 0) return <div>Không có tin tức nổi bật.</div>;
+
+  const currentNews = topNews?.[currentIndex];
+
   return (
-    <div></div>
-  );
+    <section className="highlight-news">
+        <div className="top-news-carousel-container">
+        <div className="news-card-wrapper" key={currentNews.id}>
+            <div className="news-card">
+            <img src={currentNews.main_img} alt={currentNews.title} />
+            <div className="card-content">
+                <h3>{currentNews.title}</h3>
+                <p>{currentNews.main_content}</p>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    );
 }
+
  export default TopNews;

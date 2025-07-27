@@ -70,6 +70,11 @@ export default function Home() {
     return (
         <>
             <Banner data={dataBanner} />
+            <div>
+                <TopNews />
+                {/* Phần dự án tiêu biểu */}
+                {/* <FeaturedProjects /> */}
+            </div>
             <div className="bg-[var(--light-green-banner)] text-center p-[45px]">
                 <div className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
                     Dự án tiêu biểu
