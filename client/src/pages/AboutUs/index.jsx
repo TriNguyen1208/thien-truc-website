@@ -245,7 +245,7 @@ export default function AboutUs(){
                         {
                             aboutusChoose.map((service, index) =>{
                                 return(
-                                   <div key = {index} className=' h-fit lg:h-[350px] lg:w-[330px]'>
+                                   <div key = {index} className=' h-fit lg:h-[350px] lg:w-[330px] w-full'>
                                      <Card  card = {service}/>
                                    </div>
                                 )
