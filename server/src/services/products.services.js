@@ -690,6 +690,22 @@ const product_categories = {
         }
         return product_category
     },
+    getAllFeatured: async () => {
+        const featured_product_categories = (await pool.query(`
+            SELECT pc.*
+            FROM product.product_categories pc
+            WHERE EXISTS (
+                SELECT 1 
+                FROM product.products prd
+                WHERE prd.category_id = pc.id AND prd.is_featured = true
+            )
+            ORDER BY id
+        `))?.rows;
+        if (!featured_product_categories) {
+            throw new Error("Can't get featured product_categories")
+        }
+        return featured_product_categories
+    },    
     createOne: async (data) => {
         const { productNameCategories } = data;
 

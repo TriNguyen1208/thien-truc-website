@@ -20,6 +20,7 @@ router.get('/highlight_products', productController.getHighlightProducts);
 router.get('/search_suggestions', productController.getSearchSuggestions);
 router.get('/search_categories_suggestions', productController.getSearchCategoriesSuggestions);
 router.get('/count', productController.count);
+router.get('/featured_product_categories', productController.product_categories.getAllFeatured);
 
 router.post('/products', authenticateToken, upload.single('local_image'), productController.products.createOne);
 router.post('/product_categories', authenticateToken, productController.product_categories.createOne);

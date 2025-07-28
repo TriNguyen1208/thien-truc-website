@@ -106,6 +106,10 @@ const product_categories = {
         const data = await productServices.product_categories.getOne(id);
         res.status(200).json(data);
     },
+    getAllFeatured: async (req, res) => {
+        const data = await productServices.product_categories.getAllFeatured();
+        res.status(200).json(data);
+    },
     createOne: async (req, res) => { 
         try {
             const { status, message, action = null } = await productServices.product_categories.createOne(req.body);

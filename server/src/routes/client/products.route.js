@@ -19,4 +19,5 @@ router.get('/search_categories_suggestions', productController.getSearchCategori
 
 router.get('/highlight_products', productController.getHighlightProducts);
 router.get('/search_suggestions', productController.getSearchSuggestions);
+router.get('/featured_product_categories', productController.product_categories.getAllFeatured);
 export default router;
