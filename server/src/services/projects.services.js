@@ -215,7 +215,7 @@ const projects = {
 
                 prj_reg.id AS reg_id,
                 prj_reg.name,
-                prj_reg.rgb_color,
+                prj_reg.rgb_color
             FROM project.projects prj
             JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
             WHERE prj.id IN (
@@ -229,6 +229,7 @@ const projects = {
                 ) sub
                 WHERE rn <= ${limit}
             )
+            ORDER BY prj_reg.id, prj.id
         `;
         
         const { rows } = await pool.query(sql);
@@ -447,7 +448,7 @@ const projects = {
 
 const project_regions = {
     getAll: async () => {
-        const project_regions = (await pool.query("SELECT * FROM project.project_regions")).rows;
+        const project_regions = (await pool.query("SELECT * FROM project.project_regions ORDER BY id")).rows;
         if(!project_regions){
             throw new Error("Can't get project_regions");
         }
