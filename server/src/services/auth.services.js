@@ -79,6 +79,7 @@ const login = async (loginData) => {
 };
 
 const refreshToken = async (refreshToken) => {
+    console.error('Gọi api refresh token thành công ', refreshToken)
     if (!refreshToken) {
         return {
             status: 401,

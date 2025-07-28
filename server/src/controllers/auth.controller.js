@@ -12,6 +12,7 @@ const login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // chỉ gửi qua HTTPS (tắt nếu đang dev)
                 sameSite: 'Strict',      // bảo vệ CSRF
+                path: '/',
                 maxAge: 15 * 60 * 1000   // 15 phút
             });
 
@@ -19,6 +20,7 @@ const login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'Strict',
+                path: '/',
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
             });
         }
@@ -34,6 +36,13 @@ const refreshToken = async (req, res) => {
     try {
         const { refreshToken: _refreshToken } = req.cookies
         const { status, message, accessToken } = await authServices.refreshToken(_refreshToken);
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // chỉ gửi qua HTTPS (tắt nếu đang dev)
+            sameSite: 'Strict',      // bảo vệ CSRF
+            path: '/',
+            maxAge: 15 * 60 * 1000   // 15 phút
+        });
         res.status(status).json({ message: message, accessToken });
     } catch (error) {
         console.error('Lỗi đăng nhập: ', error);
@@ -97,14 +106,15 @@ const logout = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict',
+            path: '/'
         });
 
         res.clearCookie('refreshToken', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict',
+            path: '/'
         });
-
         res.status(200).json({ message: "Đăng xuất thành công" });
     } catch (error) {
         console.error('Lỗi khi logout: ', error);

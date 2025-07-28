@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserIcon } from '@/components/Icon';
+import { logoutUser } from '@/services/auth.api.js'
 import AdminAccountModal, { ManagerAccountModal } from '@/components/Header/AccountModal';
 import PasswordChangeModal from '@/components/Header/PasswordChangeModal';
-import { logout } from '@/slices/auth.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '@/slices/auth.slice.js' 
 
 const Header = () => {
   // Lấy thông tin người dùng từ Redux store
@@ -62,9 +63,10 @@ const Header = () => {
                     Thông tin tài khoản
                   </li>
                   <li className="py-1 hover:bg-gray-100 cursor-pointer text-red-600"
-                      onClick={() => {
-                        dispatch(logout());
-                        navigate('/dang-nhap'); // Chuyển hướng về trang đăng nhập
+                      onClick={async () => {
+                        await logoutUser();
+                        dispatch(logout())
+                        navigate('/dang-nhap')
                       }
                   }>
                     Đăng xuất
