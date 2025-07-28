@@ -42,7 +42,7 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
-        highlight_products: `${PRODUCT_BASE}/highlight_products`,
+        highlight_products: `${PRODUCT_BASE}/products?is_featured=true`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`
     },
     project: {
