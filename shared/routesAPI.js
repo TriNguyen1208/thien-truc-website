@@ -55,7 +55,7 @@ const API_ROUTES = {
         project_regions: {
             getAll: `${PROJECT_BASE}/project_regions`,
             getOne: (id) => `${PROJECT_BASE}/project_regions/${id}`,
-            getAllFeatureds: `${PROJECT_BASE}/featured_project_regions`,
+            getAllFeatured: `${PROJECT_BASE}/featured_project_regions`,
         },
         project_contents: {
             getAll: `${PROJECT_BASE}/project_contents`,
