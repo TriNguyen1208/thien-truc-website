@@ -14,4 +14,5 @@ router.get('/project_contents/:id', projectsController.project_contents.getOne);
 
 router.get('/highlight_projects', projectsController.getHighlightProjects);
 router.get('/search_suggestions', projectsController.getSearchSuggestions);
+router.get('/featured_project_regions', projectsController.project_regions.getAllFeatured);
 export default router;

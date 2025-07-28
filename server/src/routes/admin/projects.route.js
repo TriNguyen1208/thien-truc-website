@@ -22,6 +22,7 @@ router.get('/search_categories_suggestions', projectsController.getSearchCategor
 router.get('/search_suggestions', projectsController.getSearchSuggestions);
 
 router.get('/count', projectsController.count);
+router.get('/featured_project_regions', projectsController.project_regions.getAllFeatured);
 
 // post
 router.post('/project_regions', authenticateToken, projectsController.project_regions.createOne);

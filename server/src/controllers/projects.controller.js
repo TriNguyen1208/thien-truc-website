@@ -84,6 +84,10 @@ const project_regions = {
         const data = await projectsServices.project_regions.getOne(id);
         res.status(200).json(data);
     },
+    getAllFeatured: async (req, res) => {
+        const data = await projectsServices.project_regions.getAllFeatured();
+        res.status(200).json(data);
+    },
     createOne: async(req, res) => {
         try {
             const { status, message, action = null } = await projectsServices.project_regions.createOne(req.body);

@@ -460,6 +460,22 @@ const project_regions = {
         }
         return project_region
     },
+    getAllFeatured: async () => {
+        const featured_project_regions = (await pool.query(`
+            SELECT prj_reg.*
+            FROM project.project_regions prj_reg
+            WHERE EXISTS (
+                SELECT 1 
+                FROM project.projects prj
+                WHERE prj.region_id = prj_reg.id AND prj.is_featured = true
+            )
+            ORDER BY id
+        `))?.rows;
+        if (!featured_project_regions) {
+            throw new Error("Can't get featured project_regions")
+        }
+        return featured_project_regions
+    },
     createOne: async(data) => {
         const { name, rgb_color } = data;
         const result = await pool.query(
