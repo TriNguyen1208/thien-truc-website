@@ -139,47 +139,6 @@ export default function Home() {
                 <div className="mb-[30px] w-[90%] lg:w-[70%] xl:w-[60%] mx-auto">
                     <PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
                 </div>
-                {/* <div className="relative sm:w-full lg:w-[70%] xl:w-[60%]   mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px]"
-                    style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
-                >
-                    <Carousel 
-                            dots={{ className: 'custom-dots' }}
-                            prevArrow={<CustomPrevArrow />}
-                            nextArrow={<CustomNextArrow />}
-                            className="[&_.slick-prev]:hidden [&_.slick-next]:hidden"
-                            arrows={true}
-                        >
-                        {(highlightProject || []).map((item) => (
-                            <Link key={item.id} to = {`du-an/${item.id}`}>
-                                <div className="flex flex-col h-[400px]">
-                                    {item.main_img ? (
-                                            <div
-                                                className=" h-[90%] w-auto   bg-cover bg-center text-center rounded-t-[10px]"
-                                                style={{
-                                                    backgroundImage: `url(${item.main_img})`,
-                                                    
-                                                }}
-                                            ></div>
-
-                                    ) : (
-                                        <div className="w-full  aspect-[19/8]  flex items-center bg-gray-200 justify-center rounded-t-[10px]">
-                                            <MailOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
-                                        </div>
-                                    )}
-
-                                    <div className="flex-grow p-4 text-left text-gray-800 text-base font-medium bg-white rounded-b-[10px]">
-                                        <h4 className="text-lg font-semibold mb-2 text-gray-800">
-                                            {item.title}
-                                        </h4>
-                                        <p className="text-sm text-gray-600 leading-relaxed">
-                                            {item.main_content}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </Carousel>
-                </div> */}
                 <div className="relative w-full xl:w-[70%] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px] !h-fit"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
                 >
