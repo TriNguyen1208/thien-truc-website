@@ -1,6 +1,6 @@
 import UserCard from "@/components/UserCard";
 import Banner from "@/components/Banner";
-import {Link, useLocation } from 'react-router-dom';
+import {Link, useLocation, useNavigation } from 'react-router-dom';
 import useContact from "@/hooks/useContact";
 import Form from "@/components/Form";
 import{useRef, useEffect} from 'react'
@@ -18,7 +18,7 @@ export default function Contact() {
     const location = useLocation();
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();
     const sectionRef = useRef(null);
-
+    const navigation = useNavigation();
     useEffect(() => {
         if (location.state?.scrollToForm) {
             sectionRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,6 +50,7 @@ export default function Contact() {
     }
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <Banner data={dataBanner} />
             <div className="container-fluid bg-[var(--light-green-banner)] py-[70px]">
                 <div className="font-[600] flex justify-center text-[30px] text-[var(--dark-green)] mb-[30px]">

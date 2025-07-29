@@ -9,12 +9,13 @@
   import useProducts from "@/hooks/useproducts";
   import Loading from '@/components/Loading'
   import '@/styles/custom.css'
-  import { useNavigate, useSearchParams } from 'react-router-dom'
+  import { useNavigate, useNavigation, useSearchParams } from 'react-router-dom'
 
   export default function PricePage() {
   
       // Biến để lưu trữ tham chiếu đến phần tử
       const navigate = useNavigate();
+      const navigation = useNavigation();
       const [selectedProduct, setSelectedProduct] = useState(null)
       const [openCategories, setOpenCategories] = useState({});
       const [search, setSearch] = useState('');
@@ -149,6 +150,7 @@
     }  
   return (
   <>
+    {navigation.state == 'loading' && <Loading/>}
     <div className="w-screen">
         <Banner data={bannerHead} />
       </div>

@@ -7,7 +7,7 @@ import Loading from "@/components/Loading";
 import { Link } from "react-router-dom";
 import homeQueries from "@/hooks/useHome";
 import TopNews from "@/components/TopNews";
-
+import { useNavigation } from "react-router-dom";
 const slideData = [
     {
         id: 1,
@@ -33,7 +33,7 @@ const slideData = [
 
 export default function Home() {
     const numberItemProduct = 4;
-
+    
     const handleClickButton = () => {
         console.log("Hello world")
     }
@@ -54,6 +54,7 @@ export default function Home() {
     //     <GreenButton content={content} width="300px" handleClick={handleClick}/>
     // )
     const { data: allData, isLoading: loadingAll } = homeQueries.getAll();
+    const navigation = useNavigation();
     if (loadingAll) {
         return (
             <Loading />
@@ -67,8 +68,10 @@ export default function Home() {
         colorBackground: "var(--gradient-banner)",
         colorText: "#ffffff",
     }
+    
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <Banner data={dataBanner} />
             <div>
                 <TopNews />

@@ -1,14 +1,13 @@
-import RoutesElement from '@/routes'
-import { BrowserRouter } from 'react-router-dom';
-import ScrollToTop from '@/components/ScrollToTop';
-
+import {router} from './routes'
+import { RouterProvider } from "react-router-dom";
 export default function App() {
   return (
     <>
-      <BrowserRouter>
-          <ScrollToTop/>
-          <RoutesElement/>
-      </BrowserRouter>
+        <RouterProvider 
+          router={router} 
+          fallbackElement={<p>Loading...</p>}
+          hydrateFallbackElement={<p>Đang đồng bộ cache...</p>}
+        />
     </>
   )
 }

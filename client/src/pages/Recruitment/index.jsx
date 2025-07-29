@@ -6,6 +6,7 @@ import GreenButton from "@/components/GreenButton";
 import { MailOutlined, PhoneOutlined, EnvironmentOutlined } from "@ant-design/icons"
 import { useRef } from "react";
 import Form from "@/components/Form";
+import { useNavigation } from "react-router-dom";
 
 const BuildingIcon = () => (
     <svg width="65" height="64" viewBox="0 0 65 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,6 +47,7 @@ const SmileIcon = () => (
 export default function Recruitment() {
     //Call API
     const { data, isLoading } = useRecruitment.getRecruitmentPage();
+    const navigation = useNavigation();
     const recruitmentRef = useRef(null);
     if (isLoading) {
         return <Loading />
@@ -71,6 +73,7 @@ export default function Recruitment() {
     }
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <Banner data={content_banner_head} />
             <div className="w-full py-16">
                 <div className="container-fluid flex flex-col gap-10">

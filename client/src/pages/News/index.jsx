@@ -4,14 +4,14 @@ import Loading from "@/components/Loading";
 import ItemByType from "@/components/ItemByType";
 import ListType from "@/components/ListType";
 import ItemPost from "@/components/ItemPost";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
 import Paging from "@/components/Paging";
 
 export default function News() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigation = useNavigation();
   const sortBys = ["date_desc", "popular"];
 
   // Lấy giá trị từ URL và kiểm tra hợp lệ
@@ -108,6 +108,7 @@ export default function News() {
 
   return (
     <>
+      {navigation.state == 'loading' && <Loading/>}
       <div className="w-screen">
         <Banner data={bannerData} />
       </div>

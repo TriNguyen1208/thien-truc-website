@@ -5,7 +5,7 @@ import CenterCard from '@/components/CenterCard'
 import Loading from '@/components/Loading'
 import useContact from '@/hooks/useContact'
 import {CheckCircleOutlined,  UsergroupAddOutlined, LineChartOutlined, WifiOutlined, DollarOutlined} from '@ant-design/icons'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useNavigation} from 'react-router-dom'
 
 //Start extra Component 
 function ProgressItem({ icon, label, value, percent }) {
@@ -46,6 +46,7 @@ export default function AboutUs(){
     const { data: aboutusServices, isLoading: isLoadingAboutUsServices } = useAboutUs.company_services.getAll()
     const { data: aboutusChoose, isLoading: isLoadingAboutUsChoose } = useAboutUs.why_choose_us.getAll()
     const navigate = useNavigate()
+    const navigation = useNavigation();
     if (isLoadingContact || isLoadingAboutUsPage ||isLoadingAboutUsServices || isLoadingAboutUsChoose) {
         return (<Loading/>);
     }
@@ -151,6 +152,7 @@ export default function AboutUs(){
     ]
     return (
         <div className='w-full'>
+            {navigation.state == 'loading' && <Loading/>}
             <Banner data = {bannerMain}/>
             {/////////////////////////////////////////////
             }

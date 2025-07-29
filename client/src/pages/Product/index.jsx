@@ -7,7 +7,7 @@ import Loading from '@/components/Loading'
 import Paging from '@/components/Paging'
 import { useRef } from 'react'
 import { TruckOutlined, UserOutlined, CreditCardOutlined, SafetyOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
 
 //Start extra components
 function GoBackListProduct({goBack ,categorySelected ,query}){
@@ -145,6 +145,7 @@ function Category({ category,query = '', limit = '', handleViewProduct, handleVi
 export default function Product() {
     const scrollTargetRef = useRef(null)
     const navigate = useNavigate();
+    const navigation = useNavigation();
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const filter = searchParams.get('filter') || "Tất cả sản phẩm";
@@ -272,6 +273,7 @@ export default function Product() {
     return (
 
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <Banner data={bannerMain} />
             <Banner data={bannerViewPrices} />
             <div className="container-fluid flex flex-col ">

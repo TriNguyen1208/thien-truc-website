@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useNavigation, useParams } from "react-router-dom"
 import useNews from "@/hooks/useNews";
 import Loading from "@/components/Loading"
 import BackButton from "@/components/BackButton";
@@ -14,6 +14,7 @@ export default function NewsDetail(){
     }, []);
     const {data: news, isLoading: isLoadingNews} = useNews.news_contents.getOne(news_id);
     const navigate = useNavigate();
+    const navigation = useNavigation();
     if(isLoadingNews){
         return <Loading/>
     }
@@ -27,6 +28,7 @@ export default function NewsDetail(){
     }
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <div className="flex flex-row bg-[#F9FAFB] py-10">
                 <div className="flex flex-col gap-3 m-auto w-3xl">
                     <BackButton data={{content: "Quay lại danh sách tin tức", handleClick: handleClick}}/>

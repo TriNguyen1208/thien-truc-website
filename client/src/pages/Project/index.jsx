@@ -1,7 +1,7 @@
 import Banner from "@/components/Banner";
 import ItemPost from "@/components/ItemPost";
 import PostCategory from "@/components/PostCategory";
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useNavigation, useSearchParams } from 'react-router-dom';
 import useProjects from "@/hooks/useProjects";
 import { useState, useEffect } from 'react';
 import Paging from "@/components/Paging";
@@ -13,7 +13,7 @@ export default function Project() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-
+    const navigation = useNavigation();
     useEffect(() => {
         const pageParam = Number(searchParams.get("page")) || 1;
         setCurrentPage(pageParam);
@@ -32,7 +32,7 @@ export default function Project() {
     const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.getAll();
     const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter === "Tất cả dự án" ? undefined : filter, is_featured,  page, limit);
     
-    if (isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject) {
+    if (isLoadingProjectPage || isLoadingProjectRegion) {
         return (
             <Loading />
         )
@@ -45,7 +45,7 @@ export default function Project() {
     let categoriesData = projectRegionData.map(item => item.name);
     const categoriesDefault = ["Tất cả dự án"];
     categoriesData = [...categoriesDefault, ...categoriesData];
-    const totalProjects = Number(projectData.totalCount);
+    const totalProjects = Number(projectData?.totalCount || 0);
     const pageSizes = 9;
     const numberPages = Math.ceil(totalProjects / pageSizes);
     const idSelectedCategories = filter ? categoriesData.findIndex((name) => name === filter) : 0;
@@ -139,6 +139,7 @@ export default function Project() {
 
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <Banner data={dataBanner} />
             <div className="container-fluid">
                 <div className="my-[40px] text-center">
@@ -151,29 +152,31 @@ export default function Project() {
                     </div>
                 </div>
                 <div className="grid grid-cols-12 gap-5 md:gap-10">
-                    {(projectData.results || []).map((item, index) => {
-                        const complete_time = String(item.complete_time)
-                        const dataProject = {
-                            type: 'project',
-                            title: item?.title ?? "",
-                            description: item?.main_content ?? "",
-                            location: item?.province ?? "",
-                            date: complete_time,
-                            tag: item?.region.name ?? "",
-                            tagColor: item?.region.rgb_color ?? "",
-                            image: item?.main_img ?? "",
-                        }
-                        return (
-                            <Link key={index} to={`/du-an/${item.id}`}
-                            className="col-span-12 lg:col-span-4 md:col-span-6"
-                            >
-                                <div    
+                    {
+                        isLoadingProject ? <Loading/> : 
+                            (projectData.results || []).map((item, index) => {
+                            const complete_time = String(item.complete_time)
+                            const dataProject = {
+                                type: 'project',
+                                title: item?.title ?? "",
+                                description: item?.main_content ?? "",
+                                location: item?.province ?? "",
+                                date: complete_time,
+                                tag: item?.region.name ?? "",
+                                tagColor: item?.region.rgb_color ?? "",
+                                image: item?.main_img ?? "",
+                            }
+                            return (
+                                <Link key={index} to={`/du-an/${item.id}`}
+                                className="col-span-12 lg:col-span-4 md:col-span-6"
                                 >
-                                    <ItemPost data={dataProject}/>
-                                </div>
-                            </Link>
+                                    <div    
+                                    >
+                                        <ItemPost data={dataProject}/>
+                                    </div>
+                                </Link>
 
-                        );
+                            );
                     })}
                 </div>
                 <div className="mb-[30px]">
