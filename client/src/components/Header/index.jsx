@@ -24,7 +24,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Image
+            <img
               width={100}
               src={logo}
               alt="ThienTruc Logo"

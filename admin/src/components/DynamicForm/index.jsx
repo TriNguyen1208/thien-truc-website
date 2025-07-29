@@ -502,7 +502,7 @@ const DynamicForm = ({ data, config }) => {
                 width={config?.widthModal || defaultConfig.widthModal}
                 onCancel={() => {
                     setFormData(initialValues);
-                    config.handleCancelModal();
+                    config.setIsModalOpen(false);
                 }}
             >
                 <div className="container-fluid p-6">
@@ -544,7 +544,7 @@ const DynamicForm = ({ data, config }) => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    config.handleCancelButton();
+                                    config.setIsModalOpen(false);
                                     setFormData(initialValues);
                                 }}
                                 className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px] cursor-pointer"

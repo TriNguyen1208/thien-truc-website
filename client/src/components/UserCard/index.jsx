@@ -30,19 +30,17 @@ const UserCard = ({ data }) => {
             )}
           </div>
         </div>
-
-        {/* Name */}
-        <h2 className="text-center text-xl font-semibold text-gray-800 mb-1 line-clamp-1">
+        <h2 className="line-clamp-1 text-center text-xl font-semibold text-gray-800 mb-1">
           {name}
         </h2>
 
         {/* Role */}
-        <p className="text-center text-green-600 font-medium mb-6 line-clamp-1">
+        <p className="line-clamp-1 text-center text-green-600 font-medium mb-6">
           {role}
         </p>
 
         {/* Phone */}
-        <div className="flex items-center justify-center mb-4 text-gray-700 line-clamp-1">
+        <div className="line-clamp-1 flex items-center justify-center mb-4 text-gray-700">
           <Phone className="w-4 h-4 mr-2" />
           <span>{sdt}</span>
         </div>

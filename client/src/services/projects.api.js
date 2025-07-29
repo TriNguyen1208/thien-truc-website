@@ -29,6 +29,10 @@ const project_regions = {
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.project_regions.getOne(id));
         return res.data;
+    },
+    getAllFeatured: async () => {
+        const res = await axios.get(API_ROUTES.project.project_regions.getAllFeatured);
+        return res.data;
     }
 }
 const project_contents = {
@@ -42,8 +46,8 @@ const project_contents = {
     }
 }
 
-const getHighlightProjects = async () => {
-    const res = await axios.get(API_ROUTES.project.highlight_projects);
+const getHighlightProjects = async (filter) => {
+    const res = await axios.get(API_ROUTES.project.highlight_projects(filter));
     return res.data;
 }
 
