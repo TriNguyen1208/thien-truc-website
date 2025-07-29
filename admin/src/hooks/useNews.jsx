@@ -86,10 +86,11 @@ const news = {
         const queryClient = useQueryClient()
         return useMutation({
             mutationFn: (id) => newsServices.news.deleteOne(id),
-            onSuccess: ()=>{
+            onSuccess: (success)=>{
                 queryClient.invalidateQueries(['admin_news']);
-            }
-
+                toast.success(success ? success.message: "Xóa thành công!")
+            },
+            onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
         })
     }
 }

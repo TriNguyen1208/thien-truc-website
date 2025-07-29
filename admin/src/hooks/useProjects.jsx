@@ -76,8 +76,9 @@ const projects = {
     },
     useDeleteOne: (id) => {
         return useMutation({
-            mutationFn: (id) => 
-            projectsServices.projects.deleteOne(id)
+            mutationFn: (id) => projectsServices.projects.deleteOne(id),
+            onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
+            onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
         })
     }
 }
@@ -112,6 +113,7 @@ const project_regions = {
         return useMutation({
             mutationFn: (id) => 
             projectsServices.project_regions.deleteOne(id)
+
         })
     }
 }
