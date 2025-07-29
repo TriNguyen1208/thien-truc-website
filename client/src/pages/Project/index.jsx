@@ -147,15 +147,12 @@ export default function Project() {
                     <div className="mb-[30px]">
                         <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
                     </div>
-                    <div className="inline-block w-1/2 font-[300]">
-                        {projectPageData.banner_description}
-                    </div>
                 </div>
                 <div className="grid grid-cols-12 gap-5 md:gap-10">
                     {
                         isLoadingProject ? <Loading/> : 
                             (projectData.results || []).map((item, index) => {
-                            const complete_time = String(item.complete_time)
+                            const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
                             const dataProject = {
                                 type: 'project',
                                 title: item?.title ?? "",

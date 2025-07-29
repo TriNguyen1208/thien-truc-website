@@ -65,7 +65,7 @@ export default function ProjectDetail() {
                                 <div className="mr-[5px]">
                                     <CalendarOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
                                 </div>
-                                <div className="mr-[10px]">Hoàn thành {projectContentData.project.complete_time}</div>
+                                <div className="mr-[10px]">Hoàn thành {new Date(projectContentData.project.complete_time).toLocaleDateString('vi-VN')}</div>
                             </div>
                         {/* </div> */}
                     </div>
