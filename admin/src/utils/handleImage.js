@@ -4,7 +4,6 @@ const extractBlogImages = async (htmlContent) => {
 
     for (const img of images) {
         const src = img.getAttribute('src');
-        console.log(src);
         let blob = null;
 
         if (src?.startsWith('blob:')) {
@@ -29,8 +28,8 @@ const addDeleteImage = (initialForm, form, formData) => {
     const oldImages = extractAllImages(initialForm.content).images; //day la hinh cu ban dau. Phai check xem hinh cu va hinh moi
     const newImages = extractAllImages(form.content).images //day la hinh moi
     //Neu nhu hinh cu co ma hinh moi khong co thi xoa
-    if(initialForm.link_image != null && initialForm.link_image.includes('res.cloudinary.com') && initialForm.link_image != form.link_image){
-        formData.append('delete_images', initialForm.link_image);
+    if(initialForm.main_image != null && initialForm.main_image.includes('res.cloudinary.com') && initialForm.main_image != form.main_image){
+        formData.append('delete_images', initialForm.main_image);
     }
     const oldSrcs = oldImages.map(img => img.getAttribute('src')).filter(Boolean);
     const newSrcs = new Set(newImages.map(img => img.getAttribute('src')).filter(Boolean));

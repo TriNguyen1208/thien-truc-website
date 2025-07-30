@@ -73,7 +73,6 @@ const SettingHighlight = ({
         }else{
             setFiltered([]);
         }
-        console.log(dataFetch)
         setDisplayMap(updatedMap)
         setSelectedId([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +132,6 @@ const SettingHighlight = ({
     };
 
     const handleSearch = (query, category, display) => {
-        console.log(query, category, display)
         updateFilters({ query, category, display });
     };
     const updateFilters = ({ query, category, display }) => {
@@ -208,7 +206,6 @@ const SettingHighlight = ({
     const handleSave = () => {
         //Ở đây có 1 lệnh post gửi lên API sau đó thoát ra luôn
         onClose()
-        console.log("hello world");
     };
 
     //Truyền vào props thì dùng ở đây

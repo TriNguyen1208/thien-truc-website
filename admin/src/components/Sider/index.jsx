@@ -84,7 +84,6 @@ const getSections = (role) => {
 
 const Sider = () => {
   const role = useSelector((state) => { 
-    console.log(state)
     return state.auth.user.role }); // ✅ hợp lệ trong component
   const sections = getSections(role);
 

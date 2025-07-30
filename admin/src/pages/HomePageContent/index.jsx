@@ -78,7 +78,6 @@ const HomePageContent = () => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
     setSwitchTime(highlightNewsData?.switch_time ?? 0);
   }, [highlightNewsData])
-  console.log(isLoadingHomePageData, isFetchingHomePageData, isPendingUpdateBanner)
   if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature ||
     isPendingCreateHighlightFeature || isPendingDeleteHighlightFeature ||
     isLoadingHighlightNews || isLoadingHomePageData || isPendingUpdateBanner ||
@@ -126,7 +125,6 @@ const HomePageContent = () => {
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
-  console.log(homePageData.banner_title);
 
 
   // ============= BANNER ABOUT US  ===================== 

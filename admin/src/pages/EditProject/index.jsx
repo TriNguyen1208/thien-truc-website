@@ -11,6 +11,7 @@ import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams, useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
+import changeToFormData from '../../utils/changeToFormData';
 function normalizeContent(content = '') {
     return content
         .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
@@ -63,8 +64,7 @@ const EditProject = () => {
             content: project_contents.content ?? '',
             region_name: project_contents.project.region.name ?? '',
             isFeatured: project_contents.project.is_featured,
-            main_image: "",
-            link_image: project_contents.project.main_img ?? '',
+            main_image: project_contents.project.main_img ?? '',
             province: project_contents.project.province ?? '',
             completeTime: project_contents.project.complete_time ?? '',
             countWord: normalizeContent(project_contents.content).replace(/<[^>]+>/g, '').trim().length
@@ -77,7 +77,12 @@ const EditProject = () => {
         if(form == null || initialForm == null){
             return;
         }
-        const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
+        const stripCountWord = (obj) => {
+            const { countWord, ...rest } = obj;
+            return rest;
+        };
+        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
         setShouldWarn(isDirty);
     }, [form, initialForm, setShouldWarn]);
     //Helper function
@@ -93,24 +98,22 @@ const EditProject = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlogImages(form.content); //chac chan se gui cho backend de cap nhat
-
+        const {formData: formData1, doc} = await extractBlogImages(form.content); //chac chan se gui cho backend de cap nhat
         //Add delete image
-        const formDataProject = addDeleteImage(initialForm, form, formData);
-        
+        const formData2 = addDeleteImage(initialForm, form, formData1);
         const finalHTML = doc.body.innerHTML;
+        const formData3 = changeToFormData(form, finalHTML);
+        
         // Duyệt qua tất cả key
-        for (const key in form) {
-            if (key === 'main_image' && form[key] instanceof File) {
-                formDataProject.append('main_image', form[key]);
-            } else if (key === 'content') {
-                formDataProject.append('content', finalHTML); // content đã thay blob thành filename
-            } else {
-                formDataProject.append(key, form[key]);
-            }
+        const formData = new FormData();
+        for(const [key, value] of formData2.entries()){
+            formData.append(key, value);
+        }
+        for(const [key, value] of formData3.entries()){
+            formData.append(key, value);
         }
         if(project_id !== null)
-            updateProject({ id: project_id, formDataProject })
+            updateProject({ id: project_id, formData })
         setSaveOpen(false);
     }
 
@@ -163,14 +166,17 @@ const EditProject = () => {
     const regionNames = regions.map(item => item.name);
     return (
         <>
-            <div className='flex flex-row gap-6'>
+            <form onSubmit={(e) => {e.preventDefault(); setSaveOpen(true)}} className='flex flex-row gap-6'>
                 <ContentManagement type="dự án" setForm={setForm} form={form}/>
                 <div className='flex flex-col flex-1 gap-6 max-w-[300px]'>
                     <ProjectSetting regions={regionNames} form={form} setForm={setForm}/>
-                    <UploadImage form={form} setForm={setForm}/>
+                    <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden '>
+                        <h3 className='text-2xl font-semibold text-[#09090B]'>Ảnh đại diện</h3>
+                        <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="main_image" flexDirection='col' gap={8} overflow='block'/>
+                    </div>
                     <div className='flex flex-col gap-2'>
                         <CustomButton
-                            onClick={() => setSaveOpen(true)}
+                            htmlType='submit'
                         >
                             <div className='flex gap-4 items-center'>
                                 <SaveIcon/>
@@ -205,7 +211,7 @@ const EditProject = () => {
                         </CustomButton>                 
                     </div>
                 </div>
-            </div>
+            </form>
             <Notification {...deletePopupData}/>
             <Notification {...savePopupData}/>
             <Notification {...recoverPopupData}/>

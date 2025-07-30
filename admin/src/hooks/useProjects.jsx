@@ -153,8 +153,8 @@ const project_contents = {
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: ({id, formDataProject}) => {
-                return projectsServices.project_contents.updateOne(id, formDataProject)
+            mutationFn: ({id, formData}) => {
+                return projectsServices.project_contents.updateOne(id, formData)
             },
             onSuccess: (success) => {
                 toast.success(success.message);

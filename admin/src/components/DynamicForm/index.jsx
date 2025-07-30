@@ -30,10 +30,8 @@ const DynamicForm = ({ data, config }) => {
     const [urlInput, setUrlInput] = useState('');
     const initialValues = useMemo(() => {
         const result = {};
-        console.log("Gia tri data: ", data);
         data.forEach(field => {
             const { name, type, value, isSingleColumn, options } = field;
-            // console.log("Gia tri name va value khoi tao form: ", name, value);
             if (type === 'dynamicFields') {
                 if (isSingleColumn) {
                     if (field.isCheckbox) {
@@ -294,9 +292,7 @@ const DynamicForm = ({ data, config }) => {
                     />
                 );
             case 'image_upload': {
-                // console.log("Gia tri form data: ",  formData, nameColumn);
                 const image = formData[nameColumn];
-                // console.log("gia tri image: ", image);
                 return (
                     <div className="space-y-4">
                         {/* URL Input */}

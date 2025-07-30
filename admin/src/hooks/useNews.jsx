@@ -187,8 +187,8 @@ const news_contents = {
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: ({ id, formDataNews }) => {
-                return newsServices.new_contents.updateOne(id, formDataNews)
+            mutationFn: ({ id, formData }) => {
+                return newsServices.new_contents.updateOne(id, formData)
             },
             onSuccess: (success) => {
                 toast.success(success.message);

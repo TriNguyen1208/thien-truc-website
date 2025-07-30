@@ -10,6 +10,7 @@ import {extractBlogImages} from '../../utils/handleImage';
 import ProjectSetting from '../../components/ProjectSetting';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
+import changeToFormData from '../../utils/changeToFormData';
 function normalizeContent(content = '') {
     return content
         .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
@@ -53,7 +54,6 @@ const AddProject = () => {
             region_name: (regions?.[0]?.name) ?? '',
             isFeatured: false,
             main_image: "",
-            link_image: "",
             province: "",
             countWord: 0,
             completeTime: new Date()
@@ -68,7 +68,12 @@ const AddProject = () => {
         if(form == null || initialForm == null){
             return;
         }
-        const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
+        const stripCountWord = (obj) => {
+            const { countWord, ...rest } = obj;
+            return rest;
+        };
+        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
         setShouldWarn(isDirty);
     }, [form]);
     //Helper function
@@ -84,17 +89,15 @@ const AddProject = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlogImages(form.content);
+        const {formData: formData1, doc} = await extractBlogImages(form.content);
         const finalHTML = doc.body.innerHTML;
-        // Duyệt qua tất cả key
-        for (const key in form) {
-            if (key === 'main_image' && form[key] instanceof File) {
-                formData.append('main_image', form[key]);
-            } else if (key === 'content') {
-                formData.append('content', finalHTML); // content đã thay blob thành filename
-            } else {
-                formData.append(key, form[key]);
-            }
+        const formData2 = changeToFormData(form, finalHTML);
+        const formData = new FormData();
+        for(const [key, value] of formData1.entries()){
+            formData.append(key, value);
+        }
+        for(const [key, value] of formData2.entries()){
+            formData.append(key, value);
         }
         mutateProject(formData)  
         setForm(initialForm);
@@ -132,14 +135,17 @@ const AddProject = () => {
     const regionNames = regions.map(item => item.name);
     return (
         <>
-            <div className='flex flex-row gap-6'>
+            <form onSubmit={(e) => {e.preventDefault(); setSaveOpen(true)}} className='flex flex-row gap-6'>
                 <ContentManagement type="dự án" setForm={setForm} form={form}/>
                 <div className='flex flex-col flex-1 gap-6 max-w-[300px]'>
                     <ProjectSetting regions={regionNames} form={form} setForm={setForm}/>
-                    <UploadImage form={form} setForm={setForm}/>
+                    <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden '>
+                        <h3 className='text-2xl font-semibold text-[#09090B]'>Ảnh đại diện</h3>
+                        <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="main_image" flexDirection='col' gap={8} overflow='block'/>
+                    </div>
                     <div className='flex flex-col gap-2'>
                         <CustomButton
-                            onClick={() => setSaveOpen(true)}
+                            htmlType='submit'
                         >
                             <div className='flex gap-4 items-center'>
                                 <SaveIcon/>
@@ -158,7 +164,7 @@ const AddProject = () => {
                         </CustomButton>                    
                     </div>
                 </div>
-            </div>
+            </form>
             <Notification {...savePopupData}/>
             <Notification {...recoverPopupData}/>
         </>

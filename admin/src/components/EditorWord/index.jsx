@@ -9,11 +9,12 @@ const EditorWord = ({ form, setForm }) => {
       tinymceScriptSrc="/tinymce/tinymce.min.js"
       onInit={(_evt, editor) => (editorRef.current = editor)}
       value={form.content}
-      onEditorChange={(newContent) => {
+      onEditorChange={(newContent, editor) => {
+        const wordCount = editor.plugins.wordcount.getCount();
         setForm((prevForm) => ({
           ...prevForm,
           content: newContent,
-          countWord: newContent.replace(/<[^>]+>/g, '').trim().length
+          countWord: wordCount
         }));
       }}
       init={{

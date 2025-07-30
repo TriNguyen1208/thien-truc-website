@@ -11,7 +11,6 @@ const getProjectPage = async () => {
     return res.data;
 }
 const updateProjectPage = async (data) => {
-    console.log("Updating project page with data:", data);
     const res = await axios.patch(API_ROUTES.project.update_project_page, data);
     return res.data;
 }
@@ -30,7 +29,6 @@ const projects = {
         return res.data;
     },
     updateRegion: async (changedItems) => {
-        console.log("Updating regions with changed items:", changedItems);
         const res = await axios.patch(API_ROUTES.project.projects.updateRegion, changedItems);
         return res.data;
     },

@@ -41,7 +41,6 @@ const SimpleForm = ({ data, config }) => {
     }, [initialValues]);
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
         config.handleSubmitButton(formData);
         setFormData(initialValues);
     }
@@ -226,7 +225,6 @@ const SimpleForm = ({ data, config }) => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    console.log('Huy button');
                                     setFormData(initialValues);
                                     config.setIsModalOpenSimple(false)
                                 }}
