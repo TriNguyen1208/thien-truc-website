@@ -203,8 +203,8 @@ export default function Project () {
                           {item.title}
                         </div>
                       </td>
-                    <td className="py-4 px-4 text-gray-800">{item.province}</td>
-                    <td className="py-4 px-4 text-gray-800">{new Date(item.complete_time).toLocaleDateString('vi-VN')}</td>
+                    <td className="py-4 px-4 text-gray-800">{item.province ? <span>{item.province}</span> : <span className="text-gray-500">Cập nhật sau</span>}</td>
+                    <td className="py-4 px-4 text-gray-800">{item.complete_time ? new Date(item.complete_time).toLocaleDateString('vi-VN') : <span className="text-gray-500">Cập nhật sau</span>}</td>
                     <td className="py-4 px-9 item-center">
                       <button
                         onClick={() => {

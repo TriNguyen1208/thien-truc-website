@@ -72,7 +72,8 @@ export default function News() {
     isLoadingNews = result.isLoading;
   }
 
-  const newsList = Array.isArray(news) ? news : news?.results ?? (news ? [news] : []);
+  const unsortnewsList = Array.isArray(news) ? news : news?.results ?? (news ? [news] : []);
+  const newsList = unsortnewsList.sort((a, b) => a.id.localeCompare(b.id));
   const newsPage = newsList.reduce((acc, item) => {
     const category = item.category || { id: 'unknown', name: 'Không xác định' };
     if (!acc[category.id]) {
@@ -186,7 +187,7 @@ export default function News() {
                       {item.is_published === true ? 'Đã xuất bản' : 'Bản nháp'}
                     </span>
                   </td>
-             <td className="py-4 px-2 text-gray-800">{item.public_date}</td>
+             <td className="py-4 px-2 text-gray-800">{item.public_date ? item.public_date : <span className="text-gray-500">Cập nhật sau</span>}</td>
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-2">
                     <button

@@ -186,7 +186,8 @@
       isLoadingProjectRegions = result.isLoading;
     }
 
-    const projectRegionsList = Array.isArray(projectRegions) ? projectRegions : projectRegions?.results ?? (projectRegions ? [projectRegions] : []);
+    const unprojectRegionsList = Array.isArray(projectRegions) ? projectRegions : projectRegions?.results ?? (projectRegions ? [projectRegions] : []);
+    const projectRegionsList = unprojectRegionsList.sort((a, b) => a.id.localeCompare(b.id));
     if (isLoadingProjectRegions || isPendingCreateOne || isPendingDeleteOne || isPendingUpdateOne || isPendingUpdateRegion) return <Loading/>;
 
 
@@ -230,7 +231,7 @@
           <table className='w-full mt-6'>
             <thead className='text-left text-gray-500 font-normal text-[15px] border-b border-gray-200'>
               <tr>
-                <th className='w-[13%] py-3 pl-5'>STT</th>
+                <th className='w-[13%] py-3 pl-5'>Mã khu vực</th>
                 <th className='w-[30%] px-4 py-3'>Tên khu vực</th>
                 <th className='w-[20%] py-3 px-4'>Màu sắc</th>
                 <th className='w-[22%] py-3 px-4'>Số lượng</th>
@@ -241,7 +242,7 @@
             <tbody>
                 {projectRegionsList.map((item, index) => (
                   <tr key={item.id} className='border-b border-gray-200 hover:bg-gray-100'>
-                    <td className='w-[10%] py-5 pl-7'>{index + 1}</td>
+                    <td className='w-[10%] py-5 pl-7 font-medium'>{item.id}</td>
                     <td className='w-[30%] py-5 px-4 font-medium'>{query === '' ? item.name : item.query}</td>
                     <td className='w-[20%] py-5 px-4'>
                       <span className='inline-block w-4 py-2 mt-2 mr-2' style={{ backgroundColor: item.rgb_color }}></span>

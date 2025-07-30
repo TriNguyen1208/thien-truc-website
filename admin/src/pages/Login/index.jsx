@@ -18,6 +18,17 @@ const AuthPopupManager = () => {
   const token = rawToken?.trim();
   const [send, isSending] = useState(false);
   const urlStep = searchParams.get('step');
+
+  useEffect(() => {
+      if (localStorage.getItem('user')) {
+        if (step === 'login') {
+          const backTo = location.state?.from?.pathname || '/';
+          toast.error('Bạn đã đăng nhập, đăng xuất nếu muốn đăng nhập lại');
+          navigate(backTo);
+        }
+      }
+  }, [step, navigate]);
+
   useEffect(() => {
     if (urlStep === 'forgot') {
       setStep('forgot');
