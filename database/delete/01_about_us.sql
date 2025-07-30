@@ -1,0 +1,1 @@
+DROP SCHEMA about_us CASCADE;
