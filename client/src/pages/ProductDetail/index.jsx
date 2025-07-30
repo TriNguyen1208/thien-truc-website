@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useNavigation } from 'react-router-dom';
 import useProducts from '@/hooks/useProducts'
 import Loading from '@/components/Loading'
 import {
@@ -22,6 +22,7 @@ function Picture({ url }) {
 export default function ProductDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const navigation = useNavigation();
     if (id === '') {
         return (<>Không có sản phẩm</>)
     }
@@ -44,6 +45,7 @@ export default function ProductDetail() {
 
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <div className="container-fluid py-[30px]">
                 <div onClick={goBack} className="flex flex-row w-full h-[20px] my-[15px] gap-[10px] leading-none items-center text-[#14532D] font-medium cursor-pointer">
                     <ArrowLeftOutlined />

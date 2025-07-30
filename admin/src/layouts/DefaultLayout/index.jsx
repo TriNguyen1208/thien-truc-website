@@ -1,5 +1,4 @@
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Sider from "@/components/Sider";
 import { Outlet } from "react-router-dom";
 import CustomButton from "@/components/ButtonLayout";

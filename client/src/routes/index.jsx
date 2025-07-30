@@ -13,54 +13,69 @@ import DefaultLayout from "@/layouts/DefaultLayout"
 import ProjectDetail from '@/pages/ProjectDetail'
 import NewsDetail from '@/pages/NewsDetail'
 import ProductDetail from '@/pages/ProductDetail'
-export const routes = [
+import { createBrowserRouter } from "react-router-dom";
+import Loading from '@/components/Loading'
+import { LoadingAboutUs, LoadingContact, LoadingHome, LoadingNews, LoadingPrice, LoadingProduct, LoadingProject, LoadingRecruitment, LoadingProjectDetail, LoadingProductDetail, LoadingNewsDetail } from '../components/LoadingPage'
+export const router = createBrowserRouter([
     {
         path: "/",
         element: <DefaultLayout />,
+        pendingElement: <Loading/>,
         children: [
             {
                 path: "/",
-                element: <Home />
+                element: <Home />,
+                loader: LoadingHome,
             },
             {
                 path: "/san-pham",
-                element: <Product />
+                element: <Product />,
+                loader: LoadingProduct
             },
             {
                 path: "/san-pham/:id",
-                element: <ProductDetail />
+                element: <ProductDetail />,
+                loader: LoadingProductDetail
             },
              {
                 path: "/bang-gia",
-                element: <Price />
+                element: <Price />,
+                loader: LoadingPrice
             },
             {
                 path: "/du-an",
-                element: <Project />
+                element: <Project />,
+                loader: LoadingProject
             },
              {
                 path: "/du-an/:id",
-                element: <ProjectDetail />
+                element: <ProjectDetail />,
+                loader: LoadingProjectDetail
             },
              {
                 path: "/tin-tuc",
-                element: <News />
+                element: <News />,
+                loader: LoadingNews
             },
             {
                 path: "/tin-tuc/:id",
-                element: <NewsDetail />
+                element: <NewsDetail />,
+                loader: LoadingNewsDetail
             },
              {
                 path: "/tuyen-dung",
-                element: <Recruitment />
+                element: <Recruitment />,
+                loader: LoadingRecruitment
             },
             {
                 path: "/lien-he",
-                element: <Contact />
+                element: <Contact />,
+                loader: LoadingContact
             },
             {
                 path: "/ve-chung-toi",
-                element: <AboutUs />
+                element: <AboutUs />,
+                loader: LoadingAboutUs,
             },
         ]
     },
@@ -68,4 +83,4 @@ export const routes = [
         path: "*",
         element: <PageNotFound />,
     },
-]
+])

@@ -16,6 +16,8 @@ import Loading from '@/components/Loading'
 import { useNavigate } from 'react-router-dom';
 import { useLayout } from "@/layouts/LayoutContext"
 import { notification } from 'antd';
+import UploadImage from '@/components/UploadImage'
+import changeToFormData from '../../utils/changeToFormData';
 const HomePageContent = () => {
     const { setLayoutProps } = useLayout()
     useEffect(() => {
@@ -57,7 +59,7 @@ const HomePageContent = () => {
   const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
   const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useHome.updateHomePage.updateBanner();
   const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
-
+  const {mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs} = useHome.updateHomePage.updateImageAboutUs();
 
   const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
   const { mutate: updateHighlightFeature, isPending: isPendingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
@@ -72,14 +74,26 @@ const HomePageContent = () => {
   const [valuesAboutus, setValuesAboutus] = useState(null)
   const [homeNotification, setHomeNotification] = useState(false)
   const [valuesHome, setValuesHome] = useState(null)
-
+  const [valuesImageAboutus, setValuesImageAboutus] = useState(null); //giong form
+  const [initialValuesImageAboutus, setInitialValuesImageAboutus] = useState(null);
+  const [imageNotification, setImageNotification] = useState(false);
+  
+  useEffect(() => {
+    if(isLoadingHomePageData || isFetchingHomePageData){
+      return;
+    }
+    const initialImage = {
+      aboutus_img: homePageData?.aboutus_img ?? "",
+    }
+    setValuesImageAboutus(initialImage);
+    setInitialValuesImageAboutus(initialImage);
+  }, [isLoadingHomePageData, isFetchingHomePageData])
 
   useEffect(() => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
     setSwitchTime(highlightNewsData?.switch_time ?? 0);
   }, [highlightNewsData])
-  console.log(isLoadingHomePageData, isFetchingHomePageData, isPendingUpdateBanner)
-  if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature ||
+  if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature || isPendingUpdateImageAboutUs ||
     isPendingCreateHighlightFeature || isPendingDeleteHighlightFeature ||
     isLoadingHighlightNews || isLoadingHomePageData || isPendingUpdateBanner ||
     isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews || isFetchingHomePageData ) {
@@ -126,7 +140,6 @@ const HomePageContent = () => {
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
-  console.log(homePageData.banner_title);
 
 
   // ============= BANNER ABOUT US  ===================== 
@@ -137,12 +150,23 @@ const HomePageContent = () => {
     updateAboutUs(valuesAboutus)
     setAboutusNotification(false)
   }
+  const handleButtonImage = () => {
+    const formData = changeToFormData(valuesImageAboutus);
+    for(const [key, value] of formData.entries()){
+      console.log(key, value);
+      if(value == ''){
+        alert("Chưa nhập dữ liệu bắt buộc");
+        return;
+      }
+    }
+    updateImageAboutUs(formData);
+    setImageNotification(false);
+  }
   const configAboutUs = {
     title: "Giới thiệu về công ty Thiên Trúc",
     description: "Đoạn văn và ảnh đại diện công ty",
     listInput: [
       { name: "Nội dung giới thiệu", label: 'Nội dung giới thiệu', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.aboutus_content, isRequire: true, rows: 1 },
-      { name: "Ảnh đại diện (URL)", label: 'Ảnh đại diện (URL)', placeholder: 'Nhập url...', contentCurrent: homePageData.aboutus_img, isRequire: false, rows: 3 },
     ],
     notificationProps:{
      open: aboutusNotification, 
@@ -160,8 +184,17 @@ const HomePageContent = () => {
       // Gửi dữ liệu lên server hoặc cập nhật state
     }
   }
-
-
+  const saveImage = {
+    open: imageNotification,
+    setOpen: setImageNotification,
+    notification: 'Xác nhận lưu thay đổi!',
+    subTitle: 'Bạn có chắc chắn muốn lưu thay đổi.',
+    buttonLabel1: 'Hủy',
+    buttonAction1: ()=>{setImageNotification(false)},
+    buttonLabel2: 'Lưu',
+    buttonAction2: handleButtonImage
+  }
+  
   // ===================== HIGHLIGHT FEATURE =================== 
   const limitHighlightFeature = 3
 
@@ -420,6 +453,13 @@ const HomePageContent = () => {
     });
   };
   const dataTable = convertHighlightNewsListToTableData(configHighlightNews.data);
+  const propsButton ={
+      Icon: SaveIcon,
+      text: "Lưu thay đổi",
+      colorText: "#ffffff",
+      colorBackground: "#000000",
+      padding : 10,
+  }
   return (
     <>
       <EditBanner
@@ -435,6 +475,17 @@ const HomePageContent = () => {
         listInput={configAboutUs.listInput}
         saveButton={configAboutUs.handleSave}
       />
+      <form onSubmit={(e) => {e.preventDefault(), setImageNotification(true)}} className='flex flex-col p-[24px] bg-white w-full h-full border-b border-l border-r border-b-[#E5E7EB] border-r-[#E5E7EB] border-l-[#E5E7EB] rounded-[8px]'>
+        <div className="flex flex-col mb-[16px]">
+          <label className="mb-[8px] font-medium">Ảnh giới thiệu công ty Thiên Trúc <span className='text-red-500 ml-1'>*</span></label>
+          <div className=''>
+            <UploadImage form={valuesImageAboutus} setForm={setValuesImageAboutus} initialForm={initialValuesImageAboutus} keyImage="aboutus_img"/>
+          </div>
+        </div>
+        <div className='h-40[px]'>
+            <button type='submit'> <Button {...propsButton}/></button>
+        </div>                
+      </form>
       <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
         <div className='flex items-center justify-between'>
           <div>
@@ -561,6 +612,7 @@ const HomePageContent = () => {
       />
       <Notification  {...configHomePage.notificationProps}/>
       <Notification  {...configAboutUs.notificationProps}/>
+      <Notification  {...saveImage}/>
       <AddHighlight
         isOpen={isModalOpenSetting}
         onClose={() => setIsModalOpenSetting(false)}

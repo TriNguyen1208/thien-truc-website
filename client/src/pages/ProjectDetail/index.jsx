@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useNavigation, useParams } from "react-router-dom"
 import { EnvironmentOutlined, CalendarOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import Banner from "@/components/Banner";
 import useProjects from "@/hooks/useProjects";
@@ -9,6 +9,7 @@ export default function ProjectDetail() {
     // Khai bao hooks
     const { id } = useParams();
     const navigate = useNavigate();
+    const navigation = useNavigation();
     const { data: projectContentData, isLoading: isLoadingProjectContent } = useProjects.project_contents.getOne(id);
     const handleButton = () => {
         navigate("/lien-he", { state: { scrollToForm: true } });
@@ -30,6 +31,7 @@ export default function ProjectDetail() {
 
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <div className="bg-[#f9fafb] py-[70px]">
                 <div className="mb-[20px] w-3/4 mx-auto ">
                     <Link to='/du-an'>
@@ -63,7 +65,7 @@ export default function ProjectDetail() {
                                 <div className="mr-[5px]">
                                     <CalendarOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
                                 </div>
-                                <div className="mr-[10px]">Hoàn thành {projectContentData.project.complete_time}</div>
+                                <div className="mr-[10px]">Hoàn thành {new Date(projectContentData.project.complete_time).toLocaleDateString('vi-VN')}</div>
                             </div>
                         {/* </div> */}
                     </div>

@@ -9,18 +9,20 @@
   import useProducts from "@/hooks/useproducts";
   import Loading from '@/components/Loading'
   import '@/styles/custom.css'
-  import { useNavigate, useSearchParams } from 'react-router-dom'
+  import { useNavigate, useNavigation, useSearchParams } from 'react-router-dom'
+  import { useRef } from 'react';
 
   export default function PricePage() {
   
       // Biến để lưu trữ tham chiếu đến phần tử
       const navigate = useNavigate();
+      const navigation = useNavigation();
       const [selectedProduct, setSelectedProduct] = useState(null)
       const [openCategories, setOpenCategories] = useState({});
       const [search, setSearch] = useState('');
       const [searchParams, setSearchParams] = useSearchParams();
       const [selectedCategory, setSelectedCategory] = useState('Tất cả')  
-
+      const scrollTargetRef = useRef(null);
 
       const query = searchParams.get("query") || "";
 
@@ -41,7 +43,7 @@
         filter === "Tất cả sản phẩm" ? "" : filter
       );
       const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
-      if (isLoadingPage || isLoadingCategories || isLoadingPrices || isLoadingProducts) {
+      if (isLoadingPage || isLoadingCategories || isLoadingProducts) {
         return <Loading />
       }
       // Xử lý dữ liệu sản phẩm
@@ -108,7 +110,7 @@
         newParams.set("filter", category);
         setSearchParams(newParams);
         setTimeout(() => {
-        scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+          scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 0);
       }
       // Toggle category open/close state
@@ -146,13 +148,14 @@
       handleButton : ()=>{ navigate('/lien-he',  { state: { scrollToForm: true } })},
       categories : null,
       contentPlaceholder : null
-    }  
+    }    
   return (
   <>
+    {navigation.state == 'loading' && <Loading/>}
     <div className="w-screen">
         <Banner data={bannerHead} />
       </div>
-    <div className=" flex flex-col  p-[16px] lg:p-[32px]">
+    <div ref={scrollTargetRef} className=" flex flex-col  p-[16px] lg:p-[32px]">
     <div className="bg-[#F0FDF4]  shadow-md rounded-xl xl:pt-[48px]">
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto mb-[16px] rounded-xl shadow-2xl overflow-hidden">
         <div className=" font-bold text-[20px]  bg-white p-[24px] ">
@@ -172,7 +175,7 @@
                 </tr>
               </thead>
 
-
+              
               <tbody>
                 {filteredData.map((cat) => (
                   <React.Fragment key={cat.category}>
@@ -206,7 +209,7 @@
                             transition={{ duration: 0.4 }}
                             style={{ overflow: 'hidden' }}
                           >
-                            <table className="w-full text-sm md:text-[14px]">
+                            {isLoadingPrices ? <Loading/> : <table className="w-full text-sm md:text-[14px]">
                               <tbody className=''>
                                 {cat.products.map((product, idx) => (
                                   <tr
@@ -268,7 +271,7 @@
                                   </tr>
                                 )}
                               </tbody>
-                            </table>
+                            </table>}
                           </motion.div>
                         </td>
                       </motion.tr>

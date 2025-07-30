@@ -653,33 +653,28 @@ const project_contents = {
         return project_content;
     },
     postOne: async (data, files) => {
-        const result = {};
-        if(files?.main_image?.[0]){
-            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
-            result.main_image = mainImageUrl
-        }
-        let imageUrls = [];
         let contentHTML= data?.content;
         if(files?.images?.length){
             for(const img of files.images){
                 const fakeName = img.originalname;
                 const url = await uploadImage(img, 'project');
-                imageUrls.push(url);
-
                 contentHTML = contentHTML.replaceAll(fakeName, url);
             }
-            result.imageUrls = imageUrls;
         }
         const {
             title,
             main_content,
             region_name,
             isFeatured,
-            link_image,
+            main_image,
             province,
             completeTime
         } = data;
-
+        let cloud_avatar_img = null;
+        if (files?.main_image?.[0]) {
+            cloud_avatar_img = await uploadImage(files.main_image[0], 'project');
+        }  
+        const final_main_image = main_image || cloud_avatar_img || null;
         //Get news_categories id
         const regionRes = await pool.query(
             `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
@@ -695,19 +690,12 @@ const project_contents = {
             ) VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING id;
         `;
-        let main_image = "";
-        if(result.main_image){
-            main_image = result.main_image;
-        }
-        else if(link_image){
-            main_image = link_image;
-        }
         const insertValues = [
             region_id,
             title,
             province,
-            new Date(completeTime),
-            main_image,
+            new Date(JSON.parse(completeTime)),
+            final_main_image,
             main_content,
             isFeatured
         ];
@@ -737,22 +725,13 @@ const project_contents = {
         }
     },
     updateOne: async (id, data, files) => {
-        const result = {};
-        if(files?.main_image?.[0]){
-            const mainImageUrl = await uploadImage(files.main_image[0], 'project');
-            result.main_image = mainImageUrl
-        }
-        let imageUrls = [];
         let contentHTML= data?.content;
         if(files?.images?.length){
             for(const img of files.images){
                 const fakeName = img.originalname;
                 const url = await uploadImage(img, 'project');
-                imageUrls.push(url);
-
                 contentHTML = contentHTML.replaceAll(fakeName, url);
             }
-            result.imageUrls = imageUrls;
         }
 
         let imagesToDelete = data.delete_images;
@@ -774,10 +753,15 @@ const project_contents = {
             main_content,
             region_name,
             isFeatured,
-            link_image,
+            main_image,
             province,
             completeTime
         } = data;
+        let cloud_avatar_img = null;
+        if (files?.main_image?.[0]) {
+            cloud_avatar_img = await uploadImage(files.main_image[0], 'project');
+        }  
+        const final_main_image = cloud_avatar_img || main_image || null;
 
         //Get news_categories id
         const regionRes = await pool.query(
@@ -808,20 +792,13 @@ const project_contents = {
                 is_featured = $7
             where id = $8
         `
-        let main_image = "";
-        if(result.main_image){
-            main_image = result.main_image;
-        }
-        else if(link_image){
-            main_image = link_image;
-        }
 
         const updateValues = [
             region_id,
             title,
             province,
-            new Date(completeTime),
-            main_image,
+            new Date(completeTime.startsWith('"') ? JSON.parse(completeTime) : completeTime),
+            final_main_image,
             main_content,
             isFeatured,
             id

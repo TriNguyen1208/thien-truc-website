@@ -27,7 +27,7 @@ export const Notification = ({ open, setOpen, notification, subTitle, buttonLabe
       closable
       centered
       width={440} // 👈 nhỏ hơn đáng kể
-      bodyStyle={{ padding: '12px 18px 3px' }}
+      styles={{ padding: '12px 18px 3px' }}
     >
       <div className="text-center mt-[1px]">
        <div className='text-[50px] text-[#fadb14]'>

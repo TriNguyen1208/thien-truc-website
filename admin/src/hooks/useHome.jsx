@@ -37,6 +37,19 @@ const updateHomePage = {
             }
         });
     },
+    useUpdateImageAboutUs: () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (data) => homeServices.updateHomePage.imageAboutUs(data),
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
+        });
+    }
 };
 
 // ==== Highlight Stats About Us ====
@@ -101,7 +114,7 @@ export default {
     updateHomePage: {
         updateBanner: updateHomePage.useUpdateBanner,
         updateAboutUs: updateHomePage.useUpdateAboutUs,
-
+        updateImageAboutUs: updateHomePage.useUpdateImageAboutUs
     },
     highlight_stats_about_us: {
         getAll: highlight_stats_about_us.useGetAll,

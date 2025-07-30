@@ -17,7 +17,8 @@ const Banner = ({data}) =>{
         value: query,
         idCategories: idCategories,
         handleSearchSuggestion = null,
-        handleEnter = null
+        handleEnter = null,
+        scrollTargetRef=null
     } = data || {}
     return (
         <div
@@ -29,7 +30,7 @@ const Banner = ({data}) =>{
                     <h1 className='text-4xl md:text-5xl font-bold break-word leading-15'>{title}</h1>
                     <p className='text-lg md:text-xl font-normal leading-[28px] break-word'>{description}</p>
                 </div>
-                <div className='mt-3 px-10 w-full text-center'>
+                <div ref={scrollTargetRef} className='mt-3 px-10 w-full text-center'>
                     {hasButton ? (
                         <WhiteButton
                             data={{

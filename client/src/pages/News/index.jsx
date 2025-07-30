@@ -4,14 +4,16 @@ import Loading from "@/components/Loading";
 import ItemByType from "@/components/ItemByType";
 import ListType from "@/components/ListType";
 import ItemPost from "@/components/ItemPost";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
 import Paging from "@/components/Paging";
+import { useRef } from "react";
 
 export default function News() {
+  const scrollTargetRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigation = useNavigation();
   const sortBys = ["date_desc", "popular"];
 
   // Lấy giá trị từ URL và kiểm tra hợp lệ
@@ -68,6 +70,9 @@ export default function News() {
     newParams.set("sort_by", sortBy);
     newParams.set("page", "1");
     setSearchParams(newParams);
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const handleEnter = (id) => {
@@ -80,15 +85,24 @@ export default function News() {
 
   const handleClickfilter = (filter) => {
     updateParam("filter", filter);
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const handlePageChange = (page) => {
     updateParam("page", String(page));
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const handleSortChange = (index) => {
     const newSort = sortBys[index];
     updateParam("sort_by", newSort);
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const bannerData = {
@@ -104,10 +118,12 @@ export default function News() {
     handleButton: handleButton,
     handleSearchSuggestion: handleSearchSuggestion,
     handleEnter: handleEnter,
+    scrollTargetRef: scrollTargetRef
   };
 
   return (
     <>
+      {navigation.state == 'loading' && <Loading/>}
       <div className="w-screen">
         <Banner data={bannerData} />
       </div>
@@ -130,7 +146,7 @@ export default function News() {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-5 md:gap-10 mx-auto px-4">
+        <div className="grid grid-cols-12 gap-5 md:gap-10 px-4">
           {isLoadingDataFilter ? (
             <Loading/>
           ) : (

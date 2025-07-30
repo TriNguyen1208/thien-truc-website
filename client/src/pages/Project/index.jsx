@@ -1,9 +1,9 @@
 import Banner from "@/components/Banner";
 import ItemPost from "@/components/ItemPost";
 import PostCategory from "@/components/PostCategory";
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useNavigation, useSearchParams } from 'react-router-dom';
 import useProjects from "@/hooks/useProjects";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Paging from "@/components/Paging";
 import Loading from "@/components/Loading";
 
@@ -13,7 +13,8 @@ export default function Project() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-
+    const navigation = useNavigation();
+    const scrollTargetRef = useRef(null);
     useEffect(() => {
         const pageParam = Number(searchParams.get("page")) || 1;
         setCurrentPage(pageParam);
@@ -32,7 +33,7 @@ export default function Project() {
     const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.getAll();
     const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter === "Tất cả dự án" ? undefined : filter, is_featured,  page, limit);
     
-    if (isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject) {
+    if (isLoadingProjectPage || isLoadingProjectRegion) {
         return (
             <Loading />
         )
@@ -42,7 +43,7 @@ export default function Project() {
     let categoriesData = projectRegionData.map(item => item.name);
     const categoriesDefault = ["Tất cả dự án"];
     categoriesData = [...categoriesDefault, ...categoriesData];
-    const totalProjects = Number(projectData.totalCount);
+    const totalProjects = Number(projectData?.totalCount || 0);
     const pageSizes = 9;
     const numberPages = Math.ceil(totalProjects / pageSizes);
     const idSelectedCategories = filter ? categoriesData.findIndex((name) => name === filter) : 0;
@@ -63,7 +64,9 @@ export default function Project() {
         newParams.set("filter", filter);
         newParams.set("page", "1");
         setSearchParams(newParams);
-
+        setTimeout(() => {
+            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 0);
     }
 
     const handlePageChange = (page) => {
@@ -73,6 +76,16 @@ export default function Project() {
         if (page >= 2) params.set('page', page)
 
         setSearchParams(params);
+        const queryString = params.toString();
+        navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+        // setCurrentPage(Number(page));
+        // const params = new URLSearchParams();
+        // if (page >= 2) params.set("page", page);
+        // const queryString = params.toString();
+        // navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+        setTimeout(() => {
+            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 0);
     };
     const handleClickPostCategory = (idCategory) => {
         const params = new URLSearchParams();
@@ -81,11 +94,14 @@ export default function Project() {
         query = undefined;
         if (region && region.name != categoriesDefault) {
             params.set("filter", nameRegion);
-            
+            setSearchParams(params);
         }
-        setSearchParams(params);
-      
-        
+        else {
+            navigate(`/du-an`);
+        }
+        setTimeout(() => {
+            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 0);
        
     }
 
@@ -105,7 +121,8 @@ export default function Project() {
         idCategories: idSelectedCategories,
         handleButton: handleSearchSubmit,
         handleSearchSuggestion: handleSearchSuggestion,
-        handleEnter: handleEnter
+        handleEnter: handleEnter,
+        scrollTargetRef: scrollTargetRef
     };
 
 
@@ -126,6 +143,7 @@ export default function Project() {
 
     return (
         <>
+            {navigation.state == 'loading' && <Loading/>}
             <Banner data={dataBanner} />
             <div className="container-fluid">
                 <div className="my-[40px] text-center">
@@ -133,34 +151,33 @@ export default function Project() {
                     <div className="mb-[30px] w-[90%] lg:w-[70%] xl:w-[60%] mx-auto">
                         <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
                     </div>
-                    <div className="inline-block w-1/2 font-[300]">
-                        {projectPageData.banner_description}
-                    </div>
                 </div>
                 <div className="grid grid-cols-12 gap-5 md:gap-10">
-                    {(projectData.results || []).map((item, index) => {
-                        const complete_time = String(item.complete_time)
-                        const dataProject = {
-                            type: 'project',
-                            title: item?.title ?? "",
-                            description: item?.main_content ?? "",
-                            location: item?.province ?? "",
-                            date: complete_time,
-                            tag: item?.region.name ?? "",
-                            tagColor: item?.region.rgb_color ?? "",
-                            image: item?.main_img ?? "",
-                        }
-                        return (
-                            <Link key={index} to={`/du-an/${item.id}`}
-                            className="col-span-12 lg:col-span-4 md:col-span-6"
-                            >
-                                <div    
+                    {
+                        isLoadingProject ? <Loading/> : 
+                            (projectData.results || []).map((item, index) => {
+                            const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
+                            const dataProject = {
+                                type: 'project',
+                                title: item?.title ?? "",
+                                description: item?.main_content ?? "",
+                                location: item?.province ?? "",
+                                date: complete_time,
+                                tag: item?.region.name ?? "",
+                                tagColor: item?.region.rgb_color ?? "",
+                                image: item?.main_img ?? "",
+                            }
+                            return (
+                                <Link key={index} to={`/du-an/${item.id}`}
+                                className="col-span-12 lg:col-span-4 md:col-span-6"
                                 >
-                                    <ItemPost data={dataProject}/>
-                                </div>
-                            </Link>
+                                    <div    
+                                    >
+                                        <ItemPost data={dataProject}/>
+                                    </div>
+                                </Link>
 
-                        );
+                            );
                     })}
                 </div>
                 <div className="mb-[30px]">

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLayout } from "@/layouts/layoutcontext";
-import UploadImage from '../../components/UploadImage'
+// import UploadImage from '../../components/UploadImage'
+import UploadImage from '../../components/UploadImage';
 import CustomButton from '../../components/ButtonLayout';
 import { SaveIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
@@ -10,6 +11,7 @@ import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { extractBlogImages } from '../../utils/handleImage';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
+import changeToFormData from '../../utils/changeToFormData';
 function normalizeContent(content = '') {
     return content
         .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
@@ -52,7 +54,6 @@ const AddNews = () => {
             category_name: (categories?.[0]?.name) ?? '',
             isPublished: "Bản nháp",
             main_image: "",
-            link_image: "",
             countWord: 0
         }
     }, [isLoadingCategories]);
@@ -65,7 +66,12 @@ const AddNews = () => {
         if(form == null || initialForm == null){
             return;
         }
-        const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
+        const stripCountWord = (obj) => {
+            const { countWord, ...rest } = obj;
+            return rest;
+        };
+        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
         setShouldWarn(isDirty);
     }, [form]);
 
@@ -82,17 +88,15 @@ const AddNews = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlogImages(form.content);
+        const {formData: formData1, doc} = await extractBlogImages(form.content);
         const finalHTML = doc.body.innerHTML;
-        // Duyệt qua tất cả key
-        for (const key in form) {
-            if (key === 'main_image' && form[key] instanceof File) {
-                formData.append('main_image', form[key]);
-            } else if (key === 'content') {
-                formData.append('content', finalHTML); // content đã thay blob thành filename
-            } else {
-                formData.append(key, form[key]);
-            }
+        const formData2 = changeToFormData(form, finalHTML);
+        const formData = new FormData();
+        for(const [key, value] of formData1.entries()){
+            formData.append(key, value);
+        }
+        for(const [key, value] of formData2.entries()){
+            formData.append(key, value);
         }
         mutateNews(formData);  
         setForm(initialForm);
@@ -138,17 +142,19 @@ const AddNews = () => {
     if(isLoadingCategories || form === null || isPendingNews){
         return <Loading/>
     }
-
     return (
         <>
-            <div className='flex flex-row gap-6'>
+            <form onSubmit={(e) => {e.preventDefault(); setSaveOpen(true)}} className='flex flex-row gap-6'>
                 <ContentManagement type="tin tức" setForm={setForm} form={form}/>
                 <div className='flex flex-col flex-1 gap-6 max-w-[300px]'>
                     <PostSettings {...props} form={form} setForm={setForm}/>
-                    <UploadImage form={form} setForm={setForm}/>
+                    <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden '>
+                        <h3 className='text-2xl font-semibold text-[#09090B]'>Ảnh đại diện</h3>
+                        <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="main_image" flexDirection='col' gap={8} overflow='block'/>
+                    </div>
                     <div className='flex flex-col gap-2'>
                         <CustomButton
-                            onClick={() => setSaveOpen(true)}
+                            htmlType='submit'
                         >
                             <div className='flex gap-4 items-center'>
                                 <SaveIcon/>
@@ -167,7 +173,7 @@ const AddNews = () => {
                         </CustomButton>                    
                     </div>
                 </div>
-            </div>
+            </form>
             <Notification {...savePopupData}/>
             <Notification {...recoverPopupData}/>
         </>

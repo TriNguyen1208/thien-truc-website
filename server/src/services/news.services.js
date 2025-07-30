@@ -689,22 +689,17 @@ const news_contents = {
           return news_content;
     },
     postOne: async (data, files) => {
-        const result = {};
-        if(files?.main_image?.[0]){
-            const mainImageUrl = await uploadImage(files.main_image[0], 'news');
-            result.main_image = mainImageUrl
-        }
-        let imageUrls = [];
         let contentHTML= data?.content;
         if(files?.images?.length){
             for(const img of files.images){
                 const fakeName = img.originalname;
                 const url = await uploadImage(img, 'news');
-                imageUrls.push(url);
-
                 contentHTML = contentHTML.replaceAll(fakeName, url);
             }
-            result.imageUrls = imageUrls;
+        }
+        let cloud_avatar_img = null;
+        if (files?.main_image?.[0]) {
+            cloud_avatar_img = await uploadImage(files.main_image[0], 'news');
         }
         const {
             title,
@@ -712,8 +707,9 @@ const news_contents = {
             category_name,
             isPublished,
             countWord,
-            link_image
+            main_image
         } = data;
+        const final_main_image = cloud_avatar_img || main_image || null;
 
         //Get news_categories id
         const categoryRes = await pool.query(
@@ -732,13 +728,6 @@ const news_contents = {
         `;
         const measure_time = Math.ceil(countWord / 1000);
 
-        let main_image = "";
-        if(result.main_image){
-            main_image = result.main_image;
-        }
-        else if(link_image){
-            main_image = link_image;
-        }
         const insertValues = [
             category_id,
             title,
@@ -746,7 +735,7 @@ const news_contents = {
             new Date(),
             measure_time, // in case it's an object
             0,
-            main_image,
+            final_main_image,
             main_content
         ];
         const newsResult = await pool.query(insertNewsSql, insertValues);
@@ -778,22 +767,13 @@ const news_contents = {
     updateOne: async (id, data, files) => {
         const old_title = await pool.query(`SELECT title FROM news.news WHERE id = $1`, [id]);
 
-        const result = {};
-        if(files?.main_image?.[0]){
-            const mainImageUrl = await uploadImage(files.main_image[0], 'news');
-            result.main_image = mainImageUrl
-        }
-        let imageUrls = [];
         let contentHTML= data?.content;
         if(files?.images?.length){
             for(const img of files.images){
                 const fakeName = img.originalname;
                 const url = await uploadImage(img, 'news');
-                imageUrls.push(url);
-
                 contentHTML = contentHTML.replaceAll(fakeName, url);
             }
-            result.imageUrls = imageUrls;
         }
         let imagesToDelete = data.delete_images;
         if (typeof imagesToDelete === 'string') {
@@ -808,8 +788,14 @@ const news_contents = {
             category_name,
             isPublished,
             countWord,
-            link_image
+            main_image
         } = data;
+
+        let cloud_avatar_img = null;
+        if (files?.main_image?.[0]) {
+            cloud_avatar_img = await uploadImage(files.main_image[0], 'news');
+        }  
+        const final_main_image = cloud_avatar_img || main_image || null;
         //Get news_categories id
         const categoryRes = await pool.query(
             `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
@@ -839,14 +825,6 @@ const news_contents = {
         `
         const measure_time = Math.ceil(countWord / 1000);
 
-        let main_image = "";
-        if(result.main_image){
-            main_image = result.main_image;
-        }
-        else if(link_image){
-            main_image = link_image;
-        }
-
         const updateValues = [
             category_id,
             title,
@@ -854,7 +832,7 @@ const news_contents = {
             new Date(),
             measure_time,
             0,
-            main_image,
+            final_main_image,
             main_content,
             id
         ];

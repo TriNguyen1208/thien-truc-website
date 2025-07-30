@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
+import changeToFormData from '../../utils/changeToFormData';
 function normalizeContent(content = '') {
     return content
         .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
@@ -63,8 +64,7 @@ const EditNews = () => {
             content: news_contents.content ?? '',
             category_name: news_contents.news.category.name ?? '',
             isPublished: news_contents.news.is_published ? "Đã xuất bản" : "Bản nháp",
-            main_image: '',
-            link_image: news_contents.news.main_img ?? null,
+            main_image: news_contents.news.main_img ?? "",
             countWord: normalizeContent(news_contents.content).replace(/<[^>]+>/g, '').trim().length
         };
         setInitialForm(initialForm);
@@ -74,7 +74,12 @@ const EditNews = () => {
         if(form == null || initialForm == null){
             return;
         }
-        const isDirty = JSON.stringify(normalizeForm(form)) !== JSON.stringify(normalizeForm(initialForm));
+        const stripCountWord = (obj) => {
+            const { countWord, ...rest } = obj;
+            return rest;
+        };
+        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
         setShouldWarn(isDirty);
     }, [form, initialForm, setShouldWarn]);
     
@@ -91,22 +96,22 @@ const EditNews = () => {
             return;
         }
         //Them bai viet, call database
-        const {formData, doc} = await extractBlogImages(form.content); //chac chan se gui cho backend de cap nhat
+        const {formData: formData1, doc} = await extractBlogImages(form.content); //chac chan se gui cho backend de cap nhat
         //Add delete image
-        const formDataNews = addDeleteImage(initialForm, form, formData);
+        const formData2 = addDeleteImage(initialForm, form, formData1);
         const finalHTML = doc.body.innerHTML;
+        const formData3 = changeToFormData(form, finalHTML);
+        
         // Duyệt qua tất cả key
-        for (const key in form) {
-            if (key === 'main_image' && form[key] instanceof File) {
-                formDataNews.append('main_image', form[key]);
-            } else if (key === 'content') {
-                formDataNews.append('content', finalHTML); // content đã thay blob thành filename
-            } else {
-                formDataNews.append(key, form[key]);
-            }
+        const formData = new FormData();
+        for(const [key, value] of formData2.entries()){
+            formData.append(key, value);
+        }
+        for(const [key, value] of formData3.entries()){
+            formData.append(key, value);
         }
         if(news_id !== null)
-            updateNews({ id: news_id, formDataNews })
+            updateNews({ id: news_id, formData })
         setSaveOpen(false);
     }
     const handleDelete = () => {
@@ -164,14 +169,17 @@ const EditNews = () => {
     }
     return (
         <>
-            <div className='flex flex-row gap-6'>
+            <form onSubmit={(e) => {e.preventDefault(); setSaveOpen(true)}} className='flex flex-row gap-6'>
                 <ContentManagement type="tin tức" setForm={setForm} form={form}/>
                 <div className='flex flex-col flex-1 gap-6 max-w-[300px]'>
                     <PostSettings {...props} form={form} setForm={setForm}/>
-                    <UploadImage form={form} setForm={setForm}/>
+                    <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden '>
+                        <h3 className='text-2xl font-semibold text-[#09090B]'>Ảnh đại diện</h3>
+                        <UploadImage form={form} setForm={setForm} initialForm={initialForm} keyImage="main_image" flexDirection='col' gap={8} overflow='block'/>
+                    </div>
                     <div className='flex flex-col gap-2'>
                         <CustomButton
-                            onClick={() => setSaveOpen(true)}
+                            htmlType='submit'
                         >
                             <div className='flex gap-4 items-center'>
                                 <SaveIcon/>
@@ -206,7 +214,7 @@ const EditNews = () => {
                         </CustomButton>                        
                     </div>
                 </div>
-            </div>
+            </form>
             <Notification {...deletePopupData}/>
             <Notification {...savePopupData}/>
             <Notification {...recoverPopupData}/>

@@ -34,7 +34,6 @@ const updateProductPage = async (data) => {
 // ==== Products ====
 const products = {
     getList: async (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
-        console.log("day la page: ", page);
         const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured, page, limit));
         return res.data;
     },
@@ -95,7 +94,6 @@ const product_categories = {
 
     createOne: async (data) => {
         const res = await axios.post(API_ROUTES.product.product_categories.createOne, data);
-        console.log("Day la res", res );
         return res.data;
     },
 

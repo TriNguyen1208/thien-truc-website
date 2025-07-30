@@ -1,106 +1,100 @@
-import React, { useEffect } from 'react'
-import {useState, useRef} from 'react'
-import CustomButton from '../ButtonLayout'
-const UploadImage = ({
-    form,
-    setForm,
-}) => {
-    const inputRef = useRef();
-    const [file, setFile] = useState(false);
-    const handleButtonClick = () => {
-        inputRef.current.click();
+import { useRef, useEffect, useState } from "react";
+import { UploadIcon } from '@/components/Icon'
+
+export default function UploadImage({
+  form, 
+  setForm, 
+  initialForm,
+  keyImage,
+  flexDirection = 'row',
+  gap = 8,
+  overflow="hidden",
+}){
+  const fileInputRef = useRef();
+  const [file, setFile] = useState(null);
+  const [urlInput, setUrlInput] = useState('');
+
+  useEffect(() => {
+    setFile(form?.[keyImage] ?? null)
+  }, [form, keyImage])
+
+  useEffect(() => {
+    setUrlInput(form?.[keyImage] ?? "");
+  }, [initialForm]);
+
+  const handleChange = (e) => {
+    const file = e.target.files[0];
+    if(file){
+        setFile(file)
+        setForm((prev) => ({...prev, [keyImage]: file}))
     }
-    const handleChange= (e) => {
-        const file = e.target.files[0];
-        if(file){
-            setFile(file)
-            setForm((prev) => ({ ...prev, "main_image": file }));
+    e.target.value = null;
+  }
+  const removeImage = (fieldName) => {
+    setForm((prev) => {
+        if (prev[fieldName]?.startsWith?.('blob:')) {
+            URL.revokeObjectURL(prev[fieldName]);
         }
-        e.target.value = null;
-    }
-    useEffect(() => {
-        if (form.main_image !== "" && form.link_image !== "") {
-            setFile(false);
-            setForm((prev) => ({ ...prev, main_image: "" }));
-        }
-    }, [form.link_image]);
-
-    useEffect(() => {
-        if(form.main_image == ""){
-            setFile(false);
-        }
-        if (form.main_image !== "" && form.link_image !== "") {
-            setForm((prev) => ({ ...prev, link_image: "" }));
-        }
-    }, [form.main_image]);
-
-    const handleOnBlurLinkImage = async () => {
-        // Chuyển đổi link Google Drive nếu cần
-        if(form.link_image == "")
-            return;
-        const convertGoogleDriveLink = (url) => {
-            const match = url.match(/\/d\/([^/]+)\//);
-            if (!match) return url;
-            return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-        };
-
-        // Check link ảnh
-        const checkImageUrlValid = (url) => {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-            });
-        };
-
-        const convertedUrl = convertGoogleDriveLink(form.link_image);
-        const isValid = await checkImageUrlValid(convertedUrl);
-
-        if (!isValid) {
-            alert("❌ Link ảnh không hợp lệ hoặc không truy cập được!");
-            setForm((prev) => ({ ...prev, link_image: "" }));
-        }
-    }
-    return (
-        <div>
-            <div className='bg-white p-6 flex flex-col gap-6 rounded-lg shadow-sm border border-gray-200 overflow-x-hidden '>
-                <h3 className='text-2xl font-semibold text-[#09090B]'>Ảnh đại diện</h3>
-                <div className='flex flex-col gap-4'>
-                    <input 
-                        type="text" 
-                        required 
-                        className='px-4 h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none'
-                        placeholder='Nhập link ảnh'
-                        value={form.link_image}
-                        onChange={(e) => setForm((prev) => ({ ...prev, ["link_image"]: e.target.value }))}
-                        onBlur={handleOnBlurLinkImage}
-                    />
-                    <span className='text-center'>Hoặc</span>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        ref={inputRef}
-                        onChange={handleChange}
-                        hidden
-                    />
-                    <CustomButton
-                        backgroundColor="white"
-                        borderColor="#e4e4e7"
-                        hoverBackgroundColor="#f3f4f6"
-                        textColor="#364153"
-                        hoverTextColor="#364153"
-                        paddingX={16}
-                        height={45}
-                        onClick={handleButtonClick}
-                    >
-                        <span className='font-medium'>Nhập từ thiết bị</span>
-                    </CustomButton>
-                    <span className={`${file == null ? "hidden": ""}`}>{file != false && file.name.slice(0, 25)}</span>
+        return { ...prev, [fieldName]: '' };
+    });
+  };
+  return (
+    <>
+     <div className="space-y-4">
+        {/* URL Input */}
+        <div 
+            className={`flex gap-2 w-full items-stretch ${flexDirection == 'col' && "flex-col"}`}
+            style={{gap: gap}}
+        >
+            <input
+                type="url"
+                value={urlInput} //Chỉ có khi nhập tay(nếu như fetch ban đầu thì thay đổi cái này)
+                onChange={(e) => {
+                    setUrlInput(e.target.value)
+                    setForm((prev) => ({
+                        ...prev,
+                        [keyImage]: e.target.value
+                    }));
+                }}
+                placeholder="Nhập link ảnh"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md w-full"
+            />
+            {/* File Upload */}
+            <span className={`text-center ${overflow}`}>Hoặc</span>
+            <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleChange}
+            />
+            <button
+                type="button"
+                onClick={() => fileInputRef.current.click()}
+                disabled={!!file} //Nếu như có giá trị nào trong file thì sẽ disable button
+                className="flex h-full px-4 py-2 bg-neutral-900 text-white rounded-md hover:bg-neutral-800 disabled:bg-gray-300 cursor-pointer justify-center"
+            >
+                <div>
+                    <UploadIcon />
                 </div>
-            </div> 
+                <div className="ml-[15px]">
+                    Upload ảnh
+                </div>
+            </button>
         </div>
-    )
+        {file?.name && ( //File mà có name thì nó là upload ảnh
+            <div className="text-xs text-gray-700 break-all relative border border-gray-200 rounded-md p-2">
+                URL: {file.name}
+                <button
+                    type="button"
+                    onClick={() => removeImage(keyImage)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                >
+                    ×
+                </button>
+            </div>
+        )}
+    </div>
+    </>
+  )
 }
-
-export default UploadImage

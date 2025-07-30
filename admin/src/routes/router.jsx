@@ -18,7 +18,6 @@ import ProjectCategories from "../pages/ProjectCategories"
 import ProjectPageContent from "../pages/ProjectPageContent"
 import RecruitmentPageContent from "../pages/RecruitmentPageContent"
 import ControlPanel from "../pages/ControlPanel"
-import TestComponents from "../pages/TestComponents"
 import Login from "../pages/Login"
 import ProtectedRoute from "./ProtectedRoute"
 import AddNews from "../pages/AddNews"
@@ -104,10 +103,6 @@ export const router = createBrowserRouter([
             {
                 path: "/noi-dung-trang/ve-chung-toi",
                 element: <AboutUsPageContent />
-            },
-            {
-                path: "/testcomponents",
-                element: <TestComponents/>
             },
             {
                 path: "/quan-ly-tin-tuc/them-tin-tuc",
