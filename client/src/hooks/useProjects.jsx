@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import projectsServices from "@/services/projects.api.js";
 
-function useGetAll(){
+function useGetAll() {
     return useQuery({
         queryKey: ["projects"],
         queryFn: projectsServices.getAll,
         staleTime: 5 * 60 * 1000,
     })
 }
-function useGetProjectPage(){
+function useGetProjectPage() {
     return useQuery({
         queryKey: ["project_page"],
         queryFn: projectsServices.getProjectPage,
@@ -45,6 +45,13 @@ const project_regions = {
             queryFn: () => projectsServices.project_regions.getOne(id),
             staleTime: 5 * 60 * 1000,
         })
+    },
+    useGetAllFeatured: () => {
+        return useQuery({
+            queryKey: ["project_regions_featured"],
+            queryFn: projectsServices.project_regions.getAllFeatured,
+            staleTime: 5 * 60 * 1000,
+        })
     }
 }
 const project_contents = {
@@ -63,15 +70,15 @@ const project_contents = {
         })
     }
 }
-function useGetHighlightProjects(){
+function useGetHighlightProjects(filter) {
     return useQuery({
-        queryKey: ["highlight_projects"],
-        queryFn: projectsServices.getHighlightProjects,
+        queryKey: ["highlight_projects", filter],
+        queryFn: () =>  projectsServices.getHighlightProjects(filter),
         staleTime: 5 * 60 * 1000,
     })
 }
 
-function useSearchSuggest(query, filter){
+function useSearchSuggest(query, filter) {
     return useQuery({
         queryKey: ['project-suggestions', query, filter],
         queryFn: () => projectsServices.getSearchSuggestions(query, filter),
@@ -88,6 +95,7 @@ export default {
     project_regions: {
         getAll: project_regions.useGetAll,
         getOne: project_regions.useGetOne,
+        getAllFeatured: project_regions.useGetAllFeatured
     },
     project_contents: {
         getAll: project_contents.useGetAll,

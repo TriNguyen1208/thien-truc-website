@@ -37,9 +37,6 @@ export default function Project() {
             <Loading />
         )
     }
-    console.log("Day la page: ", query, filter === "Tất cả dự án" ? undefined : filter , page);
-    console.log(projectData);
-    console.log(projectRegionData);
 
     // Khai bao bien 
     let categoriesData = projectRegionData.map(item => item.name);
@@ -61,10 +58,6 @@ export default function Project() {
         navigate(`/du-an/${id}`);
     }
     const handleSearchSubmit = (filter, query) => {
-        // const params = new URLSearchParams();
-        // if (query) params.set("query", query);
-        // if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
-        // setSearchParams(params);
         const newParams = new URLSearchParams();
         newParams.set("query", query);
         newParams.set("filter", filter);
@@ -79,25 +72,19 @@ export default function Project() {
         if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
         if (page >= 2) params.set('page', page)
 
-        const queryString = params.toString();
-        navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
-        // setCurrentPage(Number(page));
-        // const params = new URLSearchParams();
-        // if (page >= 2) params.set("page", page);
-        // const queryString = params.toString();
-        // navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+        setSearchParams(params);
     };
     const handleClickPostCategory = (idCategory) => {
+        const params = new URLSearchParams();
         const nameRegion = categoriesData[idCategory];
         const region = projectRegionData.find(item => item.name === nameRegion);
         query = undefined;
         if (region && region.name != categoriesDefault) {
-            navigate(`/du-an?filter=${region.name}`);
+            params.set("filter", nameRegion);
             
         }
-        else {
-            navigate(`/du-an`);
-        }
+        setSearchParams(params);
+      
         
        
     }

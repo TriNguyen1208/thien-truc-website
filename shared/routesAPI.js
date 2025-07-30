@@ -62,7 +62,8 @@ const API_ROUTES = {
             getAll: `${PROJECT_BASE}/project_contents`,
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
         },
-        highlight_projects: `${PROJECT_BASE}/highlight_projects`,
+        highlight_projects: (filter) => `${PROJECT_BASE}/projects?filter=${uri(filter)}&is_featured=true`,
+
         search_suggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`
     },
     news: {

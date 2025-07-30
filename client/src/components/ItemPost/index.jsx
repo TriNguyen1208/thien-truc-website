@@ -96,10 +96,6 @@ const ItemPost = ({ data, id= "", width = "100%"}) => {
                                 <span>{status.views}</span>
                             </div>
                         </div>
-                        {/* <ShareAltOutlined
-                            style={{ fontSize: '16px', cursor: 'pointer' }}
-                            className="hover:text-gray-700"
-                        /> */}
                         <ShareButton id={id}/>
                     </div>
                 )}
