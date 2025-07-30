@@ -1,19 +1,24 @@
 #!/bin/bash
 
-# Load biến môi trường dạng KEY=VALUE (Node.js .env style)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Load .env
 set -a
-source "$(dirname "$0")/../../server/.env"
+source "$SCRIPT_DIR/../../server/.env"
 set +a
 
-# Biến đã được lấy ra từ .env
-BACKUP_DIR="$(dirname "$0")/../backup"
+BACKUP_DIR="$SCRIPT_DIR/../backup"
+mkdir -p "$BACKUP_DIR"
+
 DATE=$(date +'%Y-%m-%d_%H%M')
 BACKUP_FILE="$BACKUP_DIR/backup_$DATE.backup"
 
-# Tạo backup
-PG_DUMP_CMD=${PG_DUMP_PATH:-pg_dump}  # dùng biến nếu có, ngược lại mặc định là 'pg_dump'
-PGPASSWORD="$DB_PASSWORD" "$PG_DUMP_CMD" -U "$DB_USER" -F c -f "$BACKUP_FILE" "$DB_NAME"
+# Sử dụng pg_dump từ đường dẫn tuyệt đối
+PG_DUMP_CMD="/d/AlternativeDiskC/PostgreSQL/17/bin/pg_dump.exe"
 
-# Xóa backup cũ (chỉ giữ 14 file mới nhất)
-cd "$BACKUP_DIR"
-ls -1t backup_*.backup | tail -n +15 | xargs -d '\n' rm -f
+echo "→ Dumping $DB_NAME to $BACKUP_FILE ..."
+PGPASSWORD="$DB_PASSWORD" "$PG_DUMP_CMD" -U "$DB_USER" -F c -f "$BACKUP_FILE" "$DB_NAME" 2> "$BACKUP_DIR/backup_error.log"
+
+# Cleanup
+cd "$BACKUP_DIR" || exit
+ls -1t backup_*.backup 2>/dev/null | tail -n +15 | xargs -d '\n' rm -f
