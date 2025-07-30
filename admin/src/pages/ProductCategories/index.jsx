@@ -146,7 +146,7 @@ const ProductCategories = () => {
     hasButtonCategory: false,
     hasButtonDisplay: false,
     currentQuery: query,
-    placeholder: "Tìm kiếm theo tên sản phẩm hoặc mã sản phẩm",
+    placeholder: "Tìm kiếm theo tên loại sản phẩm",
     handleEnter: handleEnter,
     onSearch: handleSearch,
     handleSearchSuggestion: handleSearchSuggestion, //co 3 tham so la query, category = null, display = null,

@@ -215,7 +215,7 @@
             data={{
               hasButtonCategory: false,
               hasButtonDisplay: false,
-              placeholder: "Tìm kiếm theo tên khu vực...",
+              placeholder: "Tìm kiếm theo tên khu vực dự án",
               currentQuery: query,
               onSearch: onSearch, 
               handleEnter: handleEnter,

@@ -118,7 +118,7 @@ const RecruitmentPageContent = () => {
           contentCurrent: recruitment?.banner_description ?? "",
           isRequire: true,
           rows: 3,
-          maxLength: 200
+          maxLength: 300
         }
       ],
       saveButton: (result) => {

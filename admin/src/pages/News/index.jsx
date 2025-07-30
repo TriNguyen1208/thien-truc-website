@@ -142,7 +142,7 @@ export default function News() {
         data={{
           hasButtonCategory: true,
           hasButtonDisplay: true,
-          placeholder: "Tìm kiếm tin tức...",
+          placeholder: "Tìm kiếm theo tên tin tức",
           categories: categories,
           displays: display,
           currentQuery: query,

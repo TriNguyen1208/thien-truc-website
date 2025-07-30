@@ -166,7 +166,7 @@ const HomePageContent = () => {
     title: "Giới thiệu về công ty Thiên Trúc",
     description: "Đoạn văn và ảnh đại diện công ty",
     listInput: [
-      { name: "Nội dung giới thiệu", label: 'Nội dung giới thiệu', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.aboutus_content, isRequire: true, rows: 1 },
+      { name: "Nội dung giới thiệu", label: 'Nội dung giới thiệu', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.aboutus_content, isRequire: true, rows: 7 },
     ],
     notificationProps:{
      open: aboutusNotification, 

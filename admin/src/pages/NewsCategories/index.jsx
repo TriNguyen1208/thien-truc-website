@@ -204,7 +204,7 @@ export default function NewsCategories() {
           data={{
           hasButtonCategory: false,
           hasButtonDisplay: false,
-          placeholder: "Tìm kiếm theo tên loại tin tức...",
+          placeholder: "Tìm kiếm theo tên loại tin tức",
           currentQuery: query,
           onSearch: onSearch, 
           handleEnter: handleEnter,

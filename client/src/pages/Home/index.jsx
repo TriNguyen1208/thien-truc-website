@@ -142,6 +142,9 @@ export default function Home() {
                 <div className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
                     Dự án tiêu biểu
                 </div>
+                <div className="mb-[30px] w-[90%] lg:w-[70%] xl:w-[60%] mx-auto">
+                    <PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
+                </div>
                 <div 
                     className=" relative w-full xl:w-[70%] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px] "
                      style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}

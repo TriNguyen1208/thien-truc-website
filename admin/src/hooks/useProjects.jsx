@@ -26,7 +26,7 @@ function usePatchProjectPage() {
       toast.success(success.message);
     },
     onError: (error) => {
-        toast.success(error.message);
+        toast.error(error.message);
     }
   });
 }

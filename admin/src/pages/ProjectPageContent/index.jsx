@@ -53,7 +53,7 @@ const ProjectPageContent = () => {
         placeholder: "Vd: Dự án của chúng tôi...",
         contentCurrent: projectPage.banner_title ,
         isRequire: true,
-        maxLength: 200,
+        maxLength: 100,
         rows: 1
       },
       {
@@ -62,7 +62,7 @@ const ProjectPageContent = () => {
         placeholder: "Vd: Dự án của chúng tôi...",
         contentCurrent: projectPage.banner_description,
         isRequire: true,
-        maxLength: 700,
+        maxLength: 300,
         rows: 3
       }
     ],

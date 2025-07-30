@@ -159,7 +159,7 @@ export default function Project () {
                 data={{
                   hasButtonCategory: true,
                   hasButtonDisplay: true,
-                  placeholder: "Tìm kiếm dự án theo tên...",
+                  placeholder: "Tìm kiếm theo tên dự án",
                   categories: regions,
                   displays: display,
                   currentQuery: query,

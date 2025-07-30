@@ -48,6 +48,9 @@ export default function Contact() {
         title: "Gửi tin nhắn cho chúng tôi",
         type: 'lien-he'
     }
+    const fixedIframe = companyInfoData.googlemaps_embed_url
+            ?.replace(/width="[^"]*"/, 'width="100%"')
+            ?.replace(/height="[^"]*"/, 'height="100%"')
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
@@ -182,15 +185,10 @@ export default function Contact() {
                     Vị trí của chúng tôi
                 </div>
                 <div>
-                    <div className="h-[500px]">
-                        <iframe
-                            src={companyInfoData.googlemaps_embed_url}
-                            className="w-full h-full border-0"
-                            allowFullScreen
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                        />
-                    </div>
+                    <div
+                        className="h-[500px]"
+                        dangerouslySetInnerHTML={{ __html: fixedIframe  }}
+                    />
                 </div>
             </div>
         </>

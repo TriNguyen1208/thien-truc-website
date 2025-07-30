@@ -347,7 +347,7 @@ const Product = () => {
     currentCategory: categories[idCurrentCategories],
     currentDisplay: displays[idCurrentDisplays],
     currentQuery: query,
-    placeholder: "Tìm kiếm theo tên sản phẩm hoặc mã sản phẩm",
+    placeholder: "Tìm kiếm theo tên sản phẩm",
     handleEnter: handleEnter,
     onSearch: handleSearch,
 

@@ -37,19 +37,13 @@ export default function ProductDetail() {
         navigate(-1)
     }
 
-
-
-  
-
-
-
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
             <div className="container-fluid py-[30px]">
                 <div onClick={goBack} className="flex flex-row w-full h-[20px] my-[15px] gap-[10px] leading-none items-center text-[#14532D] font-medium cursor-pointer">
                     <ArrowLeftOutlined />
-                    <span>Quay lại</span>
+                    <span>Quay lại danh sách sản phẩm</span>
                 </div>
                 <div className="grid grid-cols-1 gap-[30px] lg:grid-cols-2">
                     <div>

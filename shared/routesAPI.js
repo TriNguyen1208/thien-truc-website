@@ -84,6 +84,7 @@ const API_ROUTES = {
             getAll: `${NEWS_BASE}/news_contents`,
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
+        getFeaturedNews: `${NEWS_BASE}/featured_news`,
         search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`
     },
     recruitment: {

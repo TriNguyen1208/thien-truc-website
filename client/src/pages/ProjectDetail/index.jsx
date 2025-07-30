@@ -1,5 +1,6 @@
 import { Link, useNavigate, useNavigation, useParams } from "react-router-dom"
 import { EnvironmentOutlined, CalendarOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import BackButton from "../../components/BackButton";
 import Banner from "@/components/Banner";
 import useProjects from "@/hooks/useProjects";
 import Loading from "@/components/Loading";
@@ -34,10 +35,10 @@ export default function ProjectDetail() {
             {navigation.state == 'loading' && <Loading/>}
             <div className="bg-[#f9fafb] py-[70px]">
                 <div className="mb-[20px] w-3/4 mx-auto ">
-                    <Link to='/du-an'>
+                    <button onClick={() => navigate(-1)} className="cursor-pointer">
                         <ArrowLeftOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
                         <span className="ml-[10px] text-[var(--green-bg)]">Quay lại danh sách dự án</span>
-                    </Link>
+                    </button>
                 </div>
                 <div className="w-3/4 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}

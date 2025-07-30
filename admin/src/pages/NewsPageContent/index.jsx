@@ -57,7 +57,7 @@ const NewsPageContent = () => {
         placeholder: "Vd: Tin tức công ty...",
         contentCurrent: NewsPage.banner_title ,
         isRequire: true,
-        maxLength: 200,
+        maxLength: 100,
         rows: 1
       },
       {
@@ -66,7 +66,7 @@ const NewsPageContent = () => {
         placeholder: "Vd: Tin tức của chúng tôi...",
         contentCurrent: NewsPage.banner_description,
         isRequire: true,
-        maxLength: 700,
+        maxLength: 300,
         rows: 3
       }
     ],

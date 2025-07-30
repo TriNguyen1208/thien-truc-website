@@ -141,14 +141,14 @@ const handleAddContact= ()=>
   const dataAdd = [
     { name: 'name', label: 'Họ Tên', type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
     { name: 'role', label: 'Vị trí', type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
-    { name: 'phone_number', label: 'Số điện thoại', type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
+    { name: 'phone_number', label: 'Số điện thoại', type: 'text', isOnlyNumber: true , width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
     { name: 'facebook_url', label: 'Facebook', type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
     { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]
    const dataEdit = [
     { name: 'name', label: 'Họ Tên', value: (listContacts[pendingItemEdit] || []).name, type: 'text', width: 12,  maxLength : 50, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí" },
     { name: 'role', label: 'Vị trí', value: (listContacts[pendingItemEdit] || []).role, type: 'text', width: 12 ,  maxLength : 50,  placeholder: "VD: Trưởng phòng kinh doanh"  },
-    { name: 'phone_number', label: 'Số điện thoại',  value: (listContacts[pendingItemEdit] || []).phone_number, type: 'text', width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
+    { name: 'phone_number', label: 'Số điện thoại',  value: (listContacts[pendingItemEdit] || []).phone_number, type: 'text', isOnlyNumber: true, width: 12,  maxLength : 20, isRequired: true ,placeholder: "0123456789" },
     { name: 'facebook_url', label: 'Facebook',  value: (listContacts[pendingItemEdit] || []).facebook_url ,type: 'text', width: 12, placeholder: "VD: facebook.com/donguyenminhtri"},
     { name: 'img', label: 'Ảnh đại diện', value: (listContacts[pendingItemEdit] || []).avatar_img, type: 'image_upload', width: 12, placeholder: "VD: Đỗ Nguyễn Minh Trí", numberRows: 5 },
   ]
