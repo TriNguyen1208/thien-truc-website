@@ -31,7 +31,7 @@ function usePatchNewsPage() {
     return useMutation({
         mutationFn: (updatedPage) => newsServices.patchNewsPage(updatedPage),
         onSuccess: (success) => {
-            queryClient.invalidateQueries({ queryKey: ["news_page"] });
+            queryClient.invalidateQueries({ queryKey: ["admin_news_page"] });
             toast.success(success.message);
         },
         onError: (error) => {

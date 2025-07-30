@@ -78,7 +78,7 @@
   background: none;
   backdrop-filter: none;
   
-  padding: 20px 30px;
+  padding: 40px 0px 13px 30px;
   text-align: center; /* Căn giữa chữ giống trong hình mẫu */
 }
 
@@ -88,16 +88,16 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 24%; /* Điều chỉnh chiều cao vùng gradient nếu cần */
+  height: 18%; /* Điều chỉnh chiều cao vùng gradient nếu cần */
 
   /* Gradient tuyến tính từ trắng mờ ở dưới lên trong suốt */
   background: linear-gradient(
     to top,
     rgba(255, 255, 255, 1) 0%,    /* Gần như trắng đục ở dưới */
-    rgba(255, 255, 255, 0.8) 20%,   /* Vẫn còn khá trắng */
-    rgba(255, 255, 255, 0.6) 40%,   /* Bắt đầu mờ đi */
-    rgba(255, 255, 255, 0.3) 60%,   /* Mờ hơn nữa */
-    rgba(255, 255, 255, 0.05) 80%,  /* Gần như trong suốt */
+    rgba(255, 255, 255, 0.85) 20%,   /* Vẫn còn khá trắng */
+    rgba(255, 255, 255, 0.7) 40%,   /* Bắt đầu mờ đi */
+    rgba(255, 255, 255, 0.55) 60%,   /* Mờ hơn nữa */
+    rgba(255, 255, 255, 0.4) 80%,  /* Gần như trong suốt */
     transparent 100%                /* Hoàn toàn trong suốt ở trên */
   );
 

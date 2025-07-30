@@ -21,7 +21,7 @@ const NewsPageContent = () => {
       hasButton: false,
     })
   },[])
-  if(isLoadingNewsPage)
+  if(isLoadingNewsPage || isPending)
   {
     return(<Loading/>)
   }
@@ -31,12 +31,7 @@ const NewsPageContent = () => {
   const handleConfirmNotification =()=>{
     
     setOpenNotification(false)
-       updateNewsPage(valuesBanner, 
-   {
-      onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
-      onError:(error)=>{toast.error(error ?  error.message: "Lưu thất bại!") }
-    }
-);
+       updateNewsPage(valuesBanner);
   }
   const handleSave = (data)=>{
     setValuesBanner(data)

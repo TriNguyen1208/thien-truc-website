@@ -178,7 +178,8 @@ export default function NewsCategories() {
       newsCategories = result.data;
       isLoadingNewsCategories = result.isLoading;
     }
-  const newsCategoriesList = Array.isArray(newsCategories) ? newsCategories : newsCategories?.results ?? (newsCategories ? [newsCategories] : []);
+  const unnewsCategoriesList = Array.isArray(newsCategories) ? newsCategories : newsCategories?.results ?? (newsCategories ? [newsCategories] : []);
+  const newsCategoriesList = unnewsCategoriesList.sort((a, b) => a.id.localeCompare(b.id));
   if (isLoadingNewsCategories || isPendingCategories || isPendingCreateCategories || isPendingUpdateCategories || isPendingUpdateCategory) return <Loading/>;
 
 

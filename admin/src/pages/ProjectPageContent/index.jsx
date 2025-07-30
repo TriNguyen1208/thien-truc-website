@@ -2,7 +2,6 @@ import {useState, useEffect } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
 import useProjects from '@/hooks/useProjects'
-import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 const ProjectPageContent = () => {
