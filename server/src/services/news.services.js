@@ -262,6 +262,7 @@ const news = {
                 ) sub
                 WHERE rn <= ${limit}
             )
+            ORDER BY n_cate.id, n.id
         `;
         const { rows } = await pool.query(sql);
 
@@ -477,7 +478,7 @@ const news = {
 
 const news_categories = {
     getAll: async () => {
-        const news_categories = (await pool.query("SELECT * FROM news.news_categories")).rows;
+        const news_categories = (await pool.query("SELECT * FROM news.news_categories ORDER BY id")).rows;
         if(!news_categories){
             throw new Error("Can't get news_categories");
         }

@@ -248,6 +248,7 @@ const products = {
                 ) sub
                 WHERE rn <= ${limit}
             )
+            ORDER BY pc.id, prd.id
         `;
 
         const { rows } = await pool.query(sql);
@@ -668,7 +669,7 @@ const product_categories = {
 
         // Chuẩn hóa từng thành phần truy vấn
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
-        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
+        if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = 'ORDER BY id';
 
         const product_categories = (await pool.query(`
             SELECT * 
