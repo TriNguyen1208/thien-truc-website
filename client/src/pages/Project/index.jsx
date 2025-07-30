@@ -3,7 +3,7 @@ import ItemPost from "@/components/ItemPost";
 import PostCategory from "@/components/PostCategory";
 import { Link, useNavigate, useNavigation, useSearchParams } from 'react-router-dom';
 import useProjects from "@/hooks/useProjects";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Paging from "@/components/Paging";
 import Loading from "@/components/Loading";
 
@@ -14,6 +14,7 @@ export default function Project() {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const navigation = useNavigation();
+    const scrollTargetRef = useRef(null);
     useEffect(() => {
         const pageParam = Number(searchParams.get("page")) || 1;
         setCurrentPage(pageParam);
@@ -70,7 +71,9 @@ export default function Project() {
         newParams.set("filter", filter);
         newParams.set("page", "1");
         setSearchParams(newParams);
-
+        setTimeout(() => {
+            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 0);
     }
 
     const handlePageChange = (page) => {
@@ -86,6 +89,9 @@ export default function Project() {
         // if (page >= 2) params.set("page", page);
         // const queryString = params.toString();
         // navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
+        setTimeout(() => {
+            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 0);
     };
     const handleClickPostCategory = (idCategory) => {
         const nameRegion = categoriesData[idCategory];
@@ -98,7 +104,9 @@ export default function Project() {
         else {
             navigate(`/du-an`);
         }
-        
+        setTimeout(() => {
+            scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 0);
        
     }
 
@@ -118,7 +126,8 @@ export default function Project() {
         idCategories: idSelectedCategories,
         handleButton: handleSearchSubmit,
         handleSearchSuggestion: handleSearchSuggestion,
-        handleEnter: handleEnter
+        handleEnter: handleEnter,
+        scrollTargetRef: scrollTargetRef
     };
 
 

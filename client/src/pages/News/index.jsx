@@ -6,8 +6,10 @@ import ListType from "@/components/ListType";
 import ItemPost from "@/components/ItemPost";
 import { Link, useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
 import Paging from "@/components/Paging";
+import { useRef } from "react";
 
 export default function News() {
+  const scrollTargetRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,6 +70,9 @@ export default function News() {
     newParams.set("sort_by", sortBy);
     newParams.set("page", "1");
     setSearchParams(newParams);
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const handleEnter = (id) => {
@@ -80,15 +85,24 @@ export default function News() {
 
   const handleClickfilter = (filter) => {
     updateParam("filter", filter);
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const handlePageChange = (page) => {
     updateParam("page", String(page));
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const handleSortChange = (index) => {
     const newSort = sortBys[index];
     updateParam("sort_by", newSort);
+    setTimeout(() => {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const bannerData = {
@@ -104,6 +118,7 @@ export default function News() {
     handleButton: handleButton,
     handleSearchSuggestion: handleSearchSuggestion,
     handleEnter: handleEnter,
+    scrollTargetRef: scrollTargetRef
   };
 
   return (
