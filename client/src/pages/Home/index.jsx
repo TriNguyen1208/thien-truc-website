@@ -139,38 +139,38 @@ export default function Home() {
                 <div className="mb-[30px] w-[90%] lg:w-[70%] xl:w-[60%] mx-auto">
                     <PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
                 </div>
-                <div className="relative w-full xl:w-[70%] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px] !h-fit"
+                <div className=" relative w-full xl:w-[70%] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px] "
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
                 >
                     <Carousel
                         dots={{ className: 'custom-dots' }}
                         prevArrow={<CustomPrevArrow />}
                         nextArrow={<CustomNextArrow />}
-                        className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full"
+                        className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full [&_.slick-slider]:h-full [&_.slick-track]:h-full [&_.slick-slide]:h-full"
                         arrows={true}
                     >
                         {(highlightProject || []).map((item) => (
-                            <Link key={item.id} to={`du-an/${item.id}`}>
+                            <Link key={item.id} to={`du-an/${item.id}`} className="h-full">
                                 <div >
                                     {item.main_img ? (
                                         <div
-                                            className="aspect-[5/3] sm:aspect-[19/8] w-full bg-cover bg-center text-center rounded-t-[10px] transition-transform duration-300 group-hover:scale-105"
+                                            className="w-full aspect-[15/10] sm:aspect-[19/9] bg-cover bg-center text-center rounded-t-[10px] transition-transform duration-300 group-hover:scale-105"
                                             style={{
                                                 backgroundImage: `url(${item.main_img})`,
                                             }}
                                         >
                                         </div>
                                     ) : (
-                                        <div className="w-full aspect-[5/3] sm:aspect-[19/8] flex items-center bg-gray-200 justify-center rounded-t-[10px]">
+                                        <div className="w-full aspect-[15/10] sm:aspect-[19/9] flex items-center bg-gray-200 justify-center rounded-t-[10px]">
                                             <MailOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
                                         </div>
                                     )}
 
-                                    <div className="h-full p-4 text-left text-gray-800 bg-white rounded-b-[10px] transition-colors duration-300 group-hover:bg-gray-50">
+                                    <div className="h-[150px] p-4 text-left text-gray-800 bg-white rounded-b-[10px] transition-colors duration-300 group-hover:bg-gray-50">
                                         <h4 className="text-xl font-semibold mb-2 text-gray-800 line-clamp-2 group-hover:text-[var(--dark-green)] transition-colors duration-300">
-                                            {item.title}
+                                            {item.title}dsàdsádấdajjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddđddddddđdsfdsàdsjhfkjsdahfdhfjkdskjfhakjf
                                         </h4>
-                                        <p className="text-lg text-gray-600 leading-relaxed line-clamp-3">
+                                        <p className="text-lg text-gray-600 leading-relaxed line-clamp-2">
                                             {item.main_content}
                                         </p>
                                     </div>
