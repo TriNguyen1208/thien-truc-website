@@ -40,6 +40,7 @@ const API_ROUTES = {
             // patch
             banner: `${HOME_BASE}/home_page/banner`,
             aboutUs: `${HOME_BASE}/home_page/about_us`,
+            imageAboutUs: `${HOME_BASE}/home_page/about_us_image`,
         },
         highlight_stats_about_us: {
             getAll: `${HOME_BASE}/highlight_stats_about_us`,

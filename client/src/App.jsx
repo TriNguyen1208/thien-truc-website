@@ -6,7 +6,6 @@ export default function App() {
         <RouterProvider 
           router={router} 
           fallbackElement={<p>Loading...</p>}
-          hydrateFallbackElement={<p>Đang đồng bộ cache...</p>}
         />
     </>
   )

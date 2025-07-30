@@ -1,6 +1,7 @@
 import express from 'express'
 import homeController from '#@/controllers/home.controller.js';
 import authMiddleware from '#@/middlewares/auth.middleware.js';
+import upload from '#@/middlewares/upload.middleware.js';
 const { authenticateToken } = authMiddleware;
 
 const router = express.Router();
@@ -14,8 +15,8 @@ router.post('/highlight_stats_about_us', authenticateToken, homeController.highl
 
 router.patch('/home_page/banner', authenticateToken, homeController.updateHomePage.banner);
 router.patch('/home_page/about_us', authenticateToken, homeController.updateHomePage.aboutUs);
+router.patch('/home_page/about_us_image', authenticateToken, upload.single('aboutus_img'), homeController.updateHomePage.imageAboutUs);
 router.patch('/highlight_stats_about_us/:id', authenticateToken, homeController.highlight_stats_about_us.updateOne);
-
 router.delete('/highlight_stats_about_us/:id', authenticateToken, homeController.highlight_stats_about_us.deleteOne);
 
 export default router;

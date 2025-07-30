@@ -1,5 +1,5 @@
 import pool from '#@/config/db.js'
-
+import { updateImage } from '#@/utils/image.js';
 const getAllTables = async () => {
     const _home_page = await getHomePage();
     const _highlight_stats_about_us = await highlight_stats_about_us.getAll();
@@ -39,21 +39,42 @@ const updateHomePage = {
     },
     aboutUs: async (data) => {
         const content = data["Nội dung giới thiệu"];
-        const image = data["Ảnh đại diện (URL)"];
-
         await pool.query(`
             UPDATE home.home_page
             SET
-                aboutus_content = $1,
-                aboutus_img = $2
-        `, [content, image]);
+                aboutus_content = $1
+        `, [content]);
 
         return {
             status: 200,
             message: "Cập nhật Giới Thiệu Về Công Ty thành công",
             action: "Cập nhật Giới Thiệu Về Công Ty trang Trang Chủ",
         }
-    }
+    },
+    imageAboutUs: async(data, file) => { 
+        const old_avatar_img = (await pool.query('SELECT aboutus_img FROM home.home_page')).rows[0].aboutus_img;
+        let local_avatar_img = file;
+         const {
+            aboutus_img,
+        } = data
+
+        const final_avatar_img = await updateImage(
+            old_avatar_img,
+            local_avatar_img,
+            aboutus_img,
+            'home'
+        );
+        await pool.query(`
+            UPDATE home.home_page
+            SET
+                aboutus_img = $1
+        `, [final_avatar_img])
+        return {
+            status: 200,
+            message: "Cập nhật ảnh giới thiệu công ty Thiên Trúc thành công",
+            action: "Cập nhật ảnh giới thiệu công ty Thiên Trúc trang Trang Chủ",
+        }
+    }   
 }
 
 const highlight_stats_about_us = {

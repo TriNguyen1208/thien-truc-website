@@ -33,6 +33,16 @@ const updateHomePage = {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
+    imageAboutUs: async(req, res) => {
+        try {
+            const { status, message, action = null } = await homeServices.updateHomePage.imageAboutUs(req.body, req.file);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật ảnh giới thiệu công ty của Trang Chủ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
 }
 
 const highlight_stats_about_us = {

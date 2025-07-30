@@ -13,6 +13,14 @@ const updateHomePage = {
     aboutUs: async (data) => {
         const res = await axios.patch(API_ROUTES.home.updateHomePage.aboutUs, data);
         return res.data;
+    },
+    imageAboutUs: async (data) => {
+        const res = await axios.patch(API_ROUTES.home.updateHomePage.imageAboutUs, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return res.data;
     }
 
 }
