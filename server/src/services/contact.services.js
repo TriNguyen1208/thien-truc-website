@@ -72,8 +72,19 @@ const updateCompanyInfo = async (data) => {
         company_phone,
         fanpage_url
     } = data
-    
-    office_address = office_address.map(element => JSON.stringify(element));
+
+    // Tạo mapping từ id chưa chuẩn hóa (1, 4, 6, ...) sang id được chuẩn hóa (1, 2, 3, ...)
+    const idMap = new Map();
+    office_address = office_address.map((item, index) => {
+        const newId = index + 1;
+        idMap.set(item.id, newId);
+        return { ...item, id: newId };
+    });
+
+    // Chuẩn hóa lại main_office_id theo id mới (4 -> 2)
+    main_office_id = idMap.get(main_office_id);
+
+    const office_address_json = office_address.map(item => JSON.stringify(item));
 
     await pool.query(`
         UPDATE contact.company_info
@@ -85,7 +96,7 @@ const updateCompanyInfo = async (data) => {
             company_email = $5,
             company_phone = $6,
             fanpage_url = $7            
-    `, [office_address, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, fanpage_url]);
+    `, [office_address_json, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, fanpage_url]);
 
     return {
         status: 200,
