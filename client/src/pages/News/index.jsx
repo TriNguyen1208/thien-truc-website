@@ -47,7 +47,6 @@ export default function News() {
     currentPage,
     limit
   );
-  const idSelectedCategories = rawFilter ? categories.findIndex((name) => name === filter) : 0;
 
   if (isLoadingNewsPage || isLoadingfilter) return <Loading />;
 
@@ -104,7 +103,6 @@ export default function News() {
       scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
     }, 0);
   };
-
   const bannerData = {
     title: newsPage.banner_title,
     description: newsPage.banner_description,
@@ -113,8 +111,8 @@ export default function News() {
     hasSearch: true,
     categories: categories,
     contentPlaceholder: "Nhập vào đây",
-    value: query,
-    idCategories: idSelectedCategories,
+    currentQuery: query,
+    currentCategory: filter,
     handleButton: handleButton,
     handleSearchSuggestion: handleSearchSuggestion,
     handleEnter: handleEnter,

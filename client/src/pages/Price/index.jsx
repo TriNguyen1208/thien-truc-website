@@ -130,9 +130,9 @@
       colorText: "#ffffff",
       hasSearch: true,
       categories: categories,
-      idCategories: idSelectedCategories,
+      currentQuery: query, 
+      currentCategory: filter,
       contentPlaceholder: "Nhập vào đây",
-      value: query, 
       handleButton: handleButton,
       handleSearchSuggestion: handleSearchSuggestion,
       handleEnter: handleEnter

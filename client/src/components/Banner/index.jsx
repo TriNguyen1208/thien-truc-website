@@ -14,8 +14,8 @@ const Banner = ({data}) =>{
         handleButton = null,
         categories = null,
         contentPlaceholder = null,
-        value: query,
-        idCategories: idCategories,
+        currentQuery = null,
+        currentCategory = null,
         handleSearchSuggestion = null,
         handleEnter = null,
         scrollTargetRef=null
@@ -45,8 +45,8 @@ const Banner = ({data}) =>{
                             data={{
                                 categories: categories,
                                 contentPlaceholder: contentPlaceholder,
-                                query: query,
-                                idCategories: idCategories,
+                                currentQuery: currentQuery,
+                                currentCategory: currentCategory,
                                 onSearch: handleButton,
                                 handleSearchSuggestion: handleSearchSuggestion,
                                 handleEnter: handleEnter

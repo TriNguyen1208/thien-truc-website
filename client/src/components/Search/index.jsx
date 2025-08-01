@@ -5,16 +5,16 @@ const SearchBar = ({ data }) => {
   const {
     categories,
     contentPlaceholder,
-    query: initQuery = "",
-    idCategories: idCategories,
+    currentQuery = "",
+    currentCategory,
     onSearch,
     handleSearchSuggestion,
     handleEnter
   } = data;
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState(categories?.[0] ?? null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [query, setQuery] = useState(initQuery);
+  const [query, setQuery] = useState(currentQuery);
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -30,14 +30,17 @@ const SearchBar = ({ data }) => {
   }, [query]);
 
   useEffect(() => {
-   if (categories && categories.length > 0) {
-     setCategory(categories[idCategories] || categories[0]);
-   }
-  }, [categories, idCategories]);
+      if (categories && categories.length > 0) {
+          setCategory(currentCategory);
+      }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-   useEffect(() => {
-    initQuery ? setQuery(initQuery) : setQuery("");
-  }, [initQuery]);
+  //Giữ trạng thái của query
+  useEffect(() => {
+      setQuery(currentQuery)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   // Gọi API sau khi debounce query
   const { data: suggestions = [], isLoading } = handleSearchSuggestion(
@@ -55,7 +58,7 @@ const SearchBar = ({ data }) => {
   useEffect(() => {
     setHighlightedIndex(0);
 
-    if (!query.trim()) {
+    if (!query?.trim()) {
       setDisplaySuggestion([]);
       return;
     }
