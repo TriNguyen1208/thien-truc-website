@@ -12,7 +12,7 @@ const getProductPage = async () => {
     return res.data;
 }
 const products = {
-    getList: async (query = '', filter = '', is_featured, page = 1, limit) => {
+    getList: async (query = '', filter = '', is_featured = '', page = 1, limit) => {
         const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured, page, limit));
         return res.data;
     },

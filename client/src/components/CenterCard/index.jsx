@@ -3,11 +3,11 @@ export default function CenterCard({data, width = "100%", height = "100%"}) {
    
     return (
         <div 
-            className="bg-green-50 rounded-lg p-6 max-w-sm mx-auto shadow-sm"
+            className="bg-green-50 rounded-lg p-[8px] max-w-sm mx-auto shadow-sm"
             style={{width, height}}
         >
             {/* Icon */}
-            <div className="mb-4">
+            <div className="mb-[4px]">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
                     {IconComponent ? <IconComponent
                         style={{
@@ -23,7 +23,7 @@ export default function CenterCard({data, width = "100%", height = "100%"}) {
 
 
             {/* Title */}
-            <h3 className="text-lg font-semibold text-center mb-3 break-words text-(--dark-green)">
+            <h3 className="text-lg font-semibold text-center mb-[4px] break-words text-(--dark-green)">
                 {title || "Chất Lượng"}
             </h3>
 

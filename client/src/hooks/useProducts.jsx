@@ -16,7 +16,7 @@ function useGetProductPage(){
     })
 }
 const products = {
-    useGetList: (query = '', filter = '', is_featured, page = 1, limit)=>{
+    useGetList: (query = '', filter = '', is_featured = '', page = 1, limit='')=>{
         return useQuery({
             queryKey: ["product-list", query, filter, is_featured, page, limit],
             queryFn: ()=> productsServices.products.getList(query, filter, is_featured, page, limit),

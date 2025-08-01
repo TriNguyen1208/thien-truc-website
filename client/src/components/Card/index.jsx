@@ -15,14 +15,14 @@ function Card({card,iconTitle, width="100%", height="100%", padding="25px"}){
             <div className="flex flex-row gap-[16px] items-center text-(--dark-blue) ">
                 <div>{iconTitle}</div>
                 <div>
-                    <h2 className="text-[24px] font-bold  ">
+                    <h2 className="text-[20px] font-bold  ">
                         {card.title}
                     </h2>
                 </div>
             </div>
             <div>
 
-                <p className="text-[15px] text-[#166534] leading-loose transition-all duration-300 ease-in-out">
+                <p className="text-[14px] text-[#166534] leading-loose transition-all duration-300 ease-in-out">
                     {card.description}
                 </p>
             </div>
@@ -31,7 +31,7 @@ function Card({card,iconTitle, width="100%", height="100%", padding="25px"}){
                         {
                             card.details.map((detail, index) =>{
                             return (
-                                <li key = {index} className="flex flex-row gap-[8px] text-[15px] text-[#166534]">
+                                <li key = {index} className="flex flex-row gap-[8px] text-[14px] text-[#166534]">
                                 <div>
                                    <CheckCircleOutlined />
                                 </div>
