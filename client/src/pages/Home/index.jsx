@@ -198,8 +198,8 @@ export default function Home() {
                         Khám phá các giải pháp chiếu sáng LED cao cấp của chúng tôi, được thiết kế để đạt hiệu quả, độ bền và hiệu suất vượt trội.
                     </div>
                 </div>
-                <div className="px-[20px] relative ">
-                    <button className="absolute top-1/2 z-10 translate-x-[-60px]"
+                <div className="mx-[25px] md:px-[45px] relative ">
+                    <button className="absolute top-1/2 left-[-40px] md:left-[-20px] z-10 "
                         onClick={handlePrev}
 
                     >
@@ -207,7 +207,7 @@ export default function Home() {
                             <ArrowLeft color="white" size={20} />
                         </div>
                     </button>
-                    <button className="absolute right-0 top-1/2 z-10 translate-x-[5px] translate-y-[-10px]"
+                    <button className="absolute right-[-40px] md:right-[-20px] top-1/2 z-10  translate-y-[-10px]"
                         onClick={handleNext}
 
                     >
@@ -217,7 +217,7 @@ export default function Home() {
                     </button>
                     <div className="overflow-hidden relative">
                         <div
-                            className="flex transition-transform duration-500 ease-in-out"
+                            className="flex transition-transform duration-500 ease-in-out "
                             style={{ transform: `translateX(-${index * (100)}%)` }}
                         >
 
@@ -226,9 +226,11 @@ export default function Home() {
                                     return (
                                      
                                         <Link to={`/san-pham/${item.id}`} key={i}
-                                            className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0"
+                                            className="w-1/2 sm:w-1/4 flex-shrink-0 px-2"
                                         >
-                                            <div className=' h-[620px] w-[90%] sm:w-[70%] md:w-[90%]'>
+                                            <div 
+                                            className = 'aspect-[4/11] w-full max-w-[220px] max-h-[500px] sm:aspect-[40/111]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[550px] xl:max-h-[540px] lg:max-w-[280px]'
+                                            >
                                                 <ItemProduct product={item}
                                                 />
                                             </div>
