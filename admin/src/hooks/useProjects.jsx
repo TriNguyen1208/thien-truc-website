@@ -139,7 +139,6 @@ const project_contents = {
                 return projectsServices.project_contents.postOne(data)
             },
             onSuccess: (success) => {
-                console.log(success.message)
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["admin_project_contents"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_projects"], exact: false });

@@ -4,6 +4,8 @@ import { message } from 'antd';
 import { updatePassword } from '@/services/auth.api';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { logoutUser } from '@/services/auth.api.js'
+import { logout } from '@/slices/auth.slice.js';
 
 
 export default function PasswordChangeModal({ open, onClose, role }) {
@@ -29,9 +31,24 @@ export default function PasswordChangeModal({ open, onClose, role }) {
     }
   };
 
-  const handleForgotPassword = () => {
+  const handleForgotPassword = async () => {
     onClose(); // đóng modal
-    navigate('/dang-nhap?step=forgot'); // điều hướng tới AuthPopupManager với bước quên mật khẩu
+      // Xóa ngay client-side để tránh bị effect redirect vì vẫn còn user
+    localStorage.removeItem('user');
+
+    // Điều hướng trước
+    navigate(
+      {
+        pathname: '/dang-nhap',
+        search: '?step=forgot',
+      },
+      { replace: true }
+    );
+
+    // Logout server-side không chặn
+    logoutUser().catch((e) => {
+      console.warn('logoutUser failed', e);
+    });
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">

@@ -36,13 +36,11 @@ const deleteImage = async(image_url_array) => {
 
         // Bỏ phần mở rộng .jpg, .png, ...
         const public_id = pathWithExtension.replace(/\.[^/.]+$/, '');
-        console.log(public_id)
         url_array.push(public_id)
     }
     if (url_array.length === 0) return;
     try {
-        const res = await cloudinary.api.delete_resources(url_array);
-        console.log(res);
+        await cloudinary.api.delete_resources(url_array);
     } catch (error) {
         console.error("Delete error:", error);
     }

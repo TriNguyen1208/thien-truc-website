@@ -122,11 +122,11 @@ export default function News() {
   return (
     <>
       {navigation.state == 'loading' && <Loading/>}
-      <div className="w-screen">
+      <div className="w-full overflow-x-hidden">
         <Banner data={bannerData} />
       </div>
       <div className="container-fluid flex flex-col gap-10 pt-10">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0 ">
           <div className="lg:flex-1" />
           <div className="flex-shrink-0">
             <ItemByType

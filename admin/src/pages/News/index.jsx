@@ -13,7 +13,7 @@ import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';
 export default function News() {
 
-  const { mutate: deleteOne } = useNews.news.deleteOne();
+  const { mutate: deleteOne, isPending: isPendingDeleting } = useNews.news.deleteOne();
   // Thông tin của popup xác nhận hủy
   const [currentDeleteID, setcurrentDeleteId] = useState(null);
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -27,10 +27,7 @@ export default function News() {
     buttonLabel2: 'Xóa tin tức',
     buttonAction2:  () => 
       {
-        deleteOne(currentDeleteID,{
-                  onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
-                  onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
-        });
+        deleteOne(currentDeleteID);
         setNotificationOpen(false)
       }
   };
@@ -94,9 +91,9 @@ export default function News() {
   ]
   const display = ['Tất cả trạng thái', 'Đã xuất bản', 'Bản nháp'];
 
-  if (isLoadingNews || isLoadingNewsCategories) 
+  if (isLoadingNews || isLoadingNewsCategories || isPendingDeleting) {
     return <Loading/>;
-
+  }
   
   // Handler
   const onSearch = (query, filter, is_published) => {

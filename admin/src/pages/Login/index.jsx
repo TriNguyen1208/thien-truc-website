@@ -40,7 +40,7 @@ const AuthPopupManager = () => {
     }
   }, [token, step, urlStep]);
   
-
+  
 
   const handleLogin = async ({ username, password }) => {
     try {

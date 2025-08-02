@@ -35,27 +35,3 @@ export default function Paging({data, onPageChange, currentPage }) {
         </>
     );
 }
-
-/*
-import Paging from "../../components/Paging";
-import { useState } from "react";
-export default function Home() {
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const handlePageChange = (page) => {
-        console.log('Trang hiện tại:', page);
-        setCurrentPage(page);
-    };
-
-    const data = {
-        numberPagination: 10, // = 10 item 
-    };
-
-    return (
-        <div>
-            <Paging data={data} onPageChange={handlePageChange} />
-            <p>Trang đang xem: {currentPage}</p>
-        </div>
-    );
-}
-*/

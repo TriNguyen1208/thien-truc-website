@@ -108,7 +108,6 @@ export const updatePassword = (data) => async (dispatch) => {
         const user = res.data?.user;
         
         if (user?.fullname) {
-            console.log('Cập nhật thông tin người dùng thành công:', user);
             localStorage.setItem('user', JSON.stringify(user));
             dispatch(setCredentials({ user }));
         } else {

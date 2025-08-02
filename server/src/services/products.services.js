@@ -1,6 +1,5 @@
 import pool from '#@/config/db.js'
 import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
-import { PawPrint } from 'lucide-react';
 
 const getAllTables = async () => {
     const _product_page = await getProductPage();
