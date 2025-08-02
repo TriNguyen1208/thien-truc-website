@@ -5,10 +5,8 @@ import { useEffect, useMemo } from "react"
 import DynamicForm from '../../components/DynamicForm'
 import SearchBar from '../../components/Search'
 import { useState } from 'react';
-import { Button, Modal } from 'antd';
 import useProducts from '../../hooks/useProducts';
-import { Link, useSearchParams } from 'react-router-dom';
-import ColorBlock from '../../components/ColorBlock';
+import { useSearchParams } from 'react-router-dom';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
 import Notification from '@/components/Notification'
@@ -44,7 +42,7 @@ const Product = () => {
     { name: 'warranty', label: 'Thời gian bảo hành (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
     { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
     { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
-    { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
+    { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm (tick tối đa 3 đặc điểm nổi bật)', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true, limitCheckbox: 3 },
     { name: 'local_image', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
     { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
   ]);
@@ -106,7 +104,7 @@ const Product = () => {
       { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
       { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
       { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
-      { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
+      { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm  (tick tối đa 3 đặc điểm nổi bật)', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true , limitCheckbox: 3},
       { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
       { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
     ])
@@ -194,7 +192,7 @@ const Product = () => {
         { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
         { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
         { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
-        { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true },
+        { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm  (tick tối đa 3 đặc điểm nổi bật)', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true, limitCheckbox: 3 },
         { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
         { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
       ],
