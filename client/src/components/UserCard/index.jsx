@@ -19,12 +19,12 @@ const UserCard = ({ data }) => {
           <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
             {image_avatar ? (
               <LazyLoad
-                  height={200}
-                  offset={100}
-                  throttle={100}
-                  once
-                  placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
-                  style={{width: '100%', height: '100%'}}
+                height={200}
+                offset={100}
+                throttle={100}
+                once
+                placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                style={{ width: '100%', height: '100%' }}
               >
                 <img
                   src={image_avatar}
@@ -45,7 +45,7 @@ const UserCard = ({ data }) => {
 
         {/* Role */}
         <p className="line-clamp-1 text-center text-green-600 font-medium mb-6">
-          {role}
+          {role || '\u00A0'}
         </p>
 
         {/* Phone */}

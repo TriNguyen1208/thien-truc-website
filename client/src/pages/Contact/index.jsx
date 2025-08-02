@@ -1,9 +1,9 @@
 import UserCard from "@/components/UserCard";
 import Banner from "@/components/Banner";
-import {Link, useLocation, useNavigation } from 'react-router-dom';
+import { Link, useLocation, useNavigation } from 'react-router-dom';
 import useContact from "@/hooks/useContact";
 import Form from "@/components/Form";
-import{useRef, useEffect} from 'react'
+import { useRef, useEffect } from 'react'
 import {
     Mail,
     Phone,
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Loading from "@/components/Loading";
 import { FiFacebook } from "react-icons/fi";
-import {PhoneIcon, EmailIcon, LocationIcon, TimeIcon, FacebookIcon} from '@/components/Icon'
+import { PhoneIcon, EmailIcon, LocationIcon, TimeIcon, FacebookIcon } from '@/components/Icon'
 export default function Contact() {
     //Liên kết với banner của trang 'về chúng tôi'
     const location = useLocation();
@@ -49,11 +49,11 @@ export default function Contact() {
         type: 'lien-he'
     }
     const fixedIframe = companyInfoData.googlemaps_embed_url
-            ?.replace(/width="[^"]*"/, 'width="100%"')
-            ?.replace(/height="[^"]*"/, 'height="100%"')
+        ?.replace(/width="[^"]*"/, 'width="100%"')
+        ?.replace(/height="[^"]*"/, 'height="100%"')
     return (
         <>
-            {navigation.state == 'loading' && <Loading/>}
+            {navigation.state == 'loading' && <Loading />}
             <Banner data={dataBanner} />
             <div className="container-fluid bg-[var(--light-green-banner)] py-[70px]">
                 <div className="font-[600] flex justify-center text-[30px] text-[var(--dark-green)] mb-[30px]">
@@ -89,7 +89,7 @@ export default function Contact() {
                     <div className="flex flex-col gap-[30px]">
                         <div className="flex items-center gap-5">
                             <div className="w-12">
-                                <EmailIcon/>
+                                <EmailIcon />
                             </div>
                             <div>
                                 <div>
@@ -102,7 +102,7 @@ export default function Contact() {
                         </div>
                         <div className="flex items-center gap-5">
                             <div className="w-12">
-                                <PhoneIcon/>
+                                <PhoneIcon />
                             </div>
                             <div>
                                 <div>
@@ -118,7 +118,7 @@ export default function Contact() {
                         <div>
                             <div className="flex items-center gap-5">
                                 <div className="w-12">
-                                    <LocationIcon/>
+                                    <LocationIcon />
                                 </div>
                                 <div>
                                     <div>
@@ -143,7 +143,7 @@ export default function Contact() {
                         </div>
                         <div className="flex items-center gap-5">
                             <div className="w-12">
-                                <TimeIcon/>
+                                <TimeIcon />
                             </div>
                             <div>
                                 <div>
@@ -165,7 +165,7 @@ export default function Contact() {
 
                             <div className="flex items-center gap-5">
                                 <div className="w-12">
-                                    <FacebookIcon/>
+                                    <FacebookIcon />
                                 </div>
                                 <div>
                                     <div>
@@ -176,7 +176,7 @@ export default function Contact() {
                         </a>
                     </div>
                 </div>
-                <div className="col-span-12 lg:col-span-6">
+                <div className=" mx-[-20px] lg:mx-0 col-span-12 lg:col-span-6 ]">
                     <Form data={dataForm} />
                 </div>
             </div >
@@ -187,7 +187,7 @@ export default function Contact() {
                 <div>
                     <div
                         className="h-[500px]"
-                        dangerouslySetInnerHTML={{ __html: fixedIframe  }}
+                        dangerouslySetInnerHTML={{ __html: fixedIframe }}
                     />
                 </div>
             </div>

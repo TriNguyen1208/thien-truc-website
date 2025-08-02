@@ -34,65 +34,72 @@ export default function ProjectDetail() {
 
     return (
         <>
-            {navigation.state == 'loading' && <Loading/>}
+            {navigation.state == 'loading' && <Loading />}
             <div className="bg-[#f9fafb] py-[70px]">
-                <div className="mb-[20px] w-3/5 mx-auto ">
+                <div className=" mb-[20px] w-[800px] mx-auto ">
                     <button onClick={() => navigate(-1)} className="cursor-pointer">
                         <ArrowLeftOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
                         <span className="ml-[10px] text-[var(--green-bg)]">Quay lại danh sách dự án</span>
                     </button>
                 </div>
-                <div className="w-3/5 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
-                    style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
-                >
-                    <div className="text-2xl sm:text-3xl lg:text-4xl font-[700] mb-[15px] break-words">
-                        {projectContentData.project.title}
-                    </div>
-                    <div className="flex flex-col sm:items-center sm:flex-row gap-3">
-                        <div>
-                            <div
-                                className="max-w-max  text-white px-[17px] pt-[4px] pb-[4px] rounded-full text-sm font-medium  flex items-center justify-center"
-                                style={{ backgroundColor: projectContentData.project.region.rgb_color }}
-                            >
-                                {projectContentData.project.region.name}
-                            </div>
+
+                <div className="mx-[20px]">
+                    <div className="container-fluid max-w-[800px] mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
+                        style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
+                    >
+                        <div className="text-2xl sm:text-3xl lg:text-4xl font-[700] mb-[15px] break-words">
+                            {projectContentData.project.title}
                         </div>
-                        {/* <div className="flex"> */}
-                            <div className="flex">
-                                <div className="mr-[5px]">
-                                    <EnvironmentOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
+                        <div className="flex flex-col sm:items-center sm:flex-row gap-3">
+                            <div>
+                                <div
+                                    className="max-w-max  text-white px-[17px] pt-[4px] pb-[4px] rounded-full text-sm font-medium  flex items-center justify-center"
+                                    style={{ backgroundColor: projectContentData.project.region.rgb_color }}
+                                >
+                                    {projectContentData.project.region.name}
                                 </div>
-                                <div className="mr-[15px]"> {projectContentData.project.province}</div>
                             </div>
-                            <div className="flex">
-                                <div className="mr-[5px]">
-                                    <CalendarOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
+                            {/* <div className="flex"> */}
+                            {projectContentData.project.province && (
+                                <div className="flex">
+                                    <div className="mr-[5px]">
+                                        <EnvironmentOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
+                                    </div>
+                                    <div className="mr-[15px]"> {projectContentData.project.province}</div>
                                 </div>
-                                <div className="mr-[10px]">Hoàn thành {new Date(projectContentData.project.complete_time).toLocaleDateString('vi-VN')}</div>
-                            </div>
+                            )}
+                            {projectContentData.project.complete_time && (
+                                <div className="flex">
+                                    <div className="mr-[5px]">
+                                        <CalendarOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
+                                    </div>
+                                    <div className="mr-[10px]">Hoàn thành {new Date(projectContentData.project.complete_time).toLocaleDateString('vi-VN')}</div>
+                                </div>
+                            )}
+                        </div>
                         {/* </div> */}
                     </div>
-                </div>
-                <div className="w-3/5 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[50px]"
-                    style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
-                >
-                    {projectContentData.project.main_img && (
-                        <LazyLoad
-                            height={200}
-                            offset={100}
-                            throttle={100}
-                            once
-                            placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
-                            style={{width: '100%', height: '100%'}}
-                        >
-                            <img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án"/>
-                        </LazyLoad>)}
-                    <div className="break-words">{renderWithLazyLoad(projectContentData.content)}</div>
-                </div>
-                <div className="w-3/5 mx-auto mb-[30px]"
-                    style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
-                >
-                    <Banner data={data} />
+                    <div className=" max-w-[800px]  mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[50px]"
+                        style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
+                    >
+                        {projectContentData.project.main_img && (
+                            <LazyLoad
+                                height={200}
+                                offset={100}
+                                throttle={100}
+                                once
+                                placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                                style={{ width: '100%', height: '100%' }}
+                            >
+                                <img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án" />
+                            </LazyLoad>)}
+                        <div className="break-words">{renderWithLazyLoad(projectContentData.content)}</div>
+                    </div>
+                    <div className="max-w-[800px]  mx-auto mb-[30px]"
+                        style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
+                    >
+                        <Banner data={data} />
+                    </div>
                 </div>
             </div>
         </>

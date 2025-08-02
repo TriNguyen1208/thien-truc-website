@@ -31,7 +31,7 @@ export default function NewsDetail(){
         <>
             {navigation.state == 'loading' && <Loading/>}
             <div className="flex flex-row bg-[#F9FAFB] py-10">
-                <div className="flex flex-col gap-3 m-auto w-3/5">
+                    <div className="flex flex-col w-full max-w-[800px] gap-3 px-[20px] mx-auto">
                     <BackButton data={{content: "Quay lại danh sách tin tức", handleClick: handleClick}}/>
                     <div className="flex flex-col shadow-2xl w-full bg-white py-5 px-6 rounded-sm gap-3">
                         <div>
