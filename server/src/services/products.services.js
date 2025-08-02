@@ -156,6 +156,7 @@ const products = {
         `;
 
         const { rows } = await pool.query(sql);
+
         const results = rows.map(row => ({
             id: row.product_id,
             name: row.product_name || "",
@@ -165,7 +166,8 @@ const products = {
             product_specifications: JSON.parse(row.product_specifications || '{}'),
             warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
             product_features: row.product_features || [],
-            highlight_features: row.highlight_features || [],
+            highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+            highlight_feature_ids: row.highlight_features || [],
             category: {
                 id: row.category_id,
                 name: row.category_name
@@ -270,7 +272,8 @@ const products = {
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
                 warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
-                highlight_features: row.highlight_features || [],
+                highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+                highlight_feature_ids: row.highlight_features || [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -313,7 +316,8 @@ const products = {
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
                 warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
-                highlight_features: row.highlight_features || [],
+                highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+                highlight_feature_ids: row.highlight_features || [],
 
                 category: {
                     id: row.category_id,
@@ -890,8 +894,10 @@ const product_prices = {
                 product_img: row.product_img || "",
                 warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
-                highlight_features: row.highlight_features || [],
+                highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+                highlight_feature_ids: row.highlight_features || [],
                 category: {
+            highlight_feature_ids: row.highlight_features || [],
                     id: row.category_id,
                     name: row.category_name
                 }
@@ -939,7 +945,8 @@ const product_prices = {
                 product_img: row.product_img || "",
                 warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
-                highlight_features: row.highlight_features || [],
+                highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+                highlight_feature_ids: row.highlight_features || [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -985,7 +992,8 @@ const product_prices = {
                 product_img: row.product_img || "",
                 warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
-                highlight_features: row.highlight_features || [],
+                highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+                highlight_feature_ids: row.highlight_features || [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -1029,8 +1037,8 @@ const product_prices = {
                 product_img: row.product_img || "",
                 warranty_period: row.warranty_period || "",
                 product_features: row.product_features || [],
-                highlight_features: row.highlight_features || [],
-            
+                highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+                highlight_feature_ids: row.highlight_features || [],            
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -1074,7 +1082,8 @@ const getHighlightProducts = async () => {
             product_specifications: JSON.parse(row.product_specifications || '{}'),
             warranty_period: row.warranty_period || "",
             product_features: row.product_features || [],
-            highlight_features: row.highlight_features || [],
+            highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
+            highlight_feature_ids: row.highlight_features || [],
             category: {
                 id: row.category_id,
                 name: row.category_name

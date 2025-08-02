@@ -165,7 +165,7 @@ const SearchBar = ({data}) => {
                     {/* Hien thi goi y */}
                     { 
                         showSuggestions && debouncedQuery && (
-                            <ul className='absolute z-10 left-0 top-full w-full bg-white shadow-md max-h-64 overflow-y-auto border border-gray-300'>
+                            <ul className='absolute z-20 left-0 top-full w-full bg-white shadow-md max-h-64 overflow-y-auto border border-gray-300'>
                                 {displaySuggestion.map((item, index) => (
                                     <li
                                         key={index}

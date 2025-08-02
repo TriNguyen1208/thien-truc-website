@@ -4,24 +4,23 @@ import {
 } from '@ant-design/icons';
 import LazyLoad from 'react-lazyload';
 function handleDisplayHighlights(product) {
-    const numberOfHighlights = Math.min((['Tính năng 1', 'Tính năng 2', 'Tính năng 3']).length, 3);
+    const numberOfHighlights = Math.min(product.highlight_features.length, 3);
     const clampClass =
         numberOfHighlights === 0 ? 'line-clamp-5' :
             numberOfHighlights === 1 ? 'line-clamp-4' :
                 numberOfHighlights === 2 ? 'line-clamp-3' :
                     numberOfHighlights === 3 ? 'line-clamp-2' :
                         'line-clamp-1';
-    const arr = ['Tính năng 1', 'Tính năng 2', 'Tính năng 3'];
     return (
         <div className="flex flex-col pb-[4px]">
 
             <div className={`${clampClass} text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,2vw,16px)]`}>
-                {product.description} test description test descriptiontest descriptiontest descriptiontest descriptiontest description
+                {product.description}
             </div>
             {
                 Array.from({ length: numberOfHighlights }).map((_, index) => (
                     <div key={index} className="truncate overflow-hidden whitespace-nowrap  text-[#374151]">
-                        <p className=" truncate overflow-hidden whitespace-nowrap  text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,2vw,16px)] text-[#374151]">{arr[index]}</p>
+                        <p className=" truncate overflow-hidden whitespace-nowrap  text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,2vw,16px)] text-[#374151]">{product.highlight_features[index]}</p>
 
                     </div>
                 ))
@@ -58,7 +57,7 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
             <div className="flex flex-col w-full px-[8px] lg:px-4 lg:pt-4 ">
                 <div >
                     <h2 className="line-clamp-2  text-[clamp(14px,3vw,18px)] sm:text-[clamp(14px,2vw,18px)] text-black ">
-                        {product.name}f fsdfsdfs dfsdfsdf 
+                        {product.name}
                     </h2>
                 </div>
                 <div className="line-clamp-1 text-[clamp(14px,3vw,18px)] sm:text-[clamp(14px,2vw,18px)] text-[#ff0000] font-semibold">
