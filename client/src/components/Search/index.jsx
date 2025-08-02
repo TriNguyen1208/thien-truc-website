@@ -118,7 +118,7 @@ const SearchBar = ({ data }) => {
                   e.stopPropagation();
                   setCategory(r);
                   setDropdownOpen(false);
-                  handleSearch(undefined, r);
+                  handleSearch(query, r);
                 }}
               >
                 {r}

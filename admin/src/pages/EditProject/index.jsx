@@ -42,7 +42,7 @@ const EditProject = () => {
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
     const {data: project_contents, isLoading: isLoadingProjectContent, isFetching: isFetchingProjectContent} = useProjects.project_contents.getOne(project_id);
     const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.project_contents.updateOne()
-    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
+    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne(() => navigate('/quan-ly-du-an'));
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -121,7 +121,6 @@ const EditProject = () => {
     const handleDelete = () => {
         //Xoa bai viet hien tai
         deleteProject(project_id);
-        navigate('/quan-ly-du-an');
     }
     const handleRecover = () => {
         setForm(initialForm);
