@@ -122,7 +122,7 @@ export default function News() {
   return (
     <>
       {navigation.state == 'loading' && <Loading/>}
-      <div className="w-screen">
+      <div className="w-full overflow-x-hidden">
         <Banner data={bannerData} />
       </div>
       <div className="container-fluid flex flex-col gap-10 pt-10">
