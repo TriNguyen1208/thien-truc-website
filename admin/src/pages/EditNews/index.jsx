@@ -42,7 +42,7 @@ const EditNews = () => {
     const {data: news_contents, isLoading: isLoadingNewsContent, isFetching: isFetchingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news_contents.updateOne()
-    const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne();
+    const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne(() => navigate('/quan-ly-tin-tuc'));
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -116,7 +116,6 @@ const EditNews = () => {
     }
     const handleDelete = () => {
         deleteNews(news_id)
-        navigate('/quan-ly-tin-tuc')
         //Xoa bai viet hien tai
     }
     const handleRecover = () => {
