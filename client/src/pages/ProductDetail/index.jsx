@@ -89,9 +89,9 @@ export default function ProductDetail() {
                         <div>
                             <ul>
                                 {
-                                    (product.product_features || []).map((hl) => {
+                                    (product.product_features || []).map((hl,index) => {
                                         return (
-                                            <li className='my-[10px]'>
+                                            <li className={` flex flex-row h-[40px]  items-center p-[10px] my-[5px] ${index % 2 == 0 ? 'bg-[#F9FAFB]' : ''}`}>
                                                 {hl}
                                             </li>
                                         )
