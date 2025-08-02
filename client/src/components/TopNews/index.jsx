@@ -30,7 +30,6 @@ const TopNews = () => {
   return (
     <section className="highlight-news">
         <div className="top-news-carousel-container" onClick={() => {
-          console.log("123");
           navigate(`tin-tuc/${currentNews.id}`)
         }}>
         <div className="news-card-wrapper" key={currentNews.id}>

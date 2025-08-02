@@ -152,7 +152,7 @@
   return (
   <>
     {navigation.state == 'loading' && <Loading/>}
-    <div className="w-screen">
+    <div className="w-full overflow-x-hidden">
         <Banner data={bannerHead} />
       </div>
     <div ref={scrollTargetRef} className=" flex flex-col  p-[16px] lg:p-[32px]">
@@ -179,7 +179,7 @@
               <tbody>
                 {filteredData.map((cat) => (
                   <React.Fragment key={cat.category}>
-                    <tr className='sticky top-[48px] z-10 bg-[#00c37e]'>
+                    <tr className='sticky top-0 md:top-[48px] z-10 bg-[#00c37e]'>
                       <td colSpan={5}>
                         <div
                           className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[16px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"

@@ -122,11 +122,11 @@ export default function News() {
   return (
     <>
       {navigation.state == 'loading' && <Loading/>}
-      <div className="w-screen">
+      <div className="w-full overflow-x-hidden">
         <Banner data={bannerData} />
       </div>
       <div className="container-fluid flex flex-col gap-10 pt-10">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0 ">
           <div className="lg:flex-1" />
           <div className="flex-shrink-0">
             <ItemByType
@@ -135,14 +135,14 @@ export default function News() {
               current={sortBys.indexOf(sortBy)}
             />
           </div>
-          <div className="flex-1 flex justify-start sm:justify-end w-[500px]">
+          <div className="flex-1 flex justify-start sm:justify-end ">
             <ListType
               categories={categories}
               handleClick={handleClickfilter}
               current={filter}
             />
           </div>
-        </div>
+        </div>nhu cc
 
         <div className="grid grid-cols-12 gap-5 md:gap-10 px-4">
           {isLoadingDataFilter ? (

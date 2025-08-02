@@ -74,10 +74,18 @@ const projects = {
             }
         });
     },
-    useDeleteOne: (id) => {
+    useDeleteOne: (navigate = null) => {
+        const queryClient = useQueryClient()
         return useMutation({
             mutationFn: (id) => projectsServices.projects.deleteOne(id),
-            onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
+            onSuccess: (success)=> { 
+                queryClient.invalidateQueries({ queryKey: ["admin_projects_list"], exact: false });
+                toast.success(success ? success.message: "Xóa thành công!")
+                if(navigate){
+                    navigate();
+                }
+
+            },
             onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
         })
     }
@@ -139,7 +147,6 @@ const project_contents = {
                 return projectsServices.project_contents.postOne(data)
             },
             onSuccess: (success) => {
-                console.log(success.message)
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["admin_project_contents"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_projects"], exact: false });

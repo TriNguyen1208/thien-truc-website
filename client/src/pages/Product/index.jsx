@@ -63,7 +63,7 @@ function ListProduct({ products }) {
             {
                 (products || []).map((product, i) => {
                     return (
-                        <Link key={i} className=' aspect-[40/95] w-full max-w-[220px] max-h-[460px] sm:aspect-[40/97]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[570px] xl:max-h-[580px] lg:max-w-[280px]' to = {`/san-pham/${product.id}` }>
+                        <Link key={i} className=' aspect-[4/8] w-full max-w-[230px]   sm:max-h-[320px] md:max-h-[420px]  lg:max-w-[280px] lg:max-h-[470px] xl:max-h-[500px] ' to = {`/san-pham/${product.id}` }>
                           
                                 <ItemProduct product={products[i]} />
                         </Link>
@@ -115,12 +115,10 @@ function AllCategories({handleViewMore}){
 }
 function Category({ category, query = '', limit = '', handleViewProduct, handlePageChange,  isQuery = false, page = 1 }) {
 
-    console.log(category,query,limit,page)
     const { data: products, isLoading: isLoadingProductByCategory } = useProducts.products.getList(query, (category || {name: ""}).name, '', page, limit)
     if (isLoadingProductByCategory) {
         return (<Loading />)
     }
-    console.log(products)
     if (products.results.length == 0) {
         return (<div className='mb-[20px]'>Không có sản phẩm</div>)
     }

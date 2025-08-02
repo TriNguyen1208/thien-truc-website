@@ -7,51 +7,15 @@ import Notification from '../../components/Notification';
 import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
-import { toast } from 'react-toastify';
 import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';
 // Còn sự kiện ấn vào nút trưng bày
-const StatusBox = ({ isFeatured }) => {
-  return (
-    <div
-      className={`flex items-center justify-center w-full h-full cursor-pointer`}
-    >
-    <div
-      className={`
-        w-5 h-5 flex items-center justify-center rounded-[3px] transition-all duration-200 cursor-pointer
-        ${isFeatured === true
-          ? 'bg-green-500 text-white'
-          : (isFeatured === false ? 'border border-gray-700 bg-white' : 'border border-gray-700 bg-white')}
-        hover:shadow hover:scale-105
-      `}
-    >
-      {isFeatured && (
-        <svg
-          className="w-5 h-5"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4 8L7 11L12 5"
-            stroke="white"
-            strokeWidth="2  "
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )}
-      </div>
-    </div>
-  );
-};
-
 
 export default function Project () {
   // Lấy hàm từ hook
   const queryClient = useQueryClient();
-  const { mutateAsync: deleteOne } = useProjects.projects.deleteOne();
-  const { mutateAsync: updateFeatureOne} = useProjects.projects.updateFeatureOne();
+  const { mutateAsync: deleteOne, isPending: isPendingDeleting} = useProjects.projects.deleteOne();
+  const { mutateAsync: updateFeatureOne, isPending: isPendingUpdate} = useProjects.projects.updateFeatureOne();
 
   // Thông tin của popup xác nhận hủy
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -66,10 +30,7 @@ export default function Project () {
     buttonLabel2: 'Xóa dự án',
     buttonAction2: async () => 
       {
-        await deleteOne(currentDeleteID, {
-        onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
-        onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
-        });
+        await deleteOne(currentDeleteID);
         queryClient.invalidateQueries(['admin_projects']);
         setCancelOpen(false)
       }
@@ -136,7 +97,7 @@ export default function Project () {
     ...(projectRegions?.map((filter) => filter.name) ?? []),
   ]
   const display = ['Tất cả hiển thị', 'Trưng bày', 'Không trưng bày'];
-  if (isLoadingProjects || isLoadingProjectRegions) {
+  if (isLoadingProjects || isLoadingProjectRegions || isPendingDeleting) {
     return <Loading/>;
   }
 
@@ -206,10 +167,44 @@ export default function Project () {
                 {
                   type: "component",
                   component: (
-                    <StatusBox
-                      isFeatured={item.is_featured}
-                      onClick={() => updateFeatureOne({ id: item.id, status: !item.is_featured })}
+                    <div className="ml-[30px]">
+                    <input
+                      type="checkbox"
+                      checked={item.is_featured}
+                      onChange={() => {
+                        updateFeatureOne({
+                          id: item.id,
+                          status: !item.is_featured,
+                        });
+                      }}
+                      disabled={isPendingUpdate}
+                      className={`
+                        w-5 h-5 appearance-none cursor-pointer rounded-[3px]
+                        transition-all duration-200
+                        border border-gray-400
+                        checked:bg-green-500
+                        hover:shadow hover:scale-105
+                        absolute top-6 left-10
+                      `}
                     />
+                    {item.is_featured && (
+                      <svg
+                        className="absolute top-[24px] left-[40px] w-5 h-5 text-white pointer-events-none"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M4 8L7 11L12 5"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                    {/* {isPending ? "Đang cập nhật..." : "Đổi trạng thái"} */}
+                  </div>
                   ),
                 },
                 {
