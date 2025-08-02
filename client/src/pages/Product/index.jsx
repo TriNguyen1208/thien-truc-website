@@ -63,7 +63,7 @@ function ListProduct({ products }) {
             {
                 (products || []).map((product, i) => {
                     return (
-                        <Link key={i} className=' aspect-[4/9] w-full max-w-[220px] max-h-[460px] sm:aspect-[40/97]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[570px] xl:max-h-[580px] lg:max-w-[280px]' to = {`/san-pham/${product.id}` }>
+                        <Link key={i} className=' aspect-[40/95] w-full max-w-[220px] max-h-[460px] sm:aspect-[40/97]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[570px] xl:max-h-[580px] lg:max-w-[280px]' to = {`/san-pham/${product.id}` }>
                           
                                 <ItemProduct product={products[i]} />
                         </Link>
@@ -287,7 +287,7 @@ export default function Product() {
                     {
                         contentCenterCards.map((card, index) => {
                             return (
-                                <div key={index} className=' w-[90%] h-[190px] sm:w-[260px] sm:h-[160px] lg:w-[230px]'>
+                                <div key={index} className=' w-[90%] h-[190px] sm:w-[260px] sm:h-[160px] lg:w-[90%]'>
                                     <CenterCard data={card} />
                                 </div>
                             )
