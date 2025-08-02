@@ -75,7 +75,7 @@ export default function Recruitment() {
         <>
             {navigation.state == 'loading' && <Loading/>}
             <Banner data={content_banner_head} />
-            <div className="w-full py-16">
+            <div className="w-full overflow-x-hidden">
                 <div className="container-fluid flex flex-col gap-10">
                     <div>
                         <h2 className="text-center text-(--dark-green) text-3xl font-bold">
