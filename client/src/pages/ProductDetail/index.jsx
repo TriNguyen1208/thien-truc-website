@@ -6,15 +6,24 @@ import Loading from '@/components/Loading'
 import {
     ProductOutlined
 } from '@ant-design/icons';
+import LazyLoad from 'react-lazyload';
 function Picture({ url }) {
 
     return (
         <div className=" flex flex-col ">
             <div className=" w-full p-[15px] border-[#E5E7EB] border-[1px] rounded-[8px]">
-                <img 
-                    src={url}
-                    alt={''}
-                    className="w-full h-full object-cover rounded-t-[6px]" />
+                <LazyLoad
+                    height={200}
+                    offset={100}
+                    throttle={100}
+                    once
+                    placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                >
+                    <img 
+                        src={url}
+                        alt={''}
+                        className="w-full h-full object-cover rounded-t-[6px]"/>
+                </LazyLoad>
             </div>
         </div>
     )

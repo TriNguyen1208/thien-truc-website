@@ -7,7 +7,7 @@ import { MailOutlined, PhoneOutlined, EnvironmentOutlined } from "@ant-design/ic
 import { useRef } from "react";
 import Form from "@/components/Form";
 import { useNavigation } from "react-router-dom";
-
+import LazyLoad from "react-lazyload";
 const BuildingIcon = () => (
     <svg width="65" height="64" viewBox="0 0 65 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="0.334961" width="64" height="64" rx="32" fill="#DCFCE7" />
@@ -102,10 +102,48 @@ export default function Recruitment() {
                         </div>
                         <div className="col-span-12 lg:col-span-6 mt-[30px]">
                             <div className="grid grid-cols-2 gap-10  ">
-                                <img src={data.culture_img_1} alt="" className="w-full h-full object-cover rounded-md" />
-                                <img src={data.culture_img_2} alt="" className="w-full h-full object-cover rounded-md" />
-                                <img src={data.culture_img_3} alt="" className="w-full h-full object-cover rounded-md" />
-                                <img src={data.culture_img_4} alt="" className="w-full h-full object-cover rounded-md" />
+                                <LazyLoad
+                                    height={200}
+                                    offset={100}
+                                    throttle={100}
+                                    once
+                                    placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                                >
+                                    <img src={data.culture_img_1} alt="" className="w-full h-full object-cover rounded-md"/>
+                                </LazyLoad>
+                                <LazyLoad
+                                    height={200}
+                                    offset={100}
+                                    throttle={100}
+                                    once
+                                    placeholder={
+                                        <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                                    }
+                                >
+                                    <img src={data.culture_img_2} alt="" className="w-full h-full object-cover rounded-md"/>
+                                </LazyLoad>
+                                <LazyLoad
+                                    height={200}
+                                    offset={100}
+                                    throttle={100}
+                                    once
+                                    placeholder={
+                                        <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                                    }
+                                >
+                                    <img src={data.culture_img_3} alt="" className="w-full h-full object-cover rounded-md"/>
+                                </LazyLoad>
+                                <LazyLoad
+                                    height={200}
+                                    offset={100}
+                                    throttle={100}
+                                    once
+                                    placeholder={
+                                        <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                                    }
+                                >
+                                    <img src={data.culture_img_4} alt="" className="w-full h-full object-cover rounded-md"/>
+                                </LazyLoad>
                             </div>
                         </div>
                     </div>

@@ -8,6 +8,7 @@ import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
 import { toast } from 'react-toastify';
+import LazyLoad from 'react-lazyload';
 // Còn sự kiện ấn vào nút trưng bày
 const StatusBox = ({ isFeatured }) => {
   return (
@@ -196,7 +197,18 @@ export default function Project () {
                   <tr key={item.id + '-' + region.id} className=" border-b border-gray-200 hover:bg-gray-100">
                     <td className="py-4 px-3 text-black-100 font-medium">{item.id}</td>
                     <td className="py-4 px-4">
-                      <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded" />
+                      <LazyLoad
+                        height={200}
+                        offset={100}
+                        throttle={100}
+                        once
+                        scrollContainer='.scroll-wrapper'
+                        placeholder={
+                            <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                        }
+                      >
+                        <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded"/>  
+                      </LazyLoad>
                     </td>
                     <td className="py-4 px-1 text-black max-w-[530px] ">
                          <div className="line-clamp-2 overflow-hidden text-ellipsis">

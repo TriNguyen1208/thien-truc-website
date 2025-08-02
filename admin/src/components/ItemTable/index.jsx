@@ -15,10 +15,21 @@ const ItemTable = ({ data, width }) => {
                                                 </span>}
 
                     {item.type === "img" && (
-                        <img
-                            src={item.path}
-                            className="w-12 h-8 object-cover rounded"
-                        />
+                        <LazyLoad
+                            height={200}
+                            offset={100}
+                            throttle={100}
+                            once
+                            scrollContainer='.scroll-wrapper'
+                            placeholder={
+                                <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                            }
+                        >
+                            <img
+                                src={item.path}
+                                className="w-12 h-8 object-cover rounded"
+                            />
+                        </LazyLoad>
                     )}
 
                     {item.type === "checkbox" && (

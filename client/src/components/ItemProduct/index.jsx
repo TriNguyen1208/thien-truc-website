@@ -2,6 +2,7 @@ import GreenButton from "@/components/GreenButton";
 import {
     ProductOutlined
 } from '@ant-design/icons';
+import LazyLoad from 'react-lazyload';
 function handleDisplayHighlights(product) {
     const numberOfHighlights = Math.min((['Tính năng 1', 'Tính năng 2', 'Tính năng 3']).length, 3);
     const clampClass =
@@ -34,12 +35,22 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
             className="flex flex-col h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
             style={{ width, height }}
         >
-            <div className="aspect-square w-full  bg-[#F3F4F6] rounded-t-[6px] p-[4px]">
-                {product.product_img ? ( <img
-                    src={product.product_img}
-                    alt={product.name}
-                    className="w-full h-full object-cover rounded-t-[6px]"
-                />) : ( <div className="w-full h-full flex items-center justify-center">
+            <div className="w-[full] h-[322px]  bg-[#F3F4F6] rounded-t-[6px] p-[8px]">
+                {product.product_img ? ( 
+                <LazyLoad
+                    height={200}
+                    offset={100}
+                    throttle={100}
+                    once
+                    placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                >
+                    <img
+                        src={product.product_img}
+                        alt={product.name}
+                        className="w-full h-full object-cover rounded-t-[6px]"
+                    />
+                </LazyLoad>    
+                    ) : ( <div className="w-full h-full flex items-center justify-center">
                     <ProductOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
                 </div>)}
             </div>

@@ -23,3 +23,7 @@ body
 .animate-fade {
   animation: fade 0.2s ease-in-out;
 }
+.lazyload-wrapper{
+  width: 100%;
+  height: 100%;
+}

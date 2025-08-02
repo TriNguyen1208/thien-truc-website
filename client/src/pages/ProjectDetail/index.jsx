@@ -4,6 +4,8 @@ import BackButton from "../../components/BackButton";
 import Banner from "@/components/Banner";
 import useProjects from "@/hooks/useProjects";
 import Loading from "@/components/Loading";
+import LazyLoad from 'react-lazyload'
+import renderWithLazyLoad from "../../utils/renderWithLazyLoad";
 
 {/* <ArrowLeftOutlined /> */ }
 export default function ProjectDetail() {
@@ -34,13 +36,13 @@ export default function ProjectDetail() {
         <>
             {navigation.state == 'loading' && <Loading/>}
             <div className="bg-[#f9fafb] py-[70px]">
-                <div className="mb-[20px] w-3/4 mx-auto ">
+                <div className="mb-[20px] w-3/5 mx-auto ">
                     <button onClick={() => navigate(-1)} className="cursor-pointer">
                         <ArrowLeftOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
                         <span className="ml-[10px] text-[var(--green-bg)]">Quay lại danh sách dự án</span>
                     </button>
                 </div>
-                <div className="w-3/4 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
+                <div className="w-3/5 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
                 >
                     <div className="text-2xl sm:text-3xl lg:text-4xl font-[700] mb-[15px] break-words">
@@ -71,14 +73,22 @@ export default function ProjectDetail() {
                         {/* </div> */}
                     </div>
                 </div>
-                <div className="w-3/4 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[50px]"
+                <div className="w-3/5 mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[50px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
                 >
-                    {projectContentData.project.main_img && (<img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án"></img>)}
-
-                    <div dangerouslySetInnerHTML={{ __html: projectContentData.content }} className="break-words" />
+                    {projectContentData.project.main_img && (
+                        <LazyLoad
+                            height={200}
+                            offset={100}
+                            throttle={100}
+                            once
+                            placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                        >
+                            <img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án"/>
+                        </LazyLoad>)}
+                    <div className="break-words">{renderWithLazyLoad(projectContentData.content)}</div>
                 </div>
-                <div className="w-3/4 mx-auto mb-[30px]"
+                <div className="w-3/5 mx-auto mb-[30px]"
                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -10px' }}
                 >
                     <Banner data={data} />

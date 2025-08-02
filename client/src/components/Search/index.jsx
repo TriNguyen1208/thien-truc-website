@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-
+import LazyLoad from 'react-lazyload';
 const SearchBar = ({ data }) => {
   const {
     categories,
@@ -189,7 +189,15 @@ const SearchBar = ({ data }) => {
                   </>
                 ) : (
                   <>
-                    <img src={item.img} alt="" className="w-5 h-5" />
+                    <LazyLoad
+                        height={200}
+                        offset={100}
+                        throttle={100}
+                        once
+                        placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                    >
+                      <img src={item.img} alt="" className="w-5 h-5"/>
+                    </LazyLoad>
                     {item.query}
                   </>
                 )}

@@ -1,16 +1,28 @@
 import { Image } from "antd";
+import LazyLoad from 'react-lazyload'
 const ProductImageCell = ({ imageUrl, productName = "Sản phẩm", preview = true }) => {
   return (
-    <div className="w-[70px] h-[45px] bg-gray-100 border border-gray-200 rounded-md overflow-hidden flex items-center justify-center">
+    <div className="w-[70px] h-[45px] bg-gray-100 border border-gray-200 rounded-md flex items-center justify-center">
       {imageUrl ? (
-        <Image
-          width="100%"
-          height="100%"
-          src={imageUrl}
-          alt={productName}
-          style={{ objectFit: "cover" }}
-          preview={preview}
-        />
+        <LazyLoad
+            height={200}
+            offset={100}
+            throttle={100}
+            once
+            scrollContainer='.scroll-wrapper'
+            placeholder={
+                <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+            }
+        >
+          <Image
+            width="100%"
+            height="100%"
+            src={imageUrl}
+            alt={productName}
+            style={{ objectFit: "cover" }}
+            preview={preview}
+          />
+        </LazyLoad>
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
           <svg

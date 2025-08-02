@@ -11,7 +11,7 @@ import {
 import {Modal, Button, message, Space} from 'antd'
 import { ShareAltOutlined, CopyOutlined  } from '@ant-design/icons'
 import logoZalo from '@/assets/images/logo_zalo.png'
-
+import LazyLoad from 'react-lazyload';
 const ShareButton = ({id}) => {
     const [open, setOpen] = useState(false);
     const currentUrl = window.location.href + `/${id}`
@@ -77,13 +77,21 @@ const ShareButton = ({id}) => {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <img
-                        src={logoZalo}
-                        alt="Zalo"
-                        width={40}
-                        height={40}
-                        style={{ borderRadius: '50%', position: 'relative', top:'-3px'}}
-                        />
+                        <LazyLoad
+                            height={200}
+                            offset={100}
+                            throttle={100}
+                            once
+                            placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                        >
+                            <img
+                                src={logoZalo}
+                                alt="Zalo"
+                                width={40}
+                                height={40}
+                                style={{ borderRadius: '50%', position: 'relative', top:'-3px'}}
+                            />
+                        </LazyLoad>
                     </a>
                 </Space>
             </Modal>

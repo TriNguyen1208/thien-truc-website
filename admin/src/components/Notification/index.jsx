@@ -1,4 +1,3 @@
-// src/components/Popups.jsx
 import { Modal } from 'antd';
 import Button from '../Button';
 import {ExclamationCircleOutlined  } from '@ant-design/icons'

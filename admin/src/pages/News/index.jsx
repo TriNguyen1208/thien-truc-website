@@ -8,6 +8,7 @@ import SearchBar from '@/components/Search';
 import useNews from '@/hooks/useNews';
 import Loading from '@/components/Loading'
 import { toast } from 'react-toastify';
+import LazyLoad from 'react-lazyload';
 // Còn api xóa tin tứcs
 export default function News() {
 
@@ -179,7 +180,18 @@ export default function News() {
                 <tr key={item.id + '-' + category.id} className=" border-b border-gray-200 hover:bg-gray-100">
                   <td className="py-4 px-3 text-black-100 font-medium">{item.id}</td>
                   <td className="py-4 px-4">
-                    <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded" />
+                    <LazyLoad
+                      height={200}
+                      offset={100}
+                      throttle={100}
+                      once
+                      placeholder={
+                          <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                      }
+                      scrollContainer='.scroll-wrapper'
+                    >
+                      <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded"/>  
+                    </LazyLoad>
                   </td>
                   <td className="py-4 px-1 text-black max-w-[530px] overflow-hidden text-ellipsis line-clamp-2">{item.title}</td>
                   <td className="py-4 px-3">
