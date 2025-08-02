@@ -229,7 +229,7 @@
                                      <td className=" hidden md:table-cell md:w-[8%] md:p-[12px] md:text-center">{idx + 1}</td>
                                      <td className=" md:w-[40%] md:p-[12px] ">{product.name}</td>
                                      <td className=" font-semibold hidden md:table-cell  md:w-[15%] md:p-[12px] md:text-center">{product.price ? <span className=' text-[#ff0000] '>{product.price.toLocaleString('vi-VN')}</span> : <span className=' text-red-400 italic font-normal '>{"Cập nhật sau"}</span>} </td>
-                                    <td className=" hidden md:table-cell  md:w-[17%] md:p-[12px] text-center">  {product.warranty || <span className=' text-gray-500 italic font-normal '>{"Cập nhật sau"}</span>}  </td>
+                                    <td className=" hidden md:table-cell  md:w-[17%] md:p-[12px] text-center">  {product.warranty ? `${product.warranty} tháng` : <span className=' text-gray-500 italic font-normal '>{"Cập nhật sau"}</span>}  </td>
                                     <td className=" hidden md:table-cell text-green-800  md:w-[20%] md:p-[12px] ">
                                      <div className='w-full md:flex md:justify-center'>
                                        <Button
