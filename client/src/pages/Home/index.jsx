@@ -142,7 +142,7 @@ export default function Home() {
                 <div className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
                     Dự án tiêu biểu
                 </div>
-                <div className="mb-[30px] w-[90%] lg:w-[70%] xl:w-[60%] mx-auto">
+                <div className="mb-[30px] max-w-[70%] mx-auto">
                     <PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
                 </div>
                 <div 
@@ -160,6 +160,7 @@ export default function Home() {
                             <Link key={item.id} to={`du-an/${item.id}`} className="h-full">
                                 <div >
                                     {item.main_img ? (
+                                        
                                         <div
                                             className="w-full aspect-[15/10] sm:aspect-[19/9] bg-cover bg-center text-center rounded-t-[10px] transition-transform duration-300 group-hover:scale-105"
                                             style={{
@@ -223,6 +224,7 @@ export default function Home() {
                             {
                                 (highlightProduct || []).map((item, i) => {
                                     return (
+                                     
                                         <Link to={`/san-pham/${item.id}`} key={i}
                                             className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0"
                                         >
