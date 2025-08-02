@@ -5,14 +5,14 @@ function useGetAll() {
     return useQuery({
         queryKey: ["projects"],
         queryFn: projectsServices.getAll,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 function useGetProjectPage() {
     return useQuery({
         queryKey: ["project_page"],
         queryFn: projectsServices.getProjectPage,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 const projects = {
@@ -20,14 +20,14 @@ const projects = {
         return useQuery({
             queryKey: ["projects_list", query, filter, is_featured, page, limit],
             queryFn: () => projectsServices.projects.getList(query, filter, is_featured, page, limit),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["project", id],
             queryFn: () => projectsServices.projects.getOne(id),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     }
 }
@@ -36,21 +36,21 @@ const project_regions = {
         return useQuery({
             queryKey: ["project_regions"],
             queryFn: projectsServices.project_regions.getAll,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["project_region", id],
             queryFn: () => projectsServices.project_regions.getOne(id),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetAllFeatured: () => {
         return useQuery({
             queryKey: ["project_regions_featured"],
             queryFn: projectsServices.project_regions.getAllFeatured,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     }
 }
@@ -59,14 +59,14 @@ const project_contents = {
         return useQuery({
             queryKey: ["project_contents"],
             queryFn: projectsServices.project_contents.getAll,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["project_content", id],
             queryFn: () => projectsServices.project_contents.getOne(id),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     }
 }
@@ -74,7 +74,7 @@ function useGetHighlightProjects(filter) {
     return useQuery({
         queryKey: ["highlight_projects", filter],
         queryFn: () =>  projectsServices.getHighlightProjects(filter),
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 
@@ -82,7 +82,7 @@ function useSearchSuggest(query, filter) {
     return useQuery({
         queryKey: ['project-suggestions', query, filter],
         queryFn: () => projectsServices.getSearchSuggestions(query, filter),
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 export default {

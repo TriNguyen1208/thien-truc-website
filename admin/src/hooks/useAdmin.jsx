@@ -6,14 +6,14 @@ const manager = {
         return useQuery({
             queryKey: ["admin_admin_manager"],
             queryFn: adminServices.manager.getAll,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (username) => {
         return useQuery({
             queryKey: ["admin_admin_manager",username],
             queryFn: ()=> adminServices.manager.getOne(username),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useCreateOne:() =>{
@@ -56,7 +56,7 @@ function useGetQuantity()
     return useQuery({
         queryKey: ['admin_admin_quantity'],
         queryFn: adminServices.getQuantity,
-        staleTime: 5 * 60 * 1000
+        staleTime: 10 * 60 * 1000
     })
 }
 function useGetActivityLogs()
@@ -66,7 +66,7 @@ function useGetActivityLogs()
     return useQuery({
         queryKey: ['admin_admin_activity_logs'],
         queryFn: adminServices.getActivityLogs,
-        staleTime: 5 * 60 * 1000
+        staleTime: 10 * 60 * 1000
     })
 }
 export default {

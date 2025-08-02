@@ -7,7 +7,7 @@ function useGetAboutUsPage() {
   return useQuery({
     queryKey: ["admin_about_us_page"],
     queryFn: aboutUsServices.getAboutUsPage,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -46,7 +46,7 @@ const company_services = {
     useQuery({
       queryKey: ["admin_company_services"],
       queryFn: aboutUsServices.company_services.getAll,
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     }),
 
   useGetOne: (id) =>
@@ -105,7 +105,7 @@ const why_choose_us = {
     useQuery({
       queryKey: ["admin_why_choose_us"],
       queryFn: aboutUsServices.why_choose_us.getAll,
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     }),
 
   useGetOne: (id) =>
