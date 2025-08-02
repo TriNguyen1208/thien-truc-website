@@ -1,9 +1,13 @@
 import multer from 'multer'
 import path from 'path'
-
+import fs from 'fs'
 const storage = multer.diskStorage({ //lưu tạm trong thư mục upload
     destination: (req, file, cb) => {
-        cb(null, 'uploads');
+        const uploadFolder = 'uploads';
+        if(!fs.existsSync(uploadFolder)){
+            fs.mkdirSync(uploadFolder, {recursive: true});
+        }
+        cb(null, uploadFolder);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname))
