@@ -82,13 +82,17 @@ const news = {
             }
         });
     },
-    useDeleteOne: (id) => {
+    useDeleteOne: (navigate = null) => {
         const queryClient = useQueryClient()
         return useMutation({
             mutationFn: (id) => newsServices.news.deleteOne(id),
             onSuccess: (success)=>{
+                queryClient.invalidateQueries({ queryKey: ["admin_news_list"], exact: false });
                 queryClient.invalidateQueries(['admin_news']);
                 toast.success(success ? success.message: "Xóa thành công!")
+                if(navigate){
+                    navigate();
+                }
             },
             onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
         })
