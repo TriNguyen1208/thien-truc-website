@@ -69,7 +69,7 @@ const getHighlightNews = async () => {
         SELECT n.id, n.title, n.main_img, n.main_content
         FROM news.news n
         ORDER BY n.num_readers DESC
-        LIMIT 5
+        LIMIT 1
         `;
     const { rows } = await pool.query(sql);
     return rows.map(row => ({
