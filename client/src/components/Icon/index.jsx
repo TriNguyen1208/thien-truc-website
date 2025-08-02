@@ -32,7 +32,7 @@ export const FacebookIcon = () => (
     </svg>
 )
 export const FeatureDotIcon = () => (
-    <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg  className="w-3 h-3  md:w-3.5 md:h-3.5" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M14.0398 6.90909L7.39773 13.5909L0.676136 6.90909L7.39773 0.227272L14.0398 6.90909Z" fill="#16A34A"/>
     </svg>
 )
