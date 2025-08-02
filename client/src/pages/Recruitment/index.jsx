@@ -78,7 +78,7 @@ export default function Recruitment() {
             <div className="w-full overflow-x-hidden">
                 <div className="container-fluid flex flex-col gap-10">
                     <div>
-                        <h2 className="text-center text-(--dark-green) text-3xl font-bold">
+                        <h2 className="mt-[30px] text-center text-(--dark-green) text-3xl font-bold">
                             Tại sao nên gia nhập Thiên Trúc?
                         </h2>
                     </div>
@@ -155,7 +155,7 @@ export default function Recruitment() {
                 <div className="w-screen mt-10">
                     <Banner data={content_banner_bottom} />
                 </div>
-                <div ref={recruitmentRef} className="mt-10 max-w-[731px]  w-full m-auto">
+                <div ref={recruitmentRef} className="mt-10 mb-[50px] max-w-[731px]  w-full m-auto">
                     <Form data={{ title: "Liên hệ với đội ngũ tuyển dụng", type: "tuyen-dung" }} />
                 </div>
             </div>

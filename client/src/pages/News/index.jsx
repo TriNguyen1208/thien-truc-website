@@ -127,22 +127,22 @@ export default function News() {
       </div>
       <div className="container-fluid flex flex-col gap-10 pt-10">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0 ">
-          <div className="lg:flex-1" />
-          <div className="flex-shrink-0">
+          <div className="lg:flex-1 justify-center" />
+          <div className="flex justify-center px-4">
             <ItemByType
               types={["Mới nhất", "Phổ Biến"]}
               handleClick={handleSortChange}
               current={sortBys.indexOf(sortBy)}
             />
           </div>
-          <div className="flex-1 flex justify-start sm:justify-end ">
+          <div className="flex-1 flex justify-end px-4">
             <ListType
               categories={categories}
               handleClick={handleClickfilter}
               current={filter}
             />
           </div>
-        </div>nhu cc
+        </div>
 
         <div className="grid grid-cols-12 gap-5 md:gap-10 px-4">
           {isLoadingDataFilter ? (

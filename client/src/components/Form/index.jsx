@@ -110,7 +110,7 @@ const Form = ({ data }) => {
                 <div className="flex flex-col w-full bg-green-50 px-8 py-8 gap-5">
                     <h2 className="text-(--dark-green) text-3xl font-bold">{title}</h2>
                     <form action="" className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
-                        <div className='grid grid-cols-12 gap-0 sm:gap-8'>
+                        <div className='grid grid-cols-12 gap-3 sm:gap-8'>
                             <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
                                 <label for="name" className="text-sm font-medium text-[#374151]">
                                     Họ và tên <span className="text-red-500">*</span>
