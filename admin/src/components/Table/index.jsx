@@ -8,6 +8,7 @@ const Table = ({
     width = null
 }) => {
     return (
+        <div className="max-h-[400px] overflow-y-auto">
         <table className="border-collapse w-full">
             {!isSetting &&
                 <thead>
@@ -15,7 +16,7 @@ const Table = ({
                         {columns.map((title, index) => (
                             <th
                                 key={index}
-                                className="px-4 py-3 align-middle whitespace-pre-line break-words overflow-hidden relative"
+                                className="px-4 py-3 align-middle whitespace-pre-line break-words overflow-hidden relative sticky top-0 bg-gray-50 z-10"
                                 style={{ width: width ? width[index] : 'auto' }}
                             >
                                 {title}
@@ -35,6 +36,7 @@ const Table = ({
                 ))}
             </tbody>
         </table>
+        </div>
     );
 };
 

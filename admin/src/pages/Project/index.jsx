@@ -8,9 +8,14 @@ import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
 import { toast } from 'react-toastify';
+import Table from '@/components/Table';
+import ProductImageCell from '@/components/ProductImageCell';
 // Còn sự kiện ấn vào nút trưng bày
 const StatusBox = ({ isFeatured }) => {
   return (
+    <div
+      className={`flex items-center justify-center w-full h-full cursor-pointer`}
+    >
     <div
       className={`
         w-5 h-5 flex items-center justify-center rounded-[3px] transition-all duration-200 cursor-pointer
@@ -36,6 +41,7 @@ const StatusBox = ({ isFeatured }) => {
           />
         </svg>
       )}
+      </div>
     </div>
   );
 };
@@ -151,6 +157,10 @@ export default function Project () {
   const handleSearchSuggestions = (query, filter, is_featured) => {
     return useProjects.getSearchSuggestions(query, filter === 'Tất cả khu vực' ? undefined : filter, is_featured);
   }
+  const columnWidths = ['9%', '10%', '32%', '13%', '12%', '9%', '13%'];
+
+  // Định nghĩa tiêu đề cột
+  const columns = ["Mã dự án", "Hình ảnh", "Tên dự án", "Vị trí", "Hoàn thành", "Trưng bày", "Thao tác"];
 
   return (
     <div>
@@ -177,67 +187,58 @@ export default function Project () {
           <div key = {region.id} className="mb-10 bg-white p-5 border border-md border-gray-200 rounded-lg shadow-md">
             <h2 className="text-[23px] font-bold text-gray-900 mb-1">{region.name}</h2>
             <p className="text-[14px] text-gray-500">{projects.length} dự án</p>
-            <table className='mt-9 w-full table-fixed border-collapse' cellPadding={10}>
-                <thead className='text-left border-b border-gray-200 text-[14px] font-normal text-gray-500'>
-                  <tr>
-                    <th className="w-[8%] px-3 py-3">Mã dự án</th>
-                    <th className="w-[10%] px-4 py-3">Hình ảnh</th>
-                    <th className="w-[35%] px-1 py-3">Tên dự án</th>
-                    <th className="w-[16%] px-4 py-3">Vị trí</th>
-                    <th className="w-[11%] px-4 py-3">Hoàn thành</th>
-                    <th className="w-[10%] px-4 py-3">Trưng bày</th>
-                    <th className="w-[10%] px-4 py-3">Thao tác</th>
-                  </tr>
-                </thead>
-            
-                <tbody className="text-left">
+            <Table
+              columns={columns}
+              data={projects.map(item => [
+                { type: "text", content: item.id },
+                {
+                  type: "component",
+                  component: (
+                    <ProductImageCell
+                      imageUrl={item.main_img || ""}
+                      productName={item.name}
+                    />
+                  ),
+                },
+                { type: "text", content: item.title },
+                { type: "text", content: item.province || 'Cập nhật sau' },
+                { type: "text", content: item.complete_time ? new Date(item.complete_time).toLocaleDateString('vi-VN') : 'Cập nhật sau' },
+                {
+                  type: "component",
+                  component: (
+                    <StatusBox
+                      isFeatured={item.is_featured}
+                      onClick={() => updateFeatureOne({ id: item.id, status: !item.is_featured })}
+                    />
+                  ),
+                },
+                {
+                  type: "array-components",
+                  components: [
+                    <button
+                      key="edit"
+                      className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
+                      onClick={() => navigate(`/quan-ly-du-an/chinh-sua-du-an/${item.id}`)}
+                    >
+                      <EditIcon />
+                    </button>,
+                    <button
+                      key="delete"
+                      className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
+                      onClick={() => {
+                        setcurrentDeleteId(item.id);
+                        setCancelOpen(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </button>,
+                  ],
+                },
+              ])}
+              width={columnWidths}
+              isSetting={false}
 
-                {projects.map((item) => (
-                  <tr key={item.id + '-' + region.id} className=" border-b border-gray-200 hover:bg-gray-100">
-                    <td className="py-4 px-3 text-black-100 font-medium">{item.id}</td>
-                    <td className="py-4 px-4">
-                      <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded" />
-                    </td>
-                    <td className="py-4 px-1 text-black max-w-[530px] ">
-                         <div className="line-clamp-2 overflow-hidden text-ellipsis">
-                          {item.title}
-                        </div>
-                      </td>
-                    <td className="py-4 px-4 text-gray-800">{item.province ? <span>{item.province}</span> : <span className="text-gray-500">Cập nhật sau</span>}</td>
-                    <td className="py-4 px-4 text-gray-800">{item.complete_time ? new Date(item.complete_time).toLocaleDateString('vi-VN') : <span className="text-gray-500">Cập nhật sau</span>}</td>
-                    <td className="py-4 px-9 item-center">
-                      <button
-                        onClick={() => {
-                          updateFeatureOne({ id: item.id, status: !item.is_featured });
-                        }}
-                      >
-                        <StatusBox isFeatured={item.is_featured} />
-                      </button>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-2">
-                      <button
-                        className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
-                        onClick={() => navigate(`/quan-ly-du-an/chinh-sua-du-an/${item.id}`)}
-                      >
-                        <EditIcon />
-                      </button>
-  
-                      <button
-                        className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
-                        onClick={() => {
-                          setcurrentDeleteId(item.id);
-                          setCancelOpen(true);
-                        }}
-                      >
-                        <DeleteIcon />
-                      </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                </tbody>
-              </table>
+            />
           </div>
         ))}
       </div>

@@ -8,10 +8,10 @@ import SearchBar from '@/components/Search';
 import useNews from '@/hooks/useNews';
 import Loading from '@/components/Loading'
 import { toast } from 'react-toastify';
-// Còn api xóa tin tứcs
+import Table from '@/components/Table';
+import ProductImageCell from '@/components/ProductImageCell';
 export default function News() {
 
-  const queryClient = useQueryClient();
   const { mutate: deleteOne } = useNews.news.deleteOne();
   // Thông tin của popup xác nhận hủy
   const [currentDeleteID, setcurrentDeleteId] = useState(null);
@@ -114,6 +114,11 @@ export default function News() {
     return useNews.getSearchSuggestions(query, filter === 'Tất cả thể loại' ? undefined : filter, is_published);
   };
 
+    // Định nghĩa chiều rộng cột
+  const columnWidths = ['10%', '10%', '40%', '13%', '14%', '11%'];
+
+  // Định nghĩa tiêu đề cột
+  const columns = ["Mã tin tức", "Ảnh", "Tiêu đề", "Trạng thái", "Ngày xuất bản", "Thao tác"];
 
   // Render
   return (
@@ -161,43 +166,41 @@ export default function News() {
             <h2 className="text-[23px] font-bold text-gray-900 mb-1">{category.name}</h2>
             <p className="text-[14px] text-gray-500">{news.length} tin tức</p>
 
-            <table className='mt-9 w-full table-fixed border-collapse' cellPadding={10}>
-              <thead className='text-left border-b border-gray-200 text-[14px] font-normal text-gray-500'>
-                <tr>
-                  <th className="w-[8%] px-3 py-3">Mã tin tức</th>
-                  <th className="w-[10%] px-4 py-3">Ảnh</th>
-                  <th className="w-[42%] px-1 py-3">Tiêu đề</th>
-                  <th className="w-[13%] px-4 py-3">Trạng thái</th>
-                  <th className="w-[12%] px-2 py-3">Ngày xuất bản</th>
-                  <th className="w-[11%] px-4 py-3">Thao tác</th>
-                </tr>
-              </thead>
-
-              <tbody className="text-left">
-
-              {news.map((item) => (
-                <tr key={item.id + '-' + category.id} className=" border-b border-gray-200 hover:bg-gray-100">
-                  <td className="py-4 px-3 text-black-100 font-medium">{item.id}</td>
-                  <td className="py-4 px-4">
-                    <img src={item.main_img || 'https://via.placeholder.com/50'} className="w-11 h-11 object-cover rounded" />
-                  </td>
-                  <td className="py-4 px-1 text-black max-w-[530px] overflow-hidden text-ellipsis line-clamp-2">{item.title}</td>
-                  <td className="py-4 px-3">
-                    <span className={`px-2 py-1 rounded-xl text-[12px] font-semibold ${item.is_published === true ? 'bg-black text-white' : 'bg-gray-200 text-black'}`}>
-                      {item.is_published === true ? 'Đã xuất bản' : 'Bản nháp'}
+          <Table
+              columns={columns}
+              data={news.map(item => [
+                { type: "text", content: item.id },
+                {
+                  type: "component",
+                  component: (
+                    <ProductImageCell
+                      imageUrl={item.main_img || ""}
+                      productName={item.name}
+                    />
+                  ),
+                },
+                { type: "text", content: item.title },
+                {
+                  type: "component",
+                  component: (
+                    <span className={`px-2 py-1 rounded-xl text-[12px] font-semibold ${item.is_published ? 'bg-black text-white' : 'bg-gray-200 text-black'}`}>
+                      {item.is_published ? 'Đã xuất bản' : 'Bản nháp'}
                     </span>
-                  </td>
-             <td className="py-4 px-2 text-gray-800">{item.public_date ? item.public_date : <span className="text-gray-500">Cập nhật sau</span>}</td>
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-2">
+                  ),
+                },
+                { type: "text", content: item.public_date || 'Cập nhật sau' },
+                {
+                  type: "array-components",
+                  components: [
                     <button
+                      key="edit"
                       className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
                       onClick={() => navigate(`/quan-ly-tin-tuc/chinh-sua-tin-tuc/${item.id}`)}
                     >
                       <EditIcon />
-                    </button>
-
+                    </button>,
                     <button
+                      key="delete"
                       className="border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
                       onClick={() => {
                         setcurrentDeleteId(item.id);
@@ -205,17 +208,16 @@ export default function News() {
                       }}
                     >
                       <DeleteIcon />
-                    </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              </tbody>
-            </table>
+                    </button>,
+                  ],
+                },
+              ])}
+              width={columnWidths}
+            />
           </div>
         ))}
+      </div>
+      <Notification {...cancelPopupData} />
     </div>
-    <Notification {...cancelPopupData} />
-    </div>
-  )
+  );
 }
