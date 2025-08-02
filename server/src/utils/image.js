@@ -2,7 +2,6 @@ import cloudinary from '#@/config/cloudinary.js';
 import fs from 'fs'
 import { JSDOM } from 'jsdom';
 const uploadImage = async (image, type) => {
-    console.log(image.path);
     const imageUpload = await cloudinary.uploader.upload(image.path, { 
         resource_type: "image",
         folder: type,

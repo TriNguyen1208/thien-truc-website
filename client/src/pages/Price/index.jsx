@@ -158,12 +158,12 @@
     <div ref={scrollTargetRef} className=" flex flex-col  p-[16px] lg:p-[32px]">
     <div className="bg-[#F0FDF4]  shadow-md rounded-xl xl:pt-[48px]">
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto mb-[16px] rounded-xl shadow-2xl overflow-hidden">
-        <div className=" font-bold text-[20px]  bg-white p-[24px] ">
+        <div className=" font-bold text-[20px] text-center bg-white p-[24px] ">
           BẢNG GIÁ SẢN PHẨM
         </div>
 
 
-          <div className="overflow-y-auto max-h-[600px]  ">
+          <div className="overflow-y-auto max-h-[600px] overflow-x-hidden no-scrollbar">
             <table className="min-w-full text-base table-fixed">
               <thead className="hidden md:table-header-group sticky top-0 z-20 bg-[#00A651] text-white shadow-md ">
                 <tr className='w-full'>
@@ -179,7 +179,7 @@
               <tbody>
                 {filteredData.map((cat) => (
                   <React.Fragment key={cat.category}>
-                    <tr>
+                    <tr className='sticky top-[48px] z-10 bg-[#00c37e]'>
                       <td colSpan={5}>
                         <div
                           className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[16px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"
@@ -228,8 +228,8 @@
                                     </div>
                                      <td className=" hidden md:table-cell md:w-[8%] md:p-[12px] md:text-center">{idx + 1}</td>
                                      <td className=" md:w-[40%] md:p-[12px] ">{product.name}</td>
-                                     <td className=" font-semibold  text-[#ff0000]  hidden md:table-cell  md:w-[15%] md:p-[12px] md:text-center">{product.price.toLocaleString('vi-VN')} </td>
-                                    <td className=" hidden md:table-cell  md:w-[17%] md:p-[12px] text-center">  {product.warranty ||0}  </td>
+                                     <td className=" font-semibold hidden md:table-cell  md:w-[15%] md:p-[12px] md:text-center">{product.price ? <span className=' text-[#ff0000] '>{product.price.toLocaleString('vi-VN')}</span> : <span className=' text-red-400 italic font-normal '>{"Cập nhật sau"}</span>} </td>
+                                    <td className=" hidden md:table-cell  md:w-[17%] md:p-[12px] text-center">  {product.warranty || <span className=' text-gray-500 italic font-normal '>{"Cập nhật sau"}</span>}  </td>
                                     <td className=" hidden md:table-cell text-green-800  md:w-[20%] md:p-[12px] ">
                                      <div className='w-full md:flex md:justify-center'>
                                        <Button

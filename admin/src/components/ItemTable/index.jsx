@@ -6,7 +6,7 @@ const ItemTable = ({ data, width }) => {
             {(data || []).map((item, index) => (
                 <td
                     key={index}
-                    className="px-4 py-3 align-middle whitespace-pre-line break-words overflow-hidden relative"
+                    className="px-4 py-3 align-middle whitespace-pre-line break-words overflow-hidden relative max-w-[200px]"
                     title={item.type === "text" ? item.content : undefined}
                     style={{ width: width ? width[index] : 'auto' }}
                 >

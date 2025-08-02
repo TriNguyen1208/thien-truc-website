@@ -8,13 +8,13 @@ import { Link, useSearchParams, useNavigation } from "react-router-dom";
 import homeQueries from "@/hooks/useHome";
 import useProducts from "@/hooks/useProducts";
 import useProjects from "@/hooks/useProjects";
-import TopNews from "@/components/TopNews";
 import { useState } from "react";
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { useEffect } from "react";
 import {
     MailOutlined
 } from '@ant-design/icons';
+import useNews from "@/hooks/useNews";
 import LazyLoad from 'react-lazyload';
 const CustomPrevArrow = (props) => {
     const { onClick } = props;
@@ -54,7 +54,8 @@ export default function Home() {
     //     //Không truyền width thì mặc định là full
     //     <GreenButton content={content} width="300px" handleClick={handleClick}/>
     // )
-
+    
+    const navigation = useNavigation();
     const { data: allData, isLoading: loadingAll } = homeQueries.getAll();
     const { data: highlightProduct, isLoadingHighlightProduct } = useProducts.getHighlightProducts();
     const { data: highlightProject, isLoadingHighlightProject } = useProjects.getHighlightProjects(filter === "Tất cả dự án" ? '' : filter);
@@ -99,7 +100,7 @@ export default function Home() {
     if (loadingAll || isLoadingHighlightProduct || isLoadingHighlightProject || isLoadingHighlightProjectRegion)
         return <Loading/>
 
-    const navigation = useNavigation();
+    const { data: topNews, isLoading: newsLoading, error: newsError } = useNews.getHighlightNews();
     if (loadingAll) {
         return (
             <Loading />
@@ -133,11 +134,36 @@ export default function Home() {
         <>
             {navigation.state == 'loading' && <Loading/>}
             <Banner data={dataBanner} />
-            <div>
-                <TopNews />
-                {/* Phần dự án tiêu biểu */}
-                {/* <FeaturedProjects /> */}
-            </div>
+                <div>
+                {/* Inlined TopNews Component */}
+                <section className="highlight-news w-full mx-auto border-2 border-[#16A34A] rounded-[10px] " style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}>
+                    {newsLoading ? (
+                        <div className="text-center text-gray-600">Đang tải tin nổi bật...</div>
+                    ) : newsError ? (
+                        <div className="text-center text-red-600">Không thể tải tin tức. Vui lòng thử lại sau.</div>
+                    ) : !topNews || topNews.length === 0 ? (
+                        <div className="text-center text-gray-600">Không có tin tức nổi bật.</div>
+                    ) : (
+                        <Carousel autoplay arrows dots={{ className: 'custom-dots' }}>
+                            {topNews.map((news) => (
+                                <div key={news.id}>
+                                    <div className="news-card-wrapper">
+                                        <div className="news-card">
+                                            <div
+                                                className="w-full aspect-[19/8] bg-cover bg-center text-center rounded-t-[10px]"
+                                                style={{ backgroundImage: `url(${news.main_img})` }}
+                                            ></div>
+                                            <div className="card-content text-left text-gray-800 text-base font-medium bg-white rounded-b-[10px]">
+                                                <h4 className="text-lg font-semibold mb-2 text-gray-800">{news.title}</h4>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{news.main_content}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </Carousel>
+                    )}
+                </section>
             <div className="bg-[var(--light-green-banner)] text-center p-[45px]">
                 <div className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
                     Dự án tiêu biểu
@@ -188,6 +214,7 @@ export default function Home() {
                     </Carousel>
                 </div>
             </div>
+            </div>
             <div className="container-fluid py-[70px]">
                 <div className="text-center">
                     <div className="text-[35px] font-[600] text-[var(--dark-green)] mb-[20px]">
@@ -207,7 +234,7 @@ export default function Home() {
                             <ArrowLeft color="white" size={20} />
                         </div>
                     </button>
-                    <button className="absolute right-[-40px] md:right-[-20px] top-1/2 z-10  translate-y-[-10px]"
+                    <button className="absolute right-[-40px] md:right-[-20px] top-1/2 z-10"
                         onClick={handleNext}
 
                     >
