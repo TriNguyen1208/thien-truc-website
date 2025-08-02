@@ -7,7 +7,6 @@ import Notification from '../../components/Notification';
 import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
-import { toast } from 'react-toastify';
 import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';
 // Còn sự kiện ấn vào nút trưng bày
@@ -66,10 +65,7 @@ export default function Project () {
     buttonLabel2: 'Xóa dự án',
     buttonAction2: async () => 
       {
-        await deleteOne(currentDeleteID, {
-        onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
-        onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
-        });
+        await deleteOne(currentDeleteID);
         queryClient.invalidateQueries(['admin_projects']);
         setCancelOpen(false)
       }
