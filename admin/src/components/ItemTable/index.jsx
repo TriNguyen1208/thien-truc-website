@@ -24,6 +24,7 @@ const ItemTable = ({ data, width }) => {
                             placeholder={
                                 <div className="bg-gray-200 w-full h-full rounded-[20px]" />
                             }
+                            style={{width: '48px', height: '32px'}}
                         >
                             <img
                                 src={item.path}

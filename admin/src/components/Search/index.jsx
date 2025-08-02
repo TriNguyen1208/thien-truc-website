@@ -200,6 +200,7 @@ const SearchBar = ({data}) => {
                                                         placeholder={
                                                             <div className="bg-gray-200 w-full h-full rounded-[20px]" />
                                                         }
+                                                        style={{width: '20px', height: '20px'}}
                                                     >
                                                         <img src={item.img} className='h-5 w-5'/>
                                                     </LazyLoad>

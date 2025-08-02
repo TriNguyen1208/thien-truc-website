@@ -83,6 +83,7 @@ export default function ProjectDetail() {
                             throttle={100}
                             once
                             placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                            style={{width: '100%', height: '100%'}}
                         >
                             <img className="w-full h-full object-cover mb-[50px]" src={projectContentData.project.main_img} alt="Hình ảnh dự án"/>
                         </LazyLoad>)}

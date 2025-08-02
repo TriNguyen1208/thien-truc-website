@@ -108,6 +108,7 @@ export default function Recruitment() {
                                     throttle={100}
                                     once
                                     placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                                    style={{width: '100%', height: '100%'}}
                                 >
                                     <img src={data.culture_img_1} alt="" className="w-full h-full object-cover rounded-md"/>
                                 </LazyLoad>
@@ -119,6 +120,7 @@ export default function Recruitment() {
                                     placeholder={
                                         <div className="bg-gray-200 w-full h-full rounded-[20px]" />
                                     }
+                                    style={{width: '100%', height: '100%'}}
                                 >
                                     <img src={data.culture_img_2} alt="" className="w-full h-full object-cover rounded-md"/>
                                 </LazyLoad>
@@ -130,6 +132,7 @@ export default function Recruitment() {
                                     placeholder={
                                         <div className="bg-gray-200 w-full h-full rounded-[20px]" />
                                     }
+                                    style={{width: '100%', height: '100%'}}
                                 >
                                     <img src={data.culture_img_3} alt="" className="w-full h-full object-cover rounded-md"/>
                                 </LazyLoad>
@@ -141,6 +144,7 @@ export default function Recruitment() {
                                     placeholder={
                                         <div className="bg-gray-200 w-full h-full rounded-[20px]" />
                                     }
+                                    style={{width: '100%', height: '100%'}}
                                 >
                                     <img src={data.culture_img_4} alt="" className="w-full h-full object-cover rounded-md"/>
                                 </LazyLoad>
