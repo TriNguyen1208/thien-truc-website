@@ -87,14 +87,12 @@ export default function Home() {
 
     const handlePrev = () => {
         setIndex((prev) => (
-            // console.log(prev + 1, maxIndex);
             Math.max(prev - 1, 0)
         ));
     }
 
     const handleNext = () => {
         setIndex((prev) => (
-            // console.log(prev + 1, maxIndex);
             Math.min(prev + 1, maxIndex)
         )
         );
@@ -108,8 +106,6 @@ export default function Home() {
             <Loading />
         )
     }
-    console.log(highlightProject);
-    console.log(highlightProjectRegion);
     const categoriesName = (highlightProjectRegion ?? []).map(item => item.name);
     const categoriesData = ["Tất cả dự án", ...categoriesName];
     const idSelectedCategories = filter ? categoriesData.findIndex((name) => name === filter) : 0;

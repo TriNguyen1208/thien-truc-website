@@ -41,7 +41,6 @@ export default function ProductDetail() {
     if (isLoadingProduct) {
         return (<Loading />)
     }
-    console.log(product)
 
     const goBack = () => {
         navigate(-1)
@@ -111,7 +110,6 @@ export default function ProductDetail() {
                             <ul>
                                 {
                                     Object.entries(product.product_specifications).map((spec, index) => {
-                                            console.log('hi')
                                         return (
                                             <li key={index} className={` flex flex-row h-[40px]  items-center p-[10px] my-[5px] ${index % 2 == 0 ? 'bg-[#F9FAFB]' : ''}`}>
                                                 <div className="w-[33%]">{spec[0]}</div>
