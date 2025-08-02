@@ -135,14 +135,14 @@ export default function News() {
               current={sortBys.indexOf(sortBy)}
             />
           </div>
-          <div className="flex-1 flex justify-start sm:justify-end w-[500px]">
+          <div className="flex-1 flex justify-start sm:justify-end ">
             <ListType
               categories={categories}
               handleClick={handleClickfilter}
               current={filter}
             />
           </div>
-        </div>
+        </div>nhu cc
 
         <div className="grid grid-cols-12 gap-5 md:gap-10 px-4">
           {isLoadingDataFilter ? (
