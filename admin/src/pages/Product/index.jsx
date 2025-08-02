@@ -216,7 +216,7 @@ const Product = () => {
         isCheckbox: false,
       }
     ));
-    (item.highlight_features || []).forEach(item => {
+    (item.highlight_feature_ids || []).forEach(item => {
       valueCharacteristic[item].isCheckbox = true;
     })
  

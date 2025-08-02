@@ -13,6 +13,7 @@ const ProductImageCell = ({ imageUrl, productName = "Sản phẩm", preview = tr
             placeholder={
                 <div className="bg-gray-200 w-full h-full rounded-[20px]" />
             }
+            style={{width: '100%', height: '100%'}}
         >
           <Image
             width="100%"
