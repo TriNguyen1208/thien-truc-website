@@ -115,12 +115,10 @@ function AllCategories({handleViewMore}){
 }
 function Category({ category, query = '', limit = '', handleViewProduct, handlePageChange,  isQuery = false, page = 1 }) {
 
-    console.log(category,query,limit,page)
     const { data: products, isLoading: isLoadingProductByCategory } = useProducts.products.getList(query, (category || {name: ""}).name, '', page, limit)
     if (isLoadingProductByCategory) {
         return (<Loading />)
     }
-    console.log(products)
     if (products.results.length == 0) {
         return (<div className='mb-[20px]'>Không có sản phẩm</div>)
     }
