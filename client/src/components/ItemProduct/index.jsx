@@ -35,7 +35,7 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
             className="flex flex-col h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
             style={{ width, height }}
         >
-            <div className="w-[full] h-[322px]  bg-[#F3F4F6] rounded-t-[6px] p-[8px]">
+            <div className="w-full aspect-square  bg-[#F3F4F6] rounded-t-[6px] p-[8px]">
                 {product.product_img ? ( 
                 <LazyLoad
                     height={200}
@@ -66,7 +66,7 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
 
                 {handleDisplayHighlights(product)}
             </div>
-            <div className="mt-auto mb-[0px] px-[4px] pb-[4px] w-full flex justify-center lg:px-4">
+            <div className="mt-auto mb-[0px] px-[4px] pb-[4px] w-full flex justify-center lg:py-4 lg:px-4">
                 <GreenButton content="Xem thêm" handleClick={handleClick} />
             </div>
         </div>

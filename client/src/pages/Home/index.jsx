@@ -16,6 +16,7 @@ import {
 } from '@ant-design/icons';
 import useNews from "@/hooks/useNews";
 import LazyLoad from 'react-lazyload';
+import { useNavigate } from "react-router-dom";
 const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
@@ -42,6 +43,7 @@ const CustomNextArrow = (props) => {
 
 
 export default function Home() {
+    const navigate = useNavigate();
     const [index, setIndex] = useState(0);
     const [maxIndex, setMaxIndex] = useState(0);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -135,6 +137,7 @@ export default function Home() {
             {navigation.state == 'loading' && <Loading/>}
             <Banner data={dataBanner} />
                 <div>
+                
                 {/* Inlined TopNews Component */}
                 <section className="highlight-news w-full mx-auto border-2 border-[#16A34A] rounded-[10px] " style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}>
                     {newsLoading ? (
@@ -144,9 +147,21 @@ export default function Home() {
                     ) : !topNews || topNews.length === 0 ? (
                         <div className="text-center text-gray-600">Không có tin tức nổi bật.</div>
                     ) : (
-                        <Carousel autoplay arrows dots={{ className: 'custom-dots' }}>
+                        <Carousel
+                        autoplay
+                        arrows 
+                        dots={{ className: 'custom-dots' }}
+                        // prevArrow={<CustomPrevArrow />}
+                        // nextArrow={<CustomNextArrow />}
+                        // className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full [&_.slick-slider]:h-full [&_.slick-track]:h-full [&_.slick-slide]:h-full"
+                        // arrows={true}
+                            >
                             {topNews.map((news) => (
-                                <div key={news.id}>
+                                <div key={news.id} 
+                                className="cursor-pointer"
+                                     onClick={() => {
+                                        navigate(`tin-tuc/${news.id}`)
+                                        }}>
                                     <div className="news-card-wrapper">
                                         <div className="news-card">
                                             <div
@@ -256,7 +271,7 @@ export default function Home() {
                                             className="w-1/2 sm:w-1/4 flex-shrink-0 px-2"
                                         >
                                             <div 
-                                            className = 'aspect-[4/11] w-full max-w-[220px] max-h-[500px] sm:aspect-[40/111]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[550px] xl:max-h-[540px] lg:max-w-[280px]'
+                                            className = 'aspect-[4/11] w-full max-w-[220px] max-h-[500px] sm:aspect-[40/111]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[550px] xl:max-h-[580px] lg:max-w-[280px]'
                                             >
                                                 <ItemProduct product={item}
                                                 />
