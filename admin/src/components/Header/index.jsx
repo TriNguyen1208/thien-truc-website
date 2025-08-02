@@ -66,7 +66,6 @@ const Header = () => {
                       onClick={async () => {
                         await logoutUser();
                         dispatch(logout())
-                        navigate('/dang-nhap')
                       }
                   }>
                     Đăng xuất
