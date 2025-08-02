@@ -27,10 +27,7 @@ export default function News() {
     buttonLabel2: 'Xóa tin tức',
     buttonAction2:  () => 
       {
-        deleteOne(currentDeleteID,{
-                  onSuccess: (success)=> { toast.success(success ? success.message: "Xóa thành công!")},
-                  onError:(error)=>{toast.error(error ?  error.message: "Xóa thất bại!") }
-        });
+        deleteOne(currentDeleteID);
         setNotificationOpen(false)
       }
   };

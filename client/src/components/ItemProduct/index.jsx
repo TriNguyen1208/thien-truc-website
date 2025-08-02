@@ -1,4 +1,5 @@
 import GreenButton from "@/components/GreenButton";
+import { FeatureDotIcon } from "../Icon";
 import {
     ProductOutlined
 } from '@ant-design/icons';
@@ -20,7 +21,7 @@ function handleDisplayHighlights(product) {
             {
                 Array.from({ length: numberOfHighlights }).map((_, index) => (
                     <div key={index} className="truncate overflow-hidden whitespace-nowrap  text-[#374151]">
-                        <p className=" truncate overflow-hidden whitespace-nowrap  text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,2vw,16px)] text-[#374151]">{product.highlight_features[index]}</p>
+                        <p className=" flex flex-row items-center gap-x-2 truncate overflow-hidden whitespace-nowrap  text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,2vw,16px)] text-[#374151]"><FeatureDotIcon/> {product.highlight_features[index]}</p>
 
                     </div>
                 ))

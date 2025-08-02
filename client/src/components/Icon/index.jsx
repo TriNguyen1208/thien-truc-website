@@ -31,3 +31,8 @@ export const FacebookIcon = () => (
         <path d="M34 14H29.9091C28.1008 14 26.3666 14.5531 25.0879 15.5377C23.8093 16.5223 23.0909 17.8576 23.0909 19.25V22.4H19V26.6H23.0909V35H28.5455V26.6H32.6364L34 22.4H28.5455V19.25C28.5455 18.9715 28.6891 18.7045 28.9449 18.5075C29.2006 18.3106 29.5474 18.2 29.9091 18.2H34V14Z" stroke="#166534" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 )
+export const FeatureDotIcon = () => (
+    <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14.0398 6.90909L7.39773 13.5909L0.676136 6.90909L7.39773 0.227272L14.0398 6.90909Z" fill="#16A34A"/>
+    </svg>
+)
