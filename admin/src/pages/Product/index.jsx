@@ -109,7 +109,7 @@ const Product = () => {
       { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
     ])
   }, [categories]);
-  if (isLoadingProductData || isLoadingProductCategoriesData || isPendingUpdateFeatureOne || isPendingDeleteOneProduct || isPendingCreateOneProduct || isPendingUpdateOneProduct) {
+  if (isLoadingProductData || isLoadingProductCategoriesData || isPendingDeleteOneProduct || isPendingCreateOneProduct || isPendingUpdateOneProduct) {
     return (
       <Loading/>
     )
