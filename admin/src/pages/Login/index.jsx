@@ -17,6 +17,7 @@ const AuthPopupManager = () => {
   const rawToken = searchParams.get('token');
   const token = rawToken?.trim();
   const [send, isSending] = useState(false);
+  const [kp, iskp] = useState(false);
   const urlStep = searchParams.get('step');
 
   useEffect(() => {
@@ -71,6 +72,7 @@ const AuthPopupManager = () => {
   };
 
   const handleResetPassword = async ({ newPassword, confirmPassword }) => {
+    iskp(true);
     if (newPassword !== confirmPassword) {
       return toast.error('Mật khẩu không khớp');
     }
@@ -88,6 +90,8 @@ const AuthPopupManager = () => {
     } catch (err) {
       const message = err?.response?.data?.message || err?.message || "Lỗi khi khôi phục mật khẩu";
       toast.error(message);
+    } finally {
+      iskp(false);
     }
   };
 
@@ -149,6 +153,7 @@ const AuthPopupManager = () => {
   const currentStep = steps[step];
 
   if (step === 'forgot' && send) return <Loading />;
+  if (step === 'reset' && kp) return <Loading />;
   return (
     <PopupForm
       icon={currentStep.icon}
