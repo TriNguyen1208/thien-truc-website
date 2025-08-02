@@ -18,6 +18,7 @@ function Picture({ url }) {
                     throttle={100}
                     once
                     placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                    style={{width: '100%', height: '100%'}}
                 >
                     <img 
                         src={url}

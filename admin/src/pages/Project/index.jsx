@@ -8,7 +8,6 @@ import SearchBar from '@/components/Search';
 import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
 import { toast } from 'react-toastify';
-import LazyLoad from 'react-lazyload';
 import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';
 // Còn sự kiện ấn vào nút trưng bày
