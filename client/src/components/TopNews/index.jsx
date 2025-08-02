@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import useNews from "@/hooks/useNews";
-
+import LazyLoad from 'react-lazyload';
 const TopNews = () => {
   const { data: topNews, isLoading, error } = useNews.getHighlightNews();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,11 +30,19 @@ const TopNews = () => {
         <div className="top-news-carousel-container">
         <div className="news-card-wrapper" key={currentNews.id}>
             <div className="news-card">
-            <img src={currentNews.main_img} alt={currentNews.title} />
-            <div className="card-content">
-                <h3>{currentNews.title}</h3>
-                <p>{currentNews.main_content}</p>
-            </div>
+              <LazyLoad
+                  height={200}
+                  offset={100}
+                  throttle={100}
+                  once
+                  placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+              >
+                <img src={currentNews.main_img} alt={currentNews.title}/>
+              </LazyLoad>
+              <div className="card-content">
+                  <h3>{currentNews.title}</h3>
+                  <p>{currentNews.main_content}</p>
+              </div>
             </div>
         </div>
         </div>

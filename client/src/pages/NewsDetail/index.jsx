@@ -4,7 +4,8 @@ import Loading from "@/components/Loading"
 import BackButton from "@/components/BackButton";
 import LabelType from "@/components/LabelType";
 import { useEffect } from "react";
-
+import LazyLoad from "react-lazyload";
+import renderWithLazyLoad from "../../utils/renderWithLazyLoad";
 export default function NewsDetail(){
     const {id: news_id} = useParams();
     const mutation = useNews.news.updateNumReaders(news_id);
@@ -30,9 +31,9 @@ export default function NewsDetail(){
         <>
             {navigation.state == 'loading' && <Loading/>}
             <div className="flex flex-row bg-[#F9FAFB] py-10">
-                <div className="flex flex-col gap-3 m-auto w-3xl">
+                <div className="flex flex-col gap-3 m-auto w-3/5">
                     <BackButton data={{content: "Quay lại danh sách tin tức", handleClick: handleClick}}/>
-                    <div className="flex flex-col shadow-2xl w-full bg-white py-5 px-10 rounded-sm gap-3">
+                    <div className="flex flex-col shadow-2xl w-full bg-white py-5 px-6 rounded-sm gap-3">
                         <div>
                             <LabelType data={{content: news.news.category.name, color: news.news.category.rgb_color}}/>
                         </div>
@@ -45,15 +46,21 @@ export default function NewsDetail(){
                         </div>
                         <div className="flex flex-col gap-12">
                             <div>
-                                <img 
-                                    src={news.news.main_img} 
-                                    alt="" 
-                                    className="w-full h-full object-cover"
-                                />
+                                <LazyLoad
+                                    height={200}
+                                    offset={100}
+                                    throttle={100}
+                                    once
+                                    placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                                >
+                                    <img 
+                                        src={news.news.main_img} 
+                                        alt="" 
+                                        className="w-full h-full object-cover"
+                                    />
+                                </LazyLoad>
                             </div>
-                            <div
-                                dangerouslySetInnerHTML={{ __html: news.content }} 
-                            />
+                            <div className="break-words">{renderWithLazyLoad(news.content)}</div>
                         </div>
                     </div>
                 </div>

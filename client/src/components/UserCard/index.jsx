@@ -1,6 +1,6 @@
 import React from 'react';
 import { Phone } from 'lucide-react';
-
+import LazyLoad from 'react-lazyload';
 const UserCard = ({ data }) => {
   const {
     image_avatar,
@@ -18,11 +18,19 @@ const UserCard = ({ data }) => {
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
             {image_avatar ? (
-              <img
-                src={image_avatar}
-                alt={name}
-                className="w-full h-full object-cover"
-              />
+              <LazyLoad
+                  height={200}
+                  offset={100}
+                  throttle={100}
+                  once
+                  placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+              >
+                <img
+                  src={image_avatar}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                />
+              </LazyLoad>
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                 <span className="text-gray-400 text-2xl">👤</span>

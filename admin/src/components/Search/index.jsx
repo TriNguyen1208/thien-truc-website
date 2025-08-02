@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { SearchIcon, FilterIcon, OpenIcon } from '../Icon';
+import LazyLoad from 'react-lazyload';
 const SearchBar = ({data}) => {
     //prop
     const {
@@ -190,7 +191,18 @@ const SearchBar = ({data}) => {
                                             ): 
                                             (
                                                 <>
-                                                    <img src={item.img} className='h-5 w-5'/>
+                                                    <LazyLoad
+                                                        height={200}
+                                                        offset={100}
+                                                        throttle={100}
+                                                        once
+                                                        scrollContainer='.scroll-wrapper'
+                                                        placeholder={
+                                                            <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                                                        }
+                                                    >
+                                                        <img src={item.img} className='h-5 w-5'/>
+                                                    </LazyLoad>
                                                     {item.query}
                                                 </>
                                             )

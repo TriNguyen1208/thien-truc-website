@@ -2,27 +2,48 @@ import cloudinary from '#@/config/cloudinary.js';
 import fs from 'fs'
 import { JSDOM } from 'jsdom';
 const uploadImage = async (image, type) => {
+    console.log(image.path);
     const imageUpload = await cloudinary.uploader.upload(image.path, { 
         resource_type: "image",
-        folder: type
+        folder: type,
+        transformation: [{
+            width: 1200,
+            crop: 'limit',
+            quality: 'auto:eco',
+            fetch_format: 'auto',
+            flags: 'progressive',
+            format: 'auto',
+        }]
     });
+    // Tạo URL tối ưu (dùng WebP nếu trình duyệt hỗ trợ)
+    const optimizedUrl = imageUpload.secure_url.replace('/upload/', '/upload/f_auto,q_auto/');
+    // Xoá file tạm trong local
     fs.unlinkSync(image.path);
-    const imageUrl = imageUpload.secure_url;
-    return imageUrl;
+    return optimizedUrl;
 }
 
 const deleteImage = async(image_url_array) => {
     let url_array = [];
     for(let image_url of image_url_array){
         const parts = image_url.split('/upload/');
+
         if(parts.length < 2) continue;
-        const pathWithExtension = parts[1];
-        const withoutVersion = pathWithExtension.replace(/^v\d+\//, '')
-        url_array.push(withoutVersion.replace(/\.[^/.]+$/, ''));
+
+        let pathWithExtension = parts[1];
+
+        pathWithExtension = pathWithExtension.replace(/^[^/]*\/+/, '');
+        // Bỏ version nếu có (v123456789/)
+        pathWithExtension = pathWithExtension.replace(/^v\d+\//, '');
+
+        // Bỏ phần mở rộng .jpg, .png, ...
+        const public_id = pathWithExtension.replace(/\.[^/.]+$/, '');
+        console.log(public_id)
+        url_array.push(public_id)
     }
     if (url_array.length === 0) return;
     try {
-        await cloudinary.api.delete_resources(url_array);
+        const res = await cloudinary.api.delete_resources(url_array);
+        console.log(res);
     } catch (error) {
         console.error("Delete error:", error);
     }

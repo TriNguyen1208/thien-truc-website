@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import {
     MailOutlined
 } from '@ant-design/icons';
-
+import LazyLoad from 'react-lazyload';
 const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
@@ -275,11 +275,19 @@ export default function Home() {
                         className="aspect-[16/9] w-full rounded-[20px]"
                         style={{ boxShadow: "rgba(100, 100, 111, 0.2) -3px 12px 58px 5px" }}
                     >
-                        <img
-                            src={homePageData.aboutus_img}
-                            className="w-full h-full rounded-[20px] object-cover"
-                            alt="About us"
-                        />
+                        <LazyLoad
+                            height={200}
+                            offset={100}
+                            throttle={100}
+                            once
+                            placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                        >
+                            <img
+                                src={homePageData.aboutus_img}
+                                className="w-full h-full rounded-[20px] object-cover"
+                                alt="About us"
+                            />
+                        </LazyLoad>
                     </div>
                 </div>
             </div>

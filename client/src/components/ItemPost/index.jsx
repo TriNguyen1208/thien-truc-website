@@ -7,6 +7,7 @@ import {
     MailOutlined
 } from '@ant-design/icons';
 import ShareButton from '@/components/ShareButton';
+import LazyLoad from 'react-lazyload';
 
 const ItemPost = ({ data, id= "", width = "100%"}) => {
     const {
@@ -34,11 +35,19 @@ const ItemPost = ({ data, id= "", width = "100%"}) => {
     const renderImage = () => (
         <div className="relative w-full h-60 bg-gray-200 rounded-t-lg overflow-hidden">
             {image ? (
-                <img
-                    src={image}
-                    alt={title}
-                    className="w-full h-full object-cover"
-                />
+                <LazyLoad
+                    height={200}
+                    offset={100}
+                    throttle={100}
+                    once
+                    placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
+                >
+                    <img
+                        src={image}
+                        alt={title}
+                        className="w-full h-full object-cover"
+                    />
+                </LazyLoad>
             ) : (
                 <div className="w-full h-full flex items-center justify-center">
                     <MailOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />

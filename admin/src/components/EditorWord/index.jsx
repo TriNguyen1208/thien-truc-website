@@ -46,7 +46,7 @@ const EditorWord = ({ form, setForm }) => {
 
               // 👉 Tạo URL blob để preview ảnh
               const blobUrl = URL.createObjectURL(file);
-              callback(blobUrl, { title: file.name }); // ✅ src = blob URL
+              callback(blobUrl, { title: file.name });
             };
             input.click();
           }

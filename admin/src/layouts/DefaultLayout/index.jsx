@@ -31,7 +31,7 @@ const {
 
       <div className="flex-1 flex flex-col overflow-hidden ">
         <Header />
-        <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-100 py-13 pr-6 pl-7">
+        <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-100 py-13 pr-6 pl-7 scroll-wrapper">
           <div className="flex justify-between items-center mb-4 ">
              <div className="flex items-center gap-3">
               {hasButtonBack && (
