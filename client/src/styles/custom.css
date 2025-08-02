@@ -7,7 +7,18 @@
   margin-right: auto;
   margin-left: auto;
 }
-
+@media (min-width: 390px) {
+  .container-fluid {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+}
+@media (min-width: 1024px) {
+  .container-fluid {
+    padding-right: 36px;
+    padding-left: 36px;
+  }
+}
 /* Màu chủ đạo */
 :root {
   --green-bg: #16A34A;

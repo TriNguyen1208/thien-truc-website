@@ -3,7 +3,6 @@ import {
     ProductOutlined
 } from '@ant-design/icons';
 function handleDisplayHighlights(product) {
-    // const numberOfHighlights = Math.min((product.highlight_features || ['Tính năng 1', 'Tính năng 2', 'Tính năng 3']).length, 3);
     const numberOfHighlights = Math.min((['Tính năng 1', 'Tính năng 2', 'Tính năng 3']).length, 3);
     const clampClass =
         numberOfHighlights === 0 ? 'line-clamp-5' :
@@ -13,15 +12,15 @@ function handleDisplayHighlights(product) {
                         'line-clamp-1';
     const arr = ['Tính năng 1', 'Tính năng 2', 'Tính năng 3'];
     return (
-        <div className="flex flex-col gap-y-[4px]">
+        <div className="flex flex-col pb-[4px]">
 
-            <div className={`${clampClass} text-[14px]`}>
-                {product.description}
+            <div className={`${clampClass} text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,2vw,16px)]`}>
+                {product.description} test description test descriptiontest descriptiontest descriptiontest descriptiontest description
             </div>
             {
                 Array.from({ length: numberOfHighlights }).map((_, index) => (
-                    <div key={index} className="truncate overflow-hidden whitespace-nowrap text-[14px] text-[#374151]">
-                        <p className=" truncate overflow-hidden whitespace-nowrap  text-[14px] text-[#374151]">{arr[index]}</p>
+                    <div key={index} className="truncate overflow-hidden whitespace-nowrap  text-[#374151]">
+                        <p className=" truncate overflow-hidden whitespace-nowrap  text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,2vw,16px)] text-[#374151]">{arr[index]}</p>
 
                     </div>
                 ))
@@ -32,10 +31,10 @@ function handleDisplayHighlights(product) {
 function ItemProduct({product, handleClick , width = "w-full", height = "h-full"}) {
     return (
         <div
-            className="flex flex-col w-full h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
+            className="flex flex-col h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out"
             style={{ width, height }}
         >
-            <div className="w-[full] h-[322px]  bg-[#F3F4F6] rounded-t-[6px] p-[8px]">
+            <div className="aspect-square w-full  bg-[#F3F4F6] rounded-t-[6px] p-[4px]">
                 {product.product_img ? ( <img
                     src={product.product_img}
                     alt={product.name}
@@ -44,19 +43,19 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
                     <ProductOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
                 </div>)}
             </div>
-            <div className="flex flex-col gap-y-[4px] w-full  p-[16px]">
+            <div className="flex flex-col w-full px-[8px] lg:px-4 lg:pt-4 ">
                 <div >
-                    <h2 className="line-clamp-2  text-[20px] text-black ">
-                        {product.name}
+                    <h2 className="line-clamp-2  text-[clamp(14px,3vw,18px)] sm:text-[clamp(14px,2vw,18px)] text-black ">
+                        {product.name}f fsdfsdfs dfsdfsdf 
                     </h2>
                 </div>
-                <div className="line-clamp-1 text-[23px] text-[#ff0000] font-semibold">
+                <div className="line-clamp-1 text-[clamp(14px,3vw,18px)] sm:text-[clamp(14px,2vw,18px)] text-[#ff0000] font-semibold">
                    {typeof product.price === "number" ? product.price.toLocaleString("vi-VN") + " ₫" : "Chưa có giá"}
                 </div>
 
                 {handleDisplayHighlights(product)}
             </div>
-            <div className="mt-auto mb-[0px] p-[8px] w-full flex justify-center">
+            <div className="mt-auto mb-[0px] px-[4px] pb-[4px] w-full flex justify-center lg:px-4">
                 <GreenButton content="Xem thêm" handleClick={handleClick} />
             </div>
         </div>

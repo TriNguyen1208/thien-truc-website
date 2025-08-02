@@ -148,7 +148,7 @@ export default function Project() {
             <div className="container-fluid">
                 <div className="my-[40px] text-center">
                     <h1 className='text-4xl mb-[30px] font-bold'>Công trình tiêu biểu</h1>
-                    <div className="mb-[30px] w-[90%] lg:w-[70%] xl:w-[60%] mx-auto">
+                    <div className="mb-[30px] max-w-[70%] mx-auto">
                         <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
                     </div>
                 </div>

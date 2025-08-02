@@ -17,57 +17,39 @@ function GoBackListProduct({ goBack, categorySelected, query }) {
         </div> : <div></div>
     )
 }
-function ProductsContainter({ filter, query, page, categories, handleViewMore, handleViewProduct, handlePageChange }) {
+function ProductsContainter({ filter, query, page, categories, handleViewMore, handlePageChange }) {
 
     let props = undefined
     if (filter === 'Tất cả sản phẩm' && query === '') {
-        return (
-            categories.map((category, index) => {
-                props = {
-                    category: category,
-                    handleViewMore: handleViewMore,
-                    handleViewProduct: handleViewProduct,
-                    limit: 4
-                }
-                return (
-                    <div key={index}>
-                        <Category {...props} />
-                    </div>
-                )
-            })
+        return (     
+            <AllCategories handleViewMore = {handleViewMore}/>
         )
     } else if (query === '') {
         props = {
             category: categories.find(obj => obj.name === filter),
-            handleViewMore: null,
-            isPaging: true,
             page: page,
             handlePageChange: handlePageChange,
-            handleViewProduct: handleViewProduct
+        
         }
 
     } else {
         if (filter === 'Tất cả sản phẩm') {
             props = {
                 category: categories.find(obj => obj.name === filter),
-                handleViewMore: null,
-                isPaging: true,
                 isQuery: true,
                 query: query,
                 page: page,
                 handlePageChange: handlePageChange,
-                handleViewProduct: handleViewProduct
+            
             }
 
         } else {
             props = {
                 category: categories.find(obj => obj.name === filter),
-                handleViewMore: null,
-                isPaging: true,
                 page: page,
                 query: query,
                 handlePageChange: handlePageChange,
-                handleViewProduct: handleViewProduct
+              
             }
 
         }
@@ -75,19 +57,15 @@ function ProductsContainter({ filter, query, page, categories, handleViewMore, h
     return (<Category {...props} />)
 }
 
-function ListProduct({ products, handleViewProduct }) {
+function ListProduct({ products }) {
     return (
-        <div className=' grid grid-cols-1 place-items-center py-[20px] gap-y-[20px] md:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4'>
+        <div className=' grid grid-cols-2 place-items-center p-2 lg:p-4 gap-2 sm:grid-cols-4  ' >
             {
-                products.map((product, i) => {
-                    console.log(product);
+                (products || []).map((product, i) => {
                     return (
-                        <Link to = {`/san-pham/${product.id}`}>
-                            <div key={i} className='h-[620px] w-[90%] sm:w-[70%] md:w-[90%]'>
-                                <ItemProduct product={products[i]}
-                                // handleClick={() => handleViewProduct(product)}
-                                />
-                            </div>
+                        <Link key={i} className=' aspect-[4/9] w-full max-w-[220px] max-h-[460px] sm:aspect-[40/97]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[550px] xl:max-h-[540px] lg:max-w-[280px]' to = {`/san-pham/${product.id}` }>
+                          
+                                <ItemProduct product={products[i]} />
                         </Link>
 
                     )
@@ -100,40 +78,72 @@ function ListProduct({ products, handleViewProduct }) {
     )
 
 }
+function AllCategories({handleViewMore}){
+    const { data: products, isLoading: isLoadingProducts } = useProducts.products.getListByCategory('','','','',4)
+    if(isLoadingProducts){
+        return(<Loading/>)
+    }
+    
+    return(
+        <div className='w-full h-full'>
+             {
+                Object.keys(products).map(key => (
+                        <div className='flex flex-col  border-[1px] border-[#E5E7EB] rounded-[8px] mb-[20px]'>
+                            <div className='border-b-[1px] border-[#E5E7EB] py-[12px] shadow-sm'>
+                    
+                            <div className='border-l-[5px] border-[#1E2A38] px-[8px] ml-[12px]'>
+                                <h1 className='text-[20px] lg:text-[30px] leading-none text-[#1E2A38]'>
+                                    { key}
+                                </h1>
+                            </div>
+                        </div>
+                        <div>
+                            <ListProduct products={products[key]}  />
+                        </div>
+                            <div className='flex justify-center py-[8px] border-t-[1px] border-[#E5E7EB]'>
+                            <div className="h-fit w-fit">
+                                    <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(key)} />
+                            </div>
 
-function Category({ category, query = '', limit = '', handleViewProduct, handleViewMore, handlePageChange, isPaging = false, isQuery = false, page = 1 }) {
+                        </div>
+                                </div>
+                ))
+             }
+        </div>
 
+    )
+}
+function Category({ category, query = '', limit = '', handleViewProduct, handlePageChange,  isQuery = false, page = 1 }) {
 
-    const { data: products, isLoading: isLoadingProductByCategory } = useProducts.products.getList(query, (category || { name: '' }).name, false, page, limit)
+    console.log(category,query,limit,page)
+    const { data: products, isLoading: isLoadingProductByCategory } = useProducts.products.getList(query, (category || {name: ""}).name, '', page, limit)
     if (isLoadingProductByCategory) {
         return (<Loading />)
     }
+    console.log(products)
     if (products.results.length == 0) {
-        return (limit === 4 ? <></> : <div className='mb-[20px]'>Không có sản phẩm</div>)
+        return (<div className='mb-[20px]'>Không có sản phẩm</div>)
     }
     return (
 
-        <div className='flex flex-col  border-[1px] border-[#E5E7EB] rounded-[8px] pt-[20px] mb-[20px]'>
-            <div className='border-b-[1px] border-[#E5E7EB] pb-[20px] shadow-sm'>
+        <div className='flex flex-col  border-[1px] border-[#E5E7EB] rounded-[8px] mb-[20px]'>
+            <div className='border-b-[1px] border-[#E5E7EB] py-[12px] shadow-sm'>
                 {
                     isQuery ? <></> : (
-                        <div className='border-l-[5px] border-[#1E2A38] px-[16px] ml-[30px]'>
-                            <h1 className='text-[30px] leading-none text-[#1E2A38]'>
-                                {category.name}
-                            </h1>
-                        </div>
+                        <div className='border-l-[5px] border-[#1E2A38] px-[8px] ml-[12px]'>
+                                <h1 className='text-[20px] lg:text-[30px] leading-none text-[#1E2A38]'>
+                                    { category.name}
+                                </h1>
+                            </div>
                     )
                 }
             </div>
             <ListProduct products={products.results} handleViewProduct={handleViewProduct} />
 
-            <div className='flex justify-center py-[20px] border-t-[1px] border-[#E5E7EB]'>
-                <div className="h-fit w-fit">
-                    {
-                        isPaging ? <Paging data={{ numberPagination: Math.ceil(products.totalCount / 12) }} onPageChange={handlePageChange} currentPage={products.page} /> : <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore(category)} />
-                    }
-
-                </div>
+            <div className='flex justify-center py-[8px] border-t-[1px] border-[#E5E7EB]'>
+               
+                <Paging data={{ numberPagination: Math.ceil(products.totalCount / 12) }} onPageChange={handlePageChange} currentPage={products.page} /> 
+               
 
             </div>
 
@@ -159,7 +169,7 @@ export default function Product() {
             <Loading />
         </div>)
     }
-
+ 
     const handleSearchSuggestion = (query, filter) => {
         return useProducts.getSearchSuggestions(query, filter)
     }
@@ -169,18 +179,15 @@ export default function Product() {
     }
     const handleViewMore = (category) => {
         const newParams = new URLSearchParams();
-        newParams.set("filter", category.name);
-        newParams.set("page", "1");
+        newParams.set("filter", category);
+        newParams.set("page", 1);
+        newParams.set("query", '');
         setSearchParams(newParams);
         setTimeout(() => {
             scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
         }, 0);
     }
-    const handleViewProduct = (product) => {
-        console.log(product)
-        const path = location.pathname;
-        navigate(`${path}/${product.id}`)
-    }
+
     const goBack = () => {
         const newParams = new URLSearchParams();
         setSearchParams(newParams);
@@ -276,11 +283,11 @@ export default function Product() {
             <Banner data={bannerMain} />
             <Banner data={bannerViewPrices} />
             <div className="container-fluid flex flex-col ">
-                <div className='grid grid-cols-1 gap-[24px] place-items-center py-[24px] md:grid-cols-2 lg:py-[48px] xl:grid-cols-4'>
+                <div className='grid grid-cols-2 gap-[8px] place-items-center my-[8px]  lg:grid-cols-4 lg:py-6'>
                     {
                         contentCenterCards.map((card, index) => {
                             return (
-                                <div key={index} className='w-[340px] h-[162px]'>
+                                <div key={index} className=' w-[90%] h-[190px] sm:w-[260px] sm:h-[160px] lg:w-[230px]'>
                                     <CenterCard data={card} />
                                 </div>
                             )
@@ -288,11 +295,11 @@ export default function Product() {
                     }
                 </div>
                 <div ref={scrollTargetRef}  ></div>
-                <div className='my-[40px]'>
+                <div >
                     <GoBackListProduct goBack={goBack} categorySelected={filter} query={query} />
                 </div>
 
-                <ProductsContainter filter={filter} query={query} page={page} categories={productCategories} handleViewMore={handleViewMore} handleViewProduct={handleViewProduct} handlePageChange={handlePageChange} />
+                <ProductsContainter filter={filter} query={query} page={page} categories={productCategories} handleViewMore={handleViewMore} handlePageChange={handlePageChange} />
 
             </div>
 

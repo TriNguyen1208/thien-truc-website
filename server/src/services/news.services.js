@@ -104,12 +104,18 @@ const news = {
     getList: async (query = '', filter = '', sort_by = 'date_desc', page, is_published, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
+        sort_by = sort_by.trim().replaceAll(`'`, ``); // clean
         const pageSize = item_limit || 9;
         const totalCount = await getNumPage(query, filter);
 
         let where = [];
         let order = [];
         let limit = '';
+
+        let order_option = 'n.public_date DESC';
+        if (sort_by == 'popular')
+            order_option = 'n.num_readers DESC';
+        order.push(order_option);
 
         if (query != '') {
             where.push(
@@ -126,11 +132,6 @@ const news = {
             where.push(
                 `unaccent(n_cate.name) ILIKE unaccent('${filter}')`
             );
-            
-            let order_option = 'n.public_date DESC';
-            if (sort_by == 'popular')
-                order_option = 'n.num_readers DESC';
-            order.push(order_option);
         }
 
         if (is_published == 'true' || is_published == 'false') {
@@ -200,11 +201,17 @@ const news = {
     getListByCategory: async (query = '', filter = '', sort_by = 'date_desc', is_published, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
+        sort_by = sort_by.trim().replaceAll(`'`, ``); // clean
 
         let where = [];
         let order = [];
         const limit = item_limit || 100;
 
+        let order_option = 'n.public_date DESC';
+        if (sort_by == 'popular')
+            order_option = 'n.num_readers DESC';
+        order.push(order_option);
+        
         if (query != '') {
             where.push(
                 `(unaccent(n.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
@@ -220,11 +227,6 @@ const news = {
             where.push(
                 `unaccent(n_cate.name) ILIKE unaccent('${filter}')`
             );
-            
-            let order_option = 'n.public_date DESC';
-            if (sort_by == 'popular')
-                order_option = 'n.num_readers DESC';
-            order.push(order_option);
         }
 
         if (is_published == 'true' || is_published == 'false') {
