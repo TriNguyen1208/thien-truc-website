@@ -18,7 +18,7 @@ function useGetProductPage(){
     return useQuery({
         queryKey: ["admin_product_page"],
         queryFn: productsServices.getProductPage,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 function usePatchProductPage() {
@@ -38,7 +38,7 @@ function useGetQuantity()
     return useQuery({
         queryKey: ['admin_product_quantity'],
         queryFn: productsServices.getQuantity,
-        staleTime: 5 * 60 * 1000
+        staleTime: 10 * 60 * 1000
     })
 }
 
@@ -47,7 +47,7 @@ function useGetAll() {
   return useQuery({
     queryKey: ["admin_product"],
     queryFn: productsServices.getAll,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -57,7 +57,7 @@ function useGetPricePage() {
   return useQuery({
     queryKey: ["admin_price_page"],
     queryFn: productsServices.getPricePage,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -67,7 +67,7 @@ function useGetHighlightProducts() {
   return useQuery({
     queryKey: ["admin_highlight_products"],
     queryFn: productsServices.getHighlightProducts,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -75,7 +75,7 @@ function useGetCount() {
   return useQuery({
     queryKey: ["admin_product_count"],
     queryFn: productsServices.getCount,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -83,7 +83,7 @@ function useSearchSuggestions(query = '', filter = '', is_featured = undefined) 
   return useQuery({
     queryKey: ["admin_product_suggestions", query, filter, is_featured],
     queryFn: () => productsServices.getSearchSuggestions(query, filter, is_featured),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -91,7 +91,7 @@ function useSearchCategoriesSuggestion(query = '') {
     return useQuery({
     queryKey: ["admin_product_categories_suggestions", query],
     queryFn: () => productsServices.getSearchCategoriesSuggestions(query),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -101,7 +101,7 @@ const products = {
     return useQuery({
       queryKey: ["admin_product_list", query, filter, is_featured, page, limit],
       queryFn: () => productsServices.products.getList(query, filter, is_featured, page, limit),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     });
   },
 
@@ -109,7 +109,7 @@ const products = {
     return useQuery({
       queryKey: ["admin_product_by_category", id, query, filter, is_featured, limit],
       queryFn: () => productsServices.products.getListByCategory(id, query, filter, is_featured, limit),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     });
   },
 
@@ -118,7 +118,7 @@ const products = {
       queryKey: ["admin_product", id],
       queryFn: () => productsServices.products.getOne(id),
       enabled: id != null, 
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     });
   },
 
@@ -201,7 +201,7 @@ const product_categories = {
     return useQuery({
       queryKey: ["admin_product_categories_list", id, query],
       queryFn: () => productsServices.product_categories.getList(id, query),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     });
   },
 
@@ -209,7 +209,7 @@ const product_categories = {
     return useQuery({
       queryKey: ["admin_product_by_category", id],
       queryFn: () => productsServices.product_categories.getOne(id),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     });
   },
   // Mutations
@@ -263,7 +263,7 @@ const product_prices = {
     return useQuery({
       queryKey: ["admin_product_prices", query, filter],
       queryFn: () => productsServices.product_prices.getAll(query, filter),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     });
   },
 
@@ -271,7 +271,7 @@ const product_prices = {
     return useQuery({
       queryKey: ["admin_product_price", id],
       queryFn: () => productsServices.product_prices.getOne(id),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     });
   }
 };

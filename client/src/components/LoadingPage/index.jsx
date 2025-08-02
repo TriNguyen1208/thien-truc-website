@@ -15,48 +15,28 @@ import newsServices from "@/services/news.api.js";
 import productsServices from "@/services/products.api.js";
 import projectsServices from "@/services/projects.api.js";
 import recruitmentServices from "@/services/recruitment.api.js";
-function LoadingProduct2({category}) {
-  const {isLoading: isLoadingProductByCategory} = useProducts.products.getList("", (category|| { name:''}).name, false, 1, 4)
-  if(isLoadingProductByCategory)
-  {
-      return(<Loading />)
-  }
-  return null;
-}
-function LoadingProductContainer({categories}){
-    return(
-      (categories || []).map((category, index)=> {
-        return(
-          <div key = {index}>
-              <LoadingProduct2 category={category}/>
-          </div>
-        )
-      })
-  )
-}
-
 
 export const LoadingAboutUs = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
           queryKey: ["about_us_page"],
           queryFn: aboutUsServices.getAboutUsPage,
-          staleTime: 1000 * 60 * 5
+          staleTime: 1000 * 60 * 10
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["company_services"],
           queryFn: aboutUsServices.company_services.getAll, 
-          staleTime: 1000 * 60 * 5
+          staleTime: 1000 * 60 * 10
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["why_choose_us"],
           queryFn: aboutUsServices.why_choose_us.getAll, 
-          staleTime: 1000 * 60 * 5
+          staleTime: 1000 * 60 * 10
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["company_info"],
           queryFn: contactServices.getCompanyInfo, 
-          staleTime: 1000 * 60 * 5,
+          staleTime: 1000 * 60 * 10,
       }),
     ]);
   return null;
@@ -66,7 +46,7 @@ export const LoadingHome = async () => {
       queryClient.prefetchQuery({ 
           queryKey: ["home"],
           queryFn: homeServices.getAll,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
     ]);
   return null;
@@ -76,7 +56,7 @@ export const LoadingContact = async () => {
       queryClient.prefetchQuery({ 
           queryKey: ["contact"],
           queryFn: contactServices.getAll,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
     ]);
   return null;
@@ -86,17 +66,17 @@ export const LoadingNews = async () => {
       queryClient.prefetchQuery({ 
           queryKey: ["news_page"],
           queryFn: newsServices.getNewsPage,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["news_categories"],
           queryFn: newsServices.new_categories.getAll,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["news_list", "", undefined, "", "date_desc", 1, ""],
           queryFn: () => newsServices.news.getList("", undefined, "", "date_desc", 1, ""),
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
     ]);
   return null;
@@ -109,7 +89,7 @@ export const LoadingNewsDetail = async({params}) => {
   await queryClient.prefetchQuery({
     queryKey: ["news_content", id],
     queryFn: () => newsServices.new_contents.getOne(id),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   })
   return null;
 }
@@ -118,49 +98,44 @@ export const LoadingPrice = async () => {
       queryClient.prefetchQuery({ 
           queryKey: ["price_page"],
           queryFn: productsServices.getPricePage,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["product_categories"],
           queryFn: productsServices.product_categories.getAll,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["product-list", "", "", undefined, 1, undefined],
-          queryFn: ()=> productsServices.products.getList("", "", undefined, 1, undefined),
-          staleTime: 5 * 60 * 1000,
+          queryKey: ["product-list", "", "", "", 1, ""],
+          queryFn: ()=> productsServices.products.getList("", "", "", 1, ""),
+          staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["product_prices", "", ""],
           queryFn: ()=> productsServices.product_prices.getAll("", ""),
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
     ]);
   return null;
 }
 export const LoadingProduct = async () => {
-  await queryClient.prefetchQuery({ 
-    queryKey: ["product_page"],
-    queryFn: productsServices.getProductPage,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const categories = await queryClient.fetchQuery({
-    queryKey: ["product_categories"],
-    queryFn: productsServices.product_categories.getAll,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  await Promise.all(
-    (categories || []).map((category) =>
-      queryClient.prefetchQuery({
-        queryKey: ["product-list", "", category?.name || "", false, 1, 4],
-        queryFn: () => productsServices.products.getList("", category?.name || "", false, 1, 4),
-        staleTime: 5 * 60 * 1000,
-      })
-    )
-  );
-
+  await Promise.all([
+    queryClient.prefetchQuery({ 
+      queryKey: ["product_page"],
+      queryFn: productsServices.getProductPage,
+      staleTime: 10 * 60 * 1000,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["product_categories"],
+      queryFn: productsServices.product_categories.getAll,
+      staleTime: 10 * 60 * 1000,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["product-list", '','','','',4],
+      queryFn: ()=> productsServices.products.getListByCategory('','','','',4),
+      staleTime: 10 * 60 * 1000,
+    })
+  ]);
   return null;
 };
 export const LoadingProductDetail = async ({params}) => {
@@ -171,7 +146,7 @@ export const LoadingProductDetail = async ({params}) => {
   await queryClient.prefetchQuery({
     queryKey: ["product", id],
     queryFn: () => productsServices.products.getOne(id),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   })
 }
 
@@ -180,17 +155,17 @@ export const LoadingProject = async () => {
       queryClient.prefetchQuery({ 
           queryKey: ["project_page"],
           queryFn: projectsServices.getProjectPage,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["project_regions"],
           queryFn: projectsServices.project_regions.getAll,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
           queryKey: ["projects_list", "", "", undefined, 1, undefined],
           queryFn: () => projectsServices.projects.getList("", "", undefined, 1, undefined),
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
     ]);
   return null;
@@ -203,7 +178,7 @@ export const LoadingProjectDetail = async({params}) => {
   await queryClient.prefetchQuery({
       queryKey: ["project_content", id],
       queryFn: () => projectsServices.project_contents.getOne(id),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
   })
   return null;
 }
@@ -212,7 +187,7 @@ export const LoadingRecruitment = async () => {
       queryClient.prefetchQuery({ 
           queryKey: ["recruitment_page"],
           queryFn: recruitmentServices.getRecruitmentPage,
-          staleTime: 5 * 60 * 1000,
+          staleTime: 10 * 60 * 1000,
       }),
     ]);
   return null;
@@ -252,6 +227,5 @@ export default function LoadingPage(){
         isLoadingHome || isLoadingNewsPage || isLoadingNewsCategories || isLoadingNews || isLoadingPricePage || isLoadingProductCategories || isLoadingPrices ||
         isLoadingProductPage || isLoadingProduct || isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject || isLoadingRecruitmentPage || isLoadingProducts
     )
-        return <Loading/>
-    return <LoadingProductContainer categories={categoriesProduct}/>
+      return <Loading/>
 }

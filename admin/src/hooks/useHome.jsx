@@ -6,7 +6,7 @@ function useGetHomePage() {
     return useQuery({
         queryKey: ["home_page_admin"],
         queryFn: homeServices.getHomePage,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 
@@ -58,7 +58,7 @@ const highlight_stats_about_us = {
         return useQuery({
             queryKey: ["admin_highlight_stats_about_us"],
             queryFn: homeServices.highlight_stats_about_us.getAll,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         });
     },
     useGetOne: (id) => {

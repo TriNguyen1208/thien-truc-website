@@ -767,7 +767,7 @@ const news_contents = {
         }
     },
     updateOne: async (id, data, files) => {
-        const old_title = await pool.query(`SELECT title FROM news.news WHERE id = $1`, [id]);
+        const old_title = (await pool.query(`SELECT title FROM news.news WHERE id = $1`, [id])).rows?.[0]?.title;
 
         let contentHTML= data?.content;
         if(files?.images?.length){

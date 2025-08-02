@@ -8,21 +8,21 @@ function useGetQuantity() {
     return useQuery({
         queryKey: ['admin_contact_quantity'],
         queryFn: contactServices.getQuantity,
-        staleTime: 5 * 60 * 1000
+        staleTime: 10 * 60 * 1000
     })
 }
 function useGetCompanyInfo() {
     return useQuery({
         queryKey: ["admin_company_info"],
         queryFn: contactServices.getCompanyInfo,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 function useGetContactPage() {
     return useQuery({
         queryKey: ["admin_contact_page"],
         queryFn: contactServices.getContactPage,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 
@@ -56,14 +56,14 @@ const support_agents = {
         return useQuery({
             queryKey: ["admin_contact_support_agents"],
             queryFn: contactServices.support_agents.getAll,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["admin_contact_support_agents", id],
             queryFn: () => contactServices.support_agents.getOne(id),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useCreateOne: () => {

@@ -283,7 +283,7 @@ export default function Product() {
             <Banner data={bannerMain} />
             <Banner data={bannerViewPrices} />
             <div className="container-fluid flex flex-col ">
-                <div className='grid grid-cols-2 gap-[8px] place-items-center my-[8px]  lg:grid-cols-4 lg:py-6'>
+                <div className='mb-[10px] lg:mb-0 grid grid-cols-2 gap-[8px] place-items-center my-[8px]  lg:grid-cols-4 lg:py-6'>
                     {
                         contentCenterCards.map((card, index) => {
                             return (

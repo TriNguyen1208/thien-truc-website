@@ -7,7 +7,7 @@ function useGetQuantity() {
     return useQuery({
         queryKey: ['admin_news_quantity'],
         queryFn: newsServices.getQuantity,
-        staleTime: 5 * 60 * 1000
+        staleTime: 10 * 60 * 1000
     })
 }
 
@@ -15,14 +15,14 @@ function useGetAll() {
     return useQuery({
         queryKey: ["admin_news"],
         queryFn: newsServices.getAll,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 function useGetNewsPage() {
     return useQuery({
         queryKey: ["admin_news_page"],
         queryFn: newsServices.getNewsPage,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 
@@ -45,7 +45,7 @@ const news = {
         return useQuery({
             queryKey: ["admin_news_list", query, filter, is_published, sort_by, page, limit],
             queryFn: () => newsServices.news.getList(query, filter, is_published, sort_by, page, limit),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
@@ -53,7 +53,7 @@ const news = {
             queryKey: ["admin_news", id],
             queryFn: () => newsServices.news.getOne(id),
             enabled: id != null,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useUpdateNumReaders: (id) => {
@@ -100,14 +100,14 @@ const news_categories = {
         return useQuery({
             queryKey: ["admin_news_categories"],
             queryFn: newsServices.new_categories.getAll,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["admin_news_category", id],
             queryFn: () => newsServices.new_categories.getOne(id),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useCreateOne: (name = "", rgb_color = "") => {
@@ -156,14 +156,14 @@ const news_contents = {
         return useQuery({
             queryKey: ["admin_news_contents"],
             queryFn: newsServices.new_contents.getAll,
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["admin_news_content", id],
             queryFn: () => newsServices.new_contents.getOne(id),
-            staleTime: 5 * 60 * 1000,
+            staleTime: 10 * 60 * 1000,
         })
     },
     usePostOne: () => {
@@ -208,7 +208,7 @@ function useGetSearchCategoriesSuggest(query) {
     return useQuery({
         queryKey: ['admin_news-categories-suggestions', query],
         queryFn: () => newsServices.getSearchCategoriesSuggestions(query),
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 
@@ -216,7 +216,7 @@ function useSearchSuggest(query, filter) {
     return useQuery({
         queryKey: ['admin_news-suggestions', query, filter],
         queryFn: () => newsServices.getSearchSuggestions(query, filter),
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 
@@ -225,7 +225,7 @@ function useGetFeatureNews() {
 
         queryKey: ["admin_feature_news"],
         queryFn: () => newsServices.getFeatureNews(),
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     });
 }
 

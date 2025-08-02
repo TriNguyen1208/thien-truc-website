@@ -67,7 +67,7 @@ const DynamicForm = ({ data, config }) => {
                 result[name] = value !== undefined ? value : '';
             }
         });
-        if(result.img != null){
+        if (result.img != null) {
             setUrlInput(result.img);
         }
         return result;
@@ -84,7 +84,7 @@ const DynamicForm = ({ data, config }) => {
 
         Object.keys(finalData).forEach(key => {
             const field = data.find(f => f.name === key);
-            
+
             if (field?.type === 'dynamicFields') {
                 if (field.isSingleColumn) {
                     if (field.isCheckbox) {
@@ -137,10 +137,21 @@ const DynamicForm = ({ data, config }) => {
 
     const handleDynamicFieldsChange = (fieldName, index, keyOrValue, value, isSingle = false, isCheckbox = false) => {
         setFormData((prev) => {
+            const field = data.find(item => item.name === fieldName);
+            const limitCheckbox = field?.limitCheckbox || Infinity;
+
             const specs = [...(prev[fieldName] || [])];
+
+            if (isSingle && isCheckbox && keyOrValue === 'isCheckbox') {
+                const checkedCount = specs.filter((item, i) => i !== index && item.isCheckbox).length;
+
+                if (value === true && checkedCount >= limitCheckbox) {
+                    return prev; // Không cho phép chọn quá số lượng tối đa
+                }
+            }
+
             if (isSingle) {
                 if (isCheckbox) {
-                    // Đảm bảo là object { value, isCheckbox }
                     if (!specs[index] || typeof specs[index] !== 'object') {
                         specs[index] = { value: '', isCheckbox: false };
                     }
@@ -152,6 +163,7 @@ const DynamicForm = ({ data, config }) => {
                 if (!specs[index]) specs[index] = { name: '', value: '' };
                 specs[index][keyOrValue] = value;
             }
+
             return { ...prev, [fieldName]: specs };
         });
     };
@@ -209,7 +221,7 @@ const DynamicForm = ({ data, config }) => {
     const renderInput = (item) => {
         let nameColumn = item.name || defaultField.name;
         let type = item.type || defaultField.type;
-        let value = formData[nameColumn] == 0  || formData[nameColumn]  ? formData[nameColumn] :  defaultField.value;
+        let value = formData[nameColumn] == 0 || formData[nameColumn] ? formData[nameColumn] : defaultField.value;
         const maxLength = item.maxLength || Infinity;
         const isInvalid = maxLength !== undefined && value.length >= maxLength;
         const isFocused = focusedFields[nameColumn] || false;
@@ -224,7 +236,7 @@ const DynamicForm = ({ data, config }) => {
             required: item.isRequired || defaultField.isRequired,
             maxLength: maxLength || undefined,
             disabled: item.isReadOnly || false,
-            
+
             style: {
                 backgroundColor: item.isReadOnly ? '#f3f4f6' : 'white',
                 padding: '8px 12px',
@@ -241,7 +253,7 @@ const DynamicForm = ({ data, config }) => {
             }
         };
         switch (type) {
-            
+
             case 'textarea':
                 return (
                     <textarea
@@ -507,7 +519,7 @@ const DynamicForm = ({ data, config }) => {
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-12 gap-4">
                             {data.map((item, index) => {
-                                
+
                                 const nameColumn = item.name || defaultField.name;
                                 return (
                                     <div key={index} style={{ gridColumn: `span ${item.width}` }}>

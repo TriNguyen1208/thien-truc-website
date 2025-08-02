@@ -5,14 +5,14 @@ function useGetAll(){
     return useQuery({
         queryKey: ["admin_recruitment"],
         queryFn: recruitmentServices.getAll,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 function useGetRecruitmentPage(){
     return useQuery({
         queryKey: ["admin_recruitment_page"],
         queryFn: recruitmentServices.getRecruitmentPage,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     })
 }
 function usePatchRecruitment(){
