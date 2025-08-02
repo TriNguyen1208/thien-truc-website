@@ -49,8 +49,8 @@ const StatusBox = ({ isFeatured }) => {
 export default function Project () {
   // Lấy hàm từ hook
   const queryClient = useQueryClient();
-  const { mutateAsync: deleteOne } = useProjects.projects.deleteOne();
-  const { mutateAsync: updateFeatureOne} = useProjects.projects.updateFeatureOne();
+  const { mutateAsync: deleteOne, isPending: isPendingDeleting} = useProjects.projects.deleteOne();
+  const { mutateAsync: updateFeatureOne, isPending: isPendingUpdating} = useProjects.projects.updateFeatureOne();
 
   // Thông tin của popup xác nhận hủy
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -132,7 +132,7 @@ export default function Project () {
     ...(projectRegions?.map((filter) => filter.name) ?? []),
   ]
   const display = ['Tất cả hiển thị', 'Trưng bày', 'Không trưng bày'];
-  if (isLoadingProjects || isLoadingProjectRegions) {
+  if (isLoadingProjects || isLoadingProjectRegions || isPendingDeleting || isPendingUpdating) {
     return <Loading/>;
   }
 

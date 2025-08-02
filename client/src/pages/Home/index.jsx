@@ -139,7 +139,7 @@ export default function Home() {
                 <div>
                 
                 {/* Inlined TopNews Component */}
-                <section className="w-full mx-auto border-2 border-[#16A34A] rounded-[10px] " style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}>
+                <section className="w-full mx-auto border-2 border-[#16A34A] " style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}>
                     {newsLoading ? (
                         <div className="text-center text-gray-600">Đang tải tin nổi bật...</div>
                     ) : newsError ? (
@@ -163,10 +163,10 @@ export default function Home() {
                                         navigate(`tin-tuc/${news.id}`)
                                         }}>
                                 <div className="w-full h-full animate-slide-in-right">
-                                    <div className=" relative w-full h-full bg-black overflow-hidden rounded-[10px]">
+                                    <div className=" relative w-full h-full bg-black overflow-hidden ">
                                         {/* Ảnh nền */}
                                         <div
-                                        className="w-full aspect-[19/8] bg-cover bg-center rounded-t-[10px]"
+                                        className="w-full lg:aspect-[19/8] md:aspect-[14/8] sm:aspect-[11/8] aspect-[10/8] bg-cover bg-center"
                                         style={{ backgroundImage: `url(${news.main_img})` }}
                                         ></div>
 
