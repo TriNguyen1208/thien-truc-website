@@ -10,7 +10,7 @@ import {useNavigate, useNavigation} from 'react-router-dom'
 //Start extra Component 
 function ProgressItem({ icon, label, value, percent }) {
   return (
-    <div className="mb-[30px] text-[16px]">
+    <div className="mb-[30px] text-[14px] lg:text-[16px]">
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2 text-green-700">
           {icon}
@@ -31,7 +31,7 @@ function ProgressItem({ icon, label, value, percent }) {
 function Title({content})
 {
     return(
-        <h1 className='  font-bold text-[24px] text-[#14532D] text-center xl:text-[30px]'>
+        <h1 className='  font-bold text-[20px] lg:text-[24px] text-[#14532D] text-center xl:text-[30px]'>
             {content}
         </h1>
     )
@@ -156,19 +156,19 @@ export default function AboutUs(){
             <Banner data = {bannerMain}/>
             {/////////////////////////////////////////////
             }
-            <div className='grid grid-cols-1 my-[24px] p-[24px] gap-y-[16px] md:grid-cols-2  md:gap-x-[24px] lg:p-[40px] lg:gap-x-[50px]  xl:px-[120px] xl:py-[40px] xl:gap-x-[100px]  '>
+            <div className='grid grid-cols-1 sm:p-8 my-[24px] p-2 gap-y-[16px] md:grid-cols-2  md:gap-x-[24px] lg:p-[40px] lg:gap-x-[50px]  xl:px-[120px] xl:py-[40px] xl:gap-x-[100px]  '>
                 <div className='p-[8px]'>
                     <div className='flex flex-col my-[8px] '>
                        <Title content={'Câu Chuyện Của Chúng Tôi'}/>
                     </div>
                     <div className=''>
-                       <span className='text-[16px] text-[#166534]  '>
+                       <span className='text-[14px] lg:text-[16px] text-[#166534]  '>
                          {aboutusPage.our_story_content}
                        </span>
                     </div>
                 </div>
                 <div className='p-[8px] h-fit bg-[#F0FDF4]  rounded-[8px] shadow-md hover:scale-[1.05] transition-all duration-300 ease-in-out  '>
-                    <div className='flex flex-col p-[8px] '>
+                    <div className='flex flex-col p-[8px]  '>
                         <Title content = {'Thành Tựu Của Chúng Tôi'}/>
                     </div>
                     <div className='p-[8px] xl:p-[24px]'>
@@ -191,15 +191,15 @@ export default function AboutUs(){
                     <Title content={'Nhiệm Vụ & Trách Nhiệm'}/>
                 </div>
                 <div className='flex justify-center mb-[24px] lg:mb-[36px] text-center'>
-                    <span className='text-[15px] text-[#166534] leading-[20px] '>
+                    <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px] '>
                         Chúng tôi cung cấp các dịch vụ lắp đặt và bảo trì thiết bị công nghệ chất lượng cao, đáp ứng mọi nhu cầu của khách hàng.
                     </span>
                 </div>
-                <div className='grid grid-cols-1 gap-y-[24px] md:grid-cols-2 md:gap-x-[12px] lg:gap-[24px] xl:px-[48px]'> 
+                <div className='grid grid-cols-1 gap-y-[24px] md:grid-cols-2 md:gap-x-[12px] lg:gap-4 xl:px-[48px]'> 
                         {
                             aboutusServices.map((service, index) =>{
                                 return(
-                                   <div key = {index} className='mx-auto xl:w-[600px] '>
+                                   <div key = {index} className={`mx-auto h-fit md:h-[380px] lg:h-[340px]  w-full xl:max-w-[600px]  `}>
                                      <Card iconTitle = {iconTitleService[index]} card = {service}/>
                                    </div>
                                 )
@@ -214,15 +214,15 @@ export default function AboutUs(){
                     <Title content={' Giá Trị Cốt Lõi'}/>
                 </div>
                 <div className='flex justify-center mb-[24px] text-center xl: mb-[48px]'>
-                    <span className='text-[15px] text-[#166534] leading-[20px]  '>
+                    <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px]  '>
                         Những giá trị định hướng mọi hoạt động và quyết định của chúng tôi.
                     </span>
                 </div>
-                <div className='grid grid-cols-1 gap-y-[24px] md:grid-cols-2 md:gap-[24px] lg:px-[48px] xl:grid-cols-4'> 
+                <div className='grid grid-cols-1 xl:justify-items-center gap-y-[24px] md:grid-cols-2 md:gap-[24px] lg:px-[48px] xl:px-4 xl:grid-cols-4'> 
                         {
                             listValues.map((value, index) =>{
                                 return(
-                                   <div key = {index} className='text-[#14532D] overflow-hidden p-[2px] xl:w-[300px] xl:h-[270px] '>
+                                   <div key = {index} className = { ` text-[#14532D] overflow-hidden p-[2px]  ${index % 2 === 0 ? 'lg:justify-self-end' : 'lg:justify-self-start'}`} >
                                      <CenterCard data={value}/>
                                    </div>
                                 )
@@ -234,20 +234,20 @@ export default function AboutUs(){
             }
             <div className='flex flex-col bg-[#157E3C] p-[24px]' >
                 <div className='flex  justify-center mb-[20px] !text-white'>
-                        <h1 className=' font-bold text-[30px] text-white '>
+                        <h1 className=' font-bold text-[20px] lg:text-[24px] text-white '>
                             Tại Sao Chọn Thiên Trúc?
                         </h1>
                 </div>
                 <div className='flex justify-center mb-[24px] text-center'>
-                    <span className='text-[15px] text-[#ffffff]  '>
+                    <span className='text-[14px]  lg:text-[16px] text-[#ffffff]  '>
                         Chúng tôi mang đến những giá trị khác biệt để trở thành đối tác lý tưởng cho doanh nghiệp của bạn.
                     </span>
                 </div>
-                <div className='grid grid-cols-1 place-items-center  gap-y-[24px] lg:grid-cols-2 lg:p-[64px] xl:grid-cols-4 xl:gap-y-[24px] xl:p-[12px]'> 
+                <div className='grid grid-cols-1 justify-items-center  gap-y-[24px] lg:grid-cols-2 lg:p-[32px] xl:grid-cols-4 lg:gap-[24px] xl:gap-4 '> 
                         {
                             aboutusChoose.map((service, index) =>{
                                 return(
-                                   <div key = {index} className=' h-fit lg:h-[350px] lg:w-[330px] w-full'>
+                                   <div key = {index}  className={`h-fit lg:h-[350px] lg:w-[330px] xl:w-full md:max-w-[600px] w-full  ${index % 2 === 0 ? 'lg:justify-self-end' : 'lg:justify-self-start'}`}>
                                      <Card  card = {service}/>
                                    </div>
                                 )

@@ -24,7 +24,7 @@ function PostCategory({ categories, handleClick, idCategories = '0' }) {
 
     return (
         <div onClick={handleParentClick}
-            className="grid grid-cols-2 sm:grid-cols-3   md:grid-cols-4 xl:grid-cols-6  mx-auto justify-around gap-[8px] p-[8px] shadow-lg rounded-[30px] bg-white w-full"
+            className= {`grid ${categories.length >=2 ? 'grid-cols-2' : 'grid-cols-1'}   ${categories.length >=3 ? 'sm:grid-cols-3' : ''}   ${categories.length >= 4 ? ' md:grid-cols-4' : ''}  ${categories.length >= 6 ? 'xl:grid-cols-6' : ''}  mx-auto justify-around gap-[8px] p-[8px] shadow-lg rounded-[30px] bg-white w-full `}
         >
             {
                 categories.map((category, index) => {

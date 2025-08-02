@@ -1,7 +1,7 @@
 function GreenButton({content, width = "100%", handleClick}){
     return(
         <button 
-            className = "flex justify-center items-center py-[8px] text-white bg-(--green-bg) rounded-[6px] hover:bg-[#166534] transition-colors ease-out duration-300 cursor-pointer"
+            className = "flex justify-center lg:py-[4px] text-[clamp(14px,2vw,16px)] items-center py-[4px] text-white bg-(--green-bg) rounded-[6px] hover:bg-[#166534] transition-colors ease-out duration-300 cursor-pointer"
             style={{width}}
             onClick={handleClick}
         >
