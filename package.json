@@ -2,10 +2,10 @@
   "scripts": {
     "install": "concurrently \"cd client & npm install\" \"cd admin & npm install\" \"cd server & npm install\"",
     "start": "vite",
-    "dev:server": "dotenv -e .env -- nodemon server/src/server.js",
-    "dev:client": "concurrently \"npm run dev:server\" \"npm run dev --prefix client\"",
-    "dev:admin": "concurrently \"npm run dev:server\" \"npm run dev --prefix admin\"",
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev --prefix client\" \"npm run dev --prefix admin\"",
+    "dev:server": "npx dotenv -e .env -- nodemon server/src/server.js",
+    "dev:client": "concurrently \"npm run dev:server\" \"npx dotenv -e .env -- npm run dev --prefix client\"",
+    "dev:admin": "concurrently \"npm run dev:server\" \"npx dotenv -e .env -- npm run dev --prefix admin\"",
+    "dev": "concurrently \"npm run dev:server\" \"npx dotenv -e .env -- npm run dev --prefix client\" \"npx dotenv -e .env -- npm run dev --prefix admin\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -15,10 +15,12 @@
     "start:prod": "concurrently \"npm run start:server\" \"npm run preview:client\" \"npm run preview:admin\""
   },
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "concurrently": "^9.2.0",
+    "dotenv-cli": "^10.0.0"
   },
   "dependencies": {
     "dotenv": "^17.2.1",
+    "nodemon": "^3.1.10",
     "prop-types": "^15.8.1",
     "vite": "^7.0.6"
   }
