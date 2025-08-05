@@ -1,6 +1,6 @@
   import { React, useState, useEffect, useRef} from 'react'
   import { useNavigate, useSearchParams } from 'react-router-dom';
-  import { useLayout } from '@/layouts/layoutcontext';
+  import { useLayout } from '@/layouts/LayoutContext';
   import { EditIcon, DeleteIcon, SettingIcon } from '@/components/Icon';
   import { useQueryClient } from '@tanstack/react-query';
   import Setting from '@/components/Setting';

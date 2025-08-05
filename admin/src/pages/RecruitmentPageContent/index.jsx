@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react'
-import { useLayout } from '../../layouts/layoutcontext'
+import { useLayout } from '../../layouts/LayoutContext'
 import CustomButton from '@/components/ButtonLayout'
 import {SaveIcon} from "@/components/Icon"
 import DynamicForm from "@/components/DynamicForm"

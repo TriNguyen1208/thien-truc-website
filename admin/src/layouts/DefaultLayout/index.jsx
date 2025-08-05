@@ -3,7 +3,7 @@ import Sider from "@/components/Sider";
 import { Outlet } from "react-router-dom";
 import CustomButton from "@/components/ButtonLayout";
 import { PlusOutlined, ArrowLeftOutlined} from "@ant-design/icons";
-import { useLayout } from "@/layouts/layoutcontext";
+import { useLayout } from "@/layouts/LayoutContext";
 import { useNavigate } from "react-router-dom";
 import { useNavigationGuardContext } from "../NavigatorProvider";
 import useNavigationGuard from "../../hooks/useNavigationGuard";

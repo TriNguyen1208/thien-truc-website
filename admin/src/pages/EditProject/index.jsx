@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLayout } from "@/layouts/layoutcontext";
+import { useLayout } from "@/layouts/LayoutContext";
 import UploadImage from '../../components/UploadImage'
 import CustomButton from '../../components/ButtonLayout';
 import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';

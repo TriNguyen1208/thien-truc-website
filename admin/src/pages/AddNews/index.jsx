@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useLayout } from "@/layouts/layoutcontext";
+import { useLayout } from "@/layouts/LayoutContext";
 // import UploadImage from '../../components/UploadImage'
 import UploadImage from '../../components/UploadImage';
 import CustomButton from '../../components/ButtonLayout';
