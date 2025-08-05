@@ -7,13 +7,18 @@
     "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix admin\" \"npm run dev --prefix server\"",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:server": "node server/src/server.js",
+    "preview:client": "vite preview --port 3001 --host --base=/ --outDir=dist --config=client/vite.config.js",
+    "preview:admin": "vite preview --port 3002 --host --base=/ --outDir=dist --config=admin/vite.config.js",
+    "start:prod": "concurrently \"npm run start:server\" \"npm run preview:client\" \"npm run preview:admin\""
   },
   "devDependencies": {
     "concurrently": "^9.2.0"
   },
   "dependencies": {
     "dotenv": "^17.2.1",
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "vite": "^7.0.6"
   }
 }
