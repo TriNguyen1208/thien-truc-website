@@ -2,7 +2,7 @@ import axios from "axios";
 import API_ROUTES from "../../../shared/routesAPIServer";
 
 const api = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
     withCredentials: true, // Gửi cookie (accessToken/refreshToken) kèm theo request
     headers: { "Content-Type": "application/json" }
 });

@@ -13,7 +13,7 @@ const allowedOrigins = [
     'http://127.0.0.1:3001',
     'http://127.0.0.1:3002',
     'http://171.244.139.18:3001',
-    'http://171.244.139.18:3002'
+    'http://171.244.139.18:3002',
     // thêm domain khi deploy như:
     'https://yourdomain.com',
     'http://115.73.3.162:3001',
