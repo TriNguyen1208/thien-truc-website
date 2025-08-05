@@ -6,7 +6,7 @@
   import ProductDetailModal from '@/components/ProductDetailModal'
   // eslint-disable-next-line no-unused-vars
   import { motion, AnimatePresence } from 'framer-motion';
-  import useProducts from "@/hooks/useproducts";
+  import useProducts from "@/hooks/useProducts";
   import Loading from '@/components/Loading'
   import '@/styles/custom.css'
   import { useNavigate, useNavigation, useSearchParams } from 'react-router-dom'

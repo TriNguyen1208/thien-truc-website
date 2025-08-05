@@ -1,5 +1,5 @@
 // import RoutesElement from '@/routes'
-import { LayoutProvider } from '@/layouts/LayoutContext';
+import { LayoutProvider } from '@/layouts/layoutcontext';
 import {useDispatch} from 'react-redux'
 import { verifyFromToken } from './services/auth.api';
 import { useEffect } from 'react';
