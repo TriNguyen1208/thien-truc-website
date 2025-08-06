@@ -10,8 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start:server": "npx dotenv -e .env -- node server/src/server.js",
-    "preview:client": "npm run preview --prefix client -- --port 3001 --host",
-    "preview:admin": "npm run preview --prefix admin -- --port 3002 --host",
+    "preview:client": "npm run preview --prefix client -- --port 3002 --host",
+    "preview:admin": "npm run preview --prefix admin -- --port 3001 --host",
     "start:prod": "concurrently \"npm run start:server\" \"npm run preview:client\" \"npm run preview:admin\""
   },
   "devDependencies": {
