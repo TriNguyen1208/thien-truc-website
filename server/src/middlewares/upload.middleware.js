@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs'
 const storage = multer.diskStorage({ //lưu tạm trong thư mục upload
     destination: (req, file, cb) => {
-        const uploadFolder = 'uploads';
+        const uploadFolder = '/tmp/uploads';
         if(!fs.existsSync(uploadFolder)){
             fs.mkdirSync(uploadFolder, {recursive: true});
         }
