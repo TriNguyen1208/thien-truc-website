@@ -51,8 +51,9 @@ const products = {
     createOne: async (data) => {
         const res = await axios.post(API_ROUTES.product.products.createOne, data, {
             headers: {
-            'Content-Type': 'multipart/form-data'
-            }
+                'Content-Type': 'multipart/form-data'
+            },
+            timeout: 20000
         });
         return res.data;
     },
@@ -60,8 +61,9 @@ const products = {
     updateOne: async (id, data) => {
         const res = await axios.patch(API_ROUTES.product.products.updateOne(id), data, {
             headers: {
-            'Content-Type': 'multipart/form-data'
-            }
+                'Content-Type': 'multipart/form-data'
+            },
+            timeout: 20000
         });
         return res.data;
     },

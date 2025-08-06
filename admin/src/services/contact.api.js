@@ -35,7 +35,8 @@ const support_agents =  {
         const res = await axios.post(API_ROUTES.contact.support_agents.createOne, newsupport_agents, {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: 20000
         });
         return res.data;
     },
@@ -43,7 +44,8 @@ const support_agents =  {
         const res = await axios.patch(API_ROUTES.contact.support_agents.updateOne(id), updatedsupport_agents, {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: 20000
         });
         return res.data;
     },

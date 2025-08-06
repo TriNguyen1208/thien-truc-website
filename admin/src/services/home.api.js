@@ -18,7 +18,8 @@ const updateHomePage = {
         const res = await axios.patch(API_ROUTES.home.updateHomePage.imageAboutUs, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: 20000
         })
         return res.data;
     }

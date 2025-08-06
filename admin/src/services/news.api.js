@@ -79,7 +79,8 @@ const new_contents = {
         const res = await axios.post(API_ROUTES.news.news_contents.postOne, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: 20000
         });
         return res.data;
     },
@@ -87,7 +88,8 @@ const new_contents = {
         const res = await axios.patch(API_ROUTES.news.news_contents.updateOne(id), data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: 20000
         });
         return res.data;
     }
