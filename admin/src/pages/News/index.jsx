@@ -55,7 +55,11 @@ export default function News() {
   const id = searchParams.get('id') || '';
   let news = null;
   let isLoadingNews = false;
-
+  const {data: allResults, isLoading: isLoadingAllResults} = useNews.news.getList(
+    "",
+    undefined,
+    undefined
+  )
   if (id === '') {
     const result = useNews.news.getList(
       query,
@@ -91,7 +95,7 @@ export default function News() {
   ]
   const display = ['Tất cả trạng thái', 'Đã xuất bản', 'Bản nháp'];
 
-  if (isLoadingNews || isLoadingNewsCategories || isPendingDeleting) {
+  if (isLoadingNews || isLoadingNewsCategories || isPendingDeleting || isLoadingAllResults) {
     return <Loading/>;
   }
   
@@ -124,19 +128,19 @@ export default function News() {
       <div className="flex flex-wrap gap-5 mt-3 mb-4">
         <div className = "bg-white w-[32%] pl-6 py-3 border border-gray-200 rounded-lg shadow-md justify-left">
           <h1 className="text-xl font-semibold text-gray-1300 mt-2">Tổng tin tức</h1>
-          <p className="text-[25px] font-bold text-gray-900 pl-1 mt-1">{newsList.length}</p>
+          <p className="text-[25px] font-bold text-gray-900 pl-1 mt-1">{allResults.length}</p>
           <p className="text-[14px] text-gray-500 mb-2">Bài viết</p>
         </div>
 
         <div className = "bg-white w-[32%] pl-6 py-3 border border-gray-200 rounded-lg shadow-md justify-left">
           <h1 className="text-xl font-semibold text-gray-1300 mt-2">Đã xuất bản</h1>
-          <p className="text-[25px] font-bold text-green-600 pl-1 mt-1">{newsList?.filter(item => item.is_published === true).length ?? 0}</p>
+          <p className="text-[25px] font-bold text-green-600 pl-1 mt-1">{allResults?.filter(item => item.is_published === true).length ?? 0}</p>
           <p className="text-[14px] text-gray-500 mb-2">Bài viết</p>
         </div>
 
         <div className = "bg-white w-[32%] pl-6 py-3 border border-gray-200 rounded-lg shadow-md justify-left">
           <h1 className="text-xl font-semibold text-gray-1300 mt-2">Bản nháp</h1>
-          <p className="text-[25px] font-bold text-red-500 pl-1 mt-1">{newsList?.filter(item => item.is_published === false).length ?? 0}</p>
+          <p className="text-[25px] font-bold text-red-500 pl-1 mt-1">{allResults?.filter(item => item.is_published === false).length ?? 0}</p>
           <p className="text-[14px] text-gray-500 mb-2">Bài viết</p>
         </div>
       </div>

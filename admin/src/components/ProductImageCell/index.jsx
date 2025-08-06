@@ -1,5 +1,5 @@
 import { Image } from "antd";
-import LazyLoad from 'react-lazyload'
+import LazyLoad from '@/components/LazyLoad'
 const ProductImageCell = ({ imageUrl, productName = "Sản phẩm", preview = true }) => {
   return (
     <div className="w-[70px] h-[45px] bg-gray-100 border border-gray-200 rounded-md flex items-center justify-center">
@@ -9,9 +9,8 @@ const ProductImageCell = ({ imageUrl, productName = "Sản phẩm", preview = tr
             offset={100}
             throttle={100}
             once
-            scrollContainer='.scroll-wrapper'
             placeholder={
-                <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                <div className="bg-gray-200 w-full h-full rounded-md" />
             }
             style={{width: '100%', height: '100%'}}
         >

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { SearchIcon, FilterIcon, OpenIcon } from '../Icon';
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 const SearchBar = ({data}) => {
     //prop
     const {
@@ -198,7 +198,7 @@ const SearchBar = ({data}) => {
                                                         once
                                                         scrollContainer='.scroll-wrapper'
                                                         placeholder={
-                                                            <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                                                            <div className="bg-gray-200 w-full h-full" />
                                                         }
                                                         style={{width: '20px', height: '20px'}}
                                                     >

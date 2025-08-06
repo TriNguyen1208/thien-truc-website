@@ -8,7 +8,7 @@ const Table = ({
     width = null
 }) => {
     return (
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[400px] overflow-y-auto scroll-table">
         <table className="border-collapse w-full">
             {!isSetting &&
                 <thead>

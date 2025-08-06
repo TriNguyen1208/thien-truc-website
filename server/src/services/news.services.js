@@ -733,7 +733,7 @@ const news_contents = {
         const insertValues = [
             category_id,
             title,
-            isPublished == "Đã xuất bản" ? true: false,
+            isPublished == "Đã xuất bản" ? true : false,
             new Date(),
             measure_time, // in case it's an object
             0,
@@ -830,7 +830,7 @@ const news_contents = {
         const updateValues = [
             category_id,
             title,
-            isPublished === "Trưng bày",
+            isPublished == "Đã xuất bản" ? true : false,
             new Date(),
             measure_time,
             0,

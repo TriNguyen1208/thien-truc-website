@@ -1,5 +1,5 @@
 import React from 'react'
-
+import LazyLoad from '@/components/LazyLoad';
 const ItemTable = ({ data, width }) => {
     return (
         <>
@@ -20,9 +20,8 @@ const ItemTable = ({ data, width }) => {
                             offset={100}
                             throttle={100}
                             once
-                            scrollContainer='.scroll-wrapper'
                             placeholder={
-                                <div className="bg-gray-200 w-full h-full rounded-[20px]" />
+                                <div className="bg-gray-200 w-full h-full" />
                             }
                             style={{width: '48px', height: '32px'}}
                         >
