@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 const { ACCESS_SECRET } = process.env;
 

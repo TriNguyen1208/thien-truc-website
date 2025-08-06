@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'url'
 import dotenv from 'dotenv'
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 // https://vite.dev/config/
 export default defineConfig({
