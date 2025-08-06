@@ -2,10 +2,10 @@ import cloudinary from '#@/config/cloudinary.js';
 import fs from 'fs'
 import { JSDOM } from 'jsdom';
 const uploadImage = async (image, type) => {
+    await cloudinary.api.delete_resources(['not existed']);
     const imageUpload = await cloudinary.uploader.upload(image.path, { 
         resource_type: "image",
         folder: type,
-        timeout: 20000,
         transformation: [{
             width: 1200,
             crop: 'limit',

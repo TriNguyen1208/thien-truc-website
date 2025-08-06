@@ -11,7 +11,6 @@ function LazyLoadImage({ children, ...props }) {
     ];
 
     const handleScroll = () => {
-        console.log("hello")
         forceCheck();
     };
 
