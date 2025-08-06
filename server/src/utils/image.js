@@ -5,6 +5,7 @@ const uploadImage = async (image, type) => {
     const imageUpload = await cloudinary.uploader.upload(image.path, { 
         resource_type: "image",
         folder: type,
+        timeout: 20000,
         transformation: [{
             width: 1200,
             crop: 'limit',
