@@ -8,6 +8,7 @@ dotenv.config({ path: '../.env' });
 // https://vite.dev/config/
 export default defineConfig({
   server: {
+    allowedHosts: ['thientruc.vn'],
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://localhost:5000', // API backend server
