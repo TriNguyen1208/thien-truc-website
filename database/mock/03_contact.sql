@@ -5,7 +5,7 @@ values (
 tư vấn và giải đáp mọi thắc mắc.'
 );
 
-insert into contact.support_agents (avatar_img, name, role, phone_numer, facebook_url)
+insert into contact.support_agents (avatar_img, name, role, phone_number, facebook_url)
 values (
 	'https://d3pc1xvrcw35tl.cloudfront.net/ln/feedImages/686x514/fb131e239fda069da09a9b0663ba45dc_9j6qpaW_202410.jpg',
 	'Nguyễn Văn 1',
