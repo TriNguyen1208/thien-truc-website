@@ -9,10 +9,9 @@ import {
 } from '@ant-design/icons';
 import contactAPI from '@/services/contact.api';
 import recruitmentAPI from '@/services/recruitment.api';
-import { Result, Button, Modal } from 'antd';
+import {toast} from 'react-toastify'
 
 const Form = ({ data }) => {
-    const [status, setStatus] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false); // Thêm state loading
     const {
         title = 'Gửi tin nhắn cho chúng tôi',
@@ -53,9 +52,9 @@ const Form = ({ data }) => {
             }
 
             if (response?.success === true) {
-                setStatus('success');
+                toast.success(response?.message || "Gửi thành công");
             } else {
-                setStatus('error');
+                toast.error(response?.message || "Gửi thất bại");
             }
 
             setFormData({
@@ -66,7 +65,7 @@ const Form = ({ data }) => {
                 content: '',
             });
         } catch {
-            setStatus('error');
+            toast.error(response?.message || "Gửi thất bại");
         } finally {
             setIsSubmitting(false); // Kết thúc loading
         }
@@ -79,37 +78,10 @@ const Form = ({ data }) => {
 
     return (
         <div ref={recruitmentRef}>
-            <Modal
-                open={status === 'success' || status === 'error'}
-                onCancel={() => setStatus(null)}
-                footer={null}
-                centered
-            >
-                <Result
-                    status={status}
-                    title={
-                        status === 'success'
-                            ? 'Cảm ơn bạn đã liên hệ!'
-                            : 'Gửi không thành công'
-                    }
-                    subTitle={
-                        status === 'success'
-                            ? 'Chúng tôi đã nhận được thông tin và sẽ phản hồi bạn trong thời gian sớm nhất.'
-                            : 'Đã xảy ra lỗi trong quá trình gửi. Vui lòng thử lại sau.'
-                    }
-                    extra={[
-                        <Button type="primary" key="btn" onClick={() => setStatus(null)}>
-                            {status === 'success' ? 'Gửi thêm' : 'Thử lại'}
-                        </Button>,
-                    ]}
-                />
-            </Modal>
-
-
             <div className="flex flex-col gap-3 sm:gap-10 items-center">
                 <div className="flex flex-col w-full bg-green-50 px-8 py-8 gap-5">
                     <h2 className="text-(--dark-green) text-3xl font-bold">{title}</h2>
-                    <form action="" className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
+                    <form onSubmit={handleClickSendMessage} className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
                         <div className='grid grid-cols-12 gap-3 sm:gap-8'>
                             <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
                                 <label for="name" className="text-sm font-medium text-[#374151]">
@@ -121,7 +93,7 @@ const Form = ({ data }) => {
                                     id="name"
                                     value={formData.name}
                                     onChange={handleChangeDataForm}
-                                    placeholder="Nguyễn Đức Trí"
+                                    placeholder="Đỗ Thanh Tùng"
                                     required
                                     className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500"
                                 />
@@ -137,7 +109,7 @@ const Form = ({ data }) => {
                                     id="email"
                                     value={formData.email}
                                     onChange={handleChangeDataForm}
-                                    placeholder="ductri0981@gmail.com"
+                                    placeholder="thientruc@gmail.com"
                                     required
                                     className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500"
                                 />
@@ -153,7 +125,7 @@ const Form = ({ data }) => {
                                     id="phone"
                                     value={formData.phone}
                                     onChange={handleChangeDataForm}
-                                    placeholder="0906640981"
+                                    placeholder="0123456789"
                                     className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500"
                                 />
                             </div>
@@ -193,7 +165,8 @@ const Form = ({ data }) => {
 
                         <GreenButton
                             content="Gửi tin nhắn"
-                            handleClick={handleClickSendMessage}
+                            type="submit"
+                            // handleClick={handleClickSendMessage}
                         />
                     </form>
 

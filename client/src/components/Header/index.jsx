@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { MenuOutlined } from '@ant-design/icons';
 import { Image } from 'antd';
@@ -6,7 +6,16 @@ import logo from '@/assets/images/logo.png';
 import LazyLoad from 'react-lazyload';
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
- 
+  const wrapperRef = useRef();
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   const menuItems = [
     { label: 'Trang Chủ', to: '/' },
     { label: 'Sản Phẩm', to: '/san-pham' },
@@ -19,7 +28,7 @@ const Header = () => {
   ];
  
   return (
-    <header className="container-fluid w-full bg-white shadow-sm sticky top-0 z-2000">
+    <header ref={wrapperRef} className="container-fluid w-full bg-white shadow-sm sticky top-0 z-2000">
       <div className="py-1 md:py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}

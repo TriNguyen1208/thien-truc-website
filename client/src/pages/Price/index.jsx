@@ -152,9 +152,7 @@
   return (
   <>
     {navigation.state == 'loading' && <Loading/>}
-    <div className="w-full overflow-x-hidden">
-        <Banner data={bannerHead} />
-      </div>
+    <Banner data={bannerHead} />
     <div ref={scrollTargetRef} className=" flex flex-col  p-[16px] lg:p-[32px]">
     <div className="bg-[#F0FDF4]  shadow-md rounded-xl xl:pt-[48px]">
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto mb-[16px] rounded-xl shadow-2xl overflow-hidden">

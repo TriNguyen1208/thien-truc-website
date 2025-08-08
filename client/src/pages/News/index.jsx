@@ -18,7 +18,6 @@ export default function News() {
 
   // Lấy giá trị từ URL và kiểm tra hợp lệ
   const query = searchParams.get("query") || "";
-  const is_published = searchParams.get('is_published') || "";
   const limit = searchParams.get('limit') || "";
 
   const rawSortBy = searchParams.get("sort_by");
@@ -42,17 +41,14 @@ export default function News() {
   const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.news.getList(
     query,
     filter === "Tất cả thể loại" ? undefined : filter,
-    is_published,
+    true,
     sortBy,
     currentPage,
     limit
   );
-
   if (isLoadingNewsPage || isLoadingfilter) return <Loading />;
-
   // Gọi API với params từ URL
 
-  
   // Helper cập nhật URL
   const updateParam = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
@@ -122,9 +118,7 @@ export default function News() {
   return (
     <>
       {navigation.state == 'loading' && <Loading/>}
-      <div className="w-full overflow-x-hidden">
-        <Banner data={bannerData} />
-      </div>
+      <Banner data={bannerData} />
       <div className="container-fluid flex flex-col gap-10 pt-10">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0 ">
           <div className="lg:flex-1 justify-center" />
