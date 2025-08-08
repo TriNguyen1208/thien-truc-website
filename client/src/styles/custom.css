@@ -7,16 +7,22 @@
   margin-right: auto;
   margin-left: auto;
 }
-@media (min-width: 390px) {
+@media (min-width: 350px) {
   .container-fluid {
-    padding-right: 24px;
-    padding-left: 24px;
+    padding-right: 12px;
+    padding-left: 12px;
   }
 }
 @media (min-width: 1024px) {
   .container-fluid {
     padding-right: 36px;
     padding-left: 36px;
+  }
+}
+@media (min-width: 768px) {
+  .container-fluid {
+    padding-right: 24px;
+    padding-left: 24px;
   }
 }
 /* Màu chủ đạo */

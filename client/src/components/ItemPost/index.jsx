@@ -9,7 +9,7 @@ import {
 import ShareButton from '@/components/ShareButton';
 import LazyLoad from 'react-lazyload';
 
-const ItemPost = ({ data, id= "", width = "100%"}) => {
+const ItemPost = ({ data, id= ""}) => {
     const {
         type, // 'project' hoặc 'news'
         title,
@@ -33,7 +33,7 @@ const ItemPost = ({ data, id= "", width = "100%"}) => {
     };
 
     const renderImage = () => (
-        <div className="relative w-full h-60 bg-gray-200 rounded-t-lg overflow-hidden">
+        <div className="relative w-full  h-60 bg-gray-200 rounded-t-lg overflow-hidden">
             {image ? (
                 <LazyLoad
                     height={200}

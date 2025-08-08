@@ -144,7 +144,7 @@ export default function News() {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-5 md:gap-10 px-4">
+        <div className="grid grid-cols-12 gap-5 md:gap-10">
           {isLoadingDataFilter ? (
             <Loading/>
           ) : (
@@ -163,7 +163,7 @@ export default function News() {
               };
               return (
                 <Link to={`${location.pathname}/${item.id}`} key={item.id}
-                className="col-span-12 lg:col-span-4 md:col-span-6"
+                className="col-span-12 lg:col-span-4 md:col-span-6 max-md:max-w-[500px] max-md:w-full  max-md:mx-auto"
                 >
                   <ItemPost data={data} id={item.id}/>
                 </Link>

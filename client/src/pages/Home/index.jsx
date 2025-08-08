@@ -17,6 +17,7 @@ import {
 import useNews from "@/hooks/useNews";
 import LazyLoad from 'react-lazyload';
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
@@ -43,6 +44,17 @@ const CustomNextArrow = (props) => {
 
 
 export default function Home() {
+    const SEO = {
+        title: "Trang chủ",
+        description: "Trang chủ của công ty Thiên Trúc, nơi cung cấp các giải pháp chiếu sáng LED cao cấp.",
+        keywords: "Thiên Trúc, chiếu sáng LED, giải pháp chiếu sáng, sản phẩm LED, dự án tiêu biểu",
+        image: "../../assets/images/logo.png", 
+        url: "https://thientruc.vn",
+        meta: {
+            title: "Công ty Thiên Trúc",
+            urlFacebook: "https://www.facebook.com/ctycpcnthientruc"
+        }
+    };
     const navigate = useNavigate();
     const [index, setIndex] = useState(0);
     const [maxIndex, setMaxIndex] = useState(0);
@@ -56,7 +68,7 @@ export default function Home() {
     //     //Không truyền width thì mặc định là full
     //     <GreenButton content={content} width="300px" handleClick={handleClick}/>
     // )
-    
+
     const navigation = useNavigation();
     const { data: allData, isLoading: loadingAll } = homeQueries.getAll();
     const { data: highlightProduct, isLoadingHighlightProduct } = useProducts.getHighlightProducts();
@@ -67,9 +79,9 @@ export default function Home() {
         const updateWidth = () => {
             const width = window.innerWidth;
             let number = 1;
-            if (width >= 1280) number = 4;
-            else if (width >= 1024) number = 3;
-            else if (width >= 768) number = 2;
+            if (width >= 1024) number = 4;
+            else if (width >= 768) number = 3;
+            else if (width >= 450) number = 2;
 
 
             if (highlightProduct?.length) {
@@ -98,7 +110,7 @@ export default function Home() {
         );
     };
     if (loadingAll || isLoadingHighlightProduct || isLoadingHighlightProject || isLoadingHighlightProjectRegion)
-        return <Loading/>
+        return <Loading />
 
     const { data: topNews, isLoading: newsLoading, error: newsError } = useNews.getHighlightNews();
     if (loadingAll) {
@@ -127,13 +139,48 @@ export default function Home() {
         colorBackground: "var(--gradient-banner)",
         colorText: "#ffffff",
     }
-    
+
     return (
         <>
-            {navigation.state == 'loading' && <Loading/>}
+            <Helmet>
+                {/* Title và description */}
+                <title>{SEO.title}</title>
+                <meta
+                    name="description"
+                    content={SEO.description}
+                />
+
+                {/* Canonical */}
+                <link rel="canonical" href={SEO.url} />
+
+                {/* Open Graph */}
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={SEO.meta.title} />
+                <meta
+                    property="og:image"
+                    content= {SEO.image}
+                />
+                <meta property="og:url" content={SEO.url} />
+
+                {/* JSON-LD - Organization schema */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        name: "Thiên Trúc",
+                        url: SEO.url,
+                        logo: SEO.image,
+                        sameAs: [
+                            SEO.urlFacebook
+                        ]
+                    })}
+                </script>
+            </Helmet>
+
+            {navigation.state == 'loading' && <Loading />}
             <Banner data={dataBanner} />
-                <div>
-                
+            <div>
+
                 {/* Inlined TopNews Component */}
                 <section className="w-full mx-auto border-2 border-[#16A34A] " style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}>
                     {newsLoading ? (
@@ -144,114 +191,113 @@ export default function Home() {
                         <div className="text-center text-gray-600">Không có tin tức nổi bật.</div>
                     ) : (
                         <Carousel
-                        autoplay
-                        arrows 
-                        dots={{ className: 'custom-dots' }}
-                        // prevArrow={<CustomPrevArrow />}
-                        // nextArrow={<CustomNextArrow />}
-                        // className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full [&_.slick-slider]:h-full [&_.slick-track]:h-full [&_.slick-slide]:h-full"
-                        // arrows={true}
-                            >
+                            autoplay
+                            arrows
+                            dots={{ className: 'custom-dots' }}
+                        prevArrow={<CustomPrevArrow />}
+                        nextArrow={<CustomNextArrow />}
+                        className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full [&_.slick-slider]:h-full [&_.slick-track]:h-full [&_.slick-slide]:h-full"
+                        >
                             {topNews.map((news) => (
-                                <div key={news.id} 
-                                className="cursor-pointer"
-                                     onClick={() => {
+                                <div key={news.id}
+                                    className="cursor-pointer"
+                                    onClick={() => {
                                         navigate(`tin-tuc/${news.id}`)
-                                        }}>
-                                <div className="w-full h-full animate-slide-in-right">
-                                    <div className=" relative w-full h-full bg-black overflow-hidden ">
-                                        {/* Ảnh nền */}
-                                        <div
-                                        className="w-full lg:aspect-[19/8] md:aspect-[14/8] sm:aspect-[11/8] aspect-[10/8] bg-cover bg-center"
-                                        style={{ backgroundImage: `url(${news.main_img})` }}
-                                        ></div>
-
-                                        {/* Overlay gradient trắng phía dưới */}
-                                        <div className="absolute inset-x-0 bottom-0 lg:h-[14%] md:h-[20%] sm:h-[22%] h-[25%] max-[500px]:h-[30%] pointer-events-none">
+                                    }}>
+                                    <div className="w-full h-full animate-slide-in-right">
+                                        <div className=" relative w-full h-full bg-black overflow-hidden ">
+                                            {/* Ảnh nền */}
                                             <div
-                                                className="w-full h-full"
-                                                style={{
-                                                background: `linear-gradient(to top,
+                                                className="w-full lg:aspect-[19/8] md:aspect-[14/8] sm:aspect-[11/8] aspect-[10/8] bg-cover bg-center"
+                                                style={{ backgroundImage: `url(${news.main_img})` }}
+                                            ></div>
+
+                                            {/* Overlay gradient trắng phía dưới */}
+                                            <div className="absolute inset-x-0 bottom-0 lg:h-[14%] md:h-[20%] sm:h-[22%] h-[25%] max-[500px]:h-[30%] pointer-events-none">
+                                                <div
+                                                    className="w-full h-full"
+                                                    style={{
+                                                        background: `linear-gradient(to top,
                                                     rgba(255,255,255,1) 0%,
                                                     rgba(255,255,255,0.85) 20%,
                                                     rgba(255,255,255,0.7) 40%,
                                                     rgba(255,255,255,0.55) 60%,
                                                     rgba(255,255,255,0.4) 80%,  
                                                     transparent 100%)`,
-                                                }}
-                                            ></div>
-                                        </div>
-                                        
-                                        <div className="absolute left-0 lg:bottom-2 bottom-0 w-full z-20 sm:px-6 sm:py-4 text-center">
-                                            <div className="absolute inset-x-0 bottom-0 z-20 px-3 py-2 flex flex-col justify-end gap-1">
-                                                <h4
-                                                    className="font-semibold text-gray-800 mb-0 line-clamp-2 text-sm sm:text-base md:text-lg leading-tight"
-                                                    style={{ textShadow: '0 1px 2px rgba(255,255,255,0.5)' }}
-                                                >
-                                                    {news.title}
-                                                </h4>
-                                                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed max-h-[3rem] overflow-hidden">
-                                                    {news.main_content}
-                                                </p>
+                                                    }}
+                                                ></div>
+                                            </div>
+
+                                            <div className="absolute left-0 lg:bottom-2 bottom-0 w-full z-20 sm:px-6 sm:py-4 text-center">
+                                                <div className="absolute inset-x-0 bottom-0 z-20 px-3 py-2 flex flex-col justify-end gap-1">
+                                                    <h4
+                                                        className="font-semibold text-gray-800 mb-0 line-clamp-2 text-sm sm:text-base md:text-lg leading-tight"
+                                                        style={{ textShadow: '0 1px 2px rgba(255,255,255,0.5)' }}
+                                                    >
+                                                        {news.title}
+                                                    </h4>
+                                                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed max-h-[3rem] overflow-hidden">
+                                                        {news.main_content}
+                                                    </p>
                                                 </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             ))}
                         </Carousel>
                     )}
                 </section>
-            <div className="bg-[var(--light-green-banner)] text-center p-[45px]">
-                <div className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
-                    Dự án tiêu biểu
-                </div>
-                <div className="mb-[30px] max-w-[70%] mx-auto">
-                    <PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
-                </div>
-                <div 
-                    className=" relative w-full xl:w-[70%] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px] "
-                     style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
-                >
-                    <Carousel
-                        dots={{ className: 'custom-dots' }}
-                        prevArrow={<CustomPrevArrow />}
-                        nextArrow={<CustomNextArrow />}
-                        className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full [&_.slick-slider]:h-full [&_.slick-track]:h-full [&_.slick-slide]:h-full"
-                        arrows={true}
+                <div className="bg-[var(--light-green-banner)] text-center py-[45px] px-[10px] sm:px-[25px] ">
+                    <div className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
+                        Dự án tiêu biểu
+                    </div>
+                    <div className="mb-[30px] max-w-[70%] mx-auto">
+                        <PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
+                    </div>
+                    <div
+                        className=" relative w-full max-w-[900px] mx-auto border-2 border-[#166354] rounded-[10px] mb-[20px] "
+                        style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
                     >
-                        {(highlightProject || []).map((item) => (
-                            <Link key={item.id} to={`du-an/${item.id}`} className="h-full">
-                                <div >
-                                    {item.main_img ? (
-                                        
-                                        <div
-                                            className="w-full aspect-[15/10] sm:aspect-[19/9] bg-cover bg-center text-center rounded-t-[10px] transition-transform duration-300 group-hover:scale-105"
-                                            style={{
-                                                backgroundImage: `url(${item.main_img})`,
-                                            }}
-                                        >
-                                        </div>
-                                    ) : (
-                                        <div className="w-full aspect-[15/10] sm:aspect-[19/9] flex items-center bg-gray-200 justify-center rounded-t-[10px]">
-                                            <MailOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
-                                        </div>
-                                    )}
+                        <Carousel
+                            dots={{ className: 'custom-dots' }}
+                            prevArrow={<CustomPrevArrow />}
+                            nextArrow={<CustomNextArrow />}
+                            className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full [&_.slick-slider]:h-full [&_.slick-track]:h-full [&_.slick-slide]:h-full"
+                            arrows={true}
+                        >
+                            {(highlightProject || []).map((item) => (
+                                <Link key={item.id} to={`du-an/${item.id}`} className="h-full">
+                                    <div >
+                                        {item.main_img ? (
 
-                                    <div className="h-[150px] p-4 text-left text-gray-800 bg-white rounded-b-[10px] transition-colors duration-300 group-hover:bg-gray-50">
-                                        <h4 className="text-xl font-semibold mb-2 text-gray-800 line-clamp-2 group-hover:text-[var(--dark-green)] transition-colors duration-300">
-                                            {item.title}dsàdsádấdajjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddđddddddđdsfdsàdsjhfkjsdahfdhfjkdskjfhakjf
-                                        </h4>
-                                        <p className="text-lg text-gray-600 leading-relaxed line-clamp-2">
-                                            {item.main_content}
-                                        </p>
+                                            <div
+                                                className="w-full aspect-[15/10] sm:aspect-[19/9] bg-cover bg-center text-center rounded-t-[10px] transition-transform duration-300 group-hover:scale-105"
+                                                style={{
+                                                    backgroundImage: `url(${item.main_img})`,
+                                                }}
+                                            >
+                                            </div>
+                                        ) : (
+                                            <div className="w-full aspect-[15/10] sm:aspect-[19/9] flex items-center bg-gray-200 justify-center rounded-t-[10px]">
+                                                <MailOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
+                                            </div>
+                                        )}
+
+                                        <div className="h-[150px] p-4 text-left text-gray-800 bg-white rounded-b-[10px] transition-colors duration-300 group-hover:bg-gray-50">
+                                            <h4 className="text-xl font-semibold mb-2 text-gray-800 line-clamp-2 group-hover:text-[var(--dark-green)] transition-colors duration-300">
+                                                {item.title}
+                                            </h4>
+                                            <p className="text-lg text-gray-600 leading-relaxed line-clamp-2">
+                                                {item.main_content}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </Carousel>
+                                </Link>
+                            ))}
+                        </Carousel>
+                    </div>
                 </div>
-            </div>
             </div>
             <div className="container-fluid py-[70px]">
                 <div className="text-center">
@@ -289,12 +335,12 @@ export default function Home() {
                             {
                                 (highlightProduct || []).map((item, i) => {
                                     return (
-                                     
+
                                         <Link to={`/san-pham/${item.id}`} key={i}
-                                            className="w-1/2 sm:w-1/4 flex-shrink-0 px-2"
+                                            className="flex w-full justify-center min-[450px]:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 px-2"
                                         >
-                                            <div 
-                                            className = 'aspect-[4/11] w-full max-w-[220px] max-h-[500px] sm:aspect-[40/111]  sm:max-h-[450px] md:max-h-[470px] lg:max-h-[550px] xl:max-h-[580px] lg:max-w-[280px]'
+                                            <div
+                                                className=' aspect-[4/8]  max-h-[400px] min-[450px]:max-h-[460px] w-full max-w-[230px]   sm:max-h-[380px] md:max-h-[420px]  lg:max-w-[280px] lg:max-h-[470px] xl:max-h-[500px]'
                                             >
                                                 <ItemProduct product={item}
                                                 />
@@ -350,7 +396,7 @@ export default function Home() {
                             throttle={100}
                             once
                             placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
-                            style={{width: '100%', height: '100%'}}
+                            style={{ width: '100%', height: '100%' }}
                         >
                             <img
                                 src={homePageData.aboutus_img}
