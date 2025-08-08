@@ -84,13 +84,13 @@ export default function Recruitment() {
                     </div>
                     <div>
                         <div className="flex flex-wrap justify-center gap-10 mb-10">
-                            <CenterCard data={{ title: "Môi trường làm việc chuyên nghiệp", description: "Làm việc tại cơ sở hiện đại với đầy đủ các trang thiết bị tiện nghi trong ngành.", icon: BuildingIcon }} width="434px" height="238px" />
-                            <CenterCard data={{ title: "Cơ hội phát triển", description: "Chúng tôi đầu tư vào sự phát triển của nhân viên thông qua đào tạo, hội thảo và cơ hội thăng tiến.", icon: FlashIcon }} width="434px" height="238px" />
-                            <CenterCard data={{ title: "Đội ngũ đa dạng", description: "Làm việc với những người tài năng từ nhiều nền tảng khác nhau, mang đến nhiều góc nhìn và ý tưởng.", icon: MemberIcon }} width="434px" height="238px" />
+                            <CenterCard data={{ title: "Môi trường làm việc chuyên nghiệp", description: "Làm việc tại cơ sở hiện đại với đầy đủ các trang thiết bị tiện nghi trong ngành.", icon: BuildingIcon }} width="434px" height="218px" />
+                            <CenterCard data={{ title: "Cơ hội phát triển", description: "Chúng tôi đầu tư vào sự phát triển của nhân viên thông qua đào tạo, hội thảo và cơ hội thăng tiến.", icon: FlashIcon }} width="434px" height="218px" />
+                            <CenterCard data={{ title: "Đội ngũ đa dạng", description: "Làm việc với những người tài năng từ nhiều nền tảng khác nhau, mang đến nhiều góc nhìn và ý tưởng.", icon: MemberIcon }} width="434px" height="218px" />
                         </div>
                         <div className="flex flex-wrap justify-center max-w-4xl m-auto gap-4">
-                            <CenterCard data={{ title: "Chế độ đãi ngộ hấp dẫn", description: "Mức lương cạnh tranh, bảo hiểm sức khỏe toàn diện, và các phúc lợi khác để đảm bảo sự hài lòng của nhân viên.", icon: MoneyIcon }} width="434px" height="238px" />
-                            <CenterCard data={{ title: "Cân bằng công việc - cuộc sống", description: "Chú trọng đến việc cân bằng giữa công việc và cuộc sống để nhân viên cảm thấy thoải mái và hiệu quả.", icon: SmileIcon }} width="434px" height="238px" />
+                            <CenterCard data={{ title: "Chế độ đãi ngộ hấp dẫn", description: "Mức lương cạnh tranh, bảo hiểm sức khỏe toàn diện, và các phúc lợi khác để đảm bảo sự hài lòng của nhân viên.", icon: MoneyIcon }} width="434px" height="218px" />
+                            <CenterCard data={{ title: "Cân bằng công việc - cuộc sống", description: "Chú trọng đến việc cân bằng giữa công việc và cuộc sống để nhân viên cảm thấy thoải mái và hiệu quả.", icon: SmileIcon }} width="434px" height="218px" />
                         </div>
                     </div>
                     <div className="grid grid-cols-12 py-10 px-10 lg:gap-10 bg-[#F9FAFB] ">

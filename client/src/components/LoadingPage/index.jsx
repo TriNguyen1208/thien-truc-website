@@ -74,7 +74,7 @@ export const LoadingNews = async () => {
           staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["news_list", "", undefined, "", "date_desc", 1, ""],
+          queryKey: ["news_list", "", true, "", "date_desc", 1, ""],
           queryFn: () => newsServices.news.getList("", undefined, "", "date_desc", 1, ""),
           staleTime: 10 * 60 * 1000,
       }),
