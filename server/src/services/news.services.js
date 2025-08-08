@@ -976,6 +976,7 @@ const featured_news = {
             sort: row.sort,
             id: row.news_id,
             img: row.main_img,
+            main_content: row.main_content,
             title: row.title,
             name: row.name,
             date: (new Date(row.public_date)).toLocaleDateString('vi-VN')

@@ -25,12 +25,16 @@ import AddProject from "../pages/AddProject"
 import EditNews from "../pages/EditNews"
 import EditProject from "../pages/EditProject"
 import { createBrowserRouter } from "react-router-dom";
+import AuthGate from "../components/AuthGate"
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <ProtectedRoute>
-                    <DefaultLayout/>
-                </ProtectedRoute>,
+        element:
+        <AuthGate>
+            <ProtectedRoute>
+                <DefaultLayout/>
+            </ProtectedRoute>
+        </AuthGate>,
         children: [
             {
                 path: "/",

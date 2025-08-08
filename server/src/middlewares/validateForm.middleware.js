@@ -4,7 +4,7 @@ const validateRecruitment = [
   body('name').notEmpty().withMessage('Tên không được để trống'),
   body('email').notEmpty().withMessage('Email không được để trống'),
   body('email').isEmail().withMessage('Email không hợp lệ'),
-  body('phone').notEmpty().withMessage('Số điện thoại không được để trống'),
+  body('phone').optional({checkFalsy: true}).isMobilePhone('vi-VN').withMessage('Số điện thoại không hợp lệ'),
   body('title').notEmpty().withMessage('Tiêu đề không được để trống'),
   body('content').notEmpty().withMessage('Nội dung không được để trống'),
 
@@ -25,7 +25,7 @@ const validateContact = [
   body('name').notEmpty().withMessage('Tên không được để trống'),
   body('email').notEmpty().withMessage('Email không được để trống'),
   body('email').isEmail().withMessage('Email không hợp lệ'),
-  body('phone').notEmpty().withMessage('Số điện thoại không được để trống'),
+  body('phone').optional({checkFalsy: true}).isMobilePhone('vi-VN').withMessage('Số điện thoại không hợp lệ'),
   body('title').notEmpty().withMessage('Tiêu đề không được để trống'),
   body('content').notEmpty().withMessage('Nội dung không được để trống'),
 

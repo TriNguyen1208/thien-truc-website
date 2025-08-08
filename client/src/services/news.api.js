@@ -54,8 +54,13 @@ const new_contents = {
         
     }
 }
+const getFeaturedNews = async () => {
+    const res = await axios.get(API_ROUTES.news.getFeaturedNews);
+    return res.data;
+}
+
 const getSearchSuggestions = async (query, filter) => {
     const res = await axios.get(API_ROUTES.news.search_suggestions(query, filter))
     return res.data;
 }
-export default {getAll, getNewsPage, getHighlightNews, news, new_categories, new_contents, getSearchSuggestions};
+export default {getAll, getNewsPage, getHighlightNews, news, new_categories, new_contents, getSearchSuggestions, getFeaturedNews};

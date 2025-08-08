@@ -165,11 +165,11 @@
             <table className="min-w-full text-base table-fixed">
               <thead className="hidden md:table-header-group sticky top-0 z-20 bg-[#00A651] text-white shadow-md ">
                 <tr className='w-full'>
-                  <th className="text-center rounded-tl-lg rounded-bl-md  w-[8%] md:p-[12px] ">STT</th>
+                  <th className="text-center  w-[8%] md:p-[12px] ">STT</th>
                   <th className="text-left  w-[40%] md:p-[12px]">TÊN SẢN PHẨM</th>            
                   <th className="text-center  w-[15%] md:p-[12px] ">GIÁ (VND)</th>
                   <th className="text-center  w-[17% md:p-[12px] ">BẢO HÀNH</th>
-                  <th className="text-center  w-[20%] rounded-tr-lg rounded-br-md md:p-[12px]">CHI TIẾT</th>
+                  <th className="text-center  w-[20%]  md:p-[12px]">CHI TIẾT</th>
                 </tr>
               </thead>
 
@@ -182,15 +182,20 @@
                         <div
                           className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[16px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"
                           onClick={() => toggleCategory(cat.category)}
+                        
                         >
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 w-full"> 
+                            {/* Phần icon - không co giãn, chỉ chiếm không gian cần thiết */}
                             <ChevronDownIcon
-                              className={`w-5 h-7 transform transition-transform duration-300 ${
-                                openCategories[cat.category] ? 'rotate-180' : ''
-                              }`}
+                                className={`w-5 h-7 flex-shrink-0 transform transition-transform duration-300 ${ // Thêm flex-shrink-0
+                                    openCategories[cat.category] ? 'rotate-180' : ''
+                                }`}
                             />
-                            {cat.category}
-                          </div>
+                            {/* Phần tên danh mục - chiếm phần lớn không gian, giới hạn 90% và có thể truncate */}
+                            <span className="flex-grow flex-shrink min-w-0 max-w-[90%] truncate overflow-hidden whitespace-nowrap block">
+                                {cat.category}
+                            </span>
+                        </div>
                         </div>
                       </td>
                     </tr>

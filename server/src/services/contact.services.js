@@ -227,8 +227,8 @@ const postContactMessage = async (applicationData) => {
         <ul>
             <li><strong>Họ tên:</strong> ${name}</li>
             <li><strong>Email:</strong> ${email}</li>
-            <li><strong>Điện thoại:</strong> ${phone}</li>
-            <li><strong>Chủ đề:</strong> ${title || 'Không ghi rõ'}</li>
+            <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
+            <li><strong>Chủ đề:</strong> ${title}</li>
             <li><strong>Nội dung:</strong><br>${content}</li>
         </ul>
         <hr>
@@ -241,6 +241,14 @@ const postContactMessage = async (applicationData) => {
         subject: "Xác nhận nhận đơn liên hệ",
         html: `
             <h2>Cảm ơn bạn đã liên hệ!</h2>
+            <p>Chúng tôi đã nhận được thông tin liên hệ của bạn với thông tin sau:</p>
+            <ul>
+                <li><strong>Họ tên:</strong> ${name}</li>
+                <li><strong>Email:</strong> ${email}</li>
+                <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
+                <li><strong>Chủ đề:</strong> ${title}</li>
+                <li><strong>Nội dung:</strong><br>${content}</li>
+            </ul>
             <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
             <hr>
             <small>Trân trọng, Bộ phận Nhân sự</small>

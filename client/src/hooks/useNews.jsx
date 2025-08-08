@@ -94,10 +94,20 @@ function useSearchSuggest(query, filter){
         staleTime: 10 * 60 * 1000,
     })
 }
+
+function useGetFeaturedNews() {
+    return useQuery({
+        queryKey: ["featured_news"],
+        queryFn: () => newsServices.getFeaturedNews(),
+        staleTime: 10 * 60 * 1000,
+    })
+}
+
 export default {
     getAll: useGetAll,
     getNewsPage: useGetNewsPage,
     getHighlightNews: useGetHighlightNews,
+    getFeaturedNews: useGetFeaturedNews,
     news:{
         getList: news.useGetList,
         getOne: news.useGetOne,

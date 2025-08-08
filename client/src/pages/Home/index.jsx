@@ -75,6 +75,8 @@ export default function Home() {
     const { data: highlightProject, isLoadingHighlightProject } = useProjects.getHighlightProjects(filter === "Tất cả dự án" ? '' : filter);
     // const { data: highlightProject, isLoadingHighlightProject } = useProjects.getHighlightProjects();
     const { data: highlightProjectRegion, isLoadingHighlightProjectRegion } = useProjects.project_regions.getAllFeatured();
+    const { data: topNews, isLoading: newsLoading, error: newsError } = useNews.getFeaturedNews();
+
     useEffect(() => {
         const updateWidth = () => {
             const width = window.innerWidth;
@@ -111,13 +113,6 @@ export default function Home() {
     };
     if (loadingAll || isLoadingHighlightProduct || isLoadingHighlightProject || isLoadingHighlightProjectRegion)
         return <Loading />
-
-    const { data: topNews, isLoading: newsLoading, error: newsError } = useNews.getHighlightNews();
-    if (loadingAll) {
-        return (
-            <Loading />
-        )
-    }
     const categoriesName = (highlightProjectRegion ?? []).map(item => item.name);
     const categoriesData = ["Tất cả dự án", ...categoriesName];
     const idSelectedCategories = filter ? categoriesData.findIndex((name) => name === filter) : 0;
@@ -192,13 +187,14 @@ export default function Home() {
                     ) : (
                         <Carousel
                             autoplay
+                            autoplaySpeed={topNews.switch_time * 1000}
                             arrows
                             dots={{ className: 'custom-dots' }}
                         prevArrow={<CustomPrevArrow />}
                         nextArrow={<CustomNextArrow />}
                         className="[&_.slick-prev]:hidden [&_.slick-next]:hidden h-full [&_.slick-slider]:h-full [&_.slick-track]:h-full [&_.slick-slide]:h-full"
                         >
-                            {topNews.map((news) => (
+                            {topNews.featured_news.map((news) => (
                                 <div key={news.id}
                                     className="cursor-pointer"
                                     onClick={() => {
@@ -209,7 +205,7 @@ export default function Home() {
                                             {/* Ảnh nền */}
                                             <div
                                                 className="w-full lg:aspect-[19/8] md:aspect-[14/8] sm:aspect-[11/8] aspect-[10/8] bg-cover bg-center"
-                                                style={{ backgroundImage: `url(${news.main_img})` }}
+                                                style={{ backgroundImage: `url(${news.img})` }}
                                             ></div>
 
                                             {/* Overlay gradient trắng phía dưới */}

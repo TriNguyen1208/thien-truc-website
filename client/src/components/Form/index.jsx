@@ -44,13 +44,18 @@ const Form = ({ data }) => {
         setIsSubmitting(true); // Bắt đầu loading
         let response = null;
 
+        const formToSubmit = { ...formData };
+        if (!formToSubmit.phone.trim()) {
+            delete formToSubmit.phone;
+        }
+
         try {
             if (type === 'lien-he') {
-                response = await contactAPI.postContactForm(formData);
+                response = await contactAPI.postContactForm(formToSubmit);
             } else if (type === 'tuyen-dung') {
-                response = await recruitmentAPI.postRecruitmentForm(formData);
+                response = await recruitmentAPI.postRecruitmentForm(formToSubmit);
             }
-
+            
             if (response?.success === true) {
                 toast.success(response?.message || "Gửi thành công");
             } else {
@@ -123,7 +128,7 @@ const Form = ({ data }) => {
                                     type="tel"
                                     name="phone"
                                     id="phone"
-                                    value={formData.phone}
+                                    value={formData.phone ? formData.phone : ''}
                                     onChange={handleChangeDataForm}
                                     placeholder="0123456789"
                                     className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500"

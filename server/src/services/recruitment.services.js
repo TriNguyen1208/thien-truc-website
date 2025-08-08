@@ -16,41 +16,49 @@ const getRecruitmentPage = async (req, res) => {
     return recruitment_page;
 }
 
-const postSubmitApplication = async (applicationData) => {
-    const { name, email, phone, title, content } = applicationData;
+    const postSubmitApplication = async (applicationData) => {
+        const { name, email, phone, title, content } = applicationData;
 
-    //Send mail to company
-    await sendMail({
-        to: process.env.RECEIVER_EMAIL,
-        subject: `Dơn ứng tuyển từ ${name}`,
-        html: `
-        <h2>Thông tin ứng tuyển:</h2>
-        <ul>
-            <li><strong>Họ tên:</strong> ${name}</li>
-            <li><strong>Email:</strong> ${email}</li>
-            <li><strong>Điện thoại:</strong> ${phone}</li>
-            <li><strong>Chủ đề:</strong> ${title || 'Không ghi rõ'}</li>
-            <li><strong>Nội dung:</strong><br>${content}</li>
-        </ul>
-        <hr>
-        <small>Hệ thống gửi tự động từ website.</small>
-    `
-    })
-
-    //Send mail to applicant
-    await sendMail({
-        to: email,
-        subject: "Xác nhận ứng tuyển",
-        html: `
-            <h2>Cảm ơn bạn đã ứng tuyển!</h2>
-            <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
+        //Send mail to company
+        await sendMail({
+            to: process.env.RECEIVER_EMAIL,
+            subject: `Dơn ứng tuyển từ ${name}`,
+            html: `
+            <h2>Thông tin ứng tuyển:</h2>
+            <ul>
+                <li><strong>Họ tên:</strong> ${name}</li>
+                <li><strong>Email:</strong> ${email}</li>
+                <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
+                <li><strong>Chủ đề:</strong> ${title}</li>
+                <li><strong>Nội dung:</strong><br>${content}</li>
+            </ul>
             <hr>
-            <small>Trân trọng, Bộ phận Tuyển dụng</small>
+            <small>Hệ thống gửi tự động từ website.</small>
         `
-    })
+        })
 
-     return { success: true, message: "Ứng tuyển thành công" };
-}
+        //Send mail to applicant
+        await sendMail({
+            to: email,
+            subject: "Xác nhận ứng tuyển",
+            html: `
+                <h2>Cảm ơn bạn đã ứng tuyển!</h2>
+                <p>Chúng tôi đã nhận được đơn ứng tuyển của bạn với thông tin sau:</p>
+                <ul>
+                    <li><strong>Họ tên:</strong> ${name}</li>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
+                    <li><strong>Chủ đề:</strong> ${title}</li>
+                    <li><strong>Nội dung:</strong><br>${content}</li>
+                </ul>
+                <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
+                <hr>
+                <small>Trân trọng, Bộ phận Tuyển dụng</small>
+            `
+        })
+
+        return { success: true, message: "Ứng tuyển thành công" };
+    }
 const patchRecruitment = async (data, files) => {
     const old_img = (await pool.query(`
         SELECT
