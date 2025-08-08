@@ -169,7 +169,7 @@ export default function Project() {
                             }
                             return (
                                 <Link key={index} to={`/du-an/${item.id}`}
-                                className="col-span-12 lg:col-span-4 md:col-span-6"
+                                className="col-span-12 lg:col-span-4 md:col-span-6 max-md:max-w-[500px] max-md:w-full  max-md:mx-auto"
                                 >
                                     <div    
                                     >
