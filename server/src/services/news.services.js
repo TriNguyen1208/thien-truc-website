@@ -13,23 +13,33 @@ const getAllTables = async () => {
     };
 }
 
-const getNumPage = async (query, filter) => {
+const getNumPage = async (query, filter, is_published) => {
     let totalCount = 0;
     const hasQuery = query !== '';
     const hasFilter = filter !== '';
+    let where = []
+    if(hasQuery){
+        where.push(`('${filter}' = '' OR unaccent(n_cate.name) ILIKE unaccent('${filter}'))`);
+        where.push(`((unaccent(n.title) ILIKE '%' || unaccent('${query}') || '%' OR
+                    similarity(unaccent(n.title), unaccent('${query}')) > 0.1))`);
+    }
+    if(!hasQuery && hasFilter){
+        where.push(`unaccent(nc.name) ILIKE unaccent('${filter}')`);
+    }
+
+    if (is_published == 'true' || is_published == 'false') {
+        where.push(`n.is_published = ${is_published}`);
+    }
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
     // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
     if (hasQuery) {
         const sql = `
             SELECT COUNT(*) AS total
             FROM news.news n
             JOIN news.news_categories n_cate ON n.category_id = n_cate.id
-            WHERE 
-                $2 = '' OR unaccent(n_cate.name) ILIKE unaccent($2) AND
-                (unaccent(n.title) ILIKE '%' || unaccent($1) || '%' OR
-                similarity(unaccent(n.title), unaccent($1)) > 0.1)
+            ${where}
         `;
-        const values = [query, filter];
-        const result = await pool.query(sql, values);
+        const result = await pool.query(sql);
         totalCount = parseInt(result.rows[0].total);
         return totalCount;
     }
@@ -37,7 +47,7 @@ const getNumPage = async (query, filter) => {
     // ✅ 2. Không có query
     if (!hasFilter) {
         // Trả về tối đa 9 trang, sắp xếp theo sortBy
-        const result = await pool.query("SELECT COUNT(*) FROM news.news");
+        const result = await pool.query(`SELECT COUNT(*) FROM news.news n ${where}`);
         totalCount = parseInt(result.rows[0].count);
         return totalCount;
     } else {
@@ -46,9 +56,9 @@ const getNumPage = async (query, filter) => {
             SELECT COUNT(*) AS total
             FROM news.news n
             JOIN news.news_categories nc on n.category_id = nc.id
-            WHERE unaccent(nc.name) ILIKE unaccent($1)
+            ${where}
         `;
-        const results = await pool.query(sql, [filter]);
+        const results = await pool.query(sql);
         totalCount = parseInt(results.rows[0].total);
         return totalCount;
     }
@@ -106,8 +116,7 @@ const news = {
         filter = filter.trim().replaceAll(`'`, ``); // clean
         sort_by = sort_by.trim().replaceAll(`'`, ``); // clean
         const pageSize = item_limit || 9;
-        const totalCount = await getNumPage(query, filter);
-
+        const totalCount = await getNumPage(query, filter, is_published);
         let where = [];
         let order = [];
         let limit = '';
