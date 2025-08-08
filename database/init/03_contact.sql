@@ -10,7 +10,7 @@ create table contact.support_agents (
 	avatar_img text,
 	name varchar(50),
 	role varchar(50),
-	phone_numer varchar(20),
+	phone_number varchar(20),
 	facebook_url text
 );
 
