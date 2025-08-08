@@ -240,7 +240,7 @@ export default function Home() {
 
                                     <div className="h-[150px] p-4 text-left text-gray-800 bg-white rounded-b-[10px] transition-colors duration-300 group-hover:bg-gray-50">
                                         <h4 className="text-xl font-semibold mb-2 text-gray-800 line-clamp-2 group-hover:text-[var(--dark-green)] transition-colors duration-300">
-                                            {item.title}dsàdsádấdajjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddđddddddđdsfdsàdsjhfkjsdahfdhfjkdskjfhakjf
+                                            {item.title}
                                         </h4>
                                         <p className="text-lg text-gray-600 leading-relaxed line-clamp-2">
                                             {item.main_content}
