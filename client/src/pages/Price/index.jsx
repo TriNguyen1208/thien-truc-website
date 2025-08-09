@@ -157,7 +157,7 @@
     <div className="bg-[#F0FDF4]  shadow-md rounded-xl xl:pt-[48px]">
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto mb-[16px] rounded-xl shadow-2xl overflow-hidden">
         <div className=" font-bold text-[20px] text-center bg-white p-[24px] ">
-          BẢNG GIÁ SẢN PHẨM
+          Bảng giá sản phẩm
         </div>
 
 

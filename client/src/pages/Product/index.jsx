@@ -234,7 +234,7 @@ export default function Product() {
     }
 
     const bannerViewPrices = {
-        title: 'Xem Bảng Giá Ngay',
+        title: 'Xem bảng giá ngay',
         description: 'Xem chi tiết giá lắp đặt các thiết bị điện tử và giải pháp thi công tại Thiên Trúc',
         colorBackground: "#F0FDF4",
         colorText: "#000000",
@@ -250,7 +250,7 @@ export default function Product() {
     const contentCenterCards = [
         {
             icon: TruckOutlined,
-            title: "Giao Hàng Nhanh",
+            title: "Giao hàng nhanh",
             description: "Miễn phí với đơn hàng trên 1 triệu."
         },
         {
@@ -260,12 +260,12 @@ export default function Product() {
         },
         {
             icon: SafetyOutlined,
-            title: '100% Chính Hãng',
+            title: '100% chính hãng',
             description: "Cam kết sản phẩm chính hãng."
         },
         {
             icon: CreditCardOutlined,
-            title: "Thanh Toán Linh Hoạt",
+            title: "Thanh toán linh hoạt",
             description: "Nhiều phương thức thanh toán."
         }
 

@@ -353,7 +353,7 @@ export default function Home() {
                 {/* Left content */}
                 <div className="w-full lg:w-1/2">
                     <div className="text-[32px] md:text-[36px] lg:text-[40px] font-[600] text-[var(--dark-green)] mb-[20px] text-center lg:text-left">
-                        Công ty thiên trúc
+                        Công ty Thiên Trúc
                     </div>
                     <div className="text-[16px] md:text-[18px] lg:text-[20px] mb-[20px] text-justify lg:text-left">
                         {homePageData.aboutus_content}

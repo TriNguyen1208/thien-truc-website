@@ -124,7 +124,7 @@ export default function News() {
           <div className="lg:flex-1 justify-center" />
           <div className="flex justify-center px-4">
             <ItemByType
-              types={["Mới nhất", "Phổ Biến"]}
+              types={["Mới nhất", "Phổ biến"]}
               handleClick={handleSortChange}
               current={sortBys.indexOf(sortBy)}
             />
