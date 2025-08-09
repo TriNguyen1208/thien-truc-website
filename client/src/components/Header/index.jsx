@@ -17,14 +17,14 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   const menuItems = [
-    { label: 'Trang Chủ', to: '/' },
-    { label: 'Sản Phẩm', to: '/san-pham' },
-    { label: 'Bảng Giá', to: '/bang-gia' },
-    { label: 'Dự Án', to: '/du-an' },
-    { label: 'Tin Tức', to: '/tin-tuc' },
-    { label: 'Tuyển Dụng', to: '/tuyen-dung' },
-    { label: 'Liên Hệ', to: '/lien-he' },
-    { label: 'Về Chúng Tôi', to: '/ve-chung-toi' }
+    { label: 'Trang chủ', to: '/' },
+    { label: 'Sản phẩm', to: '/san-pham' },
+    { label: 'Bảng giá', to: '/bang-gia' },
+    { label: 'Dự án', to: '/du-an' },
+    { label: 'Tin tức', to: '/tin-tuc' },
+    { label: 'Tuyển dụng', to: '/tuyen-dung' },
+    { label: 'Liên hệ', to: '/lien-he' },
+    { label: 'Về chúng tôi', to: '/ve-chung-toi' }
   ];
  
   return (
