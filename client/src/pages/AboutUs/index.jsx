@@ -159,7 +159,7 @@ export default function AboutUs(){
             <div className='grid grid-cols-1 sm:p-8 my-[24px] p-2 gap-y-[16px] md:grid-cols-2  md:gap-x-[24px] lg:p-[40px] lg:gap-x-[50px]  xl:px-[120px] xl:py-[40px] xl:gap-x-[100px]  '>
                 <div className='p-[8px]'>
                     <div className='flex flex-col my-[8px] '>
-                       <Title content={'Câu Chuyện Của Chúng Tôi'}/>
+                       <Title content={'Câu chuyện của chúng tôi'}/>
                     </div>
                     <div className=''>
                        <span className='text-[14px] lg:text-[16px] text-[#166534]  '>
@@ -169,7 +169,7 @@ export default function AboutUs(){
                 </div>
                 <div className='p-[8px] h-fit bg-[#F0FDF4]  rounded-[8px] shadow-md hover:scale-[1.05] transition-all duration-300 ease-in-out  '>
                     <div className='flex flex-col p-[8px]  '>
-                        <Title content = {'Thành Tựu Của Chúng Tôi'}/>
+                        <Title content = {'Thành tựu của chúng tôi'}/>
                     </div>
                     <div className='p-[8px] xl:p-[24px]'>
                         {
@@ -188,7 +188,7 @@ export default function AboutUs(){
             }
             <div className='flex flex-col bg-[#F0FDF4] p-[24px] lg:p-[36px]' >
                 <div className='flex  justify-center mb-[20px]'>
-                    <Title content={'Nhiệm Vụ & Trách Nhiệm'}/>
+                    <Title content={'Nhiệm vụ và trách nhiệm'}/>
                 </div>
                 <div className='flex justify-center mb-[24px] lg:mb-[36px] text-center'>
                     <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px] '>
@@ -211,7 +211,7 @@ export default function AboutUs(){
             }
              <div className='flex flex-col bg-[#ffffff] p-[24px] lg:p-[48px] ' >
                 <div className='flex  justify-center mb-[12px]'>
-                    <Title content={' Giá Trị Cốt Lõi'}/>
+                    <Title content={' Giá trị cốt lõi'}/>
                 </div>
                 <div className='flex justify-center mb-[24px] text-center xl: mb-[48px]'>
                     <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px]  '>
@@ -235,7 +235,7 @@ export default function AboutUs(){
             <div className='flex flex-col bg-[#157E3C] p-[24px]' >
                 <div className='flex  justify-center mb-[20px] !text-white'>
                         <h1 className=' font-bold text-[20px] lg:text-[24px] text-white '>
-                            Tại Sao Chọn Thiên Trúc?
+                            Tại sao chọn Thiên Trúc?
                         </h1>
                 </div>
                 <div className='flex justify-center mb-[24px] text-center'>
