@@ -186,7 +186,7 @@ export default function Home() {
                         <div className="text-center text-gray-600">Không có tin tức nổi bật.</div>
                     ) : (
                         <Carousel
-                            autoplay
+                            autoplay = {topNews.switch_time > 0}
                             autoplaySpeed={topNews.switch_time * 1000}
                             arrows
                             dots={{ className: 'custom-dots' }}
