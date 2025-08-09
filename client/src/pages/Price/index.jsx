@@ -138,7 +138,7 @@
       handleEnter: handleEnter
     };
     const bannerContact = {
-      title : 'Sẵn Sàng Hợp Tác Với Chúng Tôi?',
+      title : 'Sẵn sàng hợp tác với chúng tôi?',
       description: 'Hãy liên hệ ngay để được tư vấn và nhận báo giá miễn phí cho dự án của bạn.',
       colorBackground : "#F0FDF4",
       colorText : "#000000",
