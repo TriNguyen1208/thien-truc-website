@@ -41,22 +41,22 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold mb-4">Liên Kết Nhanh</h3>
+          <h3 className="text-lg font-semibold mb-4">Liên kết nhanh</h3>
           <ul className="space-y-2">
-            <li><NavLink to={"/"} className="text-sm hover:text-green-200 transition-colors">Trang Chủ</NavLink></li>
-            <li><NavLink to={"/san-pham"} className="text-sm hover:text-green-200 transition-colors">Sản Phẩm</NavLink></li>
+            <li><NavLink to={"/"} className="text-sm hover:text-green-200 transition-colors">Trang chủ</NavLink></li>
+            <li><NavLink to={"/san-pham"} className="text-sm hover:text-green-200 transition-colors">Sản phẩm</NavLink></li>
             <li><NavLink to={"/bang-gia"} className="text-sm hover:text-green-200 transition-colors">Bảng giá</NavLink></li>
-            <li><NavLink to={"/du-an"} className="text-sm hover:text-green-200 transition-colors">Dự Án Tiêu Biểu</NavLink></li>
-            <li><NavLink to={"/tin-tuc"} className="text-sm hover:text-green-200 transition-colors">Tin Tức</NavLink></li>
-            <li><NavLink to={"/tuyen-dung"} className="text-sm hover:text-green-200 transition-colors">Tuyển Dụng</NavLink></li>
-            <li><NavLink to={"/lien-he"} className="text-sm hover:text-green-200 transition-colors">Liên Hệ</NavLink></li>
-            <li><NavLink to={"/ve-chung-toi"} className="text-sm hover:text-green-200 transition-colors">Về Chúng Tôi</NavLink></li>
+            <li><NavLink to={"/du-an"} className="text-sm hover:text-green-200 transition-colors">Dự án tiêu biểu</NavLink></li>
+            <li><NavLink to={"/tin-tuc"} className="text-sm hover:text-green-200 transition-colors">Tin tức</NavLink></li>
+            <li><NavLink to={"/tuyen-dung"} className="text-sm hover:text-green-200 transition-colors">Tuyển dụng</NavLink></li>
+            <li><NavLink to={"/lien-he"} className="text-sm hover:text-green-200 transition-colors">Liên hệ</NavLink></li>
+            <li><NavLink to={"/ve-chung-toi"} className="text-sm hover:text-green-200 transition-colors">Về chúng tôi</NavLink></li>
           </ul>
         </div>
 
         {/* Contact Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold mb-4">Liên Hệ Với Chúng Tôi</h3>
+          <h3 className="text-lg font-semibold mb-4">Liên hệ với chúng tôi</h3>
           <div className="space-y-3">
             <div className="flex items-center  space-x-2">
               <EnvironmentOutlined className="text-base flex-shrink-0 text-[var(--yellow-bg)]" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
@@ -97,7 +97,7 @@ const Footer = () => {
 
         {/* Working Hours */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold mb-4">Giờ Làm Việc</h3>
+          <h3 className="text-lg font-semibold mb-4">Giờ làm việc</h3>
           <div>
             {companyInfoData.working_hours.map((item, index) => (
               <div className='mb-2' key={index}>{item}</div>
