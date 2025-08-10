@@ -19,14 +19,14 @@ import { notification } from 'antd';
 import UploadImage from '@/components/UploadImage'
 import changeToFormData from '../../utils/changeToFormData';
 const HomePageContent = () => {
-    const { setLayoutProps } = useLayout()
-    useEffect(() => {
-      setLayoutProps({
-        title: "Nội dung Trang chủ",
-        description: "Quản lý nội dung hiển trị trên trang chủ",
-        hasButton: false,
-      })
-    }, []);
+  const { setLayoutProps } = useLayout()
+  useEffect(() => {
+    setLayoutProps({
+      title: "Nội dung Trang chủ",
+      description: "Quản lý nội dung hiển trị trên trang chủ",
+      hasButton: false,
+    })
+  }, []);
 
   const navigate = useNavigate();
   const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
@@ -59,14 +59,14 @@ const HomePageContent = () => {
   const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
   const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useHome.updateHomePage.updateBanner();
   const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
-  const {mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs} = useHome.updateHomePage.updateImageAboutUs();
+  const { mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs } = useHome.updateHomePage.updateImageAboutUs();
 
   const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
   const { mutate: updateHighlightFeature, isPending: isPendingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
   const { mutate: createHighlightFeature, isPending: isPendingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
   const { mutate: deleteHighlightFeature, isPending: isPendingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
-  const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.getFeatureNews();
+  const { data: highlightNewsData, isLoading: isLoadingHighlightNews, refetch  } = useNews.getFeatureNews();
   const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.updateFeatureNews();
   const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
 
@@ -77,9 +77,9 @@ const HomePageContent = () => {
   const [valuesImageAboutus, setValuesImageAboutus] = useState(null); //giong form
   const [initialValuesImageAboutus, setInitialValuesImageAboutus] = useState(null);
   const [imageNotification, setImageNotification] = useState(false);
-  
+
   useEffect(() => {
-    if(isLoadingHomePageData || isFetchingHomePageData){
+    if (isLoadingHomePageData || isFetchingHomePageData) {
       return;
     }
     const initialImage = {
@@ -93,15 +93,20 @@ const HomePageContent = () => {
     setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
     setSwitchTime(highlightNewsData?.switch_time ?? 0);
   }, [highlightNewsData])
+
+  useEffect(() => {
+    refetch();
+  }, []);
   if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature || isPendingUpdateImageAboutUs ||
     isPendingCreateHighlightFeature || isPendingDeleteHighlightFeature ||
     isLoadingHighlightNews || isLoadingHomePageData || isPendingUpdateBanner ||
-    isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews || isFetchingHomePageData ) {
+    isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews || isFetchingHomePageData) {
     return (
-     <Loading/>
+      <Loading />
     )
   }
-
+  // console.log(arrayHighlightNews);
+  console.log(highlightNewsData);
 
 
 
@@ -110,10 +115,10 @@ const HomePageContent = () => {
 
   // ============= BANNER TRANG CHU ===================== 
 
-  const handleCancleHome= ()=>{
+  const handleCancleHome = () => {
     setHomeNotification(false)
   }
-  const handleConfirmHome= ()=>{
+  const handleConfirmHome = () => {
     updateBanner(valuesHome)
     setHomeNotification(false)
   }
@@ -124,15 +129,15 @@ const HomePageContent = () => {
       { name: "Tiêu đề Banner", label: 'Tiêu đề Banner', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.banner_title, isRequire: true, rows: 1, maxLength: 100 },
       { name: "Mô tả Banner", label: 'Mô tả Banner', placeholder: 'Nhập mô tả...', contentCurrent: homePageData.banner_description, isRequire: true, rows: 3, maxLength: 300 },
     ],
-    notificationProps:{
-     open: homeNotification, 
-     setOpen: setHomeNotification, 
-     notification: "Xác nhận lưu thay đổi!", 
-     subTitle:"Bạn có chắc chắn muốn lưu thay đổi.", 
-     buttonLabel1:"Hủy", 
-     buttonAction1: handleCancleHome, 
-     buttonLabel2: "Xác nhận", 
-     buttonAction2: handleConfirmHome
+    notificationProps: {
+      open: homeNotification,
+      setOpen: setHomeNotification,
+      notification: "Xác nhận lưu thay đổi!",
+      subTitle: "Bạn có chắc chắn muốn lưu thay đổi.",
+      buttonLabel1: "Hủy",
+      buttonAction1: handleCancleHome,
+      buttonLabel2: "Xác nhận",
+      buttonAction2: handleConfirmHome
     },
     handleSave: (values) => {
       setValuesHome(values)
@@ -143,18 +148,18 @@ const HomePageContent = () => {
 
 
   // ============= BANNER ABOUT US  ===================== 
-   const handleCancleAboutus= ()=>{
+  const handleCancleAboutus = () => {
     setAboutusNotification(false)
   }
-  const handleConfirmAboutus= ()=>{
+  const handleConfirmAboutus = () => {
     updateAboutUs(valuesAboutus)
     setAboutusNotification(false)
   }
   const handleButtonImage = () => {
     const formData = changeToFormData(valuesImageAboutus);
-    for(const [key, value] of formData.entries()){
+    for (const [key, value] of formData.entries()) {
       console.log(key, value);
-      if(value == ''){
+      if (value == '') {
         alert("Chưa nhập dữ liệu bắt buộc");
         return;
       }
@@ -168,15 +173,15 @@ const HomePageContent = () => {
     listInput: [
       { name: "Nội dung giới thiệu", label: 'Nội dung giới thiệu', placeholder: 'Nhập tiêu đề...', contentCurrent: homePageData.aboutus_content, isRequire: true, rows: 7 },
     ],
-    notificationProps:{
-     open: aboutusNotification, 
-     setOpen: setAboutusNotification, 
-     notification: "Xác nhận lưu thay đổi!", 
-     subTitle:"Bạn có chắc chắn muốn lưu thay đổi.", 
-     buttonLabel1:"Hủy", 
-     buttonAction1: handleCancleAboutus, 
-     buttonLabel2: "Xác nhận", 
-     buttonAction2: handleConfirmAboutus
+    notificationProps: {
+      open: aboutusNotification,
+      setOpen: setAboutusNotification,
+      notification: "Xác nhận lưu thay đổi!",
+      subTitle: "Bạn có chắc chắn muốn lưu thay đổi.",
+      buttonLabel1: "Hủy",
+      buttonAction1: handleCancleAboutus,
+      buttonLabel2: "Xác nhận",
+      buttonAction2: handleConfirmAboutus
     },
     handleSave: (values) => {
       setValuesAboutus(values)
@@ -190,11 +195,11 @@ const HomePageContent = () => {
     notification: 'Xác nhận lưu thay đổi!',
     subTitle: 'Bạn có chắc chắn muốn lưu thay đổi.',
     buttonLabel1: 'Hủy',
-    buttonAction1: ()=>{setImageNotification(false)},
+    buttonAction1: () => { setImageNotification(false) },
     buttonLabel2: 'Lưu',
     buttonAction2: handleButtonImage
   }
-  
+
   // ===================== HIGHLIGHT FEATURE =================== 
   const limitHighlightFeature = 3
 
@@ -265,7 +270,7 @@ const HomePageContent = () => {
       setOpen: setIsOpenCancelHighlightFeature,
       notification: "Xác nhận xóa",
       subTitle: "Bạn có chắc chắn muốn xóa thông số nổi bật này ? ",
-      buttonAction1:()=>{
+      buttonAction1: () => {
         setIsOpenCancelHighlightFeature(false);
       },
       buttonAction2: () => {
@@ -453,12 +458,12 @@ const HomePageContent = () => {
     });
   };
   const dataTable = convertHighlightNewsListToTableData(configHighlightNews.data);
-  const propsButton ={
-      Icon: SaveIcon,
-      text: "Lưu thay đổi",
-      colorText: "#ffffff",
-      colorBackground: "#000000",
-      padding : 10,
+  const propsButton = {
+    Icon: SaveIcon,
+    text: "Lưu thay đổi",
+    colorText: "#ffffff",
+    colorBackground: "#000000",
+    padding: 10,
   }
   return (
     <>
@@ -475,16 +480,16 @@ const HomePageContent = () => {
         listInput={configAboutUs.listInput}
         saveButton={configAboutUs.handleSave}
       />
-      <form onSubmit={(e) => {e.preventDefault(), setImageNotification(true)}} className='flex flex-col p-[24px] bg-white w-full h-full border-b border-l border-r border-b-[#E5E7EB] border-r-[#E5E7EB] border-l-[#E5E7EB] rounded-[8px]'>
+      <form onSubmit={(e) => { e.preventDefault(), setImageNotification(true) }} className='flex flex-col p-[24px] bg-white w-full h-full border-b border-l border-r border-b-[#E5E7EB] border-r-[#E5E7EB] border-l-[#E5E7EB] rounded-[8px]'>
         <div className="flex flex-col mb-[16px]">
           <label className="mb-[8px] font-medium">Ảnh giới thiệu công ty Thiên Trúc <span className='text-red-500 ml-1'>*</span></label>
           <div className=''>
-            <UploadImage form={valuesImageAboutus} setForm={setValuesImageAboutus} initialForm={initialValuesImageAboutus} keyImage="aboutus_img"/>
+            <UploadImage form={valuesImageAboutus} setForm={setValuesImageAboutus} initialForm={initialValuesImageAboutus} keyImage="aboutus_img" />
           </div>
         </div>
         <div className='h-40[px]'>
-            <button type='submit'> <Button {...propsButton}/></button>
-        </div>                
+          <button type='submit'> <Button {...propsButton} /></button>
+        </div>
       </form>
       <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
         <div className='flex items-center justify-between'>
@@ -558,7 +563,7 @@ const HomePageContent = () => {
 
         </div>
         <div className='mb-[30px]'>
-          <Table columns={configHighlightNews.table.columns} data={dataTable} isSetting={false} width = {configHighlightNews.table.width} />
+          <Table columns={configHighlightNews.table.columns} data={dataTable} isSetting={false} width={configHighlightNews.table.width} />
         </div>
         <form onSubmit={(e) => {
           e.preventDefault();
@@ -606,13 +611,13 @@ const HomePageContent = () => {
         open={configHighlightFeature.cancelPopub.open}
         setOpen={configHighlightFeature.cancelPopub.setOpen}
         notification={configHighlightFeature.cancelPopub.notification}
-        buttonAction1 = {configHighlightFeature.cancelPopub.buttonAction1}
+        buttonAction1={configHighlightFeature.cancelPopub.buttonAction1}
         subTitle={configHighlightFeature.cancelPopub.subTitle}
         buttonAction2={configHighlightFeature.cancelPopub.buttonAction2}
       />
-      <Notification  {...configHomePage.notificationProps}/>
-      <Notification  {...configAboutUs.notificationProps}/>
-      <Notification  {...saveImage}/>
+      <Notification  {...configHomePage.notificationProps} />
+      <Notification  {...configAboutUs.notificationProps} />
+      <Notification  {...saveImage} />
       <AddHighlight
         isOpen={isModalOpenSetting}
         onClose={() => setIsModalOpenSetting(false)}
