@@ -60,7 +60,7 @@ export default function Project() {
     }
     const handleSearchSubmit = (filter, query) => {
         const newParams = new URLSearchParams();
-        newParams.set("query", query);
+        newParams.set("query", query ? query : "");
         newParams.set("filter", filter);
         newParams.set("page", "1");
         setSearchParams(newParams);

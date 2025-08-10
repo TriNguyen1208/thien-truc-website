@@ -153,6 +153,7 @@ export default function News() {
                 status: {
                   duration: `${item.measure_time} phút đọc`,
                   views: item.num_readers,
+                  date: item.public_date
                 },
               };
               return (

@@ -99,11 +99,15 @@ const ItemPost = ({ data, id= ""}) => {
                 {/* status cho news posts */}
                 {type === 'news' && status && (
                     <div className="flex items-center justify-between text-sm text-gray-500">
-                        <div className="flex items-center gap-4">
-                            <span>{status.duration}</span>
-                            <div className="flex items-center gap-1">
-                                <EyeOutlined style={{ fontSize: '16px' }} />
-                                <span>{status.views}</span>
+                        {/* <span>{status.date}</span> */}
+                        <div className="flex flex-col gap-2">
+                            <span>{status.date}</span>
+                            <div className='flex items-center gap-4'>
+                                <span>{status.duration}</span>
+                                <div className="flex items-center gap-1">
+                                    <EyeOutlined style={{ fontSize: '16px' }} />
+                                    <span>{status.views}</span>
+                                </div>
                             </div>
                         </div>
                         <ShareButton id={id}/>
