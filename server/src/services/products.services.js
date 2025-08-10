@@ -884,19 +884,18 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedQuery, cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price || "",
-            note: row.note || "",
+            price: row.price !== null ? row.price : "",
+            note: row.note ?? "",
             product: {
                 id: row.product_id,
-                name: row.product_name || "",
-                description: row.description || "",
-                product_img: row.product_img || "",
-                warranty_period: row.warranty_period || "",
-                product_features: row.product_features || [],
+                name: row.product_name ?? "",
+                description: row.description ?? "",
+                product_img: row.product_img ?? "",
+                warranty_period: row.warranty_period !== null ? row.warranty_period : "",
+                product_features: row.product_features ?? [],
                 highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
-                highlight_feature_ids: row.highlight_features || [],
+                highlight_feature_ids: row.highlight_features ?? [],
                 category: {
-            highlight_feature_ids: row.highlight_features || [],
                     id: row.category_id,
                     name: row.category_name
                 }
@@ -935,17 +934,17 @@ const product_prices = {
         const { rows } = await pool.query(sql);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price || "",
-            note: row.note || "",
+            price: row.price !== null ? row.price : "",
+            note: row.note ?? "",
             product: {
                 id: row.product_id,
-                name: row.product_name || "",
-                description: row.description || "",
-                product_img: row.product_img || "",
-                warranty_period: row.warranty_period || "",
-                product_features: row.product_features || [],
-                highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
-                highlight_feature_ids: row.highlight_features || [],
+                name: row.product_name ?? "",
+                description: row.description ?? "",
+                product_img: row.product_img ?? "",
+                warranty_period: row.warranty_period !== null ? row.warranty_period : "",
+                product_features: row.product_features ?? [],
+                highlight_features: row.highlight_features.map(index => row.product_features[index]) ?? [],
+                highlight_feature_ids: row.highlight_features ?? [],
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -982,14 +981,14 @@ const product_prices = {
         const { rows } = await pool.query(sql, [cleanedFilter]);
         const product_prices = rows.map(row => ({
             id: row.price_id,
-            price: row.price || "",
+            price: row.price !== null ? row.price : "",
             note: row.note || "",
             product: {
                 id: row.product_id,
                 name: row.product_name || "",
                 description: row.description || "",
                 product_img: row.product_img || "",
-                warranty_period: row.warranty_period || "",
+                warranty_period: row.warranty_period !== null ? row.warranty_period : "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
                 highlight_feature_ids: row.highlight_features || [],
@@ -1027,14 +1026,14 @@ const product_prices = {
         const row = (await pool.query(query, [id])).rows[0];
         const product_price = {
             id: row.price_id,
-            price: row.price || "",
+            price: row.price !== null ? row.price : "",
             note: row.note || "",
             product: {
                 id: row.product_id,
                 name: row.product_name || "",
                 description: row.description || "",
                 product_img: row.product_img || "",
-                warranty_period: row.warranty_period || "",
+                warranty_period: row.warranty_period !== null ? row.warranty_period : "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
                 highlight_feature_ids: row.highlight_features || [],            
