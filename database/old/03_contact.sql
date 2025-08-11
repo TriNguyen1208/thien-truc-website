@@ -1,6 +1,13 @@
+DROP TABLE IF EXISTS contact.contact_page CASCADE;
+DROP TABLE IF EXISTS contact.support_agents CASCADE;
+DROP TABLE IF EXISTS contact.company_info CASCADE;
+
+CREATE SCHEMA IF NOT EXISTS contact;
+
 create table contact.contact_page (
 	banner_title varchar(100),
-	banner_description varchar(300)
+	banner_description varchar(300),
+	is_visible BOOLEAN
 );
 
 create table contact.support_agents (
@@ -22,11 +29,12 @@ create table contact.company_info (
 	fanpage_url text
 );
 
-insert into contact.contact_page (banner_title, banner_description)
+insert into contact.contact_page (banner_title, banner_description, is_visible)
 values (
 	'Liên Hệ Với Thiên Trúc',
 	'Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ ngay với đội ngũ của chúng tôi để được
-tư vấn và giải đáp mọi thắc mắc.'
+tư vấn và giải đáp mọi thắc mắc.',
+	false
 );
 
 insert into contact.support_agents (avatar_img, name, role, phone_number, facebook_url)

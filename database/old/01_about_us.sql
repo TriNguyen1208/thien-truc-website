@@ -1,7 +1,14 @@
+DROP TABLE IF EXISTS about_us.about_us_page CASCADE;
+DROP TABLE IF EXISTS about_us.company_services CASCADE;
+DROP TABLE IF EXISTS about_us.why_choose_us CASCADE;
+
+CREATE SCHEMA IF NOT EXISTS about_us;
+
 create table about_us.about_us_page (
 	banner_title varchar(100),
 	banner_description varchar(300),
-	our_story_content text
+	our_story_content text,
+	is_visible BOOLEAN
 );
 
 create table about_us.company_services (
@@ -18,11 +25,12 @@ create table about_us.why_choose_us (
 	details text[]
 );
 
-insert into about_us.about_us_page (banner_title, banner_description, our_story_content)
+insert into about_us.about_us_page (banner_title, banner_description, our_story_content, is_visible)
 values (
 	'Về Thiên Trúc',
 	'Chúng tôi là đối tác tin cậy của bạn trong lĩnh vực công nghệ và giải pháp kỹ thuật số.',
-	'Thiên Trúc được thành lập vào năm 2015 với sứ mệnh cung cấp các giải pháp công nghệ và dịch vụ lắp đặt thiết bị kỹ thuật số chất lượng cao cho doanh nghiệp và tổ chức tại Việt Nam. Trải qua hơn 8 năm phát triển, chúng tôi đã trở thành đối tác tin cậy của hơn 200 doanh nghiệp trong và ngoài nước. Với đội ngũ kỹ thuật viên và chuyên gia giàu kinh nghiệm, chúng tôi chuyên cung cấp dịch vụ lắp đặt, bảo trì và sửa chữa các thiết bị công nghệ như màn hình LED, hệ thống âm thanh, hệ thống truyền hình, thiết bị mạng và nhiều giải pháp công nghệ khác. Tại Thiên Trúc, chúng tôi tin rằng công nghệ phải đơn giản, hiệu quả và mang lại giá trị thực sự cho người sử dụng. Đó là lý do chúng tôi luôn đặt khách hàng vào trung tâm của mọi quyết định và phát triển dịch vụ.'
+	'Thiên Trúc được thành lập vào năm 2015 với sứ mệnh cung cấp các giải pháp công nghệ và dịch vụ lắp đặt thiết bị kỹ thuật số chất lượng cao cho doanh nghiệp và tổ chức tại Việt Nam. Trải qua hơn 8 năm phát triển, chúng tôi đã trở thành đối tác tin cậy của hơn 200 doanh nghiệp trong và ngoài nước. Với đội ngũ kỹ thuật viên và chuyên gia giàu kinh nghiệm, chúng tôi chuyên cung cấp dịch vụ lắp đặt, bảo trì và sửa chữa các thiết bị công nghệ như màn hình LED, hệ thống âm thanh, hệ thống truyền hình, thiết bị mạng và nhiều giải pháp công nghệ khác. Tại Thiên Trúc, chúng tôi tin rằng công nghệ phải đơn giản, hiệu quả và mang lại giá trị thực sự cho người sử dụng. Đó là lý do chúng tôi luôn đặt khách hàng vào trung tâm của mọi quyết định và phát triển dịch vụ.',
+	true
 );
 
 insert into about_us.company_services (title, description, details)

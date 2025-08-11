@@ -41,7 +41,8 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE news.news_page
 (
     banner_title VARCHAR(100),
-    banner_description VARCHAR(300)
+    banner_description VARCHAR(300),
+    is_visible boolean
 );
 
 --- Tạo bảng news_categories với id theo format "LT0000" -------------
@@ -93,8 +94,8 @@ CREATE TABLE news.featured_news (
 );
 
 -- Insert data
-INSERT INTO news.news_page(banner_title, banner_description)
-VALUES('Những Thông Tin Mới Nhất Về Thiên Trúc', 'Cập nhật liên tục các tin tức về hoạt động, dự án mới, xu hướng công nghệ LED và giải pháp chiếu sáng hiện đại do Thiên Trúc thực hiện');
+INSERT INTO news.news_page(banner_title, banner_description, is_visible)
+VALUES('Những Thông Tin Mới Nhất Về Thiên Trúc', 'Cập nhật liên tục các tin tức về hoạt động, dự án mới, xu hướng công nghệ LED và giải pháp chiếu sáng hiện đại do Thiên Trúc thực hiện', true);
 
 INSERT INTO news.news_categories(name, rgb_color, item_count)
 VALUES 

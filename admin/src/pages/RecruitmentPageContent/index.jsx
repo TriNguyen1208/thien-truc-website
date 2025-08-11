@@ -16,6 +16,7 @@ import UploadImage from '@/components/UploadImage'
 
 const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
+  const [isVisible, setIsVisible] = useState(null);
   const {mutate: updateRecruitment, isPending: isPendingRecruitment} = useRecruitment.patch();
   const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
   const [saveOpenBanner, setSaveOpenBanner] = useState(false);
@@ -27,8 +28,21 @@ const RecruitmentPageContent = () => {
     setLayoutProps({
       title: "Nội dung Trang tuyển dụng",
       description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
+      hasButton: false,
+      buttonToggle: {
+        currentState: isVisible,
+        handleToggle: handleToggle,
+      }
     })
-  }, [])
+  }, [isVisible])
+  useEffect(() => {
+    if(isLoadingRecruitment) return
+    setIsVisible(recruitment.is_visible);
+  }, [recruitment, isLoadingRecruitment]);
+  function handleToggle(checked){
+    setIsVisible(checked);
+    // updateVisibility({visibility: checked});
+  }
   useEffect(() => {
     if(isLoadingRecruitment || isFetchingRecruitment){
       return;

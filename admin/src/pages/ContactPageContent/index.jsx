@@ -6,22 +6,39 @@ import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 const ContactPageContent = () => {
   const { setLayoutProps } = useLayout()
+  const [isVisible, setIsVisible] = useState(null);
+  
+  const { data: bannerData, isLoading: isLoadingBanner, isFetching: isFetchingBanner } = useContact.getContactPage();
+  const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
+  // const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useContact.updateContactPage.updateVisibility();
+  
+  const [valuesBanner, setValuesBanner] = useState(null)
+  const [openNotification, setOpenNotification] = useState(false)
   useEffect(() => {
     setLayoutProps({
       title: "Nội dung Trang liên hệ",
       description: "Quản lý nội dung hiển trị trên trang liên hệ",
       hasButton: false,
+      buttonToggle: {
+        currentState: isVisible,
+        handleToggle: handleToggle
+      }
     })
-  }, []);
+  }, [isVisible]);
 
-  const { data: bannerData, isLoading: isLoadingBanner, isFetching: isFetchingBanner } = useContact.getContactPage();
-  const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
-  const [valuesBanner, setValuesBanner] = useState(null)
-  const [openNotification, setOpenNotification] = useState(false)
+  useEffect(() => {
+      if(isLoadingBanner) return
+      setIsVisible(bannerData.is_visible);
+    }, [bannerData, isLoadingBanner]);
+
   if (isLoadingBanner || isPendingUpdateBanner || isFetchingBanner) {
     return (
      <Loading/>
     )
+  }
+  function handleToggle(checked){
+    setIsVisible(checked);
+    // updateVisibility({visibility: checked});
   }
     const handleCancleNotification = ()=>{
       setOpenNotification(false)

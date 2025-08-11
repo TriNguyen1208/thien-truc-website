@@ -16,6 +16,10 @@ const updateAboutUsPage = {
     const res = await axios.patch(API_ROUTES.about_us.updateAboutUsPage.ourStory, data);
     return res.data;
   },
+  visibility: async (data) => {
+    const res = await axios.patch(API_ROUTES.about_us.updateAboutUsPage.visibility, data);
+    return res.data;
+  }
 };
 
 // ==== Company Services ====

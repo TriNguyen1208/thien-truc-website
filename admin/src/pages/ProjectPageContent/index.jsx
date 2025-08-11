@@ -7,20 +7,33 @@ import Notification from '@/components/Notification'
 const ProjectPageContent = () => {
 
   const {setLayoutProps} = useLayout()
+  const [isVisible, setIsVisible] = useState(null);
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
+  const {data: projectPage, isLoading: isLoadingProjectPage, isFetching: isFetchingProjectPage} = useProjects.getProjectPage()
+  const { mutate: updateProjectPage, isPending: isPendingProjectPage } = useProjects.patchProjectPage();
   useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang dự án",
       description: "Quản lý nội dung hiển thị trên trang dự án",
       hasButton: false,
+      buttonToggle: {
+        currentState: isVisible,
+        handleToggle: handleToggle
+      }
     })
-  },[])
-  const {data: projectPage, isLoading: isLoadingProjectPage, isFetching: isFetchingProjectPage} = useProjects.getProjectPage()
-  const { mutate: updateProjectPage, isPending: isPendingProjectPage } = useProjects.patchProjectPage();
+  },[isVisible])
+  useEffect(() => {
+    if(isLoadingProjectPage) return
+    setIsVisible(projectPage.is_visible);
+  }, [projectPage, isLoadingProjectPage]);
   if(isLoadingProjectPage || isPendingProjectPage || isFetchingProjectPage)
   {
     return(<Loading/>)
+  }
+  function handleToggle(checked){
+    setIsVisible(checked);
+    // updateVisibility({visibility: checked});
   }
   const handleCancleNotification = ()=>{
     setOpenNotification(false)

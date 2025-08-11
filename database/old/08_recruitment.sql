@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS recruitment.recruitment_page CASCADE;
+
+CREATE SCHEMA IF NOT EXISTS recruitment;
+
 create table recruitment.recruitment_page (
 	banner_title varchar(100),
 	banner_description varchar(300),
@@ -5,7 +9,8 @@ create table recruitment.recruitment_page (
 	culture_img_1 text,
 	culture_img_2 text,
 	culture_img_3 text,
-	culture_img_4 text	
+	culture_img_4 text,
+	is_visible boolean
 );
 
 insert into recruitment.recruitment_page
@@ -16,5 +21,6 @@ values (
 	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/2.jpg.aspx?width=529&height=375',
 	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/13.jpg.aspx?width=542&height=400',
 	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/3.jpg.aspx?width=572&height=391',
-	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/4.jpg.aspx?width=570&height=473'
+	'http://thientruc.vn/getattachment/Gioi-thieu/Ngay-Hoi-Khai-Truong--Sieu-Thi-May-Tinh--Thien-(1)/4.jpg.aspx?width=570&height=473',
+	true
 );  

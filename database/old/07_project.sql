@@ -40,7 +40,8 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE project.project_page
 (
     banner_title VARCHAR(100),
-    banner_description VARCHAR(300)
+    banner_description VARCHAR(300),
+    is_visible boolean
 );
 
 --- Tạo bảng project_regions với id theo format "KV0000" -------------
@@ -86,8 +87,8 @@ CREATE TABLE project.project_contents
 );
 
 -- Insert data
-INSERT INTO project.project_page(banner_title, banner_description)
-VALUES('Dự Án Của Thiên Trúc', 'Khám phá những công trình kiến trúc đẳng cấp và dự án xây dựng chất lượng cao, được thiết kế và thi công bởi đội ngũ chuyên gia Thiên Trúc.');
+INSERT INTO project.project_page(banner_title, banner_description, is_visible)
+VALUES('Dự Án Của Thiên Trúc', 'Khám phá những công trình kiến trúc đẳng cấp và dự án xây dựng chất lượng cao, được thiết kế và thi công bởi đội ngũ chuyên gia Thiên Trúc.', true);
 
 INSERT INTO project.project_regions(name, rgb_color, item_count)
 VALUES 

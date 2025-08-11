@@ -8,20 +8,34 @@ import { useState } from 'react';
 import Notification from '@/components/Notification'
 const PricePageContent = () => {
   const {setLayoutProps} = useLayout()
+  const [isVisible, setIsVisible] = useState(null);
+
   const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
   const { mutate: updatePricePage, isPending: isLoadingUpdatePricePage } = useProducts.patchPricePage();
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
-    useEffect(()=>{
+  useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang bảng giá",
       description: "Quản lý nội dung hiển thị trên trang bảng giá",
       hasButton: false,
+      buttonToggle: {
+        currentState: isVisible,
+        handleToggle: handleToggle
+      }
     })
-  },[])
+  },[isVisible])
+  useEffect(() => {
+      if(isLoadingPricePage) return
+      setIsVisible(pricePage.is_visible);
+    }, [pricePage, isLoadingPricePage]);
   if(isLoadingPricePage || isLoadingUpdatePricePage)
   {
     return(<Loading/>)
+  }
+  function handleToggle(checked){
+    setIsVisible(checked);
+    // updateVisibility({visibility: checked});
   }
    const handleCancleNotification = ()=>{
     setOpenNotification(false)

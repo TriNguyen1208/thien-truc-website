@@ -11,16 +11,9 @@ import useAboutUs from '../../hooks/useAboutUs';
 import Notification from '@/components/Notification'
 import Loading from '@/components/Loading'
 const AboutUsPageContent = () => {
-  const { setLayoutProps } = useLayout()
-  useEffect(() => {
-    setLayoutProps({
-      title: "Nội dung Trang về chúng tôi",
-      description: "Quản lý nội dung hiển trị trên trang về chúng tôi",
-      hasButton: false,
-    })
-  }, []);
-
-
+  const { setLayoutProps } = useLayout();
+  const [isVisible, setIsVisible] = useState(null);
+ 
   const [isModalOpenAddDutyAndResponsibility, setIsModalOpenAddDutyAndResponsibility] = useState(false);
   const [isModalOpenEditDutyAndResponsibility, setIsModalOpenEditDutyAndResponsibility] = useState(false);
   const [isOpenCancelDutyAndResponsibility, setIsOpenCancelDutyAndResponsibility] = useState(false);
@@ -44,6 +37,7 @@ const AboutUsPageContent = () => {
   const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData, isFetching: isFetchingAboutUsPageData} = useAboutUs.getAboutUsPage();
   const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useAboutUs.updateAboutUsPage.updateBanner();
   const { mutate: updateOurStory, isPending: isPendingUpdateOurStory } = useAboutUs.updateAboutUsPage.updateOurStory();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useAboutUs.updateAboutUsPage.updateVisibility();
 
   const { data: dutyAndResponsibilityData, isLoading: isLoadingDutyAndResponsibility } = useAboutUs.company_services.getAll();
   const { mutate: updateDutyAndResponsibility, isPending: isPendingUpdateDutyAndResponsibility } = useAboutUs.company_services.updateOne();
@@ -56,21 +50,40 @@ const AboutUsPageContent = () => {
   const { mutate: createWhyChooseUs, isPending: isPendingCreateWhyChooseUs } = useAboutUs.why_choose_us.createOne();
   const { mutate: deleteWhyChooseUs, isPending: isPendingDeleteWhyChooseUs } = useAboutUs.why_choose_us.deleteOne();
 
-    const [bannerNotification, setBannerNotification] = useState(false)
-    const [valuesBanner, setValuesBanner] = useState(null)
-    const [storyNotification, setStoryNotification] = useState(false)
-    const [valuesStory, setValuesStory] = useState(null)
+  const [bannerNotification, setBannerNotification] = useState(false)
+  const [valuesBanner, setValuesBanner] = useState(null)
+  const [storyNotification, setStoryNotification] = useState(false)
+  const [valuesStory, setValuesStory] = useState(null)
+
+  useEffect(() => {
+    if(isLoadingAboutUsPageData) return
+    setIsVisible(aboutUsPageData.is_visible);
+  }, [aboutUsPageData, isLoadingAboutUsPageData]);
+
+   useEffect(() => {
+    setLayoutProps({
+      title: "Nội dung Trang về chúng tôi",
+      description: "Quản lý nội dung hiển trị trên trang về chúng tôi",
+      hasButton: false,
+      buttonToggle: {
+        currentState: isVisible,
+        handleToggle: handleToggle
+      }
+    })
+  }, [isVisible]);
 
   if (isLoadingDutyAndResponsibility || isPendingCreateDutyAndResponsibility || isPendingUpdateDutyAndResponsibility || isPendingDeleteDutyAndResponsibility
     || isPendingCreateWhyChooseUs || isPendingDeleteWhyChooseUs || isPendingUpdateWhyChooseUs || isLoadingWhyChooseUs
-    || isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory || isFetchingAboutUsPageData
+    || isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory || isFetchingAboutUsPageData || isPendingUpdateVisibility
   ) {
     return (
       <Loading/>
     )
   }
-
-
+  function handleToggle(checked){
+    setIsVisible(checked);
+    updateVisibility({visibility: checked});
+  }
   const handleCancleBanner= ()=>{
     setBannerNotification(false)
   }

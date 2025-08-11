@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS product.highlight_products CASCADE;
 DROP SEQUENCE IF EXISTS product.product_seq CASCADE;
 DROP SEQUENCE IF EXISTS product.category_seq CASCADE;
 
+CREATE SCHEMA IF NOT EXISTS product;
+
 -- TẠO SEQUENCE MỚI
 CREATE SEQUENCE product.product_seq START 1;
 CREATE SEQUENCE product.category_seq START 1;
@@ -17,7 +19,8 @@ CREATE SEQUENCE product.category_seq START 1;
 -- TẠO BẢNG BANNER TRANG GIÁ
 CREATE TABLE product.price_page (
     banner_title VARCHAR(200),
-    banner_description VARCHAR(700)
+    banner_description VARCHAR(700),
+    is_visible boolean
 );
 
 -- HÀM TẠO ID CHO product_categories -> LS0001
@@ -45,7 +48,8 @@ $$ LANGUAGE plpgsql;
 -- TẠO BẢNG BANNER TRANG SẢN PHẨM
 CREATE TABLE product.product_page (
     banner_title VARCHAR(200),
-    banner_description VARCHAR(700)
+    banner_description VARCHAR(700),
+    is_visible boolean
 );
 
 -- TẠO BẢNG DANH MỤC SẢN PHẨM
@@ -92,13 +96,17 @@ CREATE TABLE product.product_prices (
 	
 
 -- DỮ LIỆU BANNER
-INSERT INTO product.product_page (banner_title, banner_description) VALUES
+INSERT INTO product.product_page (banner_title, banner_description, is_visible) VALUES
 ('Sản Phẩm Điện Tử Của Thiên Trúc', 
- 'Khám phá danh mục các thiết bị điện tử chất lượng cao do Thiên Trúc cung cấp và lắp đặt, chuyên dụng cho công trình dân dụng, thương mại và công nghiệp.');
+ 'Khám phá danh mục các thiết bị điện tử chất lượng cao do Thiên Trúc cung cấp và lắp đặt, chuyên dụng cho công trình dân dụng, thương mại và công nghiệp.',
+ true
+);
 
-INSERT INTO product.price_page (banner_title, banner_description) VALUES
+INSERT INTO product.price_page (banner_title, banner_description, is_visible) VALUES
 ('BẢNG GIÁ SẢN PHẨM', 
- 'Giá cả minh bạch, dịch vụ chất lượng cao, cam kết uy tín');
+ 'Giá cả minh bạch, dịch vụ chất lượng cao, cam kết uy tín',
+ false
+);
 
 -- DỮ LIỆU DANH MỤC
 INSERT INTO product.product_categories (name, item_count) VALUES

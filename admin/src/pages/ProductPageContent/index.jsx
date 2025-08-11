@@ -8,20 +8,33 @@ import Notification from '@/components/Notification'
 const ProductPageContent = () => {
 
   const {setLayoutProps} = useLayout()
+  const [isVisible, setIsVisible] = useState(null);
   const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
   const { mutate: updateProductPage, isPending: isLoadingUpdateProductPage } = useProducts.patchProductPage();
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
-    useEffect(()=>{
+  useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang sản phẩm",
       description: "Quản lý nội dung hiển thị trên trang sản phẩm",
       hasButton: false,
+      buttonToggle: {
+        currentState: isVisible,
+        handleToggle: handleToggle
+      }
     })
-  },[])
+  },[isVisible])
+  useEffect(() => {
+    if(isLoadingProductPage) return
+    setIsVisible(productPage.is_visible);
+  }, [productPage, isLoadingProductPage]);
   if(isLoadingProductPage || isLoadingUpdateProductPage)
   {
     return(<Loading/>)
+  }
+  function handleToggle(checked){
+    setIsVisible(checked);
+    // updateVisibility({visibility: checked});
   }
   const handleCancleNotification = ()=>{
     setOpenNotification(false)

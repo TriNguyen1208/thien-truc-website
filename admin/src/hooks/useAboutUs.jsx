@@ -38,6 +38,19 @@ const updateAboutUsPage = {
       },
     });
   },
+  useUpdateVisibility: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (data) => aboutUsServices.updateAboutUsPage.visibility(data),
+      onSuccess: (success) => {
+        toast.success(success.message);
+        queryClient.invalidateQueries({ queryKey: ["admin_about_us_page"] });
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+  }
 };
 
 // ==== Company Services ====
@@ -163,6 +176,7 @@ export default {
   updateAboutUsPage: {
     updateBanner: updateAboutUsPage.useUpdateBanner,
     updateOurStory: updateAboutUsPage.useUpdateOurStory,
+    updateVisibility: updateAboutUsPage.useUpdateVisibility
   },
   company_services: {
     getAll: company_services.useGetAll,

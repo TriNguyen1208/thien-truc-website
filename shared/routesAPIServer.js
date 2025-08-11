@@ -201,6 +201,7 @@ const API_ROUTES = {
             // patch
             banner: `${ABOUT_US_BASE}/about_us_page/banner`,
             ourStory: `${ABOUT_US_BASE}/about_us_page/our_story`,
+            visibility: `${ABOUT_US_BASE}/about_us_page/visibility`,
         },
         company_services: {
             getAll: `${ABOUT_US_BASE}/company_services`,

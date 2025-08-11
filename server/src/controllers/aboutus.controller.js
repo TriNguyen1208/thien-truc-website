@@ -32,6 +32,16 @@ const updateAboutUsPage = {
             console.error('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
+    },
+    visibility: async (req, res) => {
+        try{
+            const {status, message, action = null} = await aboutUsServices.updateAboutUsPage.visibility(req.body);
+            if(status == 200) logActivity(req.user.username, action);
+            res.status(status).json({message: message});
+        }catch(error){
+            console.error('Lỗi chế độ hiển thị trang về chúng tôi: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
     }
 }
 

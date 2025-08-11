@@ -7,6 +7,7 @@ import { useLayout } from "@/layouts/LayoutContext";
 import { useNavigate } from "react-router-dom";
 import { useNavigationGuardContext } from "../NavigatorProvider";
 import useNavigationGuard from "../../hooks/useNavigationGuard";
+import SwitchButton from "../../components/SwitchButton";
 
 export default function DefaultLayout({ children }) {
 
@@ -18,6 +19,7 @@ const {
   hasButtonBack = false,
   buttonLabel = '',
   buttonAction = () => {},
+  buttonToggle = null
 } = layoutProps ?? {};
   const navigate = useNavigate();
   const {shouldWarn} = useNavigationGuardContext() ?? {};
@@ -61,6 +63,18 @@ const {
             >
                 {buttonLabel}
             </CustomButton>
+            )}
+            {buttonToggle && (
+              <div className="flex flex-row gap-5 items-center">
+                <div className="flex flex-col">
+                  <span className="font-bold text-gray-900">Hiển thị công khai nội dung trang</span>
+                  <span className="text-gray-500 ">Có thể tạm tắt khi cập nhật</span>
+                </div>
+                <SwitchButton 
+                  handleToggle={buttonToggle.handleToggle}
+                  currentState={buttonToggle.currentState}
+                />
+              </div>
             )}
             </div>
             <div className="bg-gray-100 ">

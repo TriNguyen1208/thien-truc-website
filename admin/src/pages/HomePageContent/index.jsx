@@ -20,14 +20,8 @@ import UploadImage from '@/components/UploadImage'
 import changeToFormData from '../../utils/changeToFormData';
 const HomePageContent = () => {
   const { setLayoutProps } = useLayout()
-  useEffect(() => {
-    setLayoutProps({
-      title: "Nội dung Trang chủ",
-      description: "Quản lý nội dung hiển trị trên trang chủ",
-      hasButton: false,
-    })
-  }, []);
-
+  const [isVisible, setIsVisible] = useState(null);
+  
   const navigate = useNavigate();
   const [isModalOpenAddHighlightFeature, setIsModalOpenAddHighlightFeature] = useState(false);
   const [isModalOpenEditHighlightFeature, setIsModalOpenEditHighlightFeature] = useState(false);
@@ -97,6 +91,24 @@ const HomePageContent = () => {
   useEffect(() => {
     refetch();
   }, []);
+
+  useEffect(() => {
+    setLayoutProps({
+      title: "Nội dung Trang chủ",
+      description: "Quản lý nội dung hiển trị trên trang chủ",
+      hasButton: false,
+      buttonToggle: {
+        currentState: isVisible,
+        handleToggle: handleToggle
+      }
+    })
+  }, [isVisible]);
+  
+  useEffect(() => {
+      if(isLoadingHomePageData) return
+      setIsVisible(homePageData.is_visible);
+    }, [homePageData, isLoadingHomePageData]);
+
   if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature || isPendingUpdateImageAboutUs ||
     isPendingCreateHighlightFeature || isPendingDeleteHighlightFeature ||
     isLoadingHighlightNews || isLoadingHomePageData || isPendingUpdateBanner ||
@@ -105,8 +117,6 @@ const HomePageContent = () => {
       <Loading />
     )
   }
-  // console.log(arrayHighlightNews);
-  console.log(highlightNewsData);
 
 
 
@@ -114,7 +124,10 @@ const HomePageContent = () => {
 
 
   // ============= BANNER TRANG CHU ===================== 
-
+  function handleToggle(checked){
+    setIsVisible(checked);
+    // updateVisibility({visibility: checked});
+  }
   const handleCancleHome = () => {
     setHomeNotification(false)
   }
@@ -158,7 +171,6 @@ const HomePageContent = () => {
   const handleButtonImage = () => {
     const formData = changeToFormData(valuesImageAboutus);
     for (const [key, value] of formData.entries()) {
-      console.log(key, value);
       if (value == '') {
         alert("Chưa nhập dữ liệu bắt buộc");
         return;

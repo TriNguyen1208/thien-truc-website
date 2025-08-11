@@ -55,6 +55,23 @@ const updateAboutUsPage = {
             message: "Cập nhật Câu Chuyện Của Chúng Tôi thành công",
             action: "Cập nhật Câu Chuyện Của Chúng Tôi trang Về Chúng Tôi"
         }
+    },
+    visibility: async (data) => {
+        const {
+            visibility
+        } = data;
+
+        await pool.query(`
+            UPDATE about_us.about_us_page
+            SET
+                is_visible = $1
+        `, [visibility]);
+        const visibility_state = visibility == true ? "Bật" : "Tắt";
+        return {
+            status: 200,
+            message: `${visibility_state} chế độ hiển thị trang về chúng tôi thành công`,
+            action: `${visibility_state} chế độ hiển thị trang về chúng tôi`
+        }
     }
 }
 
