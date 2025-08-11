@@ -74,7 +74,24 @@ const updateHomePage = {
             message: "Cập nhật ảnh giới thiệu công ty Thiên Trúc thành công",
             action: "Cập nhật ảnh giới thiệu công ty Thiên Trúc trang Trang Chủ",
         }
-    }   
+    },
+    visibility: async(data) => {
+        const {
+            visibility
+        } = data;
+
+        await pool.query(`
+            UPDATE home.home_page
+            SET
+                is_visible = $1
+        `, [visibility]);
+        const visibility_state = visibility == true ? "Bật" : "Tắt";
+        return {
+            status: 200,
+            message: `${visibility_state} chế độ hiển thị trang chủ thành công`,
+            action: `${visibility_state} chế độ hiển thị trang chủ`
+        }
+    }
 }
 
 const highlight_stats_about_us = {

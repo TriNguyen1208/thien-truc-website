@@ -6,10 +6,10 @@ import LabelType from "@/components/LabelType";
 import { useEffect } from "react";
 import LazyLoad from "react-lazyload";
 import renderWithLazyLoad from "../../utils/renderWithLazyLoad";
+import ComingSoon from '@/pages/ComingSoon'
 export default function NewsDetail(){
     const {id: news_id} = useParams();
     const mutation = useNews.news.updateNumReaders(news_id);
-
     useEffect(() => {
         mutation.mutate();
     }, []);
@@ -24,10 +24,11 @@ export default function NewsDetail(){
     const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
     const year = date.getUTCFullYear();
     //content, color
+    console.log(news.is_visible)
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
-            <div className="flex flex-row bg-[#F9FAFB] py-10">
+            {news.is_visible ? <div className="flex flex-row bg-[#F9FAFB] py-10">
                 <div className="flex flex-col w-full max-w-[800px] gap-3 sm:px-[20px] mx-auto">
                     <BackButton content="Quay lại danh sách tin tức"/>
                     <div className="flex flex-col shadow-2xl w-full bg-white py-5 px-6 rounded-sm gap-3">
@@ -62,7 +63,7 @@ export default function NewsDetail(){
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>: <ComingSoon/>}
         </>
     )
 }

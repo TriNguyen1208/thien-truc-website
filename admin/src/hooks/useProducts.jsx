@@ -30,7 +30,32 @@ function usePatchProductPage() {
     },
   });
 }
-
+function useUpdateProductVisibility() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedPage) => productsServices.updateProductVisibility(updatedPage),
+        onSuccess: (success) => {
+            queryClient.invalidateQueries({ queryKey: ["admin_product_page"] });
+            toast.success(success.message);
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    });
+}
+function useUpdatePriceVisibility() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedPage) => productsServices.updatePriceVisibility(updatedPage),
+        onSuccess: (success) => {
+            queryClient.invalidateQueries({ queryKey: ["admin_price_page"] });
+            toast.success(success.message);
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    });
+}
 function useGetQuantity()
 {
     const queryClient = useQueryClient();
@@ -309,4 +334,6 @@ export default {
   getPricePage: useGetPricePage,
   patchPricePage: usePatchPricePage,
   patchProductPage: usePatchProductPage,
+  updatePriceVisibility: useUpdatePriceVisibility,
+  updateProductVisibility: useUpdateProductVisibility
 };

@@ -42,6 +42,7 @@ router.post('/news_categories', authenticateToken, newsController.news_categorie
 // patch
 router.patch('/news_categories/:id', authenticateToken, newsController.news_categories.updateOne);
 router.patch('/news_page', authenticateToken, newsController.updateNewsPage);
+router.patch('/news_page/visibility', authenticateToken, newsController.updateVisibility);
 router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
 // delete

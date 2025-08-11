@@ -86,6 +86,23 @@ const updateProductPage = async (data) => {
         action: "Cập nhật Banner trang Sản Phẩm"
     }
 }
+const updateProductVisibility = async (data) => {
+    const {
+        visibility
+    } = data;
+
+    await pool.query(`
+        UPDATE product.product_page
+        SET
+            is_visible = $1
+    `, [visibility]);
+    const visibility_state = visibility == true ? "Bật" : "Tắt";
+    return {
+        status: 200,
+        message: `${visibility_state} chế độ hiển thị trang sản phẩm thành công`,
+        action: `${visibility_state} chế độ hiển thị trang sản phẩm`
+    }
+}
 
 const products = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
@@ -298,8 +315,8 @@ const products = {
 
                 pp.price as price,
                 prd_cate.id as category_id,
-                prd_cate.name as category_name
-
+                prd_cate.name as category_name,
+                (select is_visible from product.product_page) as is_visible
             from product.products prd
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
             join product.product_prices pp on prd.id = pp.product_id
@@ -317,13 +334,14 @@ const products = {
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
                 highlight_feature_ids: row.highlight_features || [],
-
+                
                 category: {
                     id: row.category_id,
                     name: row.category_name
                 },
 
-                is_featured: row.is_featured || false
+                is_featured: row.is_featured || false,
+                is_visible: row.is_visible
             };
         return product
     },
@@ -841,7 +859,23 @@ const updatePricePage = async (data) => {
         action: "Cập nhật Banner trang Bảng Giá"
     }
 }
+const updatePriceVisibility = async (data) => {
+    const {
+        visibility
+    } = data;
 
+    await pool.query(`
+        UPDATE product.price_page
+        SET
+            is_visible = $1
+    `, [visibility]);
+    const visibility_state = visibility == true ? "Bật" : "Tắt";
+    return {
+        status: 200,
+        message: `${visibility_state} chế độ hiển thị trang bảng giá thành công`,
+        action: `${visibility_state} chế độ hiển thị trang bảng giá`
+    }
+}
 const product_prices = {
     getAll: async (query = '', filter = '') => {
         const cleanedQuery = query.trim().replaceAll(`'`, ``);
@@ -1017,7 +1051,9 @@ const product_prices = {
                 prd.highlight_features,
 
                 prd_cate.id as category_id,
-                prd_cate.name as category_name
+                prd_cate.name as category_name,
+
+                (select is_visible from product.price_page) as is_visible
             from product.product_prices prd_pri
             join product.products prd on prd_pri.product_id = prd.id
             join product.product_categories prd_cate on prd.category_id = prd_cate.id
@@ -1028,6 +1064,7 @@ const product_prices = {
             id: row.price_id,
             price: row.price !== null ? row.price : "",
             note: row.note || "",
+            is_visible: row.is_visible, 
             product: {
                 id: row.product_id,
                 name: row.product_name || "",
@@ -1036,7 +1073,7 @@ const product_prices = {
                 warranty_period: row.warranty_period !== null ? row.warranty_period : "",
                 product_features: row.product_features || [],
                 highlight_features: row.highlight_features.map(index => row.product_features[index]) || [],
-                highlight_feature_ids: row.highlight_features || [],            
+                highlight_feature_ids: row.highlight_features || [],       
                 category: {
                     id: row.category_id,
                     name: row.category_name
@@ -1203,4 +1240,4 @@ const count = async () => {
     };
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count, updateProductVisibility, updatePriceVisibility };

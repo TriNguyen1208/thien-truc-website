@@ -41,6 +41,7 @@ const API_ROUTES = {
             banner: `${HOME_BASE}/home_page/banner`,
             aboutUs: `${HOME_BASE}/home_page/about_us`,
             imageAboutUs: `${HOME_BASE}/home_page/about_us_image`,
+            visibility: `${HOME_BASE}/home_page/visibility`,
         },
         highlight_stats_about_us: {
             getAll: `${HOME_BASE}/highlight_stats_about_us`,
@@ -54,6 +55,7 @@ const API_ROUTES = {
         base: PRODUCT_BASE,
         product_page: `${PRODUCT_BASE}/product_page`,
         update_product_page: `${PRODUCT_BASE}/product_page`, // patch
+        update_product_visibility: `${PRODUCT_BASE}/product_page/visibility`,
         products: {
             // get
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${uri(page)}&limit=${uri(limit)}`,
@@ -87,6 +89,7 @@ const API_ROUTES = {
         },
         price_page: `${PRODUCT_BASE}/price_page`,
         update_price_page: `${PRODUCT_BASE}/price_page`, // patch
+        update_price_visibility: `${PRODUCT_BASE}/price_page/visibility`,
         highlight_products: `${PRODUCT_BASE}/products?is_featured=true`,
         search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
         search_categories_suggestions: (query='') => `${PRODUCT_BASE}/search_categories_suggestions?query=${uri(query)}`,
@@ -96,6 +99,7 @@ const API_ROUTES = {
         base: PROJECT_BASE,
         project_page: `${PROJECT_BASE}/project_page`,
         update_project_page: `${PROJECT_BASE}/project_page`, // patch
+        update_visibility: `${PROJECT_BASE}/project_page/visibility`,
         projects: {
             getList: (query, filter, is_featured, page, limit) => `${PROJECT_BASE}/projects?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
@@ -136,6 +140,7 @@ const API_ROUTES = {
         base: NEWS_BASE,
         news_page: `${NEWS_BASE}/news_page`,
         update_news_page: `${NEWS_BASE}/news_page`, // patch
+        update_visibility: `${NEWS_BASE}/news_page/visibility`,
         news: {
             getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&limit=${limit}`,
@@ -175,12 +180,14 @@ const API_ROUTES = {
         base: RECRUITMENT_BASE,
         recruitment_page: `${RECRUITMENT_BASE}/recruitment_page`,
         submit_application: `${RECRUITMENT_BASE}/submit_application`,
+        update_visibility: `${RECRUITMENT_BASE}/recruitment_page/visibility`,
     },
     contact: {
         base: CONTACT_BASE,
         contact_page: `${CONTACT_BASE}/contact_page`,
         updateContactPage: {
             banner: `${CONTACT_BASE}/contact_page/banner`, // patch 
+            visibility: `${CONTACT_BASE}/contact_page/visibility`
         },
         company_info: `${CONTACT_BASE}/company_info`,
         updateCompanyInfo: `${CONTACT_BASE}/company_info`, // patch        

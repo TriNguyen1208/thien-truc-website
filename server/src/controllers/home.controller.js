@@ -43,6 +43,16 @@ const updateHomePage = {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
+    visibility: async(req, res) => {
+        try{
+            const {status, message, action = null} = await homeServices.updateHomePage.visibility(req.body);
+            if(status == 200) logActivity(req.user.username, action);
+            res.status(status).json({message: message});
+        }catch(error){
+            console.error('Lỗi chế độ hiển thị trang chủ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
+    }
 }
 
 const highlight_stats_about_us = {

@@ -27,7 +27,16 @@ const updateNewsPage = async (req, res) => {
         res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
     }
 }
-
+const updateVisibility = async (req, res) => {
+    try {
+        const { status, message, action } = await newsServices.updateVisibility(req.body);
+        if (status == 200) logActivity(req.user.username, action);
+        return res.status(status).json({ message });
+    } catch (error) {
+        console.error('Lỗi cập nhật trang tin tức: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+}
 const news = {
     getList: async (req, res) => {
         const {query = '', filter = '', sort_by = 'popular', page, is_published, limit} = req.query;
@@ -188,4 +197,4 @@ const featured_news = {
         }
     }
 }
-export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news};
+export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news, updateVisibility};

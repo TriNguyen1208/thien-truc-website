@@ -136,9 +136,14 @@ const patchProductPage = async (updatedPage)=> {
     const res = await axios.patch(API_ROUTES.product.update_product_page, updatedPage)
     return res.data;
 }
-
-
-
+const updateProductVisibility = async (data)=> {
+    const res = await axios.patch(API_ROUTES.product.update_product_visibility, data)
+    return res.data;
+}
+const updatePriceVisibility = async (data)=> {
+    const res = await axios.patch(API_ROUTES.product.update_price_visibility, data)
+    return res.data;
+}
 
 export default {
     getAll,
@@ -153,5 +158,7 @@ export default {
     getQuantity,
     getPricePage, 
     patchPricePage,
-    patchProductPage
+    patchProductPage,
+    updateProductVisibility,
+    updatePriceVisibility
 };

@@ -117,6 +117,10 @@ const patchNewsPage = async (updatedPage)=> {
     const res = await axios.patch(API_ROUTES.news.update_news_page, updatedPage)
     return res.data;
 }
+const updateVisibility = async (data) => {
+    const res = await axios.patch(API_ROUTES.news.update_visibility, data)
+    return res.data;
+}
 export default { 
 getQuantity, getAll, getNewsPage, news, new_categories, new_contents,
-getSearchSuggestions, getSearchCategoriesSuggestions, getFeatureNews, updateFeatureNews, patchNewsPage };
+getSearchSuggestions, getSearchCategoriesSuggestions, getFeatureNews, updateFeatureNews, patchNewsPage, updateVisibility};

@@ -7,6 +7,7 @@ import Loading from "@/components/Loading";
 import LazyLoad from 'react-lazyload'
 import renderWithLazyLoad from "../../utils/renderWithLazyLoad";
 {/* <ArrowLeftOutlined /> */ }
+import ComingSoon from '@/pages/ComingSoon'
 export default function ProjectDetail() {
     // Khai bao hooks
     const { id } = useParams();
@@ -34,7 +35,7 @@ export default function ProjectDetail() {
     return (
         <>
             {navigation.state == 'loading' && <Loading />}
-            <div className="bg-[#f9fafb] py-[70px]">
+            {projectContentData.is_visible ? <div className="bg-[#f9fafb] py-[70px]">
                 <div className="max-w-[800px] mx-auto sm:px-[20px]">
                     <BackButton content="Quay lại danh sách dự án"/>
                     <div className="bg-[#FFFFFF] p-6 shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
@@ -94,7 +95,7 @@ export default function ProjectDetail() {
                         <Banner data={data} />
                     </div>
                 </div>
-            </div>
+            </div>: <ComingSoon/>}
         </>
     )
 }

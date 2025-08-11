@@ -54,7 +54,8 @@ const HomePageContent = () => {
   const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useHome.updateHomePage.updateBanner();
   const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
   const { mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs } = useHome.updateHomePage.updateImageAboutUs();
-
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useHome.updateHomePage.updateVisibility();
+  
   const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
   const { mutate: updateHighlightFeature, isPending: isPendingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
   const { mutate: createHighlightFeature, isPending: isPendingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
@@ -112,7 +113,7 @@ const HomePageContent = () => {
   if (isLoadingHighlightFeature || isPendingUpdateHighlightFeature || isPendingUpdateImageAboutUs ||
     isPendingCreateHighlightFeature || isPendingDeleteHighlightFeature ||
     isLoadingHighlightNews || isLoadingHomePageData || isPendingUpdateBanner ||
-    isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews || isFetchingHomePageData) {
+    isPendingUpdateAboutUs || isLoadingNewsData || isPendingUpdateFeatureNews || isFetchingHomePageData || isPendingUpdateVisibility) {
     return (
       <Loading />
     )
@@ -126,7 +127,7 @@ const HomePageContent = () => {
   // ============= BANNER TRANG CHU ===================== 
   function handleToggle(checked){
     setIsVisible(checked);
-    // updateVisibility({visibility: checked});
+    updateVisibility({visibility: checked});
   }
   const handleCancleHome = () => {
     setHomeNotification(false)

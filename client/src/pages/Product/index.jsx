@@ -8,6 +8,7 @@ import Paging from '@/components/Paging'
 import { useRef } from 'react'
 import { TruckOutlined, UserOutlined, CreditCardOutlined, SafetyOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate, useNavigation, useSearchParams, Link } from "react-router-dom";
+import ComingSoon from '@/pages/ComingSoon'
 
 //Start extra components
 function GoBackListProduct({ goBack, categorySelected, query }) {
@@ -222,7 +223,7 @@ export default function Product() {
         colorBackground: "var(--gradient-banner)",
         colorText: "#ffffff",
         hasButton: false,
-        hasSearch: true,
+        hasSearch: productPage.is_visible ? true : false,
         contentButton: null,
         currentQuery: query,
         currentCategory: filter,
@@ -279,28 +280,29 @@ export default function Product() {
         <>
             {navigation.state == 'loading' && <Loading/>}
             <Banner data={bannerMain} />
-            <Banner data={bannerViewPrices} />
-            <div className="container-fluid flex flex-col ">
-                <div className='grid grid-cols-2 gap-[16px] place-items-center my-[8px]  lg:grid-cols-4 lg:py-6'>
-                    {
-                        contentCenterCards.map((card, index) => {
-                            return (
-                                <div key={index} className=' w-[100%] h-[220px] max-h-[200px] sm:w-[260px] sm:h-[160px] lg:w-[90%]'>
-                                    <CenterCard data={card} />
-                                </div>
-                            )
-                        })
-                    }
+            {productPage.is_visible ? <div>
+                <Banner data={bannerViewPrices} />
+                <div className="container-fluid flex flex-col ">
+                    <div className='grid grid-cols-2 gap-[16px] place-items-center my-[8px]  lg:grid-cols-4 lg:py-6'>
+                        {
+                            contentCenterCards.map((card, index) => {
+                                return (
+                                    <div key={index} className=' w-[100%] h-[220px] max-h-[200px] sm:w-[260px] sm:h-[160px] lg:w-[90%]'>
+                                        <CenterCard data={card} />
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div ref={scrollTargetRef}  ></div>
+                    <div >
+                        <GoBackListProduct goBack={goBack} categorySelected={filter} query={query} />
+                    </div>
+
+                    <ProductsContainter filter={filter} query={query} page={page} categories={productCategories} handleViewMore={handleViewMore} handlePageChange={handlePageChange} />
+
                 </div>
-                <div ref={scrollTargetRef}  ></div>
-                <div >
-                    <GoBackListProduct goBack={goBack} categorySelected={filter} query={query} />
-                </div>
-
-                <ProductsContainter filter={filter} query={query} page={page} categories={productCategories} handleViewMore={handleViewMore} handlePageChange={handlePageChange} />
-
-            </div>
-
+            </div>: <ComingSoon/>}
         </>
     )
 }

@@ -12,6 +12,8 @@ const PricePageContent = () => {
 
   const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
   const { mutate: updatePricePage, isPending: isLoadingUpdatePricePage } = useProducts.patchPricePage();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProducts.updatePriceVisibility();
+  
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
   useEffect(()=>{
@@ -29,13 +31,13 @@ const PricePageContent = () => {
       if(isLoadingPricePage) return
       setIsVisible(pricePage.is_visible);
     }, [pricePage, isLoadingPricePage]);
-  if(isLoadingPricePage || isLoadingUpdatePricePage)
+  if(isLoadingPricePage || isLoadingUpdatePricePage || isPendingUpdateVisibility)
   {
     return(<Loading/>)
   }
   function handleToggle(checked){
     setIsVisible(checked);
-    // updateVisibility({visibility: checked});
+    updateVisibility({visibility: checked});
   }
    const handleCancleNotification = ()=>{
     setOpenNotification(false)

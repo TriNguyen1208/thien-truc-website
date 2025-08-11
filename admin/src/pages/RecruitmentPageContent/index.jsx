@@ -18,6 +18,8 @@ const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
   const [isVisible, setIsVisible] = useState(null);
   const {mutate: updateRecruitment, isPending: isPendingRecruitment} = useRecruitment.patch();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useRecruitment.updateVisibility();
+
   const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
   const [saveOpenBanner, setSaveOpenBanner] = useState(false);
   const [saveOpenCulture, setSaveOpenCulture] = useState(false);
@@ -41,10 +43,10 @@ const RecruitmentPageContent = () => {
   }, [recruitment, isLoadingRecruitment]);
   function handleToggle(checked){
     setIsVisible(checked);
-    // updateVisibility({visibility: checked});
+    updateVisibility({visibility: checked});
   }
   useEffect(() => {
-    if(isLoadingRecruitment || isFetchingRecruitment){
+    if(isLoadingRecruitment || isFetchingRecruitment || isPendingUpdateVisibility){
       return;
     }
     const initialForm = {

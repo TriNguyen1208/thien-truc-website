@@ -109,7 +109,23 @@ const updateNewsPage = async (data) => {
         action: "Cập nhật Banner trang Tin Tức"
     };
 }
+const updateVisibility = async (data) => {
+    const {
+        visibility
+    } = data;
 
+    await pool.query(`
+        UPDATE news.news_page
+        SET
+            is_visible = $1
+    `, [visibility]);
+    const visibility_state = visibility == true ? "Bật" : "Tắt";
+    return {
+        status: 200,
+        message: `${visibility_state} chế độ hiển thị trang tin tức thành công`,
+        action: `${visibility_state} chế độ hiển thị trang tin tức`
+    }
+}
 const news = {
     getList: async (query = '', filter = '', sort_by = 'date_desc', page, is_published, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
@@ -318,7 +334,9 @@ const news = {
 
                 n_cate.id as category_id,
                 n_cate.name,
-                n_cate.rgb_color
+                n_cate.rgb_color,
+
+                (select is_visible from news.news_page) as is_visible
             from news.news n
             join news.news_categories n_cate on n_cate.id = n.category_id
             where n.id = $1
@@ -334,6 +352,7 @@ const news = {
             main_img: row.main_img,
             main_content: row.main_content,
             is_published: row.is_published,
+            is_visible: row.is_visible,
             category: {
                 id: row.category_id,
                 name: row.name,
@@ -670,16 +689,20 @@ const news_contents = {
 
                 n_cate.id as category_id,
                 n_cate.name,
-                n_cate.rgb_color
+                n_cate.rgb_color,
+                (select is_visible from news.news_page) as is_visible
+
             from news.news_contents n_cont
             join news.news n on n_cont.news_id = n.id
             join news.news_categories n_cate on n_cate.id = n.category_id
             where n_cont.news_id = $1
         `
+
         const row = (await pool.query(query, [id])).rows[0]
         const news_content = {
             id: row.content_id,
             content: row.content,
+            is_visible: row.is_visible,
             news: {
               id: row.news_id,
               title: row.title,
@@ -1009,4 +1032,4 @@ const featured_news = {
     }
 }
 
-export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news};
+export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, count, getSearchCategoriesSuggestions, featured_news, updateVisibility};

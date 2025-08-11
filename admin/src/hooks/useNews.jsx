@@ -39,7 +39,6 @@ function usePatchNewsPage() {
         }
     });
 }
-
 const news = {
     useGetList: (query = '', filter = '', is_published = undefined, sort_by = '', page = undefined, limit) => {
         return useQuery({
@@ -247,6 +246,19 @@ function useUpdateFeatureNews() {
         },
     })
 }
+function useUpdateVisibility() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedPage) => newsServices.updateVisibility(updatedPage),
+        onSuccess: (success) => {
+            queryClient.invalidateQueries({ queryKey: ["admin_news_page"] });
+            toast.success(success.message);
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    });
+}
 export default {
     getQuantity: useGetQuantity,
     getAll: useGetAll,
@@ -276,4 +288,5 @@ export default {
     },
     getSearchCategoriesSuggestions: useGetSearchCategoriesSuggest,
     getSearchSuggestions: useSearchSuggest,
+    updateVisibility: useUpdateVisibility
 };

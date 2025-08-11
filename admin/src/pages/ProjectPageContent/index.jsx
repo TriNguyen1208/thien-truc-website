@@ -12,6 +12,8 @@ const ProjectPageContent = () => {
   const [openNotification, setOpenNotification] = useState(false)
   const {data: projectPage, isLoading: isLoadingProjectPage, isFetching: isFetchingProjectPage} = useProjects.getProjectPage()
   const { mutate: updateProjectPage, isPending: isPendingProjectPage } = useProjects.patchProjectPage();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProjects.updateVisibility();
+
   useEffect(()=>{
     setLayoutProps({
       title: "Nội dung Trang dự án",
@@ -27,13 +29,13 @@ const ProjectPageContent = () => {
     if(isLoadingProjectPage) return
     setIsVisible(projectPage.is_visible);
   }, [projectPage, isLoadingProjectPage]);
-  if(isLoadingProjectPage || isPendingProjectPage || isFetchingProjectPage)
+  if(isLoadingProjectPage || isPendingProjectPage || isFetchingProjectPage || isPendingUpdateVisibility)
   {
     return(<Loading/>)
   }
   function handleToggle(checked){
     setIsVisible(checked);
-    // updateVisibility({visibility: checked});
+    updateVisibility({visibility: checked});
   }
   const handleCancleNotification = ()=>{
     setOpenNotification(false)

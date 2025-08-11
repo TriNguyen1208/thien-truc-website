@@ -108,4 +108,21 @@ const patchRecruitment = async (data, files) => {
         action: `Cập nhật trang Tuyển Dụng`
     };
 }
-export default { getAllTables, getRecruitmentPage, postSubmitApplication, patchRecruitment};
+const updateVisibility = async(data) => {
+    const {
+        visibility
+    } = data;
+
+    await pool.query(`
+        UPDATE recruitment.recruitment_page
+        SET
+            is_visible = $1
+    `, [visibility]);
+    const visibility_state = visibility == true ? "Bật" : "Tắt";
+    return {
+        status: 200,
+        message: `${visibility_state} chế độ hiển thị trang tuyển dụng thành công`,
+        action: `${visibility_state} chế độ hiển thị trang tuyển dụng`
+    }
+}
+export default { getAllTables, getRecruitmentPage, postSubmitApplication, patchRecruitment, updateVisibility};

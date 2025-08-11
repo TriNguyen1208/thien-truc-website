@@ -22,4 +22,8 @@ const patchRecruitment = async (data) => {
     });
     return res.data;
 }
-export default {getAll, getRecruitmentPage, postRecruitmentForm, patchRecruitment};
+const updateVisibility = async (data) => {
+    const res = await axios.patch(API_ROUTES.recruitment.update_visibility, data);
+    return res.data;
+}
+export default {getAll, getRecruitmentPage, postRecruitmentForm, patchRecruitment, updateVisibility};

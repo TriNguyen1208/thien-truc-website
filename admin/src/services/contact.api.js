@@ -16,6 +16,10 @@ const updateContactPage = {
     banner: async (data) => {
         const res = await axios.patch(API_ROUTES.contact.updateContactPage.banner, data);
         return res.data;
+    },
+    visibility: async (data) => {
+        const res = await axios.patch(API_ROUTES.contact.updateContactPage.visibility, data);
+        return res.data;
     }
 }
 const patchCompanyInfo = async (updatedData) => {

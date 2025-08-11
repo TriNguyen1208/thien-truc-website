@@ -22,7 +22,26 @@ const updateProductPage = async (req, res) => {
         res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
     }
 }
-
+const updateProductVisibility = async(req, res) => {
+    try{
+        const {status, message, action = null} = await productServices.updateProductVisibility(req.body);
+        if(status == 200) logActivity(req.user.username, action);
+        res.status(status).json({message: message});
+    }catch(error){
+        console.error('Lỗi chế độ hiển thị trang sản phẩm: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+    }
+}
+const updatePriceVisibility = async(req, res) => {
+    try{
+        const {status, message, action = null} = await productServices.updatePriceVisibility(req.body);
+        if(status == 200) logActivity(req.user.username, action);
+        res.status(status).json({message: message});
+    }catch(error){
+        console.error('Lỗi chế độ hiển thị trang bảng giá: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+    }
+}
 const products = {
     getList: async (req, res) => {
         const {query ='', filter = '', page, is_featured, limit} = req.query;
@@ -200,4 +219,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count, updateProductVisibility, updatePriceVisibility };

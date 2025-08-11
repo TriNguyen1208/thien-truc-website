@@ -17,4 +17,5 @@ router.patch('/', authenticateToken, upload.fields([
   { name: 'culture_img_3', maxCount: 1 },
   { name: 'culture_img_4', maxCount: 1 },
 ]), recruitmentController.patchRecruitment);
+router.patch('/recruitment_page/visibility', authenticateToken, recruitmentController.updateVisibility);
 export default router;

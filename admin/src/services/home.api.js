@@ -22,8 +22,11 @@ const updateHomePage = {
             timeout: 20000
         })
         return res.data;
+    },
+    visibility: async (data) => {
+        const res = await axios.patch(API_ROUTES.home.updateHomePage.visibility, data);
+        return res.data;
     }
-
 }
 const highlight_stats_about_us = {
     getAll: async () => {

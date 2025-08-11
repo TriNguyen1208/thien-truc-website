@@ -117,5 +117,9 @@ const patchProjectPage = async (updatedPage)=> {
     const res = await axios.patch(API_ROUTES.project.update_project_page, updatedPage)
     return res.data;
 }
+const updateVisibility = async (data)=> {
+    const res = await axios.patch(API_ROUTES.project.update_visibility, data)
+    return res.data;
+}
 
-export default { getAll, getProjectPage, updateProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, getQuantity, patchProjectPage };
+export default { getAll, getProjectPage, updateProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, getQuantity, patchProjectPage, updateVisibility };

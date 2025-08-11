@@ -6,6 +6,7 @@ import useProjects from "@/hooks/useProjects";
 import { useState, useEffect, useRef } from 'react';
 import Paging from "@/components/Paging";
 import Loading from "@/components/Loading";
+import ComingSoon from '@/pages/ComingSoon'
 
 export default function Project() {
 
@@ -114,7 +115,7 @@ export default function Project() {
         description: projectPageData.banner_description,
         colorBackground: "var(--gradient-banner)",
         colorText: "#ffffff",
-        hasSearch: true,
+        hasSearch: projectPageData.is_visible ? true : false,
         categories: categoriesData || categoriesDefault,
         contentPlaceholder: "Nhập vào đây",
         currentQuery: query, 
@@ -145,46 +146,49 @@ export default function Project() {
         <>
             {navigation.state == 'loading' && <Loading/>}
             <Banner data={dataBanner} />
-            <div className="container-fluid">
-                <div className="my-[40px] text-center">
-                    <h1 className='text-4xl mb-[30px] font-bold'>Công trình tiêu biểu</h1>
-                    <div className="mb-[30px] max-w-[70%] mx-auto">
-                        <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
+            {projectPageData.is_visible ? <div>
+                <div className="container-fluid">
+                    <div className="my-[40px] text-center">
+                        <h1 className='text-4xl mb-[30px] font-bold'>Công trình tiêu biểu</h1>
+                        <div className="mb-[30px] max-w-[70%] mx-auto">
+                            <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-12 gap-5 md:gap-10">
+                        {
+                            isLoadingProject ? <Loading/> : 
+                                (projectData.results || []).map((item, index) => {
+                                const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
+                                const dataProject = {
+                                    type: 'project',
+                                    title: item?.title ?? "",
+                                    description: item?.main_content ?? "",
+                                    location: item?.province ?? "",
+                                    date: complete_time,
+                                    tag: item?.region.name ?? "",
+                                    tagColor: item?.region.rgb_color ?? "",
+                                    image: item?.main_img ?? "",
+                                }
+                                return (
+                                    <Link key={index} to={`/du-an/${item.id}`}
+                                    className="col-span-12 lg:col-span-4 md:col-span-6 max-md:max-w-[500px] max-md:w-full  max-md:mx-auto"
+                                    >
+                                        <div    
+                                        >
+                                            <ItemPost data={dataProject}/>
+                                        </div>
+                                    </Link>
+
+                                );
+                        })}
+                    </div>
+                    <div className="mb-[30px]">
+                        <Paging data={dataPagination} onPageChange={handlePageChange} currentPage={currentPage} />
                     </div>
                 </div>
-                <div className="grid grid-cols-12 gap-5 md:gap-10">
-                    {
-                        isLoadingProject ? <Loading/> : 
-                            (projectData.results || []).map((item, index) => {
-                            const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
-                            const dataProject = {
-                                type: 'project',
-                                title: item?.title ?? "",
-                                description: item?.main_content ?? "",
-                                location: item?.province ?? "",
-                                date: complete_time,
-                                tag: item?.region.name ?? "",
-                                tagColor: item?.region.rgb_color ?? "",
-                                image: item?.main_img ?? "",
-                            }
-                            return (
-                                <Link key={index} to={`/du-an/${item.id}`}
-                                className="col-span-12 lg:col-span-4 md:col-span-6 max-md:max-w-[500px] max-md:w-full  max-md:mx-auto"
-                                >
-                                    <div    
-                                    >
-                                        <ItemPost data={dataProject}/>
-                                    </div>
-                                </Link>
+                <Banner data={bannerContactData} />
+            </div>: <ComingSoon/>}
 
-                            );
-                    })}
-                </div>
-                <div className="mb-[30px]">
-                    <Paging data={dataPagination} onPageChange={handlePageChange} currentPage={currentPage} />
-                </div>
-            </div>
-            <Banner data={bannerContactData} />
         </>
     )
 }

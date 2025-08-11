@@ -39,6 +39,7 @@ router.patch('/project_contents/:id', authenticateToken, upload.fields([
 
 // patch
 router.patch('/project_page', authenticateToken, projectsController.updateProjectPage);
+router.patch('/project_page/visibility', authenticateToken, projectsController.updateVisibility);
 router.patch('/project_regions/:id', authenticateToken, projectsController.project_regions.updateOne);
 router.patch('/projects/update_regions', authenticateToken, projectsController.projects.updateRegion);
 router.patch('/projects/is_featured/:id/:status', authenticateToken, projectsController.projects.updateFeatureOne);

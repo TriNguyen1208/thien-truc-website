@@ -40,6 +40,19 @@ const updateContactPage = {
             },
         });
     },
+    useUpdateVisibility: () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (data) => contactServices.updateContactPage.visibility(data),
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ['admin_contact_page'] });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            },
+        });
+    },
 }
 function usePatchCompanyInfo() {
     const queryClient = useQueryClient();
@@ -106,6 +119,7 @@ export default {
     },
     updateContactPage: {
         updateBanner: updateContactPage.useUpdateBanner,
+        updateVisibility: updateContactPage.useUpdateVisibility
     },
     getCompanyInfo: useGetCompanyInfo,
     patchCompanyInfo: usePatchCompanyInfo,

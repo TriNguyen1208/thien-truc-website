@@ -79,7 +79,23 @@ const updateProjectPage = async (data) => {
         action: "Cập nhật Banner trang Dự Án"
     };
 }
+const updateVisibility = async (data) => {
+    const {
+        visibility
+    } = data;
 
+    await pool.query(`
+        UPDATE project.project_page
+        SET
+            is_visible = $1
+    `, [visibility]);
+    const visibility_state = visibility == true ? "Bật" : "Tắt";
+    return {
+        status: 200,
+        message: `${visibility_state} chế độ hiển thị trang dự án thành công`,
+        action: `${visibility_state} chế độ hiển thị trang dự án`
+    }
+}
 const projects = {
     getList: async (query = '', filter = '', page, is_featured, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
@@ -271,7 +287,9 @@ const projects = {
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
-                prj_reg.rgb_color
+                prj_reg.rgb_color,
+                
+                (select is_visible from project.project_page) as is_visible
             from project.projects prj
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
             where prj.id = $1
@@ -285,6 +303,7 @@ const projects = {
             is_featured: row.is_featured,
             main_img: row.main_img,
             main_content: row.main_content,
+            is_visible: row.is_visible,
             region: {
                 id: row.reg_id,
                 name: row.name,
@@ -626,7 +645,9 @@ const project_contents = {
 
                 prj_reg.id as reg_id,
                 prj_reg.name,
-                prj_reg.rgb_color
+                prj_reg.rgb_color,
+
+                (select is_visible from project.project_page) as is_visible
             from project.project_contents prj_cont
             join project.projects prj on prj_cont.project_id = prj.id
             join project.project_regions prj_reg on prj.region_id = prj_reg.id
@@ -636,6 +657,7 @@ const project_contents = {
         const project_content = {
             id: row.cont_id,
             content: row.content,
+            is_visible: row.is_visible,
             project:{
                 id: row.prj_id,
                 title: row.title,
@@ -648,7 +670,7 @@ const project_contents = {
                     name: row.name,
                     rgb_color: row.rgb_color
                 },
-                is_featured: row.is_featured
+                is_featured: row.is_featured,
             }};
         return project_content;
     },
@@ -946,4 +968,4 @@ const count = async () => {
 }
 
 
-export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};
+export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents,getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count, updateVisibility};

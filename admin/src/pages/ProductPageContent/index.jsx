@@ -11,6 +11,8 @@ const ProductPageContent = () => {
   const [isVisible, setIsVisible] = useState(null);
   const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
   const { mutate: updateProductPage, isPending: isLoadingUpdateProductPage } = useProducts.patchProductPage();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProducts.updateProductVisibility();
+
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
   useEffect(()=>{
@@ -28,13 +30,13 @@ const ProductPageContent = () => {
     if(isLoadingProductPage) return
     setIsVisible(productPage.is_visible);
   }, [productPage, isLoadingProductPage]);
-  if(isLoadingProductPage || isLoadingUpdateProductPage)
+  if(isLoadingProductPage || isLoadingUpdateProductPage || isPendingUpdateVisibility)
   {
     return(<Loading/>)
   }
   function handleToggle(checked){
     setIsVisible(checked);
-    // updateVisibility({visibility: checked});
+    updateVisibility({visibility: checked});
   }
   const handleCancleNotification = ()=>{
     setOpenNotification(false)

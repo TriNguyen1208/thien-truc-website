@@ -22,6 +22,16 @@ const updateContactPage ={
             console.error('Lỗi cập nhật Banner trang Liên Hệ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
+    },
+    visibility: async (req, res) => {
+        try {
+            const { status, message, action } = await contactServices.updateContactPage.visibility(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật trang liên hệ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
     }
 }
 

@@ -7,6 +7,8 @@ import {
 } from '@ant-design/icons';
 import LazyLoad from 'react-lazyload';
 import BackButton from '../../components/BackButton';
+import ComingSoon from '@/pages/ComingSoon'
+
 function Picture({ url }) {
 
     return (
@@ -44,7 +46,7 @@ export default function ProductDetail() {
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
-            <div className="container-fluid py-[30px]">
+            {product.is_visible ? <div className="container-fluid py-[30px]">
                 <BackButton content="Quay lại danh sách sản phẩm"/>
                 <div className="grid grid-cols-1 gap-[30px] lg:grid-cols-2">
                     <div>
@@ -118,7 +120,7 @@ export default function ProductDetail() {
 
 
                 </div>
-            </div>
+            </div>: <ComingSoon/>}
         </>
     )
 }

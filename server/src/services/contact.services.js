@@ -40,6 +40,23 @@ const updateContactPage = {
             message: "Cập nhật Banner thành công",
             action: `Cập nhật Banner trang Liên Hệ`
         }
+    },
+    visibility: async (data) => {
+        const {
+            visibility
+        } = data;
+
+        await pool.query(`
+            UPDATE contact.contact_page
+            SET
+                is_visible = $1
+        `, [visibility]);
+        const visibility_state = visibility == true ? "Bật" : "Tắt";
+        return {
+            status: 200,
+            message: `${visibility_state} chế độ hiển thị trang liên hệ thành công`,
+            action: `${visibility_state} chế độ hiển thị trang liên hệ`
+        }
     }
 }
 

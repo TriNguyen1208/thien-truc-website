@@ -19,6 +19,7 @@ router.post('/support_agents', authenticateToken, upload.single('local_image'), 
 
 router.patch('/company_info', authenticateToken, contactController.updateCompanyInfo);
 router.patch('/contact_page/banner', authenticateToken, contactController.updateContactPage.banner);
+router.patch('/contact_page/visibility', authenticateToken, contactController.updateContactPage.visibility);
 router.patch('/support_agents/:id', authenticateToken, upload.single('local_image'), contactController.support_agents.updateOne);
 
 router.delete('/support_agents/:id', authenticateToken, contactController.support_agents.deleteOne);

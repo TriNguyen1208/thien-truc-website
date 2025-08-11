@@ -6,7 +6,7 @@ import Loading from '@/components/Loading'
 import useContact from '@/hooks/useContact'
 import {CheckCircleOutlined,  UsergroupAddOutlined, LineChartOutlined, WifiOutlined, DollarOutlined} from '@ant-design/icons'
 import {useNavigate, useNavigation} from 'react-router-dom'
-
+import ComingSoon from '@/pages/ComingSoon'
 //Start extra Component 
 function ProgressItem({ icon, label, value, percent }) {
   return (
@@ -41,8 +41,8 @@ function Title({content})
 
 //Main component
 export default function AboutUs(){
-    const { data: company_info, isLoading: isLoadingContact } = useContact.getCompanyInfo()
     const { data: aboutusPage, isLoading: isLoadingAboutUsPage } = useAboutUs.getAboutUsPage()
+    const { data: company_info, isLoading: isLoadingContact } = useContact.getCompanyInfo()
     const { data: aboutusServices, isLoading: isLoadingAboutUsServices } = useAboutUs.company_services.getAll()
     const { data: aboutusChoose, isLoading: isLoadingAboutUsChoose } = useAboutUs.why_choose_us.getAll()
     const navigate = useNavigate()
@@ -56,7 +56,7 @@ export default function AboutUs(){
         description: aboutusPage.banner_description,
         colorBackground : "var(--gradient-banner)",
         colorText : "#ffffff",
-        hasButton : true,
+        hasButton: aboutusPage.is_visible ? true : false,
         hasSearch : false,
         contentButton : `Trụ sở chính: ${company_info.main_office.address}`,
         handleButton : ()=>{ window.open(company_info.main_office.googlemaps_url, "_blank")},
@@ -154,110 +154,110 @@ export default function AboutUs(){
         <div className='w-full'>
             {navigation.state == 'loading' && <Loading/>}
             <Banner data = {bannerMain}/>
-            {/////////////////////////////////////////////
-            }
-            <div className='grid grid-cols-1 sm:p-8 my-[24px] p-2 gap-y-[16px] md:grid-cols-2  md:gap-x-[24px] lg:p-[40px] lg:gap-x-[50px]  xl:px-[120px] xl:py-[40px] xl:gap-x-[100px]  '>
-                <div className='p-[8px]'>
-                    <div className='flex flex-col my-[8px] '>
-                       <Title content={'Câu chuyện của chúng tôi'}/>
+            {aboutusPage.is_visible ? <div>
+                <div className='grid grid-cols-1 sm:p-8 my-[24px] p-2 gap-y-[16px] md:grid-cols-2  md:gap-x-[24px] lg:p-[40px] lg:gap-x-[50px]  xl:px-[120px] xl:py-[40px] xl:gap-x-[100px]  '>
+                    <div className='p-[8px]'>
+                        <div className='flex flex-col my-[8px] '>
+                        <Title content={'Câu chuyện của chúng tôi'}/>
+                        </div>
+                        <div className=''>
+                        <span className='text-[14px] lg:text-[16px] text-[#166534]  '>
+                            {aboutusPage.our_story_content}
+                        </span>
+                        </div>
                     </div>
-                    <div className=''>
-                       <span className='text-[14px] lg:text-[16px] text-[#166534]  '>
-                         {aboutusPage.our_story_content}
-                       </span>
-                    </div>
-                </div>
-                <div className='p-[8px] h-fit bg-[#F0FDF4]  rounded-[8px] shadow-md hover:scale-[1.05] transition-all duration-300 ease-in-out  '>
-                    <div className='flex flex-col p-[8px]  '>
-                        <Title content = {'Thành tựu của chúng tôi'}/>
-                    </div>
-                    <div className='p-[8px] xl:p-[24px]'>
-                        {
-                            listProgress.map((pro,index) =>{
-                                return(
-                                    <ProgressItem key = {index} {...pro} />
-                                )
-                            })
-                        }
-                    </div>
+                    <div className='p-[8px] h-fit bg-[#F0FDF4]  rounded-[8px] shadow-md hover:scale-[1.05] transition-all duration-300 ease-in-out  '>
+                        <div className='flex flex-col p-[8px]  '>
+                            <Title content = {'Thành tựu của chúng tôi'}/>
+                        </div>
+                        <div className='p-[8px] xl:p-[24px]'>
+                            {
+                                listProgress.map((pro,index) =>{
+                                    return(
+                                        <ProgressItem key = {index} {...pro} />
+                                    )
+                                })
+                            }
+                        </div>
 
+                    </div>
+                    
                 </div>
-                
-            </div>
-             {/////////////////////////////////////////////
-            }
-            <div className='flex flex-col bg-[#F0FDF4] p-[24px] lg:p-[36px]' >
-                <div className='flex  justify-center mb-[20px]'>
-                    <Title content={'Nhiệm vụ và trách nhiệm'}/>
+                {/////////////////////////////////////////////
+                }
+                <div className='flex flex-col bg-[#F0FDF4] p-[24px] lg:p-[36px]' >
+                    <div className='flex  justify-center mb-[20px]'>
+                        <Title content={'Nhiệm vụ và trách nhiệm'}/>
+                    </div>
+                    <div className='flex justify-center mb-[24px] lg:mb-[36px] text-center'>
+                        <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px] '>
+                            Chúng tôi cung cấp các dịch vụ lắp đặt và bảo trì thiết bị công nghệ chất lượng cao, đáp ứng mọi nhu cầu của khách hàng.
+                        </span>
+                    </div>
+                    <div className='grid grid-cols-1 gap-y-[24px] md:grid-cols-2 md:gap-x-[12px] lg:gap-4 xl:px-[48px]'> 
+                            {
+                                aboutusServices.map((service, index) =>{
+                                    return(
+                                    <div key = {index} className={`mx-auto h-fit md:h-[380px] lg:h-[340px]  w-full xl:max-w-[600px]  `}>
+                                        <Card iconTitle = {iconTitleService[index]} card = {service}/>
+                                    </div>
+                                    )
+                                })
+                            }
+                    </div>
                 </div>
-                <div className='flex justify-center mb-[24px] lg:mb-[36px] text-center'>
-                    <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px] '>
-                        Chúng tôi cung cấp các dịch vụ lắp đặt và bảo trì thiết bị công nghệ chất lượng cao, đáp ứng mọi nhu cầu của khách hàng.
-                    </span>
+                {/////////////////////////////////////////////
+                }
+                <div className='flex flex-col bg-[#ffffff] p-[24px] lg:p-[48px] ' >
+                    <div className='flex  justify-center mb-[12px]'>
+                        <Title content={' Giá trị cốt lõi'}/>
+                    </div>
+                    <div className='flex justify-center mb-[24px] text-center xl: mb-[48px]'>
+                        <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px]  '>
+                            Những giá trị định hướng mọi hoạt động và quyết định của chúng tôi.
+                        </span>
+                    </div>
+                    <div className='grid grid-cols-1 xl:justify-items-center gap-y-[24px] md:grid-cols-2 md:gap-[24px] lg:px-[48px] xl:px-4 xl:grid-cols-4'> 
+                            {
+                                listValues.map((value, index) =>{
+                                    return(
+                                    <div key = {index} className = { ` text-[#14532D] overflow-hidden p-[2px]  ${index % 2 === 0 ? 'lg:justify-self-end' : 'lg:justify-self-start'}`} >
+                                        <CenterCard data={value}/>
+                                    </div>
+                                    )
+                                })
+                            }
+                    </div>
                 </div>
-                <div className='grid grid-cols-1 gap-y-[24px] md:grid-cols-2 md:gap-x-[12px] lg:gap-4 xl:px-[48px]'> 
-                        {
-                            aboutusServices.map((service, index) =>{
-                                return(
-                                   <div key = {index} className={`mx-auto h-fit md:h-[380px] lg:h-[340px]  w-full xl:max-w-[600px]  `}>
-                                     <Card iconTitle = {iconTitleService[index]} card = {service}/>
-                                   </div>
-                                )
-                            })
-                        }
+                {/////////////////////////////////////////////
+                }
+                <div className='flex flex-col bg-[#157E3C] p-[24px]' >
+                    <div className='flex  justify-center mb-[20px] !text-white'>
+                            <h1 className=' font-bold text-[20px] lg:text-[24px] text-white '>
+                                Tại sao chọn Thiên Trúc?
+                            </h1>
+                    </div>
+                    <div className='flex justify-center mb-[24px] text-center'>
+                        <span className='text-[14px]  lg:text-[16px] text-[#ffffff]  '>
+                            Chúng tôi mang đến những giá trị khác biệt để trở thành đối tác lý tưởng cho doanh nghiệp của bạn.
+                        </span>
+                    </div>
+                    <div className='grid grid-cols-1 justify-items-center  gap-y-[24px] lg:grid-cols-2 lg:p-[32px] xl:grid-cols-4 lg:gap-[24px] xl:gap-4 '> 
+                            {
+                                aboutusChoose.map((service, index) =>{
+                                    return(
+                                    <div key = {index}  className={`h-fit lg:h-[350px] lg:w-[330px] xl:w-full md:max-w-[600px] w-full  ${index % 2 === 0 ? 'lg:justify-self-end' : 'lg:justify-self-start'}`}>
+                                        <Card  card = {service}/>
+                                    </div>
+                                    )
+                                })
+                            }
+                    </div>
                 </div>
-            </div>
-             {/////////////////////////////////////////////
-            }
-             <div className='flex flex-col bg-[#ffffff] p-[24px] lg:p-[48px] ' >
-                <div className='flex  justify-center mb-[12px]'>
-                    <Title content={' Giá trị cốt lõi'}/>
-                </div>
-                <div className='flex justify-center mb-[24px] text-center xl: mb-[48px]'>
-                    <span className='text-[15px] lg:text-[16px] text-[#166534] leading-[20px]  '>
-                        Những giá trị định hướng mọi hoạt động và quyết định của chúng tôi.
-                    </span>
-                </div>
-                <div className='grid grid-cols-1 xl:justify-items-center gap-y-[24px] md:grid-cols-2 md:gap-[24px] lg:px-[48px] xl:px-4 xl:grid-cols-4'> 
-                        {
-                            listValues.map((value, index) =>{
-                                return(
-                                   <div key = {index} className = { ` text-[#14532D] overflow-hidden p-[2px]  ${index % 2 === 0 ? 'lg:justify-self-end' : 'lg:justify-self-start'}`} >
-                                     <CenterCard data={value}/>
-                                   </div>
-                                )
-                            })
-                        }
-                </div>
-            </div>
-             {/////////////////////////////////////////////
-            }
-            <div className='flex flex-col bg-[#157E3C] p-[24px]' >
-                <div className='flex  justify-center mb-[20px] !text-white'>
-                        <h1 className=' font-bold text-[20px] lg:text-[24px] text-white '>
-                            Tại sao chọn Thiên Trúc?
-                        </h1>
-                </div>
-                <div className='flex justify-center mb-[24px] text-center'>
-                    <span className='text-[14px]  lg:text-[16px] text-[#ffffff]  '>
-                        Chúng tôi mang đến những giá trị khác biệt để trở thành đối tác lý tưởng cho doanh nghiệp của bạn.
-                    </span>
-                </div>
-                <div className='grid grid-cols-1 justify-items-center  gap-y-[24px] lg:grid-cols-2 lg:p-[32px] xl:grid-cols-4 lg:gap-[24px] xl:gap-4 '> 
-                        {
-                            aboutusChoose.map((service, index) =>{
-                                return(
-                                   <div key = {index}  className={`h-fit lg:h-[350px] lg:w-[330px] xl:w-full md:max-w-[600px] w-full  ${index % 2 === 0 ? 'lg:justify-self-end' : 'lg:justify-self-start'}`}>
-                                     <Card  card = {service}/>
-                                   </div>
-                                )
-                            })
-                        }
-                </div>
-            </div>
-             {/////////////////////////////////////////////
-            }
-            <Banner data = {bannerContact}/>
+                {/////////////////////////////////////////////
+                }
+                <Banner data = {bannerContact}/>
+            </div> : <ComingSoon/>}
         </div>
     )
 }

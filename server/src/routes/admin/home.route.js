@@ -17,6 +17,8 @@ router.patch('/home_page/banner', authenticateToken, homeController.updateHomePa
 router.patch('/home_page/about_us', authenticateToken, homeController.updateHomePage.aboutUs);
 router.patch('/home_page/about_us_image', authenticateToken, upload.single('aboutus_img'), homeController.updateHomePage.imageAboutUs);
 router.patch('/highlight_stats_about_us/:id', authenticateToken, homeController.highlight_stats_about_us.updateOne);
+router.patch('/home_page/visibility', authenticateToken, homeController.updateHomePage.visibility);
+
 router.delete('/highlight_stats_about_us/:id', authenticateToken, homeController.highlight_stats_about_us.deleteOne);
 
 export default router;

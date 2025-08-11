@@ -10,7 +10,7 @@ const ContactPageContent = () => {
   
   const { data: bannerData, isLoading: isLoadingBanner, isFetching: isFetchingBanner } = useContact.getContactPage();
   const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
-  // const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useContact.updateContactPage.updateVisibility();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useContact.updateContactPage.updateVisibility();
   
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
@@ -31,14 +31,14 @@ const ContactPageContent = () => {
       setIsVisible(bannerData.is_visible);
     }, [bannerData, isLoadingBanner]);
 
-  if (isLoadingBanner || isPendingUpdateBanner || isFetchingBanner) {
+  if (isLoadingBanner || isPendingUpdateBanner || isFetchingBanner || isPendingUpdateVisibility) {
     return (
      <Loading/>
     )
   }
   function handleToggle(checked){
     setIsVisible(checked);
-    // updateVisibility({visibility: checked});
+    updateVisibility({visibility: checked});
   }
     const handleCancleNotification = ()=>{
       setOpenNotification(false)

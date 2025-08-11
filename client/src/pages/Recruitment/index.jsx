@@ -8,6 +8,8 @@ import { useRef } from "react";
 import Form from "@/components/Form";
 import { useNavigation } from "react-router-dom";
 import LazyLoad from "react-lazyload";
+import ComingSoon from '@/pages/ComingSoon'
+
 const BuildingIcon = () => (
     <svg width="65" height="64" viewBox="0 0 65 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="0.334961" width="64" height="64" rx="32" fill="#DCFCE7" />
@@ -60,7 +62,7 @@ export default function Recruitment() {
     const content_banner_head = {
         title: data.banner_title,
         description: data.banner_description,
-        hasButton: true,
+        hasButton: data.is_visible ? true : false,
         contentButton: "Ứng tuyển ngay",
         handleButton: handleButtonBanner
     };
@@ -75,7 +77,7 @@ export default function Recruitment() {
         <>
             {navigation.state == 'loading' && <Loading/>}
             <Banner data={content_banner_head} />
-            <div className="w-full overflow-x-hidden">
+            {data.is_visible ? <div className="w-full overflow-x-hidden">
                 <div className="container-fluid flex flex-col gap-10">
                     <div>
                         <h2 className="mt-[30px] text-center text-(--dark-green) text-3xl font-bold">
@@ -158,7 +160,7 @@ export default function Recruitment() {
                 <div ref={recruitmentRef} className="mt-10 mb-[50px] max-w-[731px]  w-full m-auto">
                     <Form data={{ title: "Liên hệ với đội ngũ tuyển dụng", type: "tuyen-dung" }} />
                 </div>
-            </div>
+            </div>: <ComingSoon/>}
         </>
     )
 }

@@ -11,6 +11,7 @@
   import '@/styles/custom.css'
   import { useNavigate, useNavigation, useSearchParams } from 'react-router-dom'
   import { useRef } from 'react';
+  import ComingSoon from '@/pages/ComingSoon'
 
   export default function PricePage() {
   
@@ -129,7 +130,7 @@
       description: pricePage?.banner_description,
       colorBackground: "var(--gradient-banner)",
       colorText: "#ffffff",
-      hasSearch: true,
+      hasSearch: pricePage.is_visible ? true : false,
       categories: categories,
       currentQuery: query, 
       currentCategory: filter,
@@ -154,7 +155,7 @@
   <>
     {navigation.state == 'loading' && <Loading/>}
     <Banner data={bannerHead} />
-    <div ref={scrollTargetRef} className=" flex flex-col  p-[16px] lg:p-[32px]">
+    {pricePage.is_visible ? <div ref={scrollTargetRef} className=" flex flex-col  p-[16px] lg:p-[32px]">
     <div className="bg-[#F0FDF4]  shadow-md rounded-xl xl:pt-[48px]">
       <div className="bg-white w-full max-w-[1200px] h-[700px] mx-auto mb-[16px] rounded-xl shadow-2xl overflow-hidden">
         <div className=" font-bold text-[20px] text-center bg-white p-[24px] ">
@@ -289,7 +290,7 @@
       </div>
       <Banner data = {bannerContact}/>
     </div>
-  </div>
+  </div>: <ComingSoon/>}
   </>
 )
 }

@@ -29,8 +29,23 @@ function usePatchRecruitment(){
         }
     })
 }
+function useUpdateVisibility(){
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data) => recruitmentServices.updateVisibility(data),
+        onSuccess: (success) => {
+            toast.success(success.message)
+            queryClient.invalidateQueries({ queryKey: ['admin_recruitment'] });
+            queryClient.invalidateQueries({ queryKey: ['admin_recruitment_page'] });
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    })
+}
 export default {
     getAll: useGetAll,
     getRecruitmentPage: useGetRecruitmentPage,
-    patch: usePatchRecruitment
+    patch: usePatchRecruitment,
+    updateVisibility: useUpdateVisibility
 };

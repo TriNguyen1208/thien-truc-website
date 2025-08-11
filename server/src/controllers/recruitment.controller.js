@@ -32,4 +32,15 @@ const patchRecruitment = async (req, res) => {
     res.status(500).json({ success: false, message: "Cập nhật thất bại", error: error.message });
   }
 }
-export default { getAllTables, getRecruitmentPage, postSubmitApplication, patchRecruitment};
+
+const updateVisibility = async (req, res) => {
+  try {
+    const { status, message, action } = await recruitmentServices.updateVisibility(req.body);
+    if (status == 200) logActivity(req.user.username, action);
+    return res.status(status).json({ message });
+  } catch (error) {
+      console.error('Lỗi cập nhật trang tuyển dụng: ', error);
+      res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+  }
+}
+export default { getAllTables, getRecruitmentPage, postSubmitApplication, patchRecruitment, updateVisibility};

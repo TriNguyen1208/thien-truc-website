@@ -31,6 +31,19 @@ function usePatchProjectPage() {
   });
 }
 
+function useUpdateVisibility() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (updatedPage)=> projectsServices.updateVisibility(updatedPage),
+    onSuccess: (success) => {
+      queryClient.invalidateQueries({ queryKey: ["admin_project_page"] });
+      toast.success(success.message);
+    },
+    onError: (error) => {
+        toast.error(error.message);
+    }
+  });
+}
 const projects = {
     useGetList: (query = '', filter = '', is_featured, page = undefined, limit) => {
         return useQuery({
@@ -216,6 +229,7 @@ export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
     patchProjectPage: usePatchProjectPage,
+    updateVisibility: useUpdateVisibility,
     projects: {
         getList: projects.useGetList,
         getOne: projects.useGetOne,

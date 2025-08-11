@@ -7,6 +7,7 @@ import ItemPost from "@/components/ItemPost";
 import { Link, useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
 import Paging from "@/components/Paging";
 import { useRef } from "react";
+import ComingSoon from '@/pages/ComingSoon'
 
 export default function News() {
   const scrollTargetRef = useRef(null);
@@ -104,7 +105,7 @@ export default function News() {
     description: newsPage.banner_description,
     colorBackground: "var(--gradient-banner)",
     colorText: "#ffffff",
-    hasSearch: true,
+    hasSearch: newsPage.is_visible ? true : false,
     categories: categories,
     contentPlaceholder: "Nhập vào đây",
     currentQuery: query,
@@ -119,7 +120,7 @@ export default function News() {
     <>
       {navigation.state == 'loading' && <Loading/>}
       <Banner data={bannerData} />
-      <div className="container-fluid flex flex-col gap-10 pt-10">
+      {newsPage.is_visible ? <div className="container-fluid flex flex-col gap-10 pt-10">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0 ">
           <div className="lg:flex-1 justify-center" />
           <div className="flex justify-center px-4">
@@ -178,7 +179,7 @@ export default function News() {
             />
           )}
         </div>
-      </div>
+      </div>: <ComingSoon/>}
     </>
   );
 }

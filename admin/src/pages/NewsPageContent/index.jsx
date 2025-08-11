@@ -13,6 +13,8 @@ const NewsPageContent = () => {
 
   const {data: NewsPage, isLoading: isLoadingNewsPage} = useNews.getNewsPage()
   const { mutate: updateNewsPage, isPending } = useNews.patchNewsPage();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useNews.updateVisibility();
+  
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
 
@@ -32,13 +34,13 @@ const NewsPageContent = () => {
     setIsVisible(NewsPage.is_visible);
   }, [NewsPage, isLoadingNewsPage]);
   
-  if(isLoadingNewsPage || isPending)
+  if(isLoadingNewsPage || isPending || isPendingUpdateVisibility)
   {
     return(<Loading/>)
   }
   function handleToggle(checked){
     setIsVisible(checked);
-    // updateVisibility({visibility: checked});
+    updateVisibility({visibility: checked});
   }
   const handleCancleNotification = ()=>{
     setOpenNotification(false)

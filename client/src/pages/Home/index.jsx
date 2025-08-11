@@ -18,6 +18,8 @@ import useNews from "@/hooks/useNews";
 import LazyLoad from 'react-lazyload';
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import ComingSoon from '@/pages/ComingSoon'
+
 const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
@@ -174,8 +176,8 @@ export default function Home() {
 
             {navigation.state == 'loading' && <Loading />}
             <Banner data={dataBanner} />
+            {allData.home_page.is_visible ? <div>
             <div>
-
                 {/* Inlined TopNews Component */}
                 <section className="w-full mx-auto border-2 border-[#16A34A] " style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}>
                     {newsLoading ? (
@@ -402,7 +404,7 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-
+            </div>: <ComingSoon/>}
 
         </>
     )

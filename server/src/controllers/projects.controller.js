@@ -22,7 +22,16 @@ const updateProjectPage = async (req, res) => {
         res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
     }
 }
-
+const updateVisibility = async (req, res) => {
+    try{
+        const {status, message, action = null} = await projectsServices.updateVisibility(req.body);
+        if(status == 200) logActivity(req.user.username, action);
+        res.status(status).json({message: message});
+    }catch(error){
+        console.error('Lỗi chế độ hiển thị trang dự án: ', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+    }
+}
 const projects = {
     getList: async (req, res) => {
         const { query = '', filter = '', page, is_featured, limit } = req.query;
@@ -180,4 +189,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count};
+export default { getAllTables, getProjectPage, updateProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions, getSearchCategoriesSuggestions, count, updateVisibility};
