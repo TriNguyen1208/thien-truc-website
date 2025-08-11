@@ -24,15 +24,12 @@ export default function NewsDetail(){
     const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
     const year = date.getUTCFullYear();
     //content, color
-    const handleClick = () => {
-        navigate("/tin-tuc");
-    }
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
             <div className="flex flex-row bg-[#F9FAFB] py-10">
-                    <div className="flex flex-col w-full max-w-[800px] gap-3 px-[20px] mx-auto">
-                    <BackButton data={{content: "Quay lại danh sách tin tức", handleClick: handleClick}}/>
+                <div className="flex flex-col w-full max-w-[800px] gap-3 sm:px-[20px] mx-auto">
+                    <BackButton content="Quay lại danh sách tin tức"/>
                     <div className="flex flex-col shadow-2xl w-full bg-white py-5 px-6 rounded-sm gap-3">
                         <div>
                             <LabelType data={{content: news.news.category.name, color: news.news.category.rgb_color}}/>

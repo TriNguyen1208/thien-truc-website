@@ -1,4 +1,3 @@
-import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import { useParams, useNavigate, useNavigation } from 'react-router-dom';
 import useProducts from '@/hooks/useProducts'
@@ -7,6 +6,7 @@ import {
     ProductOutlined
 } from '@ant-design/icons';
 import LazyLoad from 'react-lazyload';
+import BackButton from '../../components/BackButton';
 function Picture({ url }) {
 
     return (
@@ -41,19 +41,11 @@ export default function ProductDetail() {
     if (isLoadingProduct) {
         return (<Loading />)
     }
-
-    const goBack = () => {
-        navigate(-1)
-    }
-
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
             <div className="container-fluid py-[30px]">
-                <div onClick={goBack} className="flex flex-row w-full h-[20px] my-[15px] gap-[10px] leading-none items-center text-[#14532D] font-medium cursor-pointer">
-                    <ArrowLeftOutlined />
-                    <span>Quay lại danh sách sản phẩm</span>
-                </div>
+                <BackButton content="Quay lại danh sách sản phẩm"/>
                 <div className="grid grid-cols-1 gap-[30px] lg:grid-cols-2">
                     <div>
                         {product.product_img ? (<Picture url={product.product_img} />)

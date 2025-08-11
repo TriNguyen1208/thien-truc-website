@@ -6,7 +6,6 @@ import useProjects from "@/hooks/useProjects";
 import Loading from "@/components/Loading";
 import LazyLoad from 'react-lazyload'
 import renderWithLazyLoad from "../../utils/renderWithLazyLoad";
-
 {/* <ArrowLeftOutlined /> */ }
 export default function ProjectDetail() {
     // Khai bao hooks
@@ -36,15 +35,9 @@ export default function ProjectDetail() {
         <>
             {navigation.state == 'loading' && <Loading />}
             <div className="bg-[#f9fafb] py-[70px]">
-                <div className=" mb-[20px] w-[800px] mx-auto ">
-                    <button onClick={() => navigate(-1)} className="cursor-pointer">
-                        <ArrowLeftOutlined style={{ fontSize: '16px', color: 'var(--green-bg)' }} />
-                        <span className="ml-[10px] text-[var(--green-bg)]">Quay lại danh sách dự án</span>
-                    </button>
-                </div>
-
-                <div className="mx-[20px]">
-                    <div className="container-fluid max-w-[800px] mx-auto bg-[#FFFFFF] p-6 rounded shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
+                <div className="max-w-[800px] mx-auto sm:px-[20px]">
+                    <BackButton content="Quay lại danh sách dự án"/>
+                    <div className="bg-[#FFFFFF] p-6 shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] rounded-[20px] mb-[40px]"
                         style={{ boxShadow: 'rgba(100, 100, 111, 0.2) -3px 13px 33px -3px' }}
                     >
                         <div className="text-2xl sm:text-3xl lg:text-4xl font-[700] mb-[15px] break-words">
