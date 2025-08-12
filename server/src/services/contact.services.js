@@ -124,7 +124,7 @@ const updateCompanyInfo = async (data) => {
 
 const support_agents = {
     getAll: async () => {
-        const support_agents = (await pool.query("SELECT * FROM contact.support_agents")).rows;
+        const support_agents = (await pool.query("SELECT * FROM contact.support_agents ORDER BY id")).rows;
         if (!support_agents){
             throw new Error("Can't get support_agents");
         }
