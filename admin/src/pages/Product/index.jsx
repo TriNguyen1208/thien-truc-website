@@ -14,6 +14,7 @@ import ProductImageCell from '../../components/ProductImageCell'
 import changeToFormData from '../../utils/changeToFormData'
 import Loading from '@/components/Loading'
 const Product = () => {
+console.log(scrollX, scrollY);
   const { setLayoutProps } = useLayout()
   useEffect(() => {
     setLayoutProps({
@@ -77,12 +78,13 @@ const Product = () => {
       bool_featured = undefined
     }
   }
-  const { mutate: updateOneProduct, isPending: isPendingUpdateOneProduct } = useProducts.products.updateOne();
+  // const { mutate: updateOneProduct, isPending: isPendingUpdateOneProduct } = useProducts.products.updateOne();
   const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(id, query, filter === categoriesDefault ? undefined : filter, bool_featured);
   const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
   const { mutate: updateFeatureProduct, isPending: isPendingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
-  const { mutate: deleteOneProduct, isPending: isPendingDeleteOneProduct } = useProducts.products.deleteOne();
+  const { mutate: deleteOneProduct } = useProducts.products.deleteOne();
   const { mutate: createOneProduct, isPending: isPendingCreateOneProduct } = useProducts.products.createOne();
+  const { mutate: updateOneProduct } = useProducts.products.updateOne();
   const categories = useMemo(() => {
     if (!productCategoriesData) return [categoriesDefault];
     return [categoriesDefault, ...productCategoriesData.map(item => item.name)];
@@ -104,58 +106,72 @@ const Product = () => {
       { name: 'warranty', label: 'Thời gian bảo hàng (tháng)', type: 'text', width: 12, isRequired: false, placeholder: 'Nhập giá trị số (VD: 12)', isOnlyNumber: true },
       { name: 'description', label: 'Mô tả', type: 'textarea', width: 12, isRequired: false },
       { type: 'dynamicFields', name: 'technicalDetails', label: 'Thông số kỹ thuật', isRequired: false, isSingleColumn: false, placeholder: ["Tên thông số", "Nội dung thông số"], width: 12 },
-      { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm  (tick tối đa 3 đặc điểm nổi bật)', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true , limitCheckbox: 3},
+      { type: 'dynamicFields', name: 'characteristic', label: 'Đặc điểm  (tick tối đa 3 đặc điểm nổi bật)', isRequired: false, isSingleColumn: true, placeholder: "Nội dung (tick vào ô bên phải nếu muốn là đặc điểm nổi bật)", width: 12, isCheckbox: true, limitCheckbox: 3 },
       { name: 'img', label: 'Ảnh đại diện', type: 'image_upload', width: 12, isRequired: false },
       { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
     ])
   }, [categories]);
-  if (isLoadingProductData || isLoadingProductCategoriesData || isPendingDeleteOneProduct || isPendingCreateOneProduct || isPendingUpdateOneProduct) {
+  if (isLoadingProductData || isLoadingProductCategoriesData  || isPendingCreateOneProduct ) {
     return (
-      <Loading/>
+      <>
+       {/* <div className="loading-overlay">Đang tải...</div> */}
+      <Loading />
+
+      </>
+      
     )
   }
+
 
   const idCurrentCategories = filter ? (categories || []).findIndex(item => item === filter) : 0;
   const idCurrentDisplays = is_featured ? (displays).findIndex(item => item === is_featured) : 0;
   const handleSubmitButtonAddProduct = (valueForm) => {
     const { img, ...rest } = valueForm;
     let newForm = null;
-    if(valueForm.img instanceof File){
-        newForm = {
-          ...rest,
-          local_image: img,
-        }
-    }else{
+    if (valueForm.img instanceof File) {
+      newForm = {
+        ...rest,
+        local_image: img,
+      }
+    } else {
       newForm = {
         ...rest,
         external_avatar_img: img,
       }
     }
     const formData = changeToFormData(newForm);
-    
+
     createOneProduct(formData);
     setIsModalOpenAddProduct(false);
   }
   const handleSubmitButtonEditProduct = (valueForm) => {
     const { img, ...rest } = valueForm;
     let newForm = null;
-    if(valueForm.img instanceof File){
-        newForm = {
-          ...rest,
-          local_image: img,
-        }
-    }else{
+    if (valueForm.img instanceof File) {
+      newForm = {
+        ...rest,
+        local_image: img,
+      }
+    } else {
       newForm = {
         ...rest,
         external_avatar_img: img,
       }
     }
     const formData = changeToFormData(newForm);
-    updateOneProduct({
-      id: idCurrentEditProduct,
-      data: formData
-    });
-    setIsModalOpenEditProduct(false)
+      const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+  console.log(scrollX, scrollY);
+
+  // cập nhật data...
+
+  // phục hồi vị trí cuộn
+  updateOneProduct({
+    id: idCurrentEditProduct,
+    data: formData
+  });
+  setIsModalOpenEditProduct(false)
+  window.scrollTo(scrollX, scrollY);
   }
 
 
@@ -201,7 +217,7 @@ const Product = () => {
     dataProduct: productData,
     table: {
       columns: ["Mã SP", "Hình ảnh", "Tên sản phẩm", "Giá", "Bảo hành", "Trưng bày", "Thao tác"],
-      width:  [ "8%", "10%", "28%", "15%", "15%", "13%", "13%"]
+      width: ["8%", "10%", "28%", "15%", "15%", "13%", "13%"]
     },
 
 
@@ -217,7 +233,7 @@ const Product = () => {
     (item.highlight_feature_ids || []).forEach(item => {
       valueCharacteristic[item].isCheckbox = true;
     })
- 
+
     const updatedForm = [
       { ...dataEditProduct[0], value: item.name },
       { ...dataEditProduct[1], value: item.category.name },
@@ -225,7 +241,7 @@ const Product = () => {
       { ...dataEditProduct[3], value: item.warranty_period },
       { ...dataEditProduct[4], value: item.description },
       { ...dataEditProduct[5], value: item.product_specifications },
-      { ...dataEditProduct[6], value: valueCharacteristic},
+      { ...dataEditProduct[6], value: valueCharacteristic },
       { ...dataEditProduct[7], value: item.product_img },
       { ...dataEditProduct[8], value: item.is_featured },
 
@@ -249,23 +265,23 @@ const Product = () => {
           ),
         },
         { type: "text", content: product.name },
-        { type: "text", content: `${product.price !== "" ? Number(product.price).toLocaleString('vi-VN') + ' đ': 'Cập nhật sau'} ` },
-        { type: "text", content: `${product.warranty_period !== ""  ? product.warranty_period + ' tháng' : "Cập nhật sau"}` },
-          {
-            type: "component",
-            component: (
-              <div className="ml-[30px]">
-                <input
-                  type="checkbox"
-                  checked={product.is_featured}
-                  onChange={() => {
-                    updateFeatureProduct({
-                      id: product.id,
-                      status: !product.is_featured,
-                    });
-                  }}
-                  disabled={isPendingUpdateFeatureOne}
-                  className={`
+        { type: "text", content: `${product.price !== "" ? Number(product.price).toLocaleString('vi-VN') + ' đ' : 'Cập nhật sau'} ` },
+        { type: "text", content: `${product.warranty_period !== "" ? product.warranty_period + ' tháng' : "Cập nhật sau"}` },
+        {
+          type: "component",
+          component: (
+            <div className="ml-[30px]">
+              <input
+                type="checkbox"
+                checked={product.is_featured}
+                onChange={() => {
+                  updateFeatureProduct({
+                    id: product.id,
+                    status: !product.is_featured,
+                  });
+                }}
+                disabled={isPendingUpdateFeatureOne}
+                className={`
                     w-5 h-5 appearance-none cursor-pointer rounded-[3px]
                     transition-all duration-200
                     border border-gray-400
@@ -273,27 +289,27 @@ const Product = () => {
                     hover:shadow hover:scale-105
                     absolute top-6 left-10
                   `}
-                />
-                {product.is_featured && (
-                  <svg
-                    className="absolute top-[24px] left-[40px] w-5 h-5 text-white pointer-events-none"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4 8L7 11L12 5"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
-                {/* {isPending ? "Đang cập nhật..." : "Đổi trạng thái"} */}
-              </div>
-            ),
-          },
+              />
+              {product.is_featured && (
+                <svg
+                  className="absolute top-[24px] left-[40px] w-5 h-5 text-white pointer-events-none"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4 8L7 11L12 5"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+              {/* {isPending ? "Đang cập nhật..." : "Đổi trạng thái"} */}
+            </div>
+          ),
+        },
         {
           type: "array-components",
           components: [
@@ -360,7 +376,6 @@ const Product = () => {
       {
         Object.entries(configProduct.dataProduct).map(([categoryName, productList]) => {
           const dataTable = convertProductListToTableData(productList);
-
           return (
             <div
               key={categoryName}
@@ -374,7 +389,7 @@ const Product = () => {
                 columns={configProduct.table.columns}
                 data={dataTable}
                 isSetting={false}
-                width = {configProduct.table.width}
+                width={configProduct.table.width}
               />
             </div>
           );
@@ -389,7 +404,7 @@ const Product = () => {
         setOpen={setOpenNotification}
         notification="Xác nhận xóa"
         subTitle={`Bạn có chắc muốn xoá sản phẩm "${productToDelete?.name}" không?`}
-        buttonAction1 = {()=>{  setOpenNotification(false);}}
+        buttonAction1={() => { setOpenNotification(false); }}
         buttonAction2={() => {
           if (productToDelete) {
             deleteOneProduct(productToDelete.id);
@@ -398,7 +413,7 @@ const Product = () => {
         }}
 
       />
-   
+
     </>
   )
 }
