@@ -12,34 +12,33 @@ function usePatchPricePage() {
     }
   })
 }
-function useGetProductPage(){
-    const queryClient = useQueryClient();
-    queryClient.invalidateQueries(['admin_product_page']);
-    return useQuery({
-        queryKey: ["admin_product_page"],
-        queryFn: productsServices.getProductPage,
-        staleTime: 10 * 60 * 1000,
-    })
+function useGetProductPage() {
+  const queryClient = useQueryClient();
+  queryClient.invalidateQueries(['admin_product_page']);
+  return useQuery({
+    queryKey: ["admin_product_page"],
+    queryFn: productsServices.getProductPage,
+    staleTime: 10 * 60 * 1000,
+  })
 }
 function usePatchProductPage() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (updatedPage)=> productsServices.patchProductPage(updatedPage),
+    mutationFn: (updatedPage) => productsServices.patchProductPage(updatedPage),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin_product_page"] });
     },
   });
 }
 
-function useGetQuantity()
-{
-    const queryClient = useQueryClient();
-    queryClient.invalidateQueries(['admin_product_quantity']);
-    return useQuery({
-        queryKey: ['admin_product_quantity'],
-        queryFn: productsServices.getQuantity,
-        staleTime: 10 * 60 * 1000
-    })
+function useGetQuantity() {
+  const queryClient = useQueryClient();
+  queryClient.invalidateQueries(['admin_product_quantity']);
+  return useQuery({
+    queryKey: ['admin_product_quantity'],
+    queryFn: productsServices.getQuantity,
+    staleTime: 10 * 60 * 1000
+  })
 }
 
 // ==== Base ====
@@ -88,7 +87,7 @@ function useSearchSuggestions(query = '', filter = '', is_featured = undefined) 
 }
 
 function useSearchCategoriesSuggestion(query = '') {
-    return useQuery({
+  return useQuery({
     queryKey: ["admin_product_categories_suggestions", query],
     queryFn: () => productsServices.getSearchCategoriesSuggestions(query),
     staleTime: 10 * 60 * 1000,
@@ -106,9 +105,14 @@ const products = {
   },
 
   useGetListByCategory: (id = '', query = '', filter = '', is_featured = undefined, limit = undefined) => {
+    const queryClient = useQueryClient();
     return useQuery({
       queryKey: ["admin_product_by_category", id, query, filter, is_featured, limit],
-      queryFn: () => productsServices.products.getListByCategory(id, query, filter, is_featured, limit),
+      queryFn: () => {
+        const allQueries = queryClient.getQueriesData();
+        console.log(allQueries);
+        return productsServices.products.getListByCategory(id, query, filter, is_featured, limit);
+      },
       staleTime: 10 * 60 * 1000,
     });
   },
@@ -117,7 +121,7 @@ const products = {
     return useQuery({
       queryKey: ["admin_product", id],
       queryFn: () => productsServices.products.getOne(id),
-      enabled: id != null, 
+      enabled: id != null,
       staleTime: 10 * 60 * 1000,
     });
   },
@@ -161,23 +165,23 @@ const products = {
       },
       onError: (error) => {
         toast.error(error?.message ?? "Cập nhật checkbox không thành công");
-      } 
+      }
     });
   },
 
   useUpdateCategory: () => {
-      const queryClient = useQueryClient();
-      return useMutation({
-          mutationFn: (changedItems) => 
-              productsServices.products.updateCategory(changedItems),
-          onSuccess: (success) => {
-              toast.success(success?.message ?? "Cập nhật khu vực thành công");
-              queryClient.invalidateQueries(['admin_product_by_category']);
-          },
-          onError: (error) => {
-              toast.error(error.response.data.message);
-          }
-      });
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (changedItems) =>
+        productsServices.products.updateCategory(changedItems),
+      onSuccess: (success) => {
+        toast.success(success?.message ?? "Cập nhật khu vực thành công");
+        queryClient.invalidateQueries(['admin_product_by_category']);
+      },
+      onError: (error) => {
+        toast.error(error.response.data.message);
+      }
+    });
   },
 
   useDeleteOne: () => {
