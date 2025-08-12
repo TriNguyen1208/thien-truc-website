@@ -136,7 +136,6 @@ const products = {
       queryKey: ["admin_product_by_category", id, query, filter, is_featured, limit],
       queryFn: () => {
         const allQueries = queryClient.getQueriesData();
-        console.log(allQueries);
         return productsServices.products.getListByCategory(id, query, filter, is_featured, limit);
       },
       staleTime: 10 * 60 * 1000,
