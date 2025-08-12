@@ -14,7 +14,6 @@ import ProductImageCell from '../../components/ProductImageCell'
 import changeToFormData from '../../utils/changeToFormData'
 import Loading from '@/components/Loading'
 const Product = () => {
-console.log(scrollX, scrollY);
   const { setLayoutProps } = useLayout()
   useEffect(() => {
     setLayoutProps({
@@ -82,9 +81,9 @@ console.log(scrollX, scrollY);
   const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(id, query, filter === categoriesDefault ? undefined : filter, bool_featured);
   const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
   const { mutate: updateFeatureProduct, isPending: isPendingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
-  const { mutate: deleteOneProduct } = useProducts.products.deleteOne();
+  const { mutate: deleteOneProduct, isPending: isPendingDeleteOneProduct } = useProducts.products.deleteOne();
   const { mutate: createOneProduct, isPending: isPendingCreateOneProduct } = useProducts.products.createOne();
-  const { mutate: updateOneProduct } = useProducts.products.updateOne();
+  const { mutate: updateOneProduct, isPending: isPendingUpdateOneProduct } = useProducts.products.updateOne();
   const categories = useMemo(() => {
     if (!productCategoriesData) return [categoriesDefault];
     return [categoriesDefault, ...productCategoriesData.map(item => item.name)];
@@ -111,11 +110,14 @@ console.log(scrollX, scrollY);
       { name: 'isDisplayHomePage', label: 'Trưng bày ở trang chủ', type: 'checkbox', width: 12 }
     ])
   }, [categories]);
-  if (isLoadingProductData || isLoadingProductCategoriesData  || isPendingCreateOneProduct ) {
+  if (isLoadingProductData || isLoadingProductCategoriesData  || isPendingCreateOneProduct) {
     return (
       <>
        {/* <div className="loading-overlay">Đang tải...</div> */}
-      <Loading />
+      {/* <Loading /> */}
+      {/* <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50"> */}
+           <Loading />
+      {/* </div> */}
 
       </>
       
@@ -159,9 +161,6 @@ console.log(scrollX, scrollY);
       }
     }
     const formData = changeToFormData(newForm);
-      const scrollX = window.scrollX;
-  const scrollY = window.scrollY;
-  console.log(scrollX, scrollY);
 
   // cập nhật data...
 
@@ -170,8 +169,8 @@ console.log(scrollX, scrollY);
     id: idCurrentEditProduct,
     data: formData
   });
+ 
   setIsModalOpenEditProduct(false)
-  window.scrollTo(scrollX, scrollY);
   }
 
 
@@ -367,6 +366,7 @@ console.log(scrollX, scrollY);
 
     handleSearchSuggestion: handleSearchSuggestion, //co 3 tham so la query, category = null, display = null,
   }
+ 
 
   return (
     <>
@@ -395,7 +395,11 @@ console.log(scrollX, scrollY);
           );
         })
       }
-
+      {
+        (isPendingUpdateOneProduct || isPendingDeleteOneProduct) &&  (
+          <Loading />
+        )
+      }
 
       <DynamicForm data={dataEditProduct} config={configProduct.form.configEditProduct} />
       <DynamicForm data={configProduct.form.dataAddProduct} config={configProduct.form.configAddProduct} />
