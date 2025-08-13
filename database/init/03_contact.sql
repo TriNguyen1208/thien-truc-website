@@ -17,6 +17,7 @@ create table contact.support_agents (
 create table contact.company_info (
 	company_email varchar(50),
 	company_phone varchar(20)[],
+	hotline varchar(20)[],
 	office_address text[],
 	main_office_id int,
 	googlemaps_embed_url text,

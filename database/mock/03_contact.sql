@@ -32,16 +32,17 @@ values (
 	'https://www.facebook.com/dvan.ha.2024'
 );
 
-insert into contact.company_info (company_email, company_phone, office_address, main_office_id, googlemaps_embed_url, working_hours, fanpage_url)
+insert into contact.company_info (company_email, company_phone, hotline, office_address, main_office_id, googlemaps_embed_url, working_hours, fanpage_url)
 values (
 	'thientruc@gmail.com',
 	ARRAY['+84 (28) 3823-4567', '1400 6569'],
+	ARRAY['1900 1234', '1400 5678'],
 	ARRAY['{"id":1,
 "address": "123 Đường Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh, Việt Nam",
 "googlemaps_url": "https://maps.app.goo.gl/cJbjVU9VCJkm97Qj6"
 }'],
 	1,
-	'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4431224200646!2d106.70042431480044!3d10.776530492320711!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3e8f5a3e87%3A0x2ecf44790a0a4e6b!2zU-G7kSAyMDEgQ-G6p3UgVGjDoG5oIFTDtG4gQ2jDrW5oLCBQaMaw4budbmcgMywgUXXhuq1uIDEsIEjDoCBDaMOtbmgsIFZpZXRuYW0!5e0!3m2!1svi!2s!4v1622023621634!5m2!1svi!2s',
+	'<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4040.9932555436394!2d105.62270918007567!3d10.461761438301883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310a65a95e9be225%3A0x4ef2b896694c8799!2zQ3R5IENQQ04gVGhpw6puIFRyw7pj!5e1!3m2!1svi!2s!4v1755096301817!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
 	ARRAY['Thứ Hai - Thứ Sáu: 8:30 - 17:30', 'Thứ Bảy - Chủ Nhật: Đóng cửa'],
 	'https://www.facebook.com/thientruc.vn/'
 );
