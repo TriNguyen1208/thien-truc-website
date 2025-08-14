@@ -13,8 +13,6 @@ function usePatchPricePage() {
   })
 }
 function useGetProductPage() {
-  const queryClient = useQueryClient();
-  queryClient.invalidateQueries(['admin_product_page']);
   return useQuery({
     queryKey: ["admin_product_page"],
     queryFn: productsServices.getProductPage,
@@ -77,8 +75,7 @@ function useGetAll() {
 }
 
 function useGetPricePage() {
-  const queryClient = useQueryClient();
-  queryClient.invalidateQueries(['admin_price_page']);
+
   return useQuery({
     queryKey: ["admin_price_page"],
     queryFn: productsServices.getPricePage,

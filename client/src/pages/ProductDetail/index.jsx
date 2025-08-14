@@ -43,6 +43,7 @@ export default function ProductDetail() {
     if (isLoadingProduct) {
         return (<Loading />)
     }
+    console.log(product)
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
@@ -69,7 +70,7 @@ export default function ProductDetail() {
                             {typeof product.price === 'number' ? product.price.toLocaleString('vi-VN') + " ₫" : 'Chưa có giá'}
                         </div>
                         <div className="py-[10px]">
-                            <span className="text-[16px]">
+                            <span className="text-[16px] whitespace-pre-wrap">
                                 {product.description}
                             </span>
                         </div>

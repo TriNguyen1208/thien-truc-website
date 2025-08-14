@@ -46,19 +46,21 @@ const Company = () => {
     const [companyAddressList , setCompanyAddressList] = useState([])
     const [companyHourList , setCompanyHourList] = useState([])
     const [companyPhoneList , setCompanyPhoneList] = useState([])
+    const [companyHotlineList , setCompanyHotlineList] = useState([])
     const [companyFanpageUrl ,setCompanyFanpageUrl] = useState (null)
     const [companyEmail, setCompanyEmail] = useState(null)
     const [companyEmbedUrl, setCompanyEmbedUrl] = useState(null)
 
     const [nextHourId, setNextHourId] = useState(0);
     const [nextPhoneId, setNextPhoneId] = useState(0);
+    const [nextHotlineId, setNextHotlineId] = useState(0);
     const [nextAddressId, setNextAddressId] = useState(0);
 
     const [selectedAddressId, setSelectedAddressId] = useState(null);
 
     const [openNotification, setOpenNotification] = useState(false)
     const [pendingDeleteId, setPendingDeleteId] = useState(null);
-    const [notificationType, setNotificationType] = useState(null); // "address" | "hour" | "phone"
+    const [notificationType, setNotificationType] = useState(null); // "address" | "hour" | "phone" | "hotline"
 
     useEffect(() => {
       setLayoutProps({
@@ -71,14 +73,19 @@ const Company = () => {
     
 
     useEffect(()=>{
-        if(companyInfo?.office_address ) 
+        if(companyInfo)
         {
-          setCompanyAddressList(companyInfo.office_address)
+           setCompanyAddressList(companyInfo.office_address)
           const maxId = Math.max(...companyInfo.office_address.map(h => h.id), 0);
           setNextAddressId(maxId + 1);
 
+          setSelectedAddressId(companyInfo.main_office.id)
 
-           setCompanyHourList(companyInfo.working_hours.map((hour,index)=>{
+          setCompanyFanpageUrl(companyInfo.fanpage_url)
+          setCompanyEmail(companyInfo.company_email)
+          setCompanyEmbedUrl(companyInfo.googlemaps_embed_url)
+
+          setCompanyHourList(companyInfo.working_hours.map((hour,index)=>{
             return({
                   id: index,
                   data: hour
@@ -94,14 +101,15 @@ const Company = () => {
             })
            }))
           setNextPhoneId(companyInfo.company_phone.length)
-          
-          setSelectedAddressId(companyInfo.main_office.id)
-        }
-        if(companyInfo)
-        {
-          setCompanyFanpageUrl(companyInfo.fanpage_url)
-          setCompanyEmail(companyInfo.company_email)
-          setCompanyEmbedUrl(companyInfo.googlemaps_embed_url)
+
+         setCompanyHotlineList(companyInfo.hotline.map((hotline,index)=>{
+            return({
+                  id: index,
+                  data: hotline
+            })
+           }))
+          setNextHotlineId(companyInfo.hotline.length)
+
         }
     },[companyInfo])
     if(isLoadingCompanyInfo || isLoadingUpdateCompanyInfo)
@@ -130,9 +138,11 @@ const Company = () => {
         )
         }else if(notificationType == "hour") setCompanyHourList(prev=>prev.filter(hour => hour.id != pendingDeleteId))
          else if(notificationType == "phone")setCompanyPhoneList(prev=>prev.filter(phone => phone.id != pendingDeleteId))
+         else if(notificationType == "hotline")setCompanyHotlineList(prev=>prev.filter(hotline => hotline.id != pendingDeleteId))
     }
     const handleSubmit = (e)=>{
         e.preventDefault()
+        console.log(companyHotlineList)
         updateCompanyInfo(
             {
               "office_address":companyAddressList.map((address, index) =>{
@@ -151,8 +161,10 @@ const Company = () => {
               "company_phone": companyPhoneList.map((phone, index) =>{
                 return(phone.data)
               }),
+              "hotline": companyHotlineList.map((hotline, index) =>{
+                return(hotline.data)
+              }),
               "fanpage_url": companyFanpageUrl
-          
         },
           {
             onSuccess: (success)=> { toast.success(success ? success.message: "Lưu thành công!")},
@@ -242,7 +254,7 @@ const handleSelectMainAddress = (id) => {
         )
       );
     };
-    //=========================Phone============================
+    //=========================Phone Company============================
    const phoneButton = {
     Icon: PlusIcon,
     text: "Thêm số điện thoại", 
@@ -271,6 +283,35 @@ const handleSelectMainAddress = (id) => {
         )
       );
     };
+    //=========================Hotline============================
+  const hotlineButton = {
+    Icon: PlusIcon,
+    text: "Thêm số điện thoại", 
+    colorText:"#000000", 
+    colorBackground: "#ffffff",
+    padding :3, 
+    handleButton:()=>{
+      setCompanyHotlineList(prev=> ([
+          ...prev, {id: nextHotlineId , data: ""}
+          ] ))
+           setNextHotlineId(prev => prev + 1);
+  }
+}
+  const handleDeleteHotline =(e)=> {
+      const parentWithDataIndex = e.target.closest('[data-index]');
+      const index = parentWithDataIndex.getAttribute('data-index');
+      setPendingDeleteId(index)
+      setNotificationType("hotline")
+      setOpenNotification(true)
+      
+  }
+  const handleHotlineChange = (id, value) => {
+      setCompanyHotlineList(prev =>
+        prev.map(hotline =>
+          hotline.id === id ? { ...hotline, data: value } : hotline
+        )
+      );
+    };
   //=============================================================
    const submitButton = {
     Icon: SaveIcon,
@@ -280,7 +321,7 @@ const handleSelectMainAddress = (id) => {
     padding :8, 
     handleButton:()=>{}
   }
-
+  console.log(companyInfo)
  
   return (
     <form  onSubmit={handleSubmit} className='flex flex-col bg-white p-[24px] border border-gray-300 rounded-[8px] gap-[24px]'>
@@ -372,10 +413,12 @@ const handleSelectMainAddress = (id) => {
           required className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
           placeholder='Vd: Minhtri@gmail.com' />
         </div>
+
+
         <div className='flex flex-col gap-[12px]'>
                 <div className='flex flex-row justify-between  '>
                 <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
-                  Số điện thoại hotline<span className="text-red-500 ml-1">*</span>
+                  Số điện thoại công ty<span className="text-red-500 ml-1">*</span>
                 </h2>
                 <div className=' h-[36px]'>
                   <Button  {...phoneButton}/>
@@ -391,13 +434,41 @@ const handleSelectMainAddress = (id) => {
                   value={phone.data}
                   onChange={(e) => handlePhoneChange(phone.id, e.target.value)} 
                   className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] w-full'
-                  placeholder='Vd: 8h-17h' />
+                  placeholder='Vd: 0345789789' />
                   {companyPhoneList.length >= 2 && <div className=' w-[44px] h-[40px] top-[12px] right-[12px]'><Button Icon = {DeleteIcon} colorText = {"#000000"} colorBackground = "#FFFFFF" handleButton = {handleDeletePhone}/></div>}
                       </div>)
               })
             }
             </div>
         </div>
+
+          <div className='flex flex-col gap-[12px]'>
+                <div className='flex flex-row justify-between  '>
+                <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
+                  Số điện thoại hỗ trợ (hotline)<span className="text-red-500 ml-1">*</span>
+                </h2>
+                <div className=' h-[36px]'>
+                  <Button  {...hotlineButton}/>
+                </div>
+
+              </div>
+              <div className='flex flex-col gap-[8px]'>
+               {
+              (companyHotlineList || []).map((hotline, index)=>{
+                  return(  
+                      <div key={index} data-index = {hotline.id} className='flex flex-row gap-[4px] items-center'>
+                    <input type="text" required 
+                  value={hotline.data}
+                  onChange={(e) => handleHotlineChange(hotline.id, e.target.value)} 
+                  className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] w-full'
+                  placeholder='Vd: 1900 8888' />
+                  {companyHotlineList.length >= 2 && <div className=' w-[44px] h-[40px] top-[12px] right-[12px]'><Button Icon = {DeleteIcon} colorText = {"#000000"} colorBackground = "#FFFFFF" handleButton = {handleDeleteHotline}/></div>}
+                      </div>)
+              })
+            }
+            </div>
+        </div>
+
         <div className='flex flex-col gap-[12px]'>
                 <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
                   Fanpage<span className="text-red-500 ml-1">*</span>

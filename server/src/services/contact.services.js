@@ -115,7 +115,7 @@ const updateCompanyInfo = async (data) => {
             company_phone = $6,
             hotline = $7,
             fanpage_url = $8            
-    `, [office_address_json, main_office_id, googlemaps_embed_url, working_hours, hotline, company_email, company_phone, hotline, fanpage_url]);
+    `, [office_address_json, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, hotline, fanpage_url]);
 
     return {
         status: 200,
