@@ -38,7 +38,7 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
             className="flex flex-col overflow-hidden h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out leading-none"
             style={{ width, height }}
         >
-            <div className="w-full aspect-square  bg-[#F3F4F6] rounded-t-[6px] p-[8px]">
+            <div className="w-full aspect-square  bg-[#F3F4F6] rounded-t-[6px] p-[8px] overflow-hidden">
                 {product.product_img ? ( 
                 <LazyLoad
                     height={200}
