@@ -15,7 +15,7 @@ function handleDisplayHighlights(product) {
     return (
         <div className="flex flex-col  pb-[4px]">
 
-            <div className={`${clampClass} text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,1.5vw,16px)] md:text-[clamp(13px,1.7vw,16px)] mb-2 sm:mb-1`}>
+            <div className={`${clampClass} whitespace-pre-wrap text-[clamp(12px,3vw,16px)] sm:text-[clamp(12px,1.5vw,16px)] md:text-[clamp(13px,1.7vw,16px)] mb-2 sm:mb-1`}>
                 {product.description}
             </div>
             {
