@@ -109,7 +109,7 @@ const Footer = () => {
             </p>
             <div className="text-yellow-300 font-semibold">
               <div>
-                {companyInfoData.company_phone.map((item, index) => (
+                {companyInfoData.hotline.map((item, index) => (
                   <div key={index}>{item}</div>
                 ))}
               </div>
