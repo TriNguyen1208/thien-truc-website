@@ -98,7 +98,7 @@ const PostSettings = ({
                         position='relative'
                     >
                         <div ref={wrapperDisplayRef} className='flex flex-row items-center justify-center px-5'>
-                            <span className='line-clamp-1'>{form.isPublished}</span>
+                            <span className='line-clamp-1'>{form.isPublished == true ? "Đã xuất bản" : "Bản nháp"}</span>
                             {
                                 dropdownOpenDisplay && (
                                     <ul className="absolute z-10 left-0 py-2 top-12 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[200px] overflow-y-auto"
@@ -110,11 +110,11 @@ const PostSettings = ({
                                                 className='py-2 hover:bg-gray-100 cursor-pointer text-sm text-center text-gray-700'
                                                 onClick={(e)=> {
                                                     e.preventDefault();
-                                                    setForm((prev) => ({...prev, ["isPublished"]: item}));
+                                                    setForm((prev) => ({...prev, ["isPublished"]: item.state}));
                                                     setDropDownOpenDisplay(false);
                                                 }}
                                             >
-                                                <span className='break-words'>{item}</span>
+                                                <span className='break-words'>{item.str}</span>
                                             </li>
                                         ))}
                                     </ul>
