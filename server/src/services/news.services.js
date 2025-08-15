@@ -289,7 +289,7 @@ const news = {
                 ) sub
                 WHERE rn <= ${limit}
             )
-            ORDER BY n_cate.id, n.id
+            ORDER BY n_cate.id, n.public_date DESC
         `;
         const { rows } = await pool.query(sql);
 
