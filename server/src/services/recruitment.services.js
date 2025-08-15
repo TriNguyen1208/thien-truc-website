@@ -22,7 +22,7 @@ const getRecruitmentPage = async (req, res) => {
         //Send mail to company
         await sendMail({
             to: process.env.RECEIVER_EMAIL,
-            subject: `Dơn ứng tuyển từ ${name}`,
+            subject: `Đơn ứng tuyển từ ${name}`,
             html: `
             <h2>Thông tin ứng tuyển:</h2>
             <ul>
@@ -49,7 +49,7 @@ const getRecruitmentPage = async (req, res) => {
                     <li><strong>Email:</strong> ${email}</li>
                     <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
                     <li><strong>Chủ đề:</strong> ${title}</li>
-                    <li><strong>Nội dung:</strong><br>${content}</li>
+                     <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
                 </ul>
                 <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
                 <hr>

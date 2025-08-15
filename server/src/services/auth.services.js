@@ -239,7 +239,7 @@ const sendResetPassword = async (data) => {
         { expiresIn: '15m' }
     );
 
-    const resetUrl = `${process.env.VITE_CLIENT_URL || 'http://localhost:3002'}/dang-nhap?token=${token}`;
+    const resetUrl = `${process.env.VITE_ADMIN_URL || 'http://localhost:3001'}/dang-nhap?token=${token}`;
 
     await sendMail({
         to: email,
