@@ -100,7 +100,7 @@ export default function Project () {
 
   // Sắp xếp theo alphabet của region.name
   const projectPage = Object.values(projectPageObj).sort((a, b) =>
-    a.region.name.localeCompare(b.region.name, 'vi', { sensitivity: 'base' })
+    a.region.id.localeCompare(b.region.id)
   );
 
   const { data: projectRegions, isLoading: isLoadingProjectRegions } = useProjects.project_regions.getAll();
