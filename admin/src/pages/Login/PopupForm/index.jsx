@@ -94,7 +94,7 @@ const PopupForm = ({
                         ? (formData[`${field.name}_visible`] ? "text" : "password")
                         : field.type
                     }
-                    className="w-full outline-none text-sm"
+                    className="w-full outline-none text-sm text-gray-500"
                     placeholder={field.placeholder}
                     value={formData[field.name] || ''}
                     onFocus={() => setFocusStates((prev) => ({ ...prev, [field.name]: true }))}

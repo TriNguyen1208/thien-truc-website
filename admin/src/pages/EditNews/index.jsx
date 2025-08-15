@@ -63,7 +63,7 @@ const EditNews = () => {
             main_content: news_contents.news.main_content ?? '',
             content: news_contents.content ?? '',
             category_name: news_contents.news.category.name ?? '',
-            isPublished: news_contents.news.is_published ? "Đã xuất bản" : "Bản nháp",
+            isPublished: news_contents.news.is_published ?? true,
             main_image: news_contents.news.main_img ?? "",
             countWord: normalizeContent(news_contents.content).replace(/<[^>]+>/g, '').trim().length
         };
@@ -85,7 +85,7 @@ const EditNews = () => {
     
     //Helper function
     const handleSave = async () => {
-        if(form.isPublished == "Đã xuất bản" && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
+        if(form.isPublished == true && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){
             alert("Chưa nhập những nội dung bắt buộc")
             setSaveOpen(false);
             return;
@@ -128,8 +128,8 @@ const EditNews = () => {
             ...(categories ?? []).map(item => item.name)
         ],
         displays: [
-            "Bản nháp",
-            "Đã xuất bản"
+            {str: "Bản nháp", state: false},
+            {str: "Đã xuất bản", state: true}
         ]
     }
     //Popup
