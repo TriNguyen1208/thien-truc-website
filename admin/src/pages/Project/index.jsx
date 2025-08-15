@@ -130,7 +130,7 @@ export default function Project () {
   const handleSearchSuggestions = (query, filter, is_featured) => {
     return useProjects.getSearchSuggestions(query, filter === 'Tất cả khu vực' ? undefined : filter, is_featured);
   }
-  const columnWidths = ['9%', '10%', '32%', '13%', '12%', '9%', '13%'];
+  const columnWidths = ['9%', '10%', '32%', '13%', '11%', '10%', '13%'];
 
   // Định nghĩa tiêu đề cột
   const columns = ["Mã dự án", "Hình ảnh", "Tên dự án", "Vị trí", "Hoàn thành", "Trưng bày", "Thao tác"];
