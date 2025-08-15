@@ -765,7 +765,7 @@ const news_contents = {
         const insertValues = [
             category_id,
             title,
-            isPublished == "Đã xuất bản" ? true : false,
+            isPublished,
             new Date(),
             measure_time, // in case it's an object
             0,
@@ -824,7 +824,6 @@ const news_contents = {
             countWord,
             main_image
         } = data;
-
         let cloud_avatar_img = null;
         if (files?.main_image?.[0]) {
             cloud_avatar_img = await uploadImage(files.main_image[0], 'news');
@@ -862,7 +861,7 @@ const news_contents = {
         const updateValues = [
             category_id,
             title,
-            isPublished == "Đã xuất bản" ? true : false,
+            isPublished,
             new Date(),
             measure_time,
             0,
@@ -870,7 +869,6 @@ const news_contents = {
             main_content,
             id
         ];
-
         await pool.query(updateNewsSql, updateValues);
 
         const note = (old_title != title) ? ' (đã đổi tên)' : '';
