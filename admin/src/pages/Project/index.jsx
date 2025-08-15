@@ -86,7 +86,7 @@ export default function Project () {
     return a.id.localeCompare(b.id);
   });
 
-  const projectPage = sortedProjects.reduce((acc, project) => {
+  const projectPageObj = sortedProjects.reduce((acc, project) => {
     const region = project.region || { id: 'unknown', name: 'Không rõ khu vực' };
     if (!acc[region.id]) {
       acc[region.id] = {
@@ -97,6 +97,11 @@ export default function Project () {
     acc[region.id].projects.push(project);
     return acc;
   }, {});
+
+  // Sắp xếp theo alphabet của region.name
+  const projectPage = Object.values(projectPageObj).sort((a, b) =>
+    a.region.name.localeCompare(b.region.name, 'vi', { sensitivity: 'base' })
+  );
 
   const { data: projectRegions, isLoading: isLoadingProjectRegions } = useProjects.project_regions.getAll();
   const regions = [
