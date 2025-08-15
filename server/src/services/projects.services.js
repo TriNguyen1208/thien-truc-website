@@ -135,6 +135,8 @@ const projects = {
             limit = 'ALL';
         }
         
+        order.push('prj.complete_time DESC')
+
         // Chuẩn hóa từng thành phần truy vấn
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
@@ -219,6 +221,8 @@ const projects = {
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
         
+        order.push('prj.complete_time DESC')
+
         const sql = `
             SELECT 
                 prj.id AS prj_id,
@@ -245,7 +249,7 @@ const projects = {
                 ) sub
                 WHERE rn <= ${limit}
             )
-            ORDER BY prj_reg.id, prj.id
+            ORDER BY prj.complete_time DESC
         `;
         
         const { rows } = await pool.query(sql);
