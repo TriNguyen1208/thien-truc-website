@@ -30,7 +30,7 @@ const getRecruitmentPage = async (req, res) => {
                 <li><strong>Email:</strong> ${email}</li>
                 <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
                 <li><strong>Chủ đề:</strong> ${title}</li>
-                <li><strong>Nội dung:</strong><br>${content}</li>
+                <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
             </ul>
             <hr>
             <small>Hệ thống gửi tự động từ website.</small>

@@ -248,7 +248,7 @@ const postContactMessage = async (applicationData) => {
             <li><strong>Email:</strong> ${email}</li>
             <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
             <li><strong>Chủ đề:</strong> ${title}</li>
-            <li><strong>Nội dung:</strong><br>${content}</li>
+            <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
         </ul>
         <hr>
         <small>Hệ thống gửi tự động từ website.</small>
@@ -266,7 +266,7 @@ const postContactMessage = async (applicationData) => {
                 <li><strong>Email:</strong> ${email}</li>
                 <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
                 <li><strong>Chủ đề:</strong> ${title}</li>
-                <li><strong>Nội dung:</strong><br>${content}</li>
+                <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
             </ul>
             <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
             <hr>
