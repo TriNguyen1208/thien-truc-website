@@ -77,7 +77,14 @@ export default function Project () {
 
   const projectsList = Array.isArray(projects) ? projects : projects?.results ?? (projects ? [projects] : []);
 
-  const sortedProjects = [...projectsList].sort((a, b) => a.id.localeCompare(b.id));
+  const sortedProjects = [...projectsList].sort((a, b) => {
+    const dateA = a.complete_time ? new Date(a.complete_time) : new Date(0); 
+    const dateB = b.complete_time ? new Date(b.complete_time) : new Date(0);
+    if (dateB - dateA !== 0) 
+      return dateB - dateA;
+
+    return a.id.localeCompare(b.id);
+  });
 
   const projectPage = sortedProjects.reduce((acc, project) => {
     const region = project.region || { id: 'unknown', name: 'Không rõ khu vực' };

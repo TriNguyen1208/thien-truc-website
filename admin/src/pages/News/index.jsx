@@ -75,7 +75,27 @@ export default function News() {
   }
 
   const unsortnewsList = Array.isArray(news) ? news : news?.results ?? (news ? [news] : []);
-  const newsList = unsortnewsList.sort((a, b) => a.id.localeCompare(b.id));
+  const newsList = unsortnewsList.sort((a, b) => {
+      const priority = (item) => {
+        if (item.is_published && item.public_date !== 'Chưa xuất bản') return 1; // Đã xuất bản + có ngày
+        if (item.is_published && item.public_date === 'Chưa xuất bản') return 2; // Đã xuất bản + không ngày
+        if (!item.is_published && item.public_date !== 'Chưa xuất bản') return 3; // Bản nháp + có ngày
+        return 4; // Bản nháp + không ngày
+      };
+        const pa = priority(a);
+        const pb = priority(b);
+
+        // So sánh theo nhóm
+        if (pa !== pb) return pa - pb;
+
+        if (a.public_date && b.public_date ) {
+          if (a.public_date !== b.public_date)
+            return new Date(b.public_date) - new Date(a.public_date);
+          else
+            return a.id.localeCompare(b.id);
+        }
+
+  });
   const newsPage = newsList.reduce((acc, item) => {
     const category = item.category || { id: 'unknown', name: 'Không xác định' };
     if (!acc[category.id]) {
