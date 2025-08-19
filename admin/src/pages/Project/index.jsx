@@ -86,7 +86,7 @@ export default function Project () {
     return a.id.localeCompare(b.id);
   });
 
-  const projectPage = sortedProjects.reduce((acc, project) => {
+  const projectPageObj = sortedProjects.reduce((acc, project) => {
     const region = project.region || { id: 'unknown', name: 'Không rõ khu vực' };
     if (!acc[region.id]) {
       acc[region.id] = {
@@ -97,6 +97,11 @@ export default function Project () {
     acc[region.id].projects.push(project);
     return acc;
   }, {});
+
+  // Sắp xếp theo alphabet của region.name
+  const projectPage = Object.values(projectPageObj).sort((a, b) =>
+    a.region.id.localeCompare(b.region.id)
+  );
 
   const { data: projectRegions, isLoading: isLoadingProjectRegions } = useProjects.project_regions.getAll();
   const regions = [
@@ -125,7 +130,7 @@ export default function Project () {
   const handleSearchSuggestions = (query, filter, is_featured) => {
     return useProjects.getSearchSuggestions(query, filter === 'Tất cả khu vực' ? undefined : filter, is_featured);
   }
-  const columnWidths = ['9%', '10%', '32%', '13%', '12%', '9%', '13%'];
+  const columnWidths = ['9%', '10%', '32%', '13%', '11%', '10%', '13%'];
 
   // Định nghĩa tiêu đề cột
   const columns = ["Mã dự án", "Hình ảnh", "Tên dự án", "Vị trí", "Hoàn thành", "Trưng bày", "Thao tác"];
