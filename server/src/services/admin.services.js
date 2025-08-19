@@ -119,21 +119,29 @@ const manager = {
             position,
             description
         } = data
-        
-        const hashed_password = await authUtil.hashPassword(password);
 
         await pool.query(`
             UPDATE admin.accounts
             SET
-                password = $2,
-                fullname = $3,
-                phone = $4,
-                email = $5,
-                position = $6,
-                description = $7
+                fullname = $2,
+                phone = $3,
+                email = $4,
+                position = $5,
+                description = $6
             WHERE
                 username = $1
-        `,  [username, hashed_password, fullname, phone, email, position, description]);
+        `,  [username, fullname, phone, email, position, description]);
+
+        if (password != '') {
+            const hashed_password = await authUtil.hashPassword(password);
+            await pool.query(`
+            UPDATE admin.accounts
+            SET
+                password = $2
+            WHERE
+                username = $1
+        `,  [username, hashed_password]);
+        }            
 
         const note = (old_fullname != fullname) ? ' (đã đổi tên)' : '';
         return {
