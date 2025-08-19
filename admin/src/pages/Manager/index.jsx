@@ -37,7 +37,7 @@
       if (!manager) return [];
       return [
         { name: 'username', label: 'Tên đăng nhập', isReadOnly: true, type: 'text', value: manager.username, width: 6, isRequired: true, placeholder: "VD: minhtri1503", maxLength: 20},
-        { name: 'password', label: 'Mật khẩu mới', type: 'password', width: 6, isRequired: true},
+        { name: 'password', label: 'Mật khẩu mới', type: 'password', width: 6},
         { name: 'name', label: 'Họ tên', type: 'text', value: manager.fullname, width: 12, isRequired: true, placeholder: "VD: Đỗ Nguyễn Minh Trí", maxLength: 100},
         { name: 'phone', label: 'Số điện thoại', type: 'text', value: manager.phone, width: 6, isRequired: false, placeholder: "0123456789", maxLength: 20 , isOnlyNumber:true },
         { name: 'email', label: 'Email', type: 'email', value: manager.email, width: 6, placeholder: "VD: minhtri@gmail.com", maxLength: 100},
