@@ -43,7 +43,6 @@
         query,
         filter === "Tất cả sản phẩm" ? "" : filter
       );
-      console.log(productPrices)
       const idSelectedCategories = filter ? categories.findIndex((name) => name === filter) : 0;
       if (isLoadingPage || isLoadingCategories || isLoadingProducts) {
         return <Loading />

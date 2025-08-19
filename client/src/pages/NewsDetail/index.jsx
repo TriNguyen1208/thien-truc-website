@@ -24,7 +24,6 @@ export default function NewsDetail(){
     const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
     const year = date.getUTCFullYear();
     //content, color
-    console.log(news.is_visible)
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}
