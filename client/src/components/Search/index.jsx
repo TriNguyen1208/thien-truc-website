@@ -34,13 +34,13 @@ const SearchBar = ({ data }) => {
           setCategory(currentCategory);
       }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentCategory]);
 
   //Giữ trạng thái của query
   useEffect(() => {
       setQuery(currentQuery)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentQuery]);
   
   // Gọi API sau khi debounce query
   const { data: suggestions = [], isLoading } = handleSearchSuggestion(
