@@ -62,7 +62,7 @@ const EditorWord = ({ form, setForm }) => {
         content_style: `
           body { 
             font-family:Helvetica,Arial,sans-serif; 
-            font-size:14px;
+            font-size:14pt;
             line-height: 1;
             border: none;
           }

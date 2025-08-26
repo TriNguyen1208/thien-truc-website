@@ -10,7 +10,7 @@ const ItemTable = ({ data, width }) => {
                     title={item.type === "text" ? item.content : undefined}
                     style={{ width: width ? width[index] : 'auto' }}
                 >
-                    {item.type === "text"  &&   <span className="line-clamp-3 break-words whitespace-pre-line"> {/* 👈 hiển thị tối đa 3 dòng */}
+                    {item.type === "text"  &&   <span className="line-clamp-2 break-words whitespace-pre-line"> {/* 👈 hiển thị tối đa 3 dòng */}
                                                     {item.content}
                                                 </span>}
 

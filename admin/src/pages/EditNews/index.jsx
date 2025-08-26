@@ -54,7 +54,7 @@ const EditNews = () => {
     }, [])
 
     //check is change
-    const { setShouldWarn } = useNavigationGuardContext();
+    // const { setShouldWarn } = useNavigationGuardContext();
     useEffect(() => {
         if (isLoadingNewsContent || isFetchingNewsContent) return;
         if (!news_contents) return;
@@ -70,18 +70,18 @@ const EditNews = () => {
         setInitialForm(initialForm);
         setForm(initialForm);
     }, [isLoadingNewsContent, isFetchingNewsContent, news_contents]) 
-    useEffect(() => {
-        if(form == null || initialForm == null){
-            return;
-        }
-        const stripCountWord = (obj) => {
-            const { countWord, ...rest } = obj;
-            return rest;
-        };
-        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-        setShouldWarn(isDirty);
-    }, [form, initialForm, setShouldWarn]);
+    // useEffect(() => {
+    //     if(form == null || initialForm == null){
+    //         return;
+    //     }
+    //     const stripCountWord = (obj) => {
+    //         const { countWord, ...rest } = obj;
+    //         return rest;
+    //     };
+    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
+    //     setShouldWarn(isDirty);
+    // }, [form, initialForm, setShouldWarn]);
     
     //Helper function
     const handleSave = async () => {

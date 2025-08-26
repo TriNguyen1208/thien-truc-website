@@ -261,7 +261,7 @@ const products = {
                 SELECT id FROM (
                     SELECT 
                         prd.id,
-                        ROW_NUMBER() OVER (PARTITION BY prd.category_id ORDER BY prd.name) AS rn
+                        ROW_NUMBER() OVER (PARTITION BY prd.category_id ORDER BY prd.id DESC) AS rn
                     FROM product.products prd   
                     ${where}
                     ${order}

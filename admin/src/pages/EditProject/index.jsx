@@ -54,7 +54,7 @@ const EditProject = () => {
     }, [])
 
     //check is change
-    const { setShouldWarn } = useNavigationGuardContext(); 
+    // const { setShouldWarn } = useNavigationGuardContext(); 
     useEffect(() => {
         if (isLoadingProjectContent || isFetchingProjectContent) return;
         if (!project_contents) return;
@@ -73,18 +73,18 @@ const EditProject = () => {
         setForm(initialForm);
     }, [isLoadingProjectContent, isFetchingProjectContent, project_contents])
     
-    useEffect(() => {
-        if(form == null || initialForm == null){
-            return;
-        }
-        const stripCountWord = (obj) => {
-            const { countWord, ...rest } = obj;
-            return rest;
-        };
-        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-        setShouldWarn(isDirty);
-    }, [form, initialForm, setShouldWarn]);
+    // useEffect(() => {
+    //     if(form == null || initialForm == null){
+    //         return;
+    //     }
+    //     const stripCountWord = (obj) => {
+    //         const { countWord, ...rest } = obj;
+    //         return rest;
+    //     };
+    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
+    //     setShouldWarn(isDirty);
+    // }, [form, initialForm, setShouldWarn]);
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){

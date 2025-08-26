@@ -44,7 +44,7 @@ const AddProject = () => {
     }, [])
 
     //check is change
-    const { setShouldWarn } = useNavigationGuardContext(); 
+    // const { setShouldWarn } = useNavigationGuardContext(); 
     const initialForm = useMemo(() => {
         if (isLoadingRegions) return null;
         return {
@@ -64,18 +64,18 @@ const AddProject = () => {
             setForm(initialForm);
         }
     }, [initialForm]);
-    useEffect(() => {
-        if(form == null || initialForm == null){
-            return;
-        }
-        const stripCountWord = (obj) => {
-            const { countWord, ...rest } = obj;
-            return rest;
-        };
-        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-        setShouldWarn(isDirty);
-    }, [form]);
+    // useEffect(() => {
+    //     if(form == null || initialForm == null){
+    //         return;
+    //     }
+    //     const stripCountWord = (obj) => {
+    //         const { countWord, ...rest } = obj;
+    //         return rest;
+    //     };
+    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
+    //     setShouldWarn(isDirty);
+    // }, [form]);
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){

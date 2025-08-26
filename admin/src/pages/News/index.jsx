@@ -210,7 +210,7 @@ export default function News() {
                     </span>
                   ),
                 },
-                { type: "text", content: item.public_date || 'Cập nhật sau' },
+                { type: "text", content: item.is_published ? item.public_date : "Chưa xuất bản"  || "Cập nhật sau"},
                 {
                   type: "array-components",
                   components: [

@@ -216,7 +216,7 @@ const Product = () => {
     dataProduct: productData,
     table: {
       columns: ["Mã SP", "Hình ảnh", "Tên sản phẩm", "Giá", "Bảo hành", "Trưng bày", "Thao tác"],
-      width: ["8%", "10%", "28%", "15%", "15%", "13%", "13%"]
+      width: ["8%", "10%", "28%", "15%", "13%", "13%", "15%"]
     },
 
 

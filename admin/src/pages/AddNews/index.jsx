@@ -44,7 +44,7 @@ const AddNews = () => {
     }, [])
 
     //check is change
-    const { setShouldWarn } = useNavigationGuardContext(); 
+    // const { setShouldWarn } = useNavigationGuardContext(); 
     const initialForm = useMemo(() => {
         if (isLoadingCategories) return null;
         return {
@@ -62,18 +62,18 @@ const AddNews = () => {
             setForm(initialForm);
         }
     }, [initialForm]);
-    useEffect(() => {
-        if(form == null || initialForm == null){
-            return;
-        }
-        const stripCountWord = (obj) => {
-            const { countWord, ...rest } = obj;
-            return rest;
-        };
-        const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-                        JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-        setShouldWarn(isDirty);
-    }, [form]);
+    // useEffect(() => {
+    //     if(form == null || initialForm == null){
+    //         return;
+    //     }
+    //     const stripCountWord = (obj) => {
+    //         const { countWord, ...rest } = obj;
+    //         return rest;
+    //     };
+    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
+    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
+    //     setShouldWarn(isDirty);
+    // }, [form]);
 
     //Helper function
     const handleSave = async () => {
