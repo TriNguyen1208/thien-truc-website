@@ -142,7 +142,6 @@ const Company = () => {
     }
     const handleSubmit = (e)=>{
         e.preventDefault()
-        console.log(companyHotlineList)
         updateCompanyInfo(
             {
               "office_address":companyAddressList.map((address, index) =>{
@@ -321,7 +320,6 @@ const handleSelectMainAddress = (id) => {
     padding :8, 
     handleButton:()=>{}
   }
-  console.log(companyInfo)
  
   return (
     <form  onSubmit={handleSubmit} className='flex flex-col bg-white p-[24px] border border-gray-300 rounded-[8px] gap-[24px]'>

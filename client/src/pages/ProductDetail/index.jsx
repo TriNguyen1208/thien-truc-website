@@ -43,7 +43,6 @@ export default function ProductDetail() {
     if (isLoadingProduct) {
         return (<Loading />)
     }
-    console.log(product)
     return (
         <>
             {navigation.state == 'loading' && <Loading/>}

@@ -6,10 +6,8 @@ import { useNavigate } from 'react-router-dom';
 export default function AuthGate({ children }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log('AuthGate rendered', localStorage.getItem('user'));
   useEffect(() => {
     const user = localStorage.getItem('user');
-    console.log('No user found, redirecting to login');
     if (!user) {
       dispatch(logout());
       navigate('/dang-nhap', { replace: true });
