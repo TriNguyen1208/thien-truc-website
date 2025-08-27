@@ -23,6 +23,16 @@ const updateHomePage = {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     }, 
+    bannerImages: async(req, res) => {
+        try {
+            const { status, message, action = null } = await homeServices.updateHomePage.bannerImages(req.body, req.files);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật ảnh banner Trang Chủ: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
     aboutUs: async(req, res) => {
         try {
             const { status, message, action = null } = await homeServices.updateHomePage.aboutUs(req.body);

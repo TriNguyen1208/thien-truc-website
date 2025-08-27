@@ -13,6 +13,7 @@ router.get('/highlight_stats_about_us/:id', homeController.highlight_stats_about
 
 router.post('/highlight_stats_about_us', authenticateToken, homeController.highlight_stats_about_us.createOne);
 
+router.patch('/home_page/banner_images', authenticateToken, upload.array('banner_images', 20), homeController.updateHomePage.bannerImages)
 router.patch('/home_page/banner', authenticateToken, homeController.updateHomePage.banner);
 router.patch('/home_page/about_us', authenticateToken, homeController.updateHomePage.aboutUs);
 router.patch('/home_page/about_us_image', authenticateToken, upload.single('aboutus_img'), homeController.updateHomePage.imageAboutUs);
