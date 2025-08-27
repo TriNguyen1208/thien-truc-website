@@ -39,6 +39,7 @@ const API_ROUTES = {
         updateHomePage: {
             // patch
             banner: `${HOME_BASE}/home_page/banner`,
+            bannerImages: `${HOME_BASE}/home_page/banner_images`,
             aboutUs: `${HOME_BASE}/home_page/about_us`,
             imageAboutUs: `${HOME_BASE}/home_page/about_us_image`,
             visibility: `${HOME_BASE}/home_page/visibility`,
