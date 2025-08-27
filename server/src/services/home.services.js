@@ -38,6 +38,8 @@ const updateHomePage = {
         }
     },
     bannerImages: async(data, files) => {
+        let { image_urls, switch_time } = data;
+
         const old_images = (await pool.query('SELECT banner_images FROM home.home_page')).rows?.[0]?.banner_images;
         if (old_images == null) {
             throw new Error("Can not get banner_images from home.home_page");
@@ -46,21 +48,21 @@ const updateHomePage = {
         const tasks = [];
         let file_index = 0;
         // Lần lượt cập nhật ảnh
-        for (let i = 0; i < data.length; i++) {
-            if (i < old_images.length && old_images[i] != data[i] && isCloudinary(old_images[i])) {
+        for (let i = 0; i < image_urls.length; i++) {
+            if (i < old_images.length && old_images[i] != image_urls[i] && isCloudinary(old_images[i])) {
                 tasks.push(deleteImage([old_images[i]]))
             }
-            if (!data[i]) {
+            if (!image_urls[i]) {
                 if (!files[file_index]) {
                     throw new Error(`Can not get uploaded file at index ${i}`);
                 }
-                tasks.push(uploadImage(files[file_index].path, 'home').then(url => data[i] = url));
+                tasks.push(uploadImage(files[file_index].path, 'home').then(url => image_urls[i] = url));
                 file_index++;
             }
         }
 
         // Xóa các ảnh sau của dữ liệu cũ
-        for (let i = data.length; i < old_images.length; i++) {
+        for (let i = image_urls.length; i < old_images.length; i++) {
             if (isCloudinary(old_images[i])) {
                 tasks.push(deleteImage([old_images[i]]));
             }
@@ -68,7 +70,9 @@ const updateHomePage = {
 
         await Promise.all(tasks);
 
-        await pool.query('UPDATE home.home_page SET banner_images = $1', [data]);
+        await pool.query(`
+            UPDATE home.home_page SET banner_images = $1, banner_switch_time = $2    
+        `, [image_urls, switch_time]);
         
         return {
             status: 200,
