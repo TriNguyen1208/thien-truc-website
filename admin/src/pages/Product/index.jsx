@@ -1,12 +1,12 @@
 import React from 'react'
 import EditBanner from '../../components/EditBanner'
 import { useLayout } from "@/layouts/LayoutContext"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import DynamicForm from '../../components/DynamicForm'
 import SearchBar from '../../components/Search'
 import { useState } from 'react';
 import useProducts from '../../hooks/useProducts';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
 import Notification from '@/components/Notification'
@@ -14,6 +14,12 @@ import ProductImageCell from '../../components/ProductImageCell'
 import changeToFormData from '../../utils/changeToFormData'
 import Loading from '@/components/Loading'
 const Product = () => {
+  //Handle scroll to new product
+  const location = useLocation();
+  const {createId} = location.state || {};
+  const refs = useRef({});
+  const navigate = useNavigate();
+  //
   const { setLayoutProps } = useLayout()
   useEffect(() => {
     setLayoutProps({
@@ -253,7 +259,17 @@ const Product = () => {
   const convertProductListToTableData = (productList) => {
     return productList.map((product) => {
       return [
-        { type: "text", content: `${product.id}` }, // STT
+        { type: "text", content: 
+            <div ref={(el) => {
+              refs.current[product.id] = el
+              if (product.id === createId && el) {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                navigate(location.pathname, { replace: true, state: {} });
+              }
+            }}>
+              {product.id}
+            </div> 
+        },
         {
           type: "component",
           component: (

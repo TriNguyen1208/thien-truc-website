@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newsServices from "@/services/news.api.js";
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 function useGetQuantity() {
     const queryClient = useQueryClient();
     queryClient.invalidateQueries(['admin_news_quantity']);
@@ -171,6 +172,7 @@ const news_contents = {
     },
     usePostOne: () => {
         const queryClient = useQueryClient();
+        const navigate = useNavigate();
         return useMutation({
             mutationFn: (data) => {
                 return newsServices.new_contents.postOne(data)
@@ -182,6 +184,7 @@ const news_contents = {
                 queryClient.invalidateQueries({ queryKey: ["admin_news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_news_categories"], exact: false });
+                navigate('/quan-ly-tin-tuc', {state: { createId: success.id }});
             },
             onError: (error) => {
                 toast.error(error.message);

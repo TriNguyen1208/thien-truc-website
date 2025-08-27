@@ -82,9 +82,9 @@ const products = {
     },
     createOne: async (req, res) => {
         try {
-            const { status, message, action = null } = await productServices.products.createOne(req.body, req.file);
+            const { status, message, action = null, id } = await productServices.products.createOne(req.body, req.file);
             if (status == 200) logActivity(req.user.username, action);
-            return res.status(status).json({ message });
+            return res.status(status).json({ message, id });
         } catch (error) {
             console.error('Lỗi tạo sản phẩm: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });

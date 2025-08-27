@@ -1,5 +1,5 @@
-import { useEffect, useState} from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom'; 
+import { useEffect, useState, useRef} from 'react';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'; 
 import { useLayout } from '@/layouts/LayoutContext';
 import { useQueryClient } from '@tanstack/react-query';
 import Notification from '../../components/Notification';
@@ -12,7 +12,12 @@ import { toast } from 'react-toastify';
 import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';
 export default function News() {
+  //Handle scroll to newsId
+  const refs = useRef({});
+  const location = useLocation();
+  const {createId} = location.state || {}
 
+  //Delete
   const { mutate: deleteOne, isPending: isPendingDeleting } = useNews.news.deleteOne();
   // Thông tin của popup xác nhận hủy
   const [currentDeleteID, setcurrentDeleteId] = useState(null);
@@ -107,7 +112,6 @@ export default function News() {
     acc[category.id].news.push(item);
     return acc;
   }, {});
-
   const {data: newsCategories, isLoading: isLoadingNewsCategories} = useNews.news_categories.getAll();
   const categories = [
     'Tất cả thể loại',
@@ -141,7 +145,6 @@ export default function News() {
 
   // Định nghĩa tiêu đề cột
   const columns = ["Mã tin tức", "Ảnh", "Tiêu đề", "Trạng thái", "Ngày xuất bản", "Thao tác"];
-
   // Render
   return (
     <div>
@@ -191,7 +194,17 @@ export default function News() {
           <Table
               columns={columns}
               data={news.map(item => [
-                { type: "text", content: item.id },
+                { type: "text", content: 
+                    <div ref={(el) => {
+                      refs.current[item.id] = el
+                      if (item.id === createId && el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "center" });
+                        navigate(location.pathname, { replace: true, state: {} });
+                      }
+                    }}>
+                      {item.id}
+                    </div> 
+                },
                 {
                   type: "component",
                   component: (

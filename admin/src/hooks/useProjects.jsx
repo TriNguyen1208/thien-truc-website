@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import projectsServices from "@/services/projects.api.js";
 import { toast } from 'react-toastify';
-
+import { useNavigate } from "react-router-dom";
 function useGetAll(){
     return useQuery({
         queryKey: ["admin_projects"],
@@ -155,6 +155,7 @@ const project_contents = {
     },
     usePostOne: () => {
         const queryClient = useQueryClient();
+        const navigate = useNavigate();
         return useMutation({
             mutationFn: (data) => {
                 return projectsServices.project_contents.postOne(data)
@@ -166,6 +167,7 @@ const project_contents = {
                 queryClient.invalidateQueries({ queryKey: ["admin_projects_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_project_content"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["admin_project_regions"], exact: false });
+                navigate('/quan-ly-du-an', {state: { createId: success.id }});
             },
             onError: (error) => {
                 toast.error(error.message);

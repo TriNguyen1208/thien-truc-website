@@ -747,7 +747,8 @@ const project_contents = {
         return {
             status: 200,
             message: "Tạo dự án thành công",
-            action: `Tạo dự án: ${project_id} - ${title}`
+            action: `Tạo dự án: ${project_id} - ${title}`,
+            id: project_id
         }
     },
     updateOne: async (id, data, files) => {

@@ -1,6 +1,6 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect, useRef} from 'react'
 import { useLayout } from '@/layouts/LayoutContext';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import Notification from '../../components/Notification';
@@ -12,6 +12,11 @@ import ProductImageCell from '@/components/ProductImageCell';
 // Còn sự kiện ấn vào nút trưng bày
 
 export default function Project () {
+  //Handle scroll to new project
+  const location = useLocation();
+  const {createId} = location.state || {}
+  const refs = useRef({})
+
   // Lấy hàm từ hook
   const queryClient = useQueryClient();
   const { mutateAsync: deleteOne, isPending: isPendingDeleting} = useProjects.projects.deleteOne();
@@ -163,7 +168,17 @@ export default function Project () {
             <Table
               columns={columns}
               data={projects.map(item => [
-                { type: "text", content: item.id },
+                { type: "text", content: 
+                    <div ref={(el) => {
+                      refs.current[item.id] = el
+                      if (item.id === createId && el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "center" });
+                        navigate(location.pathname, { replace: true, state: {} });
+                      }
+                    }}>
+                      {item.id}
+                    </div> 
+                },
                 {
                   type: "component",
                   component: (

@@ -514,7 +514,8 @@ const products = {
         return {
             status: 200,
             message: "Tạo sản phẩm thành công",
-            action: `Tạo sản phẩm: ${product_id} - ${productName}`
+            action: `Tạo sản phẩm: ${product_id} - ${productName}`,
+            id: product_id
         }
     },
     updateOne: async (data, file, id) => {

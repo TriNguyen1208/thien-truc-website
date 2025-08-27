@@ -143,9 +143,9 @@ const project_contents = {
     },
     postOne: async(req, res) => {
         try {
-            const { status, message, action = null } = await projectsServices.project_contents.postOne(req.body, req.files);
+            const { status, message, action = null, id } = await projectsServices.project_contents.postOne(req.body, req.files);
             if (status == 200) logActivity(req.user.username, action);
-            return res.status(status).json({ message });
+            return res.status(status).json({ message, id });
         } catch (error) {
             console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
