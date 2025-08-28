@@ -24,6 +24,19 @@ const updateHomePage = {
             }
         });
     },
+    useUpdateBannerImages: () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (data) => homeServices.updateHomePage.bannerImages(data),
+            onSuccess: (success) => {
+                toast.success(success.message);
+                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            }
+        });
+    },
     useUpdateAboutUs: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -127,8 +140,10 @@ export default {
     updateHomePage: {
         updateBanner: updateHomePage.useUpdateBanner,
         updateAboutUs: updateHomePage.useUpdateAboutUs,
+        updateBannerImages: updateHomePage.useUpdateBannerImages,
         updateImageAboutUs: updateHomePage.useUpdateImageAboutUs,
         updateVisibility: updateHomePage.useUpdateVisibility
+
     },
     highlight_stats_about_us: {
         getAll: highlight_stats_about_us.useGetAll,
