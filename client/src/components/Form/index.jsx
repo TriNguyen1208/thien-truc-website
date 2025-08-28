@@ -186,7 +186,10 @@ const Form = ({ data }) => {
                             <div className="flex flex-col items-center space-y-2">
                                 <PhoneOutlined style={{ fontSize: '24px', color: '#22C55E' }} />
                                 <div className="font-semibold">Điện thoại</div>
-                                <div className="text-[#4B5563]">{contact.company_phone}</div>
+                                <div className="text-[#4B5563]">
+                                    {contact.company_phone.map((item, index) => (
+                                        <div key={index}>{item} </div>
+                                    ))}</div>
                             </div>
 
                             <div className="flex flex-col items-center space-y-2">
