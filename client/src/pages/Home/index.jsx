@@ -200,7 +200,7 @@ export default function Home() {
                             <div className=" relative w-full h-full bg-black overflow-hidden ">
                                 {/* Ảnh nền */}
                                 <div
-                                    className="w-full lg:aspect-[19/8] md:aspect-[14/8] sm:aspect-[11/8] aspect-[10/8] bg-cover bg-center"
+                                    className="w-full lg:aspect-[4/1] md:aspect-[14/8] sm:aspect-[11/8] aspect-[10/8] bg-cover bg-center"
                                     style={{ backgroundImage: `url(${item})` }}
                                 ></div>
 

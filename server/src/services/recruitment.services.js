@@ -19,9 +19,11 @@ const getRecruitmentPage = async (req, res) => {
     const postSubmitApplication = async (applicationData) => {
         const { name, email, phone, title, content } = applicationData;
 
+        const company_email = (await pool.query('SELECT company_email FROM contact.company_info')).rows?.[0]?.company_email;
+
         //Send mail to company
         await sendMail({
-            to: process.env.RECEIVER_EMAIL,
+            to: company_email,//process.env.RECEIVER_EMAIL,
             subject: `Đơn ứng tuyển từ ${name}`,
             html: `
             <h2>Thông tin ứng tuyển:</h2>

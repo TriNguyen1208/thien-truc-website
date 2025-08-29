@@ -237,9 +237,12 @@ const support_agents = {
 
 const postContactMessage = async (applicationData) => {
     const { name, email, phone, title, content } = applicationData;
+    
+    const company_email = (await pool.query('SELECT company_email FROM contact.company_info')).rows?.[0]?.company_email;
+
     //Send mail to company
     await sendMail({
-        to: process.env.RECEIVER_EMAIL,
+        to: company_email,//process.env.RECEIVER_EMAIL,
         subject: `Liên hệ từ ${name}`,
         html: `
         <h2>Thông tin liên hệ:</h2>
