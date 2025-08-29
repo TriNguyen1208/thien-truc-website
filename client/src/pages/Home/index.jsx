@@ -143,7 +143,6 @@ export default function Home() {
     const homePageData = allData.home_page;
     const highlightStatsAboutUsData = allData.highlight_stats_about_us;
 
-    console.log(highlightProject);
     return (
         <>
             <Helmet>

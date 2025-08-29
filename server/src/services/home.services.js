@@ -43,6 +43,9 @@ const updateHomePage = {
     bannerImages: async(data, files) => {
         
         let { image_urls, switch_time } = data;
+        if(!Array.isArray(image_urls)){
+            image_urls = [image_urls]
+        }
 
         const old_images = (await pool.query('SELECT banner_images FROM home.home_page')).rows?.[0]?.banner_images;
         if (old_images == null) {
@@ -73,7 +76,6 @@ const updateHomePage = {
         }
 
         await Promise.all(tasks);
-
         await pool.query(`
             UPDATE home.home_page SET banner_images = $1, banner_switch_time = $2    
         `, [image_urls, switch_time]);
