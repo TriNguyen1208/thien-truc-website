@@ -730,7 +730,12 @@ const HomePageContent = () => {
           }
           const files = uploadImage.map((item)=>(item.file))
           const formData = new FormData();
-
+          console.log(files);
+          console.log(data.image_urls);
+          if(files.length == 0 && data.image_urls.length == 0){
+            alert("Bạn phải nhập ít nhất 1 ảnh!");
+            return;
+          }
           // Gửi switch_time (bắt buộc phải là string khi qua multipart)
           formData.append("switch_time", data.switch_time);
 
