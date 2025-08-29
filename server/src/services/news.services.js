@@ -795,7 +795,8 @@ const news_contents = {
         return {
             status: 200,
             message: "Tạo tin tức thành công",
-            action: `Tạo tin tức: ${news_id} - ${news_title}`
+            action: `Tạo tin tức: ${news_id} - ${news_title}`,
+            id: news_id
         }
     },
     updateOne: async (id, data, files) => {

@@ -138,9 +138,9 @@ const news_contents = {
     },
     postOne: async (req, res) => {
         try {
-            const { status, message, action = null } = await newsServices.news_contents.postOne(req.body, req.files);
+            const { status, message, action = null, id } = await newsServices.news_contents.postOne(req.body, req.files);
             if (status == 200) logActivity(req.user.username, action);
-            res.status(status).json({ message });
+            res.status(status).json({ message, id });
         } catch (error) {
             console.error('Error: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });

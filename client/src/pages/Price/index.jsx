@@ -163,7 +163,7 @@
 
 
           <div className="overflow-y-auto max-h-[600px] overflow-x-hidden no-scrollbar">
-            <table className="min-w-full text-base table-fixed">
+            <table className="text-base table-fixed w-full">
               <thead className="hidden md:table-header-group sticky top-0 z-20 bg-[#00A651] text-white shadow-md ">
                 <tr className='w-full'>
                   <th className="text-center  w-[8%] md:p-[12px] ">STT</th>
@@ -226,9 +226,7 @@
                                   >
                                     <div className='flex flex-row justify-between md:hidden'>
                                       <td className=" "><span>#</span>{idx + 1}</td>
-                                          <td className=" font-semibold  text-[#ff0000] ">
-                                          {product.price.toLocaleString('vi-VN')}
-                                          </td>
+                                        {product.price !== '' ? <span className=' text-[#ff0000] font-semibold'>{product.price.toLocaleString('vi-VN')} đ</span> : <span className=' text-red-400 italic font-normal '>{"Cập nhật sau"}</span>}
                                     </div>
                                      <td className=" hidden md:table-cell md:w-[8%] md:p-[12px] md:text-center">{idx + 1}</td>
                                      <td className=" md:w-[40%] md:p-[12px] ">{product.name}</td>
@@ -250,7 +248,7 @@
                                      </div>
                                     </td>
                                    <div className='flex flex-row justify-between md:hidden'>
-                                     <td className=""> <span>Bảo hành: </span> {product.warranty ||0} <span> tháng</span></td>
+                                     <td className=""> Bảo hành: {product.warranty !== '' ? (product.warranty != 0 ? `${product.warranty} tháng` : <span className=' text-gray-500 italic font-normal '>{"Không bảo hành"}</span>) : <span className=' text-gray-500 italic font-normal '>{"Cập nhật sau"}</span>}</td>
                                     <td className=" text-green-800">
                                       <Button
                                         type="default"

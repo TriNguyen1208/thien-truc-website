@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import productsServices from "@/services/products.api.js";
 import { toast } from 'react-toastify';
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 function usePatchPricePage() {
@@ -151,11 +152,14 @@ const products = {
   // Mutations
   useCreateOne: () => {
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const location = useLocation();
     return useMutation({
       mutationFn: (data) => productsServices.products.createOne(data),
       onSuccess: (success) => {
         toast.success(success.message);
         queryClient.invalidateQueries({ queryKey: ["admin_product_by_category"] });
+        navigate(location.pathname, { state: {createId: success.id} });
       },
       onError: (error) => {
         toast.error(error.message);
