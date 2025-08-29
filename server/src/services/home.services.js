@@ -1,5 +1,8 @@
 import pool from '#@/config/db.js'
 import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
+
+
+
 const getAllTables = async () => {
     const _home_page = await getHomePage();
     const _highlight_stats_about_us = await highlight_stats_about_us.getAll();
@@ -38,13 +41,13 @@ const updateHomePage = {
         }
     },
     bannerImages: async(data, files) => {
+        
         let { image_urls, switch_time } = data;
 
         const old_images = (await pool.query('SELECT banner_images FROM home.home_page')).rows?.[0]?.banner_images;
         if (old_images == null) {
             throw new Error("Can not get banner_images from home.home_page");
         }
-
         const tasks = [];
         let file_index = 0;
         // Lần lượt cập nhật ảnh
@@ -52,11 +55,12 @@ const updateHomePage = {
             if (i < old_images.length && old_images[i] != image_urls[i] && isCloudinary(old_images[i])) {
                 tasks.push(deleteImage([old_images[i]]))
             }
-            if (!image_urls[i]) {
+            
+            if (!image_urls[i] || image_urls[i] === "null") {
                 if (!files[file_index]) {
                     throw new Error(`Can not get uploaded file at index ${i}`);
-                }
-                tasks.push(uploadImage(files[file_index].path, 'home').then(url => image_urls[i] = url));
+                }    
+                tasks.push(uploadImage(files[file_index], 'home').then(url => image_urls[i] = url));
                 file_index++;
             }
         }

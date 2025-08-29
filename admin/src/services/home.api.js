@@ -23,6 +23,15 @@ const updateHomePage = {
         })
         return res.data;
     },
+    bannerImages: async(data) =>{
+        const res = await axios.patch(API_ROUTES.home.updateHomePage.bannerImages, data,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            timeout: 20000
+        })
+        return res.data
+    },
     visibility: async (data) => {
         const res = await axios.patch(API_ROUTES.home.updateHomePage.visibility, data);
         return res.data;
