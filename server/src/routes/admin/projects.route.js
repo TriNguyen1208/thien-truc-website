@@ -26,7 +26,7 @@ router.get('/featured_project_regions', projectsController.project_regions.getAl
 
 // post
 router.post('/project_regions', authenticateToken, projectsController.project_regions.createOne);
-router.post('/project_contents/', authenticateToken, upload.fields([
+router.post('/project_contents', authenticateToken, upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 }])
 , projectsController.project_contents.postOne);
@@ -38,7 +38,7 @@ router.patch('/project_contents/:id', authenticateToken, upload.fields([
 , projectsController.project_contents.updateOne);
 
 // patch
-router.patch('/project_page', authenticateToken, projectsController.updateProjectPage);
+router.patch('/project_page/banner', authenticateToken, projectsController.updateProjectPage);
 router.patch('/project_page/visibility', authenticateToken, projectsController.updateVisibility);
 router.patch('/project_regions/:id', authenticateToken, projectsController.project_regions.updateOne);
 router.patch('/projects/update_regions', authenticateToken, projectsController.projects.updateRegion);

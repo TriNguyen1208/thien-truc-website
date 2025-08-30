@@ -24,7 +24,7 @@ router.patch('/news/update_categories', authenticateToken, newsController.news.u
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
 router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
-router.post('/news_contents/', authenticateToken,  upload.fields([
+router.post('/news_contents', authenticateToken,  upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 }])
 , newsController.news_contents.postOne);
@@ -41,7 +41,7 @@ router.post('/news_categories', authenticateToken, newsController.news_categorie
 
 // patch
 router.patch('/news_categories/:id', authenticateToken, newsController.news_categories.updateOne);
-router.patch('/news_page', authenticateToken, newsController.updateNewsPage);
+router.patch('/news_page/banner', authenticateToken, newsController.updateNewsPage);
 router.patch('/news_page/visibility', authenticateToken, newsController.updateVisibility);
 router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
