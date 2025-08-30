@@ -235,7 +235,7 @@ const support_agents = {
     
 }
 
-const postContactMessage = async (applicationData) => {
+const submitContact = async (applicationData) => {
     const { name, email, phone, title, content } = applicationData;
     
     const company_email = (await pool.query('SELECT company_email FROM contact.company_info')).rows?.[0]?.company_email;
@@ -292,4 +292,4 @@ const count = async () => {
 
     return data;
 }
-export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count, updateContactPage };
+export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, submitContact, count, updateContactPage };

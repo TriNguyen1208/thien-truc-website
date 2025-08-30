@@ -99,7 +99,7 @@ const API_ROUTES = {
             getAll: `${CONTACT_BASE}/support_agents`,
             getOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
-        contact_messages: `${CONTACT_BASE}/contact_messages`,
+        submitContact: `${CONTACT_BASE}/contact_messages`,
     },
     about_us: {
         base: ABOUT_US_BASE,

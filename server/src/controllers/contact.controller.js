@@ -96,9 +96,9 @@ const support_agents = {
     },
 }
 
-const postContactMessage = async (req, res) => {
+const submitContact = async (req, res) => {
     try {
-        await contactServices.postContactMessage(req.body);
+        await contactServices.submitContact(req.body);
         res.status(200).json({ success: true, message: "Tin nhắn đã được gửi thành công" });
     } catch (error) {
         console.error(error);
@@ -111,4 +111,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, postContactMessage, count, updateContactPage};
+export default { getAllTables, getContactPage, getCompanyInfo, updateCompanyInfo, support_agents, submitContact, count, updateContactPage};

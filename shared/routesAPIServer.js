@@ -115,9 +115,9 @@ const API_ROUTES = {
             getAllFeatured: `${PROJECT_BASE}/highlight_projects`,
             getSearchSuggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`,
             // post
-            createOne: `${PROJECT_BASE}/project_contents`,
+            createOne: `${PROJECT_BASE}/project`,
             // patch
-            updateOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
+            updateOne: (id) => `${PROJECT_BASE}/project/${id}`,
             updateFeatureOne: (id, status) => `${PROJECT_BASE}/projects/is_featured/${id}/${status}`,
             updateRegion: `${PROJECT_BASE}/projects/update_regions`, 
             // delete
@@ -156,9 +156,9 @@ const API_ROUTES = {
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
             getSearchSuggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
             // post
-            createOne: `${NEWS_BASE}/news_contents`,
+            createOne: `${NEWS_BASE}/news`,
             // patch
-            updateOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
+            updateOne: (id) => `${NEWS_BASE}/news/${id}`,
             updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`,
             updateCategory: `${NEWS_BASE}/news/update_categories`, 
             // delete
@@ -217,7 +217,7 @@ const API_ROUTES = {
             // delete
             deleteOne: (id) => `${CONTACT_BASE}/support_agents/${id}`,
         },
-        contact_messages: `${CONTACT_BASE}/contact_messages`,
+        submitContact: `${CONTACT_BASE}/contact_messages`,
         count: `${CONTACT_BASE}/count`,
     },
     about_us: {

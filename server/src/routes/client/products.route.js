@@ -14,10 +14,9 @@ router.get('/price_page', productController.getPricePage);
 router.get('/product_prices', productController.product_prices.getAll);
 router.get('/product_prices/:product_id', productController.product_prices.getOne);
 router.get('/highlight_products', productController.getHighlightProducts);
-router.get('/search_suggestions', productController.getSearchSuggestions);
-router.get('/search_categories_suggestions', productController.getSearchCategoriesSuggestions);
+router.get('/search_suggestions', productController.products.getSearchSuggestions);
+router.get('/search_categories_suggestions', productController.product_categories.getSearchSuggestions);
 
 router.get('/highlight_products', productController.getHighlightProducts);
-router.get('/search_suggestions', productController.getSearchSuggestions);
 router.get('/featured_product_categories', productController.product_categories.getAllFeatured);
 export default router;

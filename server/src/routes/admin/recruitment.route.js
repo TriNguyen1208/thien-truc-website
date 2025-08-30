@@ -10,12 +10,12 @@ const router = express.Router();
 
 router.get('/', recruitmentController.getAllTables);
 router.get('/recruitment_page', recruitmentController.getRecruitmentPage);
-router.post('/submit_application', validateForm.validateRecruitment, recruitmentController.postSubmitApplication);
-router.patch('/', authenticateToken, upload.fields([
-  { name: 'culture_img_1', maxCount: 1 },
-  { name: 'culture_img_2', maxCount: 1 },
-  { name: 'culture_img_3', maxCount: 1 },
-  { name: 'culture_img_4', maxCount: 1 },
-]), recruitmentController.patchRecruitment);
-router.patch('/recruitment_page/visibility', authenticateToken, recruitmentController.updateVisibility);
+
+router.post('/submit_application', validateForm.validateRecruitment, recruitmentController.submitApplication);
+
+router.patch('/recruitment_page/banner', authenticateToken, recruitmentController.updateRecruitmentPage.banner);
+router.patch('/recruitment_page/visibility', authenticateToken, recruitmentController.updateRecruitmentPage.visibility);
+router.patch('/recruitment_page/culture', authenticateToken, recruitmentController.updateRecruitmentPage.culture);
+router.patch('/recruitment_page/culture_images', authenticateToken, recruitmentController.updateRecruitmentPage.culture_images);
+
 export default router;

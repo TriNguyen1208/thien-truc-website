@@ -18,28 +18,28 @@ router.get('/project_contents', projectsController.project_contents.getAll);
 router.get('/project_contents/:id', projectsController.project_contents.getOne);
 
 router.get('/highlight_projects', projectsController.getHighlightProjects);
-router.get('/search_categories_suggestions', projectsController.getSearchCategoriesSuggestions);
-router.get('/search_suggestions', projectsController.getSearchSuggestions);
+router.get('/search_categories_suggestions', projectsController.project_regions.getSearchSuggestions);
+router.get('/search_suggestions', projectsController.projects.getSearchSuggestions);
 
 router.get('/count', projectsController.count);
 router.get('/featured_project_regions', projectsController.project_regions.getAllFeatured);
 
 // post
 router.post('/project_regions', authenticateToken, projectsController.project_regions.createOne);
-router.post('/project_contents', authenticateToken, upload.fields([
+router.post('/project', authenticateToken, upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 }])
-, projectsController.project_contents.postOne);
+, projectsController.projects.createOne);
 
-router.patch('/project_contents/:id', authenticateToken, upload.fields([
+router.patch('/project/:id', authenticateToken, upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 },
 ])
-, projectsController.project_contents.updateOne);
+, projectsController.projects.updateOne);
 
 // patch
-router.patch('/project_page/banner', authenticateToken, projectsController.updateProjectPage);
-router.patch('/project_page/visibility', authenticateToken, projectsController.updateVisibility);
+router.patch('/project_page/banner', authenticateToken, projectsController.updateProjectPage.banner);
+router.patch('/project_page/visibility', authenticateToken, projectsController.updateProjectPage.visibility);
 router.patch('/project_regions/:id', authenticateToken, projectsController.project_regions.updateOne);
 router.patch('/projects/update_regions', authenticateToken, projectsController.projects.updateRegion);
 router.patch('/projects/is_featured/:id/:status', authenticateToken, projectsController.projects.updateFeatureOne);
