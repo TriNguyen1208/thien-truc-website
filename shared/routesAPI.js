@@ -29,7 +29,9 @@ const API_ROUTES = {
         products: {
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${uri(page)}&limit=${uri(limit)}`,
             getListByCategory: (id, query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?id=${uri(id)}&query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${uri(limit)}`,
+            getAllFeatured: `${PRODUCT_BASE}/products?is_featured=true`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
+            getSearchSuggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`
         },
         product_categories: {
             getAll: `${PRODUCT_BASE}/product_categories`,
@@ -42,8 +44,6 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
         },
         price_page: `${PRODUCT_BASE}/price_page`,
-        highlight_products: `${PRODUCT_BASE}/products?is_featured=true`,
-        search_suggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`
     },
     project: {
         base: PROJECT_BASE,
@@ -52,6 +52,8 @@ const API_ROUTES = {
             getList: (query, filter, is_featured, page, limit) => `${PROJECT_BASE}/projects?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${page}&limit=${limit}`,
             getListByRegion: (query, filter, is_featured, limit) => `${PROJECT_BASE}/projects/get_by_region?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${limit}`,
             getOne: (id) => `${PROJECT_BASE}/projects/${id}`,
+            getAllFeatured: (filter) => `${PROJECT_BASE}/projects?filter=${uri(filter)}&is_featured=true`,
+            getSearchSuggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`
         },
         project_regions: {
             getAll: `${PROJECT_BASE}/project_regions`,
@@ -62,19 +64,17 @@ const API_ROUTES = {
             getAll: `${PROJECT_BASE}/project_contents`,
             getOne: (id) => `${PROJECT_BASE}/project_contents/${id}`,
         },
-        highlight_projects: (filter) => `${PROJECT_BASE}/projects?filter=${uri(filter)}&is_featured=true`,
-
-        search_suggestions: (query='', filter='', is_featured) => `${PROJECT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`
     },
     news: {
         base: NEWS_BASE,
         news_page: `${NEWS_BASE}/news_page`,
-        highlight_news: `${NEWS_BASE}/highlight_news`,
+        getHighlightNews: `${NEWS_BASE}/highlight_news`,
         news: {
             getList: (query, filter, is_published, sort_by, page, limit) => `${NEWS_BASE}/news?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&page=${page}&limit=${limit}`,
             getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&limit=${limit}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
-            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`
+            getSearchSuggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
+            updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers` // patch
         },
         news_categories: {
             getAll: `${NEWS_BASE}/news_categories`,
@@ -85,7 +85,6 @@ const API_ROUTES = {
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
         getFeaturedNews: `${NEWS_BASE}/featured_news`,
-        search_suggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`
     },
     recruitment: {
         base: RECRUITMENT_BASE,
