@@ -55,7 +55,7 @@ const products = {
         const filter = req.query.filter || '';
         const is_featured = req.query.is_featured;
 
-        const data = await productServices.getSearchSuggestions(query, filter, is_featured);
+        const data = await productServices.products.getSearchSuggestions(query, filter, is_featured);
         res.status(200).json(data);
     },
     updateFeatureOne: async (req, res) => {
@@ -133,7 +133,7 @@ const product_categories = {
         const query = req.query.query || '';
         const id = req.query.id || '';
 
-        const data = await productServices.getSearchSuggestions(id, query);
+        const data = await productServices.product_categories.getSearchSuggestions(id, query);
         res.status(200).json(data);
     },
     createOne: async (req, res) => { 

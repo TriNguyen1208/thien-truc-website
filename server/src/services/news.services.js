@@ -43,7 +43,7 @@ const getNumPage = async (query = '', filter = '', is_published) => {
     `)).rows?.[0]?.total
 
     if (!totalCount) {
-        throw new Error("Can't get item totalCount");
+        throw new Error("Can't get news totalCount");
     }
 
     return totalCount;
