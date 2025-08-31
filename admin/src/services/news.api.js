@@ -54,8 +54,8 @@ const news = {
         const res = await axios.patch(API_ROUTES.news.news.updateCategory, changedItems);
         return res.data;
     },
-    updateFeatureOne: async (data) => {
-        const res = await axios.patch(API_ROUTES.news.news.updateFeatureOne, data)
+    updateFeaturedNews: async (data) => {
+        const res = await axios.patch(API_ROUTES.news.news.updateFeaturedNews, data)
         return res.data;
     },
     deleteOne: async (id) => {

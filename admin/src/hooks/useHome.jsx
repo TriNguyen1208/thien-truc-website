@@ -97,6 +97,7 @@ const highlight_stats_about_us = {
                     queryKey: ["highlight_stats_about_us"],
                     exact: false
                 });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -113,6 +114,7 @@ const highlight_stats_about_us = {
                     queryKey: ["highlight_stats_about_us"],
                     exact: false
                 });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -129,6 +131,7 @@ const highlight_stats_about_us = {
                     queryKey: ["highlight_stats_about_us"],
                     exact: false
                 });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);

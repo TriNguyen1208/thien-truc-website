@@ -65,7 +65,7 @@ const HomePageContent = () => {
   const { mutate: deleteHighlightFeature, isPending: isPendingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
   const { data: highlightNewsData, isLoading: isLoadingHighlightNews, refetch  } = useNews.news.getAllFeatured();
-  const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.news.updateFeatureOne();
+  const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.news.updateFeaturedNews();
   const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
 
 

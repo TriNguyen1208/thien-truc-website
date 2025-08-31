@@ -239,42 +239,97 @@ const submitContact = async (applicationData) => {
     const company_email = (await pool.query('SELECT company_email FROM contact.company_info')).rows?.[0]?.company_email;
 
     //Send mail to company
-    await sendMail({
+    const sendToCompanyPromise = sendMail({
         to: company_email,//process.env.RECEIVER_EMAIL,
         subject: `Liên hệ từ ${name}`,
         html: `
-        <h2>Thông tin liên hệ:</h2>
-        <ul>
-            <li><strong>Họ tên:</strong> ${name}</li>
-            <li><strong>Email:</strong> ${email}</li>
-            <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
-            <li><strong>Chủ đề:</strong> ${title}</li>
-            <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
-        </ul>
-        <hr>
-        <small>Hệ thống gửi tự động từ website.</small>
+        <div style="font-family: Arial, sans-serif; background-color: #f0fff0; padding: 20px; color: #333333;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+                
+                <div style="background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center;">
+                    <h1 style="margin: 0; font-size: 24px;">Thông tin liên hệ</h1>
+                    <p style="margin: 5px 0 0; font-size: 14px;">Bạn có một yêu cầu liên hệ mới từ website.</p>
+                </div>
+                
+                <div style="padding: 20px;">
+                
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 0 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Chi tiết người liên hệ</h2>
+                    <div style="background-color: #ffffff; padding: 15px; border-left: 4px solid #4CAF50; border-radius: 4px;">
+                        <p style="margin: 0 0 5px; font-size: 16px;"><strong>Họ tên:</strong> <span style="color: #00796b;"><strong>${name}</strong></span></p>
+                        <p style="margin: 0 0 5px; font-size: 16px;"><strong>Email:</strong> <span style="color: #00796b;"><strong>${email}</strong></span></p>
+                        <p style="margin: 0; font-size: 16px;"><strong>Điện thoại:</strong> <span style="color: #00796b;"><strong>${phone || 'Không cung cấp'}</strong></span></p>
+                    </div>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Chủ đề</h2>
+                    <div style="background-color: #ffffff; padding: 15px; border-left: 4px solid #4CAF50; border-radius: 4px; text-align: left;">
+                        <p style="margin: 0; font-size: 16px; color: #000000;">${title}</p>
+                    </div>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Nội dung</h2>
+                    <div style="padding: 15px; background-color: #ffffff; border-left: 4px solid #4CAF50; line-height: 1.6; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 16px; color: #000000;">${content.replace(/\n/g, '<br>')}</p>
+                    </div>
+                </div>
+                
+                <div style="background-color: #e8f5e9; padding: 20px; text-align: center; font-size: 13px; color: #757575; border-top: 1px solid #c8e6c9; white-space: normal;">
+                    Hệ thống gửi tự động từ website của bạn.
+                </div>
+            </div>
+        </div>
     `
     })
     //Send mail to applicant
-    await sendMail({
+    const sendToApplicantPromise = sendMail({
         to: applicationData.email,
-        subject: "Xác nhận nhận đơn liên hệ",
+        subject: "Bản sao đơn liên hệ",
         html: `
-            <h2>Cảm ơn bạn đã liên hệ!</h2>
-            <p>Chúng tôi đã nhận được thông tin liên hệ của bạn với thông tin sau:</p>
-            <ul>
-                <li><strong>Họ tên:</strong> ${name}</li>
-                <li><strong>Email:</strong> ${email}</li>
-                <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
-                <li><strong>Chủ đề:</strong> ${title}</li>
-                <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
-            </ul>
-            <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
-            <hr>
-            <small>Trân trọng, Bộ phận Nhân sự</small>
+            <div style="font-family: Arial, sans-serif; background-color: #f0fff0; padding: 20px; color: #333333;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+                
+                <div style="background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center;">
+                    <h1 style="margin: 0; font-size: 24px;">Xác nhận đã nhận yêu cầu liên hệ</h1>
+                    <p style="margin: 5px 0 0; font-size: 14px;">Cảm ơn bạn đã liên hệ với chúng tôi!</p>
+                </div>
+                
+                <div style="padding: 20px;">
+                    <p style="margin: 0 0 15px; font-size: 16px; color: #000000;">Chào <strong>${name}</strong>,</p>
+                    <p style="margin: 0 0 15px; font-size: 16px; color: #000000;">Chúng tôi đã nhận được yêu cầu liên hệ của bạn. Chúng tôi sẽ sớm xem xét và phản hồi lại bạn.</p>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; b order-bottom: 2px solid #e0e0e0;">Bản sao yêu cầu của bạn</h2>
+                    
+                    <div style="background-color: #ffffff; padding: 15px; border-left: 4px solid #4CAF50; border-radius: 4px;">
+                        <p style="margin: 0 0 5px; font-size: 16px;"><strong>Họ tên:</strong> <span style="color: #00796b;"><strong>${name}</strong></span></p>
+                        <p style="margin: 0 0 5px; font-size: 16px;"><strong>Email:</strong> <span style="color: #00796b;"><strong>${email}</strong></span></p>
+                        <p style="margin: 0; font-size: 16px;"><strong>Điện thoại:</strong> <span style="color: #00796b;"><strong>${phone || 'Không cung cấp'}</strong></span></p>
+                    </div>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Chủ đề</h2>
+                    <div style="background-color: #ffffff; padding: 15px; border-left: 4px solid #4CAF50; border-radius: 4px; text-align: left;">
+                        <p style="margin: 0; font-size: 16px; color: #000000;">${title}</p>
+                    </div>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Nội dung</h2>
+                    <div style="padding: 15px; background-color: #ffffff; border-left: 4px solid #4CAF50; line-height: 1.6; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 16px; color: #000000;">${content.replace(/\n/g, '<br>')}</p>
+                    </div>
+                </div>
+                
+                <div style="background-color: #e8f5e9; padding: 20px; text-align: center; font-size: 12px; color: #757575; border-top: 1px solid #c8e6c9;">
+                    <p style="margin: 0;">Trân trọng,</p>
+                    <p style="margin: 5px 0 0;">Thiên Trúc</p>
+                </div>
+            </div>
+        </div>
         `
     })
 
+    try {
+        await Promise.all([sendToCompanyPromise, sendToApplicantPromise]);
+    } catch (err) {
+        console.error('Lỗi khi gửi đơn liên hệ: ', err)
+        throw new Error('Lỗi khi gửi đơn liên hệ');
+    }
+    
     return { success: true, message: "Ứng tuyển thành công" };
 }
 

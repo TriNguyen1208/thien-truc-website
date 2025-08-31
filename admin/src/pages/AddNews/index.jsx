@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLayout } from "@/layouts/LayoutContext";
-// import UploadImage from '../../components/UploadImage'
 import UploadImage from '../../components/UploadImage';
 import CustomButton from '../../components/ButtonLayout';
 import { SaveIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
-import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { extractBlogImages } from '../../utils/handleImage';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';

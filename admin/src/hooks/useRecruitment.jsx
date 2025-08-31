@@ -16,7 +16,6 @@ const updateRecruitmentPage = {
             mutationFn: (data) => recruitmentServices.updateRecruimentPage.banner(data),
             onSuccess: (success) => {
                 toast.success(success.message)
-                queryClient.invalidateQueries({ queryKey: ['recruitment'] });
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {
@@ -30,7 +29,6 @@ const updateRecruitmentPage = {
             mutationFn: (data) => recruitmentServices.updateRecruimentPage.visibility(data),
             onSuccess: (success) => {
                 toast.success(success.message)
-                queryClient.invalidateQueries({ queryKey: ['recruitment'] });
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {
@@ -44,7 +42,6 @@ const updateRecruitmentPage = {
             mutationFn: (data) => recruitmentServices.updateRecruimentPage.culture(data),
             onSuccess: (success) => {
                 toast.success(success.message)
-                queryClient.invalidateQueries({ queryKey: ['recruitment'] });
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {
@@ -58,7 +55,6 @@ const updateRecruitmentPage = {
             mutationFn: (data) => recruitmentServices.updateRecruimentPage.culture_images(data),
             onSuccess: (success) => {
                 toast.success(success.message)
-                queryClient.invalidateQueries({ queryKey: ['recruitment'] });
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {

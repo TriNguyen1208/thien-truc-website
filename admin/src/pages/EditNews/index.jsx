@@ -6,7 +6,6 @@ import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
-import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';

@@ -58,7 +58,7 @@ const manager = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (username) => adminServices.manager.deleteOne(username),
-            onSuccess: () => {
+            onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ['manager'] });
                 queryClient.invalidateQueries({ queryKey: ['quantity'] });
                 toast.success(success.message);

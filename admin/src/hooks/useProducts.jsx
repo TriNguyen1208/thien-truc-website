@@ -17,11 +17,11 @@ const updateProductPage = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => productsServices.updateProductPage.banner(data),
-            onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ["banner_product_page"]});
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ["product_page"]});
                 toast.success(success.message);
             },
-            onError: () => {
+            onError: (error) => {
                 toast.error(error.message)
             }
         });
@@ -30,9 +30,12 @@ const updateProductPage = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => productsServices.updateProductPage.visibility(data),
-            onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ["visibility_product_page"]});
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ["product_page"]});
                 toast.success(success.message);
+            },
+            onError: (error) => {
+                toast.error(error.message);
             }
         });
     },
@@ -59,7 +62,7 @@ const products = {
     useGetSearchSuggestions: (query = '', filter = '', is_featured) => {
         return useQuery({
             queryKey: ["product_suggestions", query, filter, is_featured],
-            queryFn: () => productsServices.getSearchSuggestions(query, filter, is_featured),
+            queryFn: () => productsServices.products.getSearchSuggestions(query, filter, is_featured),
             staleTime: 10 * 60 * 1000,
         });
     },
@@ -72,7 +75,10 @@ const products = {
             mutationFn: (data) => productsServices.products.createOne(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["product_by_category"] });
+                queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false});
+                queryClient.invalidateQueries({ queryKey: ["product_quantity"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_suggestions"], exact: false });
                 navigate(location.pathname, { state: {createId: success.id} });
             },
             onError: (error) => {
@@ -87,7 +93,9 @@ const products = {
             mutationFn: ({ id, data }) => productsServices.products.updateOne(id, data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["product_by_category"] });
+                queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_suggestions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -129,7 +137,10 @@ const products = {
             mutationFn: (id) => productsServices.products.deleteOne(id),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["product_by_category"] });
+                queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_quantity"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_suggestions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -161,7 +172,9 @@ const product_categories = {
             mutationFn: (data) => productsServices.product_categories.createOne(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["product_categories_list"] });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
+                
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -175,7 +188,8 @@ const product_categories = {
             mutationFn: ({ id, data }) => productsServices.product_categories.updateOne(id, data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["product_categories_list"] });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -189,7 +203,8 @@ const product_categories = {
             mutationFn: (id) => productsServices.product_categories.deleteOne(id),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["product_categories_list"] });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -235,8 +250,6 @@ const updatePricePage = {
 }
 
 function useGetQuantity() {
-    const queryClient = useQueryClient();
-    queryClient.invalidateQueries(['product_quantity']);
     return useQuery({
         queryKey: ['product_quantity'],
         queryFn: productsServices.getQuantity,

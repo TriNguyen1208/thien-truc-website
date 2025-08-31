@@ -158,7 +158,7 @@ const API_ROUTES = {
             updateOne: (id) => `${NEWS_BASE}/news/${id}`,
             updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`,
             updateCategory: `${NEWS_BASE}/news/update_categories`, 
-            updateFeatureOne: `${NEWS_BASE}/featured_news`,
+            updateFeaturedNews: `${NEWS_BASE}/featured_news`,
             // delete
             deleteOne: (id) => `${NEWS_BASE}/news/${id}`,
         },

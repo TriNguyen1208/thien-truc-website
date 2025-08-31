@@ -69,6 +69,7 @@ const company_services = {
             onSuccess: (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["company_services"] });
+                queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -82,6 +83,7 @@ const company_services = {
             onSuccess: (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["company_services"] });
+                queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -95,6 +97,7 @@ const company_services = {
             onSuccess: (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["company_services"] });
+                queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -119,6 +122,7 @@ const why_choose_us = {
             onSuccess: (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["why_choose_us"] });
+                queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -132,6 +136,7 @@ const why_choose_us = {
             onSuccess: (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["why_choose_us"] });
+                queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -145,6 +150,7 @@ const why_choose_us = {
             onSuccess: (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["why_choose_us"] });
+                queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);

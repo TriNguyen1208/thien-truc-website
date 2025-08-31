@@ -58,7 +58,7 @@ const news = {
     },
     useGetSearchSuggestions: (query = '', filter = '') => {
         return useQuery({
-            queryKey: ['news-suggestions', query, filter],
+            queryKey: ['news_suggestions', query, filter],
             queryFn: () => newsServices.news.getSearchSuggestions(query, filter),
             staleTime: 10 * 60 * 1000,
         })
@@ -66,7 +66,7 @@ const news = {
     useGetAllFeatured: () => {
         return useQuery({
             queryKey: ["feature_news"],
-            queryFn: () => newsServices.getFeatureNews(),
+            queryFn: () => newsServices.news.getAllFeatured(),
             staleTime: 10 * 60 * 1000,
         });
     },
@@ -79,11 +79,11 @@ const news = {
             },
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["news_content"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["news_contents"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["news_list"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["news_categories"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["news_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["feature_news"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["news_quantity"] });
                 navigate('/quan-ly-tin-tuc', {state: { createId: success.id }});
             },
             onError: (error) => {
@@ -99,10 +99,11 @@ const news = {
             },
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["news_content"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["news_contents"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["news_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["news_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["feature_news"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["news_content"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -123,10 +124,10 @@ const news = {
             }
         });
     },
-    useUpdateFeatureOne: () => {
+    useUpdateFeaturedNews: () => {
         const queryClient = useQueryClient();
         return useMutation({
-            mutationFn: (data) => newsServices.updateFeatureNews(data),
+            mutationFn: (data) => newsServices.news.updateFeaturedNews(data),
             onSuccess: (success) => {
                 toast.success(success.message);
                 queryClient.invalidateQueries({ queryKey: ["feature_news"] });
@@ -171,8 +172,8 @@ const news_categories = {
     },
     useGetSearchSuggestions: (query = '') => {
         return useQuery({
-            queryKey: ['news-categories-suggestions', query],
-            queryFn: () => newsServices.getSearchCategoriesSuggestions(query),
+            queryKey: ['news_categories_suggestions', query],
+            queryFn: () => newsServices.news_categories.getSearchSuggestions(query),
             staleTime: 10 * 60 * 1000,
         })
     },
@@ -195,6 +196,7 @@ const news_categories = {
             mutationFn: ({ name, rgb_color, id }) => newsServices.news_categories.updateOne(name, rgb_color, id),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["news_categories"] });
+                queryClient.invalidateQueries({ queryKey: ["news_category"], exact: false });
                 toast.success(success.message);
             },
             onError: (error) => {
@@ -208,6 +210,8 @@ const news_categories = {
             mutationFn: (id) => newsServices.news_categories.deleteOne(id),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["news_categories"] });
+                queryClient.invalidateQueries({ queryKey: ["news_categories_suggestions"], exact: false });
+                
                 toast.success(success.message);
             },
             onError: (error) => {
@@ -249,7 +253,7 @@ export default {
         createOne: news.useCreateOne,//
         updateOne: news.useUpdateOne,//
         updateCategory: news.useUpdateCategory,//
-        updateFeatureOne: news.useUpdateFeatureOne,//
+        updateFeaturedNews: news.useUpdateFeaturedNews,//
         deleteOne: news.useDeleteOne,//
     },
     news_categories: {

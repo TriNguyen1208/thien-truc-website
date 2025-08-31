@@ -52,7 +52,7 @@ const company_info = {
             mutationFn: (updatedCompanyInfo) => contactServices.company_info.update(updatedCompanyInfo),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ['company_info'] });
-                queryClient.invalidateQueries({ queryKey: ['company_page'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
                 toast.success(success.message)
             },
             onError: (error) => {
@@ -77,6 +77,7 @@ const support_agents = {
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ['contact_support_agents'] });
                 queryClient.invalidateQueries({ queryKey: ['contact_quantity'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
                 toast.success(success.message)
             },
             onError: (error) => {
@@ -90,6 +91,7 @@ const support_agents = {
             mutationFn: ({ id, updatedsupport_agents }) => contactServices.support_agents.updateOne(id, updatedsupport_agents),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ['contact_support_agents'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
                 toast.success(success.message)
             },
             onError: (error) => {
@@ -103,6 +105,8 @@ const support_agents = {
             mutationFn: (id) => contactServices.support_agents.deleteOne(id),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ['contact_support_agents'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_quantity'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
                 toast.success(success.message)
             },
             onError: (error) => {

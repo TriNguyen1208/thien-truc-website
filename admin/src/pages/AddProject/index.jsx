@@ -5,7 +5,6 @@ import CustomButton from '../../components/ButtonLayout';
 import { SaveIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import useProjects from '../../hooks/useProjects';
-import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {extractBlogImages} from '../../utils/handleImage';
 import ProjectSetting from '../../components/ProjectSetting';
 import Notification from '@/components/Notification'

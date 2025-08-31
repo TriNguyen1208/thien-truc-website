@@ -71,7 +71,7 @@ const product_categories = {
         return res.data;
     },
     getSearchSuggestions: async (query = '') => {
-        const res = await axios.get(API_ROUTES.product.search_categories_suggestions(query));
+        const res = await axios.get(API_ROUTES.product.product_categories.getSearchSuggestions(query));
         return res.data;
     },
     createOne: async (data) => {

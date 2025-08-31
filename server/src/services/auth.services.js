@@ -243,12 +243,35 @@ const sendResetPassword = async (data) => {
 
     await sendMail({
         to: email,
-        subject: 'Yêu cầu đặt lại mật khẩu',
+        subject: 'Yêu cầu khôi phục mật khẩu',
         html: `
-        <p>Xin chào <b>${username}</b>,</p>
-        <p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào liên kết dưới đây để tiến hành:</p>
-        <a href="${resetUrl}">${resetUrl}</a>
-        <p><i>Lưu ý: Liên kết sẽ hết hạn sau 15 phút.</i></p>
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333333;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; color: #000000">
+            <div style="background-color: #4CAF50; color: #ffffff; padding: 25px; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;">Khôi phục mật khẩu</h1>
+            </div>
+            
+            <div style="padding: 25px;">
+            <p style="font-size: 16px; margin: 0 0 15px; color: #000000">Xin chào <strong>${username}</strong>,</p>
+            <p style="font-size: 16px; margin: 0 0 25px; color: #000000">Bạn đã yêu cầu khôi phục mật khẩu cho tài khoản của mình. Vui lòng nhấn vào nút dưới đây để tiếp tục:</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${resetUrl}" style="background-color: #4CAF50; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold; border: 1px solid #0056b3;">Khôi phục mật khẩu</a>
+            </div>
+            
+            <p style="font-size: 16px; margin: 0 0 10px; color: #000000">Nếu nút trên không hoạt động, bạn có thể sao chép và dán liên kết sau vào trình duyệt của mình:</p>
+            <p style="font-size: 14px; color: #007bff; word-wrap: break-word;">${resetUrl}</p>
+            
+            <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 25px 0;">
+            
+            <p style="font-size: 14px; color: #777777; margin: 0;">Lưu ý: Liên kết này chỉ có hiệu lực trong <strong>15 phút</strong>. Nếu bạn không yêu cầu khôi phục mật khẩu, vui lòng bỏ qua email này.</p>
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #999999; border-top: 1px solid #e2e6ea;">
+            <p style="margin: 0;">Email này được gửi tự động từ hệ thống. Vui lòng không trả lời.</p>
+            </div>
+        </div>
+        </div>
         `,
     });
 

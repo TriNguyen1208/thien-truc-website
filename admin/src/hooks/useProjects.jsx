@@ -58,7 +58,7 @@ const projects = {
     },
     useGetSearchSuggestions: (query, filter, is_featured) => {
         return useQuery({
-            queryKey: ['project-suggestions', query, filter, is_featured],
+            queryKey: ['project_suggestions', query, filter, is_featured],
             queryFn: () => projectsServices.projects.getSearchSuggestions(query, filter, is_featured),
             staleTime: 10 * 60 * 1000,
         })
@@ -72,11 +72,10 @@ const projects = {
             },
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["project_contents"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["projects"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["project_content"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_quantity"], exact: false });
                 navigate('/quan-ly-du-an', {state: { createId: success.id }});
             },
             onError: (error) => {
@@ -92,10 +91,9 @@ const projects = {
             },
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["project_contents"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["project_content"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_suggestions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -135,7 +133,10 @@ const projects = {
         return useMutation({
             mutationFn: (id) => projectsServices.projects.deleteOne(id),
             onSuccess: (success)=> { 
+                queryClient.invalidateQueries({ queryKey: ["project"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_quantity"], exact: false });
                 toast.success(success ? success.message: "Xóa thành công!")
                 navigate("/quan-ly-du-an");
             },
@@ -162,8 +163,8 @@ const project_regions = {
     },
     useGetSearchSuggestions: (query = '') => {
         return useQuery({
-            queryKey: ['project-categories-suggestions', query],
-            queryFn: () => projectsServices.getSearchCategoriesSuggestions(query),
+            queryKey: ['project_categories_suggestions', query],
+            queryFn: () => projectsServices.project_regions.getSearchSuggestions(query),
             staleTime: 10 * 60 * 1000,
         })
     },
@@ -173,6 +174,7 @@ const project_regions = {
             mutationFn: ({ name, rgb_color }) => projectsServices.project_regions.createOne(name, rgb_color),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_region"], exact: false });
                 toast.success(success.message);
             },
             onError: (error) => {
@@ -185,6 +187,7 @@ const project_regions = {
         return useMutation({
             mutationFn: ({ name, rgb_color, id }) => projectsServices.project_regions.updateOne(name, rgb_color, id),
             onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
                 toast.success(success.message);
             },
@@ -199,6 +202,7 @@ const project_regions = {
             mutationFn: (id) => projectsServices.project_regions.deleteOne(id),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_categories_suggestions"], exact: false });
                 toast.success(success.message);
             },
             onError: (error) => {
@@ -217,8 +221,6 @@ const project_contents = {
     }
 }
 function useGetQuantity() {
-    const queryClient = useQueryClient();
-    queryClient.invalidateQueries(['project_quantity']);
     return useQuery({
         queryKey: ['project_quantity'],
         queryFn: projectsServices.getQuantity,
