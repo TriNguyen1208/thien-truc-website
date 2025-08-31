@@ -14,7 +14,6 @@ const Setting = ({
     onSave,
     content,
     useData,
-    useDataSuggestion,
     useDataCategories,
     searchSettingRef
 }) => {
@@ -154,7 +153,7 @@ const Setting = ({
         setTrigger(prev => prev + 1)
     };
     const handleSearchSuggestion = (query, filter) => {
-        return useDataSuggestion.getSearchSuggestions(query, filter);
+        return useData.getSearchSuggestions(query, filter);
     };
     const handleToggle = (id) => {
         setSelectedId((prev) =>

@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import Notification from '../../components/Notification';
 import SearchBar from '@/components/Search';
-import useProjects from '@/hooks/useProjects';
+import useProjects from '../../hooks/useProjects';
 import Loading from '@/components/Loading'
 import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';
@@ -133,7 +133,7 @@ export default function Project () {
   };
 
   const handleSearchSuggestions = (query, filter, is_featured) => {
-    return useProjects.getSearchSuggestions(query, filter === 'Tất cả khu vực' ? undefined : filter, is_featured);
+    return useProjects.projects.getSearchSuggestions(query, filter === 'Tất cả khu vực' ? undefined : filter, is_featured);
   }
   const columnWidths = ['9%', '10%', '32%', '13%', '11%', '10%', '13%'];
 

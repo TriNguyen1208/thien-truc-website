@@ -41,8 +41,8 @@ const EditProject = () => {
     //Call API
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
     const {data: project_contents, isLoading: isLoadingProjectContent, isFetching: isFetchingProjectContent} = useProjects.project_contents.getOne(project_id);
-    const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.project_contents.updateOne()
-    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne(() => navigate('/quan-ly-du-an'));
+    const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.projects.updateOne()
+    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {

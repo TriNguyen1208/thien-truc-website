@@ -41,8 +41,8 @@ const EditNews = () => {
 
     const {data: news_contents, isLoading: isLoadingNewsContent, isFetching: isFetchingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
-    const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news_contents.updateOne()
-    const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne(() => navigate('/quan-ly-tin-tuc'));
+    const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news.updateOne()
+    const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne();
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {

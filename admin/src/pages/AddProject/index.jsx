@@ -32,7 +32,7 @@ const AddProject = () => {
 
     //Call API
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const {mutate: mutateProject, isPending: isPendingProject} = useProjects.project_contents.postOne()
+    const {mutate: mutateProject, isPending: isPendingProject} = useProjects.projects.createOne()
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {

@@ -1,5 +1,5 @@
 import {useLayout} from '@/layouts/LayoutContext'
-import useContact from '@/hooks/useContact';
+import useContact from '../../hooks/useContact';
 import { useEffect,useState } from 'react'
 import Table from '@/components/Table'
 import Button from '@/components/Button'

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLayout } from '@/layouts/LayoutContext';
 import Button from '@/components/Button';
 import { DeleteIcon, PlusIcon, SaveIcon } from '@/components/Icon';
-import useContact from '@/hooks/useContact'
+import useContact from '../../hooks/useContact'
 import Notification from '@/components/Notification'
 import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'
@@ -40,8 +40,8 @@ function Address({index,address,isChecked, isMultiple, handleDelete, handleChang
 const Company = () => {
 
     const { setLayoutProps } = useLayout();
-    const {data: companyInfo, isLoading: isLoadingCompanyInfo} = useContact.getCompanyInfo()
-    const {mutate: updateCompanyInfo, isPending: isLoadingUpdateCompanyInfo} = useContact.patchCompanyInfo()
+    const {data: companyInfo, isLoading: isLoadingCompanyInfo} = useContact.company_info.get()
+    const {mutate: updateCompanyInfo, isPending: isLoadingUpdateCompanyInfo} = useContact.company_info.update()
 
     const [companyAddressList , setCompanyAddressList] = useState([])
     const [companyHourList , setCompanyHourList] = useState([])

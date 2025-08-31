@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react"
 import SimpleForm from '../../components/SimpleForm'
 import SearchBar from '../../components/Search'
 import { useState } from 'react';
-import useProduct from "../../hooks/useProducts";
 import Table from "../../components/Table"
 import { DeleteIcon, EditIcon, SettingIcon } from "../../components/Icon"
 import Notification from '@/components/Notification'
@@ -66,7 +65,7 @@ const ProductCategories = () => {
   const { mutate: updateOneProductCategories, isPending: isPendingUpdateProductCategories } = useProducts.product_categories.updateOne();
   const { mutate: createOneProductCategories, isPending: isPendingCreateOneProductCategories } = useProducts.product_categories.createOne();
   const { mutate: deleteOneProductCategories, isPending: isPendingDeleteOneProductCategories } = useProducts.product_categories.deleteOne();
-  const { mutateAsync: updateCategory, isPending: isPendingUpdateCategory } = useProduct.products.updateCategory();
+  const { mutateAsync: updateCategory, isPending: isPendingUpdateCategory } = useProducts.products.updateCategory();
   if (isLoadingProductCategoriesData || isPendingUpdateProductCategories || isPendingCreateOneProductCategories || isPendingDeleteOneProductCategories || isPendingUpdateCategory) {
     return (
       <Loading/>
@@ -140,7 +139,7 @@ const ProductCategories = () => {
   }
   const handleSearchSuggestion = (query) => {
 
-    return useProduct.getSearchCategoriesSuggestion(query);
+    return useProducts.product_categories.getSearchSuggestions(query);
   }
   const dataSearch = {
     hasButtonCategory: false,
@@ -262,9 +261,8 @@ const ProductCategories = () => {
           }
         }}
         content={contentSetting}
-        useData={useProduct.products}
-        useDataSuggestion={useProduct}
-        useDataCategories={useProduct.product_categories}
+        useData={useProducts.products}
+        useDataCategories={useProducts.product_categories}
         searchSettingRef={searchSettingRef}
         onSave={async (changedItems) => {
             await updateCategory({ changedItems: changedItems });

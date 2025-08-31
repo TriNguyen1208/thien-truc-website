@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
-import useNews from '@/hooks/useNews'
+import useNews from '../../hooks/useNews'
 import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
@@ -12,8 +12,8 @@ const NewsPageContent = () => {
   const [isVisible, setIsVisible] = useState(null);
 
   const {data: NewsPage, isLoading: isLoadingNewsPage} = useNews.getNewsPage()
-  const { mutate: updateNewsPage, isPending } = useNews.patchNewsPage();
-  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useNews.updateVisibility();
+  const { mutate: updateNewsPage, isPending } = useNews.updateNewsPage.banner();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useNews.updateNewsPage.visibility();
   
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)

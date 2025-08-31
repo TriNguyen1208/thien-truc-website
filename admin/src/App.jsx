@@ -9,7 +9,6 @@ import { router } from '@/routes/router';
 import { RouterProvider } from 'react-router-dom';
 import Loading from '@/components/Loading';
 const queryClient = new QueryClient();
-import { NavigationGuardProvider } from './layouts/NavigatorProvider';
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -17,15 +16,13 @@ export default function App() {
   }, [])
 
   return (
-    <NavigationGuardProvider>
-        <QueryClientProvider client={queryClient}>
-            <LayoutProvider>
-              <RouterProvider router={router}
-              fallbackElement={<Loading/>}/>
-                <ToastContainer/>
-            </LayoutProvider>
-        </QueryClientProvider>
-    </NavigationGuardProvider>
+    <QueryClientProvider client={queryClient}>
+        <LayoutProvider>
+            <RouterProvider router={router}
+            fallbackElement={<Loading/>}/>
+            <ToastContainer/>
+        </LayoutProvider>
+    </QueryClientProvider>
   )
 }
   

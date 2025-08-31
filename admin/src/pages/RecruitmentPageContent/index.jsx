@@ -18,7 +18,7 @@ const RecruitmentPageContent = () => {
   const {setLayoutProps} = useLayout();
   const [isVisible, setIsVisible] = useState(null);
   const {mutate: updateRecruitment, isPending: isPendingRecruitment} = useRecruitment.patch();
-  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useRecruitment.updateVisibility();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useRecruitment.updateRecruitmentPage.visibility();
 
   const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
   const [saveOpenBanner, setSaveOpenBanner] = useState(false);

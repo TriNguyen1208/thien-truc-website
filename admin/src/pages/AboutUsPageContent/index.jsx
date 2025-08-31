@@ -35,9 +35,9 @@ const AboutUsPageContent = () => {
   const [dataCurrent, setDataCurrent] = useState(null);
 
   const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData, isFetching: isFetchingAboutUsPageData} = useAboutUs.getAboutUsPage();
-  const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useAboutUs.updateAboutUsPage.updateBanner();
-  const { mutate: updateOurStory, isPending: isPendingUpdateOurStory } = useAboutUs.updateAboutUsPage.updateOurStory();
-  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useAboutUs.updateAboutUsPage.updateVisibility();
+  const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useAboutUs.updateAboutUsPage.banner();
+  const { mutate: updateOurStory, isPending: isPendingUpdateOurStory } = useAboutUs.updateAboutUsPage.ourStory();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useAboutUs.updateAboutUsPage.visibility();
 
   const { data: dutyAndResponsibilityData, isLoading: isLoadingDutyAndResponsibility } = useAboutUs.company_services.getAll();
   const { mutate: updateDutyAndResponsibility, isPending: isPendingUpdateDutyAndResponsibility } = useAboutUs.company_services.updateOne();

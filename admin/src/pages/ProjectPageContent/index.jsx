@@ -1,7 +1,7 @@
 import {useState, useEffect } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
-import useProjects from '@/hooks/useProjects'
+import useProjects from '../../hooks/useProjects'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 const ProjectPageContent = () => {
@@ -11,8 +11,8 @@ const ProjectPageContent = () => {
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)
   const {data: projectPage, isLoading: isLoadingProjectPage, isFetching: isFetchingProjectPage} = useProjects.getProjectPage()
-  const { mutate: updateProjectPage, isPending: isPendingProjectPage } = useProjects.patchProjectPage();
-  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProjects.updateVisibility();
+  const { mutate: updateProjectPage, isPending: isPendingProjectPage } = useProjects.updateProjectPage.banner();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProjects.updateProjectPage.visibility();
 
   useEffect(()=>{
     setLayoutProps({

@@ -83,7 +83,6 @@ const Product = () => {
       bool_featured = undefined
     }
   }
-  // const { mutate: updateOneProduct, isPending: isPendingUpdateOneProduct } = useProducts.products.updateOne();
   const { data: productData, isLoading: isLoadingProductData } = useProducts.products.getListByCategory(id, query, filter === categoriesDefault ? undefined : filter, bool_featured);
   const { data: productCategoriesData, isLoading: isLoadingProductCategoriesData } = useProducts.product_categories.getAll();
   const { mutate: updateFeatureProduct, isPending: isPendingUpdateFeatureOne } = useProducts.products.updateFeatureOne();
@@ -366,7 +365,7 @@ const Product = () => {
   }
 
   const handleSearchSuggestion = (query, category, display) => {
-    return useProducts.getSearchSuggestions(query, category, display);
+    return useProducts.products.getSearchSuggestions(query, category, display);
   }
   const dataSearch = {
     hasButtonCategory: true,

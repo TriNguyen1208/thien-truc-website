@@ -7,7 +7,7 @@ import Notification from '@/components/Notification'
 import Setting from '@/components/Setting';
 import SearchBar from '@/components/Search';
 import SimpleForm from '@/components/SimpleForm';
-import useNews from '@/hooks/useNews';
+import useNews from '../../hooks/useNews';
 import Loading from '@/components/Loading'
 // Còn api thêm loại tin tức, chỉnh sửa loại tin tức, xóa loại tin tức, cài đặt loại tin tức
 export default function NewsCategories() {
@@ -168,7 +168,7 @@ export default function NewsCategories() {
         newsCategories = result.data;
         isLoadingNewsCategories = result.isLoading;
       } else {
-        const result = useNews.getSearchCategoriesSuggestions(query);
+        const result = useNews.news_categories.getSearchSuggestions(query);
         newsCategories = result.data;
         isLoadingNewsCategories = result.isLoading;
       }
@@ -192,7 +192,7 @@ export default function NewsCategories() {
     navigate(`/quan-ly-loai-tin-tuc?id=${item.id}`);
   };
   const handleSearchSuggestions = (query) => {
-    return useNews.getSearchCategoriesSuggestions(query);
+    return useNews.news_categories.getSearchSuggestions(query);
   }
 
   // Render

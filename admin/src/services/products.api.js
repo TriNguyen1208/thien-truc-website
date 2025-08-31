@@ -1,20 +1,6 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
 
-const getPricePage = async () => {
-    const res = await axios.get(API_ROUTES.product.price_page);
-    return res.data;
-}
-const patchPricePage = async (updatedPage)=>{
-    const res = await axios.patch(API_ROUTES.product.update_price_page, updatedPage)
-    return res.data
-}
-
-const getQuantity = async()=>{
-    const res = await axios.get(API_ROUTES.product.count)
-    return res.data
-}
-
 // ==== Base ====
 const getAll = async () => {
     const res = await axios.get(API_ROUTES.product.base);
@@ -26,12 +12,16 @@ const getProductPage = async () => {
     const res = await axios.get(API_ROUTES.product.product_page);
     return res.data;
 }
-const updateProductPage = async (data) => {
-    const res = await axios.patch(API_ROUTES.product.update_product_page, data);
-    return res.data;
+const updateProductPage = {
+    banner: async (data) => {
+        const res = await axios.patch(API_ROUTES.product.updateProductPage.banner, data);
+        return res.data;
+    },
+    visibility: async (data) => {
+        const res = await axios.patch(API_ROUTES.product.updatePricePage.visibility, data);
+        return res.data;
+    }
 }
-
-// ==== Products ====
 const products = {
     getList: async (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
         const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured, page, limit));
@@ -42,12 +32,19 @@ const products = {
         const res = await axios.get(API_ROUTES.product.products.getListByCategory(id, query, filter, is_featured, limit));
         return res.data;
     },
-
+    
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.product.products.getOne(id));
         return res.data;
     },
-
+    getAllFeatured: async () => {
+        const res = await axios.get(API_ROUTES.product.products.getAllFeatured);
+        return res.data;
+    },
+    getSearchSuggestions: async (query = '', filter = '', is_featured) => {
+        const res = await axios.get(API_ROUTES.product.products.getSearchSuggestions(query, filter, is_featured));
+        return res.data;
+    },
     createOne: async (data) => {
         const res = await axios.post(API_ROUTES.product.products.createOne, data, {
             headers: {
@@ -93,7 +90,14 @@ const product_categories = {
         const res = await axios.get(API_ROUTES.product.product_categories.getOne(id));
         return res.data;
     },
-
+    getAllFeatured: async () => {
+        const res = await axios.get(API_ROUTES.product.product_categories.getAllFeatured);
+        return res.data;
+    },
+    getSearchSuggestions: async (query = '') => {
+        const res = await axios.get(API_ROUTES.product.search_categories_suggestions(query));
+        return res.data;
+    },
     createOne: async (data) => {
         const res = await axios.post(API_ROUTES.product.product_categories.createOne, data);
         return res.data;
@@ -109,40 +113,23 @@ const product_categories = {
         return res.data;
     }
 }
-
-// ==== Highlight Products ====
-const getHighlightProducts = async () => {
-    const res = await axios.get(API_ROUTES.product.highlight_products);
+const getPricePage = async () => {
+    const res = await axios.get(API_ROUTES.product.price_page);
     return res.data;
 }
-
-// ==== Search Suggestions ====
-const getSearchSuggestions = async (query = '', filter = '', is_featured) => {
-    const res = await axios.get(API_ROUTES.product.search_suggestions(query, filter, is_featured));
-    return res.data;
+const updatePricePage = {
+    banner: async(data) => {
+        const res = await axios.patch(API_ROUTES.product.updatePricePage.banner, data);
+        return res.data;
+    },
+    visibility: async (data) => {
+        const res = await axios.patch(API_ROUTES.product.updatePricePage.visibility, data);
+        return res.data;
+    }
 }
-
-const getSearchCategoriesSuggestions = async (query = '') => {
-    const res = await axios.get(API_ROUTES.product.search_categories_suggestions(query));
-    return res.data;
-}
-
-// ==== Search Suggestions ====
-const getCount = async () => {
-    const res = await axios.get(API_ROUTES.product.count());
-    return res.data;
-}
-const patchProductPage = async (updatedPage)=> {
-    const res = await axios.patch(API_ROUTES.product.update_product_page, updatedPage)
-    return res.data;
-}
-const updateProductVisibility = async (data)=> {
-    const res = await axios.patch(API_ROUTES.product.update_product_visibility, data)
-    return res.data;
-}
-const updatePriceVisibility = async (data)=> {
-    const res = await axios.patch(API_ROUTES.product.update_price_visibility, data)
-    return res.data;
+const getQuantity = async()=>{
+    const res = await axios.get(API_ROUTES.product.count)
+    return res.data
 }
 
 export default {
@@ -151,14 +138,7 @@ export default {
     updateProductPage,
     products,
     product_categories,
-    getHighlightProducts,
-    getSearchSuggestions,
-    getSearchCategoriesSuggestions,
-    getCount,
+    getPricePage,
+    updatePricePage,
     getQuantity,
-    getPricePage, 
-    patchPricePage,
-    patchProductPage,
-    updateProductVisibility,
-    updatePriceVisibility
 };

@@ -53,18 +53,19 @@ const HomePageContent = () => {
 
 
   const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
-  const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useHome.updateHomePage.updateBanner();
-  const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.updateAboutUs();
-  const { mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs } = useHome.updateHomePage.updateImageAboutUs();
-  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useHome.updateHomePage.updateVisibility();
-  
+  const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useHome.updateHomePage.banner();
+  const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.aboutUs();
+  const { mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs } = useHome.updateHomePage.imageAboutUs();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useHome.updateHomePage.visibility();
+  const { mutate: updateBannerImages, isPending: isPendingUpdateBannerImages } = useHome.updateHomePage.bannerImages();
+
   const { data: highlightFeatureData, isLoading: isLoadingHighlightFeature } = useHome.highlight_stats_about_us.getAll();
   const { mutate: updateHighlightFeature, isPending: isPendingUpdateHighlightFeature } = useHome.highlight_stats_about_us.updateOne();
   const { mutate: createHighlightFeature, isPending: isPendingCreateHighlightFeature } = useHome.highlight_stats_about_us.createOne();
   const { mutate: deleteHighlightFeature, isPending: isPendingDeleteHighlightFeature } = useHome.highlight_stats_about_us.deleteOne();
 
-  const { data: highlightNewsData, isLoading: isLoadingHighlightNews, refetch  } = useNews.getFeatureNews();
-  const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.updateFeatureNews();
+  const { data: highlightNewsData, isLoading: isLoadingHighlightNews, refetch  } = useNews.news.getAllFeatured();
+  const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.news.updateFeatureOne();
   const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
 
 
@@ -77,7 +78,6 @@ const HomePageContent = () => {
   const [imageNotification, setImageNotification] = useState(false);
 
   const [nextImageId, setNextImageId] = useState(0);
-  const { mutate: updateBannerImages, isPending: isPendingUpdateBannerImages } = useHome.updateHomePage.updateBannerImages();
   
 
   useEffect(() => {
@@ -610,7 +610,7 @@ const HomePageContent = () => {
                 onSearch: (query, category, display) => {
                 },
                 handleSearchSuggestion: (query) => {
-                  return useNews.getSearchSuggestions(query);
+                  return useNews.news.getSearchSuggestions(query);
                 }
               }}
             />
@@ -939,7 +939,6 @@ const HomePageContent = () => {
         onClose={() => setIsModalOpenSetting(false)}
         content={contentSetting}
         useData={useNews.news}
-        useDataSuggestion={useNews}
         useDataCategories={useNews.news_categories}
         onSave={async (changedItems) => {
           setIsItemAddHighlightNews(changedItems);

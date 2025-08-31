@@ -32,7 +32,7 @@ const AddNews = () => {
     const [recoverOpen, setRecoverOpen] = useState(false);
     //Call API
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
-    const {mutate: mutateNews, isPending: isPendingNews} = useNews.news_contents.postOne()
+    const {mutate: mutateNews, isPending: isPendingNews} = useNews.news.createOne()
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {

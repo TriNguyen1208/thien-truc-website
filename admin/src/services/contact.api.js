@@ -1,17 +1,11 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
-const getQuantity = async()=>{
-    const res = await axios.get(API_ROUTES.contact.count)
-    return res.data
-}
-const getCompanyInfo = async () => {
-    const res = await axios.get(API_ROUTES.contact.company_info);
-    return res.data;
-}
+
 const getContactPage = async () => {
     const res = await axios.get(API_ROUTES.contact.contact_page);
     return res.data;
 }
+
 const updateContactPage = {
     banner: async (data) => {
         const res = await axios.patch(API_ROUTES.contact.updateContactPage.banner, data);
@@ -22,10 +16,17 @@ const updateContactPage = {
         return res.data;
     }
 }
-const patchCompanyInfo = async (updatedData) => {
-    const res = await axios.patch(API_ROUTES.contact.updateCompanyInfo, updatedData)
-    return res.data
+const company_info = {
+    get: async () => {
+        const res = await axios.get(API_ROUTES.contact.company_info.get);
+        return res.data;
+    },
+    update: async (data) => {
+        const res = await axios.patch(API_ROUTES.contact.company_info.update, data)
+        return res.data
+    }
 }
+
 const support_agents =  {
     getAll: async () => {
         const res = await axios.get(API_ROUTES.contact.support_agents.getAll);
@@ -35,8 +36,8 @@ const support_agents =  {
         const res = await axios.get(API_ROUTES.contact.support_agents.getOne(id) );
         return res.data;
     },
-    createOne: async (newsupport_agents) => {
-        const res = await axios.post(API_ROUTES.contact.support_agents.createOne, newsupport_agents, {
+    createOne: async (data) => {
+        const res = await axios.post(API_ROUTES.contact.support_agents.createOne, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
@@ -44,8 +45,8 @@ const support_agents =  {
         });
         return res.data;
     },
-    updateOne: async (id, updatedsupport_agents) => {
-        const res = await axios.patch(API_ROUTES.contact.support_agents.updateOne(id), updatedsupport_agents, {
+    updateOne: async (id, data) => {
+        const res = await axios.patch(API_ROUTES.contact.support_agents.updateOne(id), data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
@@ -58,7 +59,22 @@ const support_agents =  {
         return res.data;
     },
 }
-export default {support_agents, getCompanyInfo, patchCompanyInfo, getQuantity,
-    getContactPage, 
-    updateContactPage
+
+const submitContact = async (data) => {
+    const res = await axios.post(API_ROUTES.contact.submitContact, data);
+    return res.data;
+}
+
+const getQuantity = async ()=>{
+    const res = await axios.get(API_ROUTES.contact.count)
+    return res.data
+}
+
+export default {
+    getContactPage,
+    updateContactPage,
+    company_info,
+    support_agents,
+    submitContact,
+    getQuantity
 }

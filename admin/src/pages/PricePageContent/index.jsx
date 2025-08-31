@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
-import useProducts from '@/hooks/useProducts'
+import useProducts from '../../hooks/useProducts'
 import EditBanner from '@/components/EditBanner'
 import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'
@@ -11,8 +11,8 @@ const PricePageContent = () => {
   const [isVisible, setIsVisible] = useState(null);
 
   const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
-  const { mutate: updatePricePage, isPending: isLoadingUpdatePricePage } = useProducts.patchPricePage();
-  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProducts.updatePriceVisibility();
+  const { mutate: updatePricePage, isPending: isLoadingUpdatePricePage } = useProducts.updatePricePage.banner();
+  const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProducts.updatePricePage.visibility();
   
   const [valuesBanner, setValuesBanner] = useState(null)
   const [openNotification, setOpenNotification] = useState(false)

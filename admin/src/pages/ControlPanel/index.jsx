@@ -5,10 +5,10 @@ import {useNavigate} from 'react-router-dom'
 import {useLayout} from '@/layouts/LayoutContext'
 import Loading from '@/components/Loading'
 import useProjects from '@/hooks/useProjects'
-import useProducts from '@/hooks/useProducts'
+import useProducts from '../../hooks/useProducts'
 import useNews from '@/hooks/useNews'
 import useAdmin from '@/hooks/useAdmin'
-import useContact from '@/hooks/useContact'
+import useContact from '../../hooks/useContact'
 
 function DisplayCards ({data})
 {

@@ -6,7 +6,7 @@
   import Setting from '@/components/Setting';
   import SearchBar from '@/components/Search';
   import SimpleForm from '@/components/SimpleForm';
-  import useProjects from '@/hooks/useProjects';
+  import useProjects from '../../hooks/useProjects';
   import Notification from '@/components/Notification'
   import { toast } from 'react-toastify';
   import Loading from '@/components/Loading'
@@ -141,7 +141,6 @@
         header: ['Mã tin tức', 'Tên tin tức', 'Loại tin tức', 'Trạng thái']
       },
       useData: useProjects.projects,
-      useDataSuggestion: useProjects,
       useDataCategories: useProjects.project_regions,
       searchSettingRef: searchSettingRef
     });
@@ -176,7 +175,7 @@
         projectRegions = result.data;
         isLoadingProjectRegions = result.isLoading;
       } else {
-        const result = useProjects.getSearchCategoriesSuggestions(query);
+        const result = useProjects.projects.getSearchSuggestions(query);
         projectRegions = result.data;
         isLoadingProjectRegions = result.isLoading;
       }
@@ -202,7 +201,7 @@
       navigate(`/quan-ly-khu-vuc-du-an?id=${item.id}`);
     };
     const handleSearchSuggestions = (query) => {
-      return useProjects.getSearchCategoriesSuggestions(query);
+      return useProjects.project_regions.getSearchSuggestions(query);
     }
 
 

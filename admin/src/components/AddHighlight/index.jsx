@@ -11,7 +11,6 @@ const AddHighlight = ({
     content,
     onSave,
     useData,
-    useDataSuggestion,
     useDataCategories
 }) => {
     const {
@@ -112,7 +111,7 @@ const AddHighlight = ({
     };
 
     const handleSearchSuggestion = (query, filter) => {
-        return useDataSuggestion.getSearchSuggestions(query, filter);
+        return useData.getSearchSuggestions(query, filter);
     };
 
     const handleToggle = (id) => {

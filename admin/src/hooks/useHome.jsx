@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import homeServices from "@/services/home.api.js";
+import homeServices from "../services/home.api";
 import { toast } from 'react-toastify';
 
 function useGetHomePage() {
     return useQuery({
-        queryKey: ["home_page_admin"],
+        queryKey: ["home_page"],
         queryFn: homeServices.getHomePage,
         staleTime: 10 * 60 * 1000,
     })
@@ -15,11 +15,11 @@ const updateHomePage = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (data) => homeServices.updateHomePage.banner(data),
-            onSuccess:  (success) => {
+            onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
-            onError:  (error) => {
+            onError: (error) => {
                 toast.error(error.message);
             }
         });
@@ -30,7 +30,7 @@ const updateHomePage = {
             mutationFn: (data) => homeServices.updateHomePage.bannerImages(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -43,7 +43,7 @@ const updateHomePage = {
             mutationFn: (data) => homeServices.updateHomePage.aboutUs(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -56,7 +56,7 @@ const updateHomePage = {
             mutationFn: (data) => homeServices.updateHomePage.imageAboutUs(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -69,7 +69,7 @@ const updateHomePage = {
             mutationFn: (data) => homeServices.updateHomePage.visibility(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["home_page_admin"] });
+                queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -82,14 +82,14 @@ const updateHomePage = {
 const highlight_stats_about_us = {
     useGetAll: () => {
         return useQuery({
-            queryKey: ["admin_highlight_stats_about_us"],
+            queryKey: ["highlight_stats_about_us"],
             queryFn: homeServices.highlight_stats_about_us.getAll,
             staleTime: 10 * 60 * 1000,
         });
     },
     useGetOne: (id) => {
         return useQuery({
-            queryKey: ["admin_highlight_stats_about_us", id],
+            queryKey: ["highlight_stats_about_us", id],
             queryFn: () => homeServices.highlight_stats_about_us.getOne(id),
             enabled: !!id,
         });
@@ -100,7 +100,10 @@ const highlight_stats_about_us = {
             mutationFn: (data) => homeServices.highlight_stats_about_us.createOne(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_highlight_stats_about_us"] });
+                queryClient.invalidateQueries({ 
+                    queryKey: ["highlight_stats_about_us"],
+                    exact: false
+                });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -113,7 +116,10 @@ const highlight_stats_about_us = {
             mutationFn: ({ id, data }) => homeServices.highlight_stats_about_us.updateOne(id, data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_highlight_stats_about_us"] });
+                queryClient.invalidateQueries({ 
+                    queryKey: ["highlight_stats_about_us"],
+                    exact: false
+                });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -126,7 +132,10 @@ const highlight_stats_about_us = {
             mutationFn: (id) => homeServices.highlight_stats_about_us.deleteOne(id),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["admin_highlight_stats_about_us"] });
+                queryClient.invalidateQueries({ 
+                    queryKey: ["highlight_stats_about_us"],
+                    exact: false
+                });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -136,20 +145,19 @@ const highlight_stats_about_us = {
 };
 
 export default {
-    getHomePage: useGetHomePage,
+    getHomePage: useGetHomePage,//
     updateHomePage: {
-        updateBanner: updateHomePage.useUpdateBanner,
-        updateAboutUs: updateHomePage.useUpdateAboutUs,
-        updateBannerImages: updateHomePage.useUpdateBannerImages,
-        updateImageAboutUs: updateHomePage.useUpdateImageAboutUs,
-        updateVisibility: updateHomePage.useUpdateVisibility
-
+        banner: updateHomePage.useUpdateBanner,//
+        aboutUs: updateHomePage.useUpdateAboutUs,//
+        bannerImages: updateHomePage.useUpdateBannerImages,//
+        imageAboutUs: updateHomePage.useUpdateImageAboutUs,//
+        visibility: updateHomePage.useUpdateVisibility//
     },
     highlight_stats_about_us: {
-        getAll: highlight_stats_about_us.useGetAll,
+        getAll: highlight_stats_about_us.useGetAll,//
         getOne: highlight_stats_about_us.useGetOne,
-        createOne: highlight_stats_about_us.useCreateOne,
-        updateOne: highlight_stats_about_us.useUpdateOne,
-        deleteOne: highlight_stats_about_us.useDeleteOne,
+        createOne: highlight_stats_about_us.useCreateOne,//
+        updateOne: highlight_stats_about_us.useUpdateOne,//
+        deleteOne: highlight_stats_about_us.useDeleteOne,//
     }
 }

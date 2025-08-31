@@ -59,4 +59,8 @@ const highlight_stats_about_us = {
         return res.data;
     }
 }
-export default { getHomePage, updateHomePage, highlight_stats_about_us };
+export default { 
+    getHomePage, 
+    updateHomePage, 
+    highlight_stats_about_us 
+};

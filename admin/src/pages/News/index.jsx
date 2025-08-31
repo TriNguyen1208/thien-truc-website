@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import Notification from '../../components/Notification';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import SearchBar from '@/components/Search';
-import useNews from '@/hooks/useNews';
+import useNews from '../../hooks/useNews';
 import Loading from '@/components/Loading'
 import { toast } from 'react-toastify';
 // Còn api xóa tin tứcs
@@ -137,7 +137,7 @@ export default function News() {
   }
 
   const handleSearchSuggestion = (query, filter, is_published) => {
-    return useNews.getSearchSuggestions(query, filter === 'Tất cả thể loại' ? undefined : filter, is_published);
+    return useNews.news.getSearchSuggestions(query, filter === 'Tất cả thể loại' ? undefined : filter, is_published);
   };
 
     // Định nghĩa chiều rộng cột
