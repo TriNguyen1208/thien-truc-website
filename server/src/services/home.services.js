@@ -1,8 +1,6 @@
 import pool from '#@/config/db.js'
 import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
 
-
-
 const getAllTables = async () => {
     const _home_page = await getHomePage();
     const _highlight_stats_about_us = await highlight_stats_about_us.getAll();
@@ -37,11 +35,10 @@ const updateHomePage = {
         return {
             status: 200,
             message: "Cập nhật Banner thành công",
-            action: "Cập nhật Banner trang Trang Chủ"
+            action: "Cập nhật Banner trang Trang chủ"
         }
     },
     bannerImages: async(data, files) => {
-        
         let { image_urls, switch_time } = data;
         if(!Array.isArray(image_urls)){
             image_urls = [image_urls]
@@ -51,6 +48,7 @@ const updateHomePage = {
         if (old_images == null) {
             throw new Error("Can not get banner_images from home.home_page");
         }
+
         const tasks = [];
         let file_index = 0;
         // Lần lượt cập nhật ảnh
@@ -77,7 +75,10 @@ const updateHomePage = {
 
         await Promise.all(tasks);
         await pool.query(`
-            UPDATE home.home_page SET banner_images = $1, banner_switch_time = $2    
+            UPDATE home.home_page
+            SET
+                banner_images = $1,
+                banner_switch_time = $2    
         `, [image_urls, switch_time]);
         
         return {
@@ -88,6 +89,7 @@ const updateHomePage = {
     },
     aboutUs: async (data) => {
         const content = data["Nội dung giới thiệu"];
+
         await pool.query(`
             UPDATE home.home_page
             SET
@@ -96,14 +98,14 @@ const updateHomePage = {
 
         return {
             status: 200,
-            message: "Cập nhật Giới Thiệu Về Công Ty thành công",
-            action: "Cập nhật Giới Thiệu Về Công Ty trang Trang Chủ",
+            message: "Cập nhật Giới thiệu về công ty thành công",
+            action: "Cập nhật Giới thiệu về công ty trang Trang chủ",
         }
     },
     imageAboutUs: async(data, file) => { 
         const old_avatar_img = (await pool.query('SELECT aboutus_img FROM home.home_page')).rows[0].aboutus_img;
         let local_avatar_img = file;
-         const {
+        const {
             aboutus_img,
         } = data
 
@@ -113,11 +115,13 @@ const updateHomePage = {
             aboutus_img,
             'home'
         );
+
         await pool.query(`
             UPDATE home.home_page
             SET
                 aboutus_img = $1
-        `, [final_avatar_img])
+        `, [final_avatar_img]);
+
         return {
             status: 200,
             message: "Cập nhật ảnh giới thiệu công ty Thiên Trúc thành công",
@@ -125,20 +129,17 @@ const updateHomePage = {
         }
     },
     visibility: async(data) => {
-        const {
-            visibility
-        } = data;
-
         await pool.query(`
             UPDATE home.home_page
             SET
                 is_visible = $1
-        `, [visibility]);
+        `, [data]);
+        
         const visibility_state = visibility == true ? "Bật" : "Tắt";
         return {
             status: 200,
-            message: `${visibility_state} chế độ hiển thị trang chủ thành công`,
-            action: `${visibility_state} chế độ hiển thị trang chủ`
+            message: `${visibility_state} chế độ hiển thị Trang chủ thành công`,
+            action: `${visibility_state} chế độ hiển thị Trang chủ`
         }
     }
 }
@@ -146,7 +147,6 @@ const updateHomePage = {
 const highlight_stats_about_us = {
     getAll: async () => {
         const highlight_stats_about_us = (await pool.query("SELECT * FROM home.highlight_stats_about_us")).rows;
-
         if(!highlight_stats_about_us) {
             throw new Error("Can't get highlight_stats_about_us");
         }
@@ -158,7 +158,7 @@ const highlight_stats_about_us = {
             SELECT * FROM home.highlight_stats_about_us WHERE id = ${id}
         `)).rows[0];
 
-        if(!highlight_stat_with_id) {
+        if (!highlight_stat_with_id) {
             throw new Error("Can't get highlight_stats_about_us");
         }    
         return highlight_stat_with_id;
@@ -169,11 +169,10 @@ const highlight_stats_about_us = {
 
         // Kiểm tra số lượng thông số có đủ 3 chưa (giới hạn 3)
         const rowCount = (await pool.query('SELECT count(*) FROM home.highlight_stats_about_us')).rows[0].count;
-        if (rowCount == 3)
-            return {
-                status: 409,
-                message: "Không thể thêm tạo Thông Số Nổi Bật vì đã đủ số lượng (3)"
-            }
+        if (rowCount == 3) return {
+            status: 409,
+            message: "Không thể thêm tạo Thông số nổi bật vì đã đủ số lượng (3)"
+        }
         
         await pool.query(`
             INSERT INTO home.highlight_stats_about_us (number_text, label)
@@ -182,8 +181,8 @@ const highlight_stats_about_us = {
 
         return {
             status: 200,
-            message: 'Tạo Thông Số Nổi Bật thành công',
-            action: `Tạo Thông Số Nổi Bật trang Trang Chủ: ${figures} ${achievementName}`
+            message: 'Tạo Thông số nổi bật thành công',
+            action: `Tạo Thông số nổi bật trang Trang chủ: ${figures} ${achievementName}`
         }
     },
 
@@ -191,7 +190,7 @@ const highlight_stats_about_us = {
         const old_label = (await pool.query('SELECT label FROM home.highlight_stats_about_us WHERE id = $1', [id])).rows?.[0]?.label;
         if (!old_label) return {
             status: 404,
-            message: "Không tìm thấy Thông Số Nổi Bật"
+            message: "Không tìm thấy Thông số nổi bật"
         }
 
         const { figures, achievementName } = data;
@@ -208,8 +207,8 @@ const highlight_stats_about_us = {
         const note = (old_label != achievementName) ? ' (đã đổi tên)' : '';
         return {
             status: 200,
-            message: "Cập nhật Thông Số Nổi Bật thành công",
-            action: `Cập nhật Thông Số Nổi Bật trang Trang Chủ${note}: ${figures} ${achievementName}`
+            message: "Cập nhật Thông số nổi bật thành công",
+            action: `Cập nhật Thông số nổi bật trang Trang chủ${note}: ${figures} ${achievementName}`
         }
     },
 
@@ -220,14 +219,14 @@ const highlight_stats_about_us = {
 
         if (result.rowCount == 0) return {
             status: 404,
-            message: "Không tìm thấy Thông Số Nổi Bật"
+            message: "Không tìm thấy Thông số nổi bật"
         }
 
         const { number_text, label } = result.rows[0];
         return {
             status: 200,
-            message: "Xóa Thông Số Nổi Bật thành công",
-            action: `Xóa Thông Số Nổi Bật trang Trang Chủ: ${number_text} ${label}`
+            message: "Xóa Thông số nổi bật thành công",
+            action: `Xóa Thông số nổi bật trang Trang chủ: ${number_text} ${label}`
         }
     }
 }

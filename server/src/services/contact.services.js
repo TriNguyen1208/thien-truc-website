@@ -42,15 +42,11 @@ const updateContactPage = {
         }
     },
     visibility: async (data) => {
-        const {
-            visibility
-        } = data;
-
         await pool.query(`
             UPDATE contact.contact_page
             SET
                 is_visible = $1
-        `, [visibility]);
+        `, [data]);
 
         const visibility_state = visibility == true ? "Bật" : "Tắt";
         return {
