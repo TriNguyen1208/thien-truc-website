@@ -35,12 +35,14 @@ const getNumPage = async (query = '', filter = '', is_published) => {
         where.push(`n.is_published = ${is_published}`);
     }
 
-    const totalCount = parseInt(await pool.query(`
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+
+    const totalCount = parseInt((await pool.query(`
         SELECT COUNT(*) AS total
         FROM news.news n
         JOIN news.news_categories n_cate on n.category_id = n_cate.id
         ${where}
-    `)).rows?.[0]?.total
+    `)).rows?.[0]?.total);
 
     if (!totalCount) {
         throw new Error("Can't get news totalCount");
@@ -418,7 +420,6 @@ const news = {
         if (files?.main_image?.[0]) {
             cloud_avatar_img = await uploadImage(files.main_image[0], 'news');
         }
-
         const {
             title,
             main_content,
@@ -429,14 +430,14 @@ const news = {
         } = data;
         const final_main_image = cloud_avatar_img || main_image || null;
 
-        //Get news_categories id
+        // Get news_categories id
         const categoryRes = await pool.query(
             `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
             [category_name]
         );
         const category_id = categoryRes.rows.length > 0 ? categoryRes.rows[0].id : null;
 
-        //Insert news
+        // Insert news
         const insertNewsSql = `
             INSERT INTO news.news (
             category_id, title, is_published, public_date,

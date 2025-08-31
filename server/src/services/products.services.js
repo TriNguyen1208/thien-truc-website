@@ -34,12 +34,14 @@ const getNumPage = async (query = '', filter = '') => {
         );
     }
 
-    const totalCount = parseInt(await pool.query(`
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+
+    const totalCount = parseInt((await pool.query(`
         SELECT COUNT(*) AS total
         FROM product.products prd
         JOIN product.product_categories pc ON prd.category_id = pc.id
         ${where}
-    `)).rows?.[0]?.total
+    `)).rows?.[0]?.total);
 
     if (!totalCount) {
         throw new Error("Can't get products totalCount");
