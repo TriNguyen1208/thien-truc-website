@@ -40,11 +40,12 @@ const updateAboutUsPage = {
         }
     },
     ourStory: async (data) => {
+        const { content } = data;
         await pool.query(`
             UPDATE about_us.about_us_page
             SET
                 our_story_content = $1 
-        `, [data]);
+        `, [content]);
 
         return {
             status: 200,
@@ -53,13 +54,14 @@ const updateAboutUsPage = {
         }
     },
     visibility: async (data) => {
+        const { visibility } = data;
         await pool.query(`
             UPDATE about_us.about_us_page
             SET
                 is_visible = $1
-        `, [data]);
+        `, [visibility]);
 
-        const visibility_state = data == true ? "Bật" : "Tắt";
+        const visibility_state = visibility == true ? "Bật" : "Tắt";
         return {
             status: 200,
             message: `${visibility_state} chế độ hiển thị trang Về chúng tôi thành công`,
