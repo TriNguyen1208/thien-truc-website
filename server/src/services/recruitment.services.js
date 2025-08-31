@@ -22,42 +22,100 @@ const getRecruitmentPage = async (req, res) => {
         const company_email = (await pool.query('SELECT company_email FROM contact.company_info')).rows?.[0]?.company_email;
 
         //Send mail to company
-        await sendMail({
+        const sendToCompanyPromise = sendMail({
             to: company_email,//process.env.RECEIVER_EMAIL,
             subject: `Đơn ứng tuyển từ ${name}`,
             html: `
-            <h2>Thông tin ứng tuyển:</h2>
-            <ul>
-                <li><strong>Họ tên:</strong> ${name}</li>
-                <li><strong>Email:</strong> ${email}</li>
-                <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
-                <li><strong>Chủ đề:</strong> ${title}</li>
-                <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
-            </ul>
-            <hr>
-            <small>Hệ thống gửi tự động từ website.</small>
-        `
+            <div style="font-family: Arial, sans-serif; background-color: #f0fff0; padding: 20px; color: #333333;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+                
+                <div style="background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center;">
+                    <h1 style="margin: 0; font-size: 24px;">Đơn ứng tuyển</h1>
+                    <p style="margin: 5px 0 0; font-size: 14px;">Bạn có một đơn ứng tuyển mới từ website.</p>
+                </div>
+                
+                <div style="padding: 20px;">
+                
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 0 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Thông tin ứng viên</h2>
+                    <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #4CAF50; border-radius: 4px;">
+                        <p style="margin: 0 0 5px; font-size: 16px; color: #000000;"><strong>Họ tên:</strong> <strong style="color: #00796b;">${name}</strong></p>
+                        <p style="margin: 0 0 5px; font-size: 16px; color: #000000;"><strong>Email:</strong> <strong style="color: #00796b;">${email}</strong></p>
+                        <p style="margin: 0; font-size: 16px; color: #000000;"><strong>Điện thoại:</strong> <strong style="color: #00796b;">${phone || 'Không cung cấp'}</strong></p>
+                    </div>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Tiêu đề</h2>
+                    <div style="background-color: #f9f9f9; padding: 15px; border: 1px dashed #4CAF50; border-radius: 4px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 20px; color: #000000;">${title}</h3>
+                    </div>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Nội dung</h2>
+                    <div style="padding: 15px; background-color: #f9f9f9; border-left: 4px solid #4CAF50; line-height: 1.6; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 16px; color: #000000;">${content.replace(/\n/g, '<br>')}</p>
+                    </div>
+                </div>
+                
+                <div style="background-color: #e8f5e9; padding: 20px; text-align: center; font-size: 13px; color: #757575; border-top: 1px solid #c8e6c9; white-space: normal;">
+                    Hệ thống gửi tự động từ website của bạn.
+                </div>
+                </div>
+            </div>
+            `
         })
 
         //Send mail to applicant
-        await sendMail({
+        const sendToApplicantPromise = sendMail({
             to: email,
-            subject: "Xác nhận ứng tuyển",
+            subject: "Bản sao đơn ứng tuyển",
             html: `
-                <h2>Cảm ơn bạn đã ứng tuyển!</h2>
-                <p>Chúng tôi đã nhận được đơn ứng tuyển của bạn với thông tin sau:</p>
-                <ul>
-                    <li><strong>Họ tên:</strong> ${name}</li>
-                    <li><strong>Email:</strong> ${email}</li>
-                    <li><strong>Điện thoại:</strong> ${phone || 'Không cung cấp'}</li>
-                    <li><strong>Chủ đề:</strong> ${title}</li>
-                     <li><strong>Nội dung:</strong><br>${content.replace(/\n/g, '<br>')}</li>
-                </ul>
-                <p>Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.</p>
-                <hr>
-                <small>Trân trọng, Bộ phận Tuyển dụng</small>
+            <div style="font-family: Arial, sans-serif; background-color: #f0fff0; padding: 20px; color: #333333;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+                
+                <div style="background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center;">
+                    <h1 style="margin: 0; font-size: 24px;">Xác nhận nộp đơn thành công</h1>
+                    <p style="margin: 5px 0 0; font-size: 14px;">Cảm ơn bạn đã quan tâm và ứng tuyển!</p>
+                </div>
+                
+                <div style="padding: 20px;">
+                    <p style="margin: 0 0 15px; font-size: 16px;">Chào <strong>${name}</strong>,</p>
+                    <p style="margin: 0 0 15px; font-size: 16px; color: #000000;">Chúng tôi đã nhận được đơn ứng tuyển của bạn. Chúng tôi sẽ xem xét hồ sơ và phản hồi lại bạn trong thời gian sớm nhất.</p>
+                    
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 25px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Bản sao đơn ứng tuyển của bạn</h2>
+                    <p style="margin: 0 0 10px; font-size: 14px; font-style: italic; color: #555555;">(Đây là bản sao các thông tin bạn đã gửi)</p>
+
+                    <h3 style="font-size: 16px; color: #4CAF50; margin: 0 0 10px;">Thông tin cá nhân</h3>
+                    <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #4CAF50; border-radius: 4px;">
+                        <p style="margin: 0 0 5px; font-size: 16px;"><strong>Họ tên:</strong> <span style="color: #00796b;"><strong>${name}</strong></span></p>
+                        <p style="margin: 0 0 5px; font-size: 16px;"><strong>Email:</strong> <span style="color: #00796b;"><strong>${email}</strong></span></p>
+                        <p style="margin: 0; font-size: 16px;"><strong>Điện thoại:</strong> <span style="color: #00796b;"><strong>${phone || 'Không cung cấp'}</strong></span></p>
+                    </div>
+                    
+                    <h3 style="font-size: 16px; color: #4CAF50; margin: 25px 0 10px;">Chủ đề ứng tuyển</h3>
+                    <div style="background-color: #f9f9f9; padding: 15px; border: 1px dashed #4CAF50; border-radius: 4px; text-align: center;">
+                        <p style="margin: 0; font-size: 16px; color: #000000;"><strong>${title}</strong></p>
+                    </div>
+                    
+                    <h3 style="font-size: 16px; color: #4CAF50; margin: 25px 0 10px;">Nội dung chi tiết</h3>
+                    <div style="padding: 15px; background-color: #f9f9f9; border-left: 4px solid #4CAF50; line-height: 1.6; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 16px; color: #000000;">${content.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    
+                </div>
+                
+                <div style="background-color: #e8f5e9; padding: 20px; text-align: center; font-size: 12px; color: #757575; border-top: 1px solid #c8e6c9;">
+                    <p style="margin: 0;">Trân trọng,</p>
+                    <p style="margin: 5px 0 0;">Thiên Trúc</p>
+                </div>
+            </div>
+            </div>
             `
         })
+
+        try {
+            await Promise.all([sendToCompanyPromise, sendToApplicantPromise]);
+        } catch (err) {
+            console.error('Lỗi khi gửi đơn tuyển dụng: ', err)
+            throw new Error('Lỗi khi gửi đơn tuyển dụng');
+        }
 
         return { success: true, message: "Ứng tuyển thành công" };
     }
