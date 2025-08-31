@@ -17,10 +17,6 @@ const manager =  {
         const res = await axios.get(API_ROUTES.admin.manager.getAll);
         return res.data;
     },
-    getOne: async (username) => {
-        const res = await axios.get(API_ROUTES.admin.manager.getOne(username) );
-        return res.data;
-    },
     //create new manager
     createOne: async (newManager) => {
         const res = await axios.post(API_ROUTES.admin.manager.createOne, newManager);

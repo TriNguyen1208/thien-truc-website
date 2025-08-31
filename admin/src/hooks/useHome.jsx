@@ -87,13 +87,6 @@ const highlight_stats_about_us = {
             staleTime: 10 * 60 * 1000,
         });
     },
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["highlight_stats_about_us", id],
-            queryFn: () => homeServices.highlight_stats_about_us.getOne(id),
-            enabled: !!id,
-        });
-    },
     useCreateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -155,7 +148,6 @@ export default {
     },
     highlight_stats_about_us: {
         getAll: highlight_stats_about_us.useGetAll,//
-        getOne: highlight_stats_about_us.useGetOne,
         createOne: highlight_stats_about_us.useCreateOne,//
         updateOne: highlight_stats_about_us.useUpdateOne,//
         deleteOne: highlight_stats_about_us.useDeleteOne,//

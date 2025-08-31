@@ -3,14 +3,6 @@ import newsServices from "../services/news.api.js";
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 
-function useGetAll() {
-    return useQuery({
-        queryKey: ["news"],
-        queryFn: newsServices.getAll,
-        staleTime: 10 * 60 * 1000,
-    })
-}
-
 function useGetNewsPage() {
     return useQuery({
         queryKey: ["news_page"],
@@ -114,18 +106,6 @@ const news = {
             },
             onError: (error) => {
                 toast.error(error.message);
-            }
-        })
-    },
-    useUpdateNumReaders: () => {
-        const queryClient = useQueryClient();
-        return useMutation({
-            mutationFn: (id) => newsServices.news.updateNumReaders(id),
-            onSuccess: () => {
-                queryClient.invalidateQueries({
-                    queryKey: ["news_list"], 
-                    exact: false,            
-                });
             }
         })
     },
@@ -238,13 +218,6 @@ const news_categories = {
 }
 
 const news_contents = {
-    useGetAll: () => {
-        return useQuery({
-            queryKey: ["news_contents"],
-            queryFn: newsServices.news_contents.getAll,
-            staleTime: 10 * 60 * 1000,
-        })
-    },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["news_content", id],
@@ -263,7 +236,6 @@ function useGetQuantity() {
 }
 
 export default {
-    getAll: useGetAll,
     getNewsPage: useGetNewsPage,//
     updateNewsPage: {
         banner: updateNewsPage.useUpdateBanner,//
@@ -276,7 +248,6 @@ export default {
         getAllFeatured: news.useGetAllFeatured,//
         createOne: news.useCreateOne,//
         updateOne: news.useUpdateOne,//
-        updateNumReaders: news.useUpdateNumReaders,
         updateCategory: news.useUpdateCategory,//
         updateFeatureOne: news.useUpdateFeatureOne,//
         deleteOne: news.useDeleteOne,//
@@ -290,7 +261,6 @@ export default {
         deleteOne: news_categories.useDeleteOne,//
     },
     news_contents: {
-        getAll: news_contents.useGetAll,
         getOne: news_contents.useGetOne,//
     },
     getQuantity: useGetQuantity,//

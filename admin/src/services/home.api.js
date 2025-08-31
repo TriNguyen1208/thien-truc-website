@@ -42,10 +42,6 @@ const highlight_stats_about_us = {
         const res = await axios.get(API_ROUTES.home.highlight_stats_about_us.getAll);
         return res.data;
     },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.home.highlight_stats_about_us.getOne(id));
-        return res.data;
-    },
     createOne: async (data) => {
         const res = await axios.post(API_ROUTES.home.highlight_stats_about_us.createOne, data);
         return res.data;

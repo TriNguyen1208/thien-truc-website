@@ -28,10 +28,6 @@ const company_services = {
       const res = await axios.get(API_ROUTES.about_us.company_services.getAll);
       return res.data;
     },
-    getOne: async (id) => {
-      const res = await axios.get(API_ROUTES.about_us.company_services.getOne(id));
-      return res.data;
-    },
     createOne: async (data) => {
       const res = await axios.post(API_ROUTES.about_us.company_services.createOne, data);
       return res.data;
@@ -50,10 +46,6 @@ const company_services = {
 const why_choose_us = {
     getAll: async () => {
       const res = await axios.get(API_ROUTES.about_us.why_choose_us.getAll);
-      return res.data;
-    },
-    getOne: async (id) => {
-      const res = await axios.get(API_ROUTES.about_us.why_choose_us.getOne(id));
       return res.data;
     },
     createOne: async (data) => {

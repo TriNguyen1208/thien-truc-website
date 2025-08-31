@@ -1,11 +1,6 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
 
-const getAll = async () => {
-    const res = await axios.get(API_ROUTES.project.base);
-    return res.data;
-}
-
 const getProjectPage = async () => {
     const res = await axios.get(API_ROUTES.project.project_page);
     return res.data;
@@ -27,10 +22,6 @@ const projects = {
     },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.projects.getOne(id));
-        return res.data;
-    },
-    getAllFeatured: async () => {
-        const res = await axios.get(API_ROUTES.project.projects.getAllFeatured);
         return res.data;
     },
     getSearchSuggestions: async (query = '', filter = '', is_featured) => {
@@ -83,8 +74,8 @@ const project_regions = {
     },
     createOne: async (name = '', rgb_color = '') => {
         const res = await axios.post(API_ROUTES.project.project_regions.createOne, {
-        name,
-        rgb_color
+            name,
+            rgb_color
         })
         return res.data;
     },
@@ -101,10 +92,6 @@ const project_regions = {
     }
 }
 const project_contents = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.project.project_contents.getAll);
-        return res.data;
-    },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.project.project_contents.getOne(id));
         return res.data;
@@ -117,7 +104,6 @@ const getQuantity = async()=>{
 }
 
 export default { 
-    getAll,
     getProjectPage,
     updateProjectPage,
     projects,

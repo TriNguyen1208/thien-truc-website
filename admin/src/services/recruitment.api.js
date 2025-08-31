@@ -1,18 +1,8 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
 
-const getAll = async () =>{
-    const res = await axios.get(API_ROUTES.recruitment.base);
-    return res.data;
-}
-
 const getRecruitmentPage = async () => {
     const res = await axios.get(API_ROUTES.recruitment.recruitment_page);
-    return res.data;
-}
-
-const submitApplication = async (data) => {
-    const res = await axios.post(API_ROUTES.recruitment.submitApplication, data);
     return res.data;
 }
 
@@ -41,8 +31,6 @@ const updateRecruimentPage = {
 }
 
 export default {
-    getAll, 
     getRecruitmentPage, 
-    submitApplication, 
     updateRecruimentPage
 };

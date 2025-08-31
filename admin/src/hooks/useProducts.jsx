@@ -3,14 +3,6 @@ import productsServices from "../services/products.api.js";
 import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from "react-router-dom";
 
-// ==== Base ====
-function useGetAll() {
-    return useQuery({
-      queryKey: ["product"],
-      queryFn: productsServices.getAll,
-      staleTime: 10 * 60 * 1000,
-    });
-}
 
 function useGetProductPage() {
     return useQuery({
@@ -60,23 +52,6 @@ const products = {
         return useQuery({
             queryKey: ["product_by_category", id, query, filter, is_featured, limit],
             queryFn: () => productsServices.products.getListByCategory(id, query, filter, is_featured, limit),
-            staleTime: 10 * 60 * 1000,
-        });
-    },
-
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["product", id],
-            queryFn: () => productsServices.products.getOne(id),
-            enabled: id != null,
-            staleTime: 10 * 60 * 1000,
-        });
-    },
-    
-    useGetAllFeatured: () => {
-        return useQuery({
-            queryKey: ["highlight_products"],
-            queryFn: () => productsServices.products.getAllFeatured,
             staleTime: 10 * 60 * 1000,
         });
     },
@@ -169,14 +144,6 @@ const product_categories = {
         return useQuery({
             queryKey: ["product_categories_list", id, query],
             queryFn: () => productsServices.product_categories.getList(id, query),
-            staleTime: 10 * 60 * 1000,
-        });
-    },
-
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["product_by_category", id],
-            queryFn: () => productsServices.product_categories.getOne(id),
             staleTime: 10 * 60 * 1000,
         });
     },
@@ -279,7 +246,6 @@ function useGetQuantity() {
 
 // ==== Export all ====
 export default {
-    getAll: useGetAll,
     getProductPage: useGetProductPage,//
     updateProductPage: {
         banner: updateProductPage.useUpdateBanner,//
@@ -288,8 +254,6 @@ export default {
     products: {
         getList: products.useGetList,//
         getListByCategory: products.useGetListByCategory,//
-        getOne: products.useGetOne,
-        getAllFeatured: products.useGetAllFeatured,
         getSearchSuggestions: products.useGetSearchSuggestions,//
         createOne: products.useCreateOne,//
         updateOne: products.useUpdateOne,//
@@ -299,7 +263,6 @@ export default {
     },
     product_categories: {
         getAll: product_categories.useGetList,//
-        getOne: product_categories.useGetOne,
         getSearchSuggestions: product_categories.useGetSearchSuggestions,//
         createOne: product_categories.useCreateOne,//
         updateOne: product_categories.useUpdateOne,//

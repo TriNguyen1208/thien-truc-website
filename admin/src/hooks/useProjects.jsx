@@ -2,13 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import projectsServices from "../services/projects.api.js";
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
-function useGetAll(){
-    return useQuery({
-        queryKey: ["projects"],
-        queryFn: projectsServices.getAll,
-        staleTime: 10 * 60 * 1000,
-    })
-}
+
 function useGetProjectPage(){
     return useQuery({
         queryKey: ["project_page"],
@@ -60,13 +54,6 @@ const projects = {
             queryFn: () => projectsServices.projects.getOne(id),
             staleTime: 10 * 60 * 1000,
             enabled: id != null
-        })
-    },
-    useGetAllFeatured: () => {
-        return useQuery({
-            queryKey: ["highlight_projects"],
-            queryFn: projectsServices.projects.getAllFeatured,
-            staleTime: 10 * 60 * 1000,
         })
     },
     useGetSearchSuggestions: (query, filter, is_featured) => {
@@ -221,13 +208,6 @@ const project_regions = {
     }
 }
 const project_contents = {
-    useGetAll: () => {
-        return useQuery({
-            queryKey: ["project_contents"],
-            queryFn: projectsServices.project_contents.getAll,
-            staleTime: 10 * 60 * 1000,
-        })
-    },
     useGetOne: (id) => {
         return useQuery({
             queryKey: ["project_content", id],
@@ -248,7 +228,6 @@ function useGetQuantity() {
 
 
 export default {
-    getAll: useGetAll,
     getProjectPage: useGetProjectPage,//
     updateProjectPage: {
         banner: updateProjectPage.useUpdateBanner,//
@@ -257,7 +236,6 @@ export default {
     projects: {
         getList: projects.useGetList,//
         getOne: projects.useGetOne,//
-        getAllFeatured: projects.useGetAllFeatured,
         getSearchSuggestions: projects.useGetSearchSuggestions,//
         createOne: projects.useCreateOne,//
         updateOne: projects.useUpdateOne,//
@@ -274,7 +252,6 @@ export default {
         deleteOne: project_regions.useDeleteOne,//
     },
     project_contents: {
-        getAll: project_contents.useGetAll,
         getOne: project_contents.useGetOne,//
     },
     getQuantity: useGetQuantity//

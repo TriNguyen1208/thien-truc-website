@@ -1,10 +1,6 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
 
-const getAll = async () => {
-    const res = await axios.get(API_ROUTES.news.base);
-    return res.data;
-}
 const getNewsPage = async () => {
     const res = await axios.get(API_ROUTES.news.news_page);
     return res.data;
@@ -52,10 +48,6 @@ const news = {
             },
             timeout: 20000
         });
-        return res.data;
-    },
-    updateNumReaders: async (id) => {
-        const res = await axios.patch(API_ROUTES.news.news.updateNumReaders(id));
         return res.data;
     },
     updateCategory: async (changedItems) => {
@@ -106,10 +98,6 @@ const news_categories = {
 }
 
 const news_contents = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.news.news_contents.getAll);
-        return res.data;
-    },
     getOne: async (id) => {
         const res = await axios.get(API_ROUTES.news.news_contents.getOne(id));
         return res.data;
@@ -120,7 +108,6 @@ const getQuantity = async () => {
     return res.data
 }
 export default { 
-    getAll,
     getNewsPage,
     updateNewsPage,
     news,

@@ -32,10 +32,6 @@ const support_agents =  {
         const res = await axios.get(API_ROUTES.contact.support_agents.getAll);
         return res.data;
     },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.contact.support_agents.getOne(id) );
-        return res.data;
-    },
     createOne: async (data) => {
         const res = await axios.post(API_ROUTES.contact.support_agents.createOne, data, {
             headers: {
@@ -60,11 +56,6 @@ const support_agents =  {
     },
 }
 
-const submitContact = async (data) => {
-    const res = await axios.post(API_ROUTES.contact.submitContact, data);
-    return res.data;
-}
-
 const getQuantity = async ()=>{
     const res = await axios.get(API_ROUTES.contact.count)
     return res.data
@@ -75,6 +66,5 @@ export default {
     updateContactPage,
     company_info,
     support_agents,
-    submitContact,
     getQuantity
 }

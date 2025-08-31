@@ -1,12 +1,6 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
 
-// ==== Base ====
-const getAll = async () => {
-    const res = await axios.get(API_ROUTES.product.base);
-    return res.data;
-}
-
 // ==== Product Page ====
 const getProductPage = async () => {
     const res = await axios.get(API_ROUTES.product.product_page);
@@ -30,15 +24,6 @@ const products = {
 
     getListByCategory: async (id = '', query = '', filter = '', is_featured = undefined, limit = undefined) => {
         const res = await axios.get(API_ROUTES.product.products.getListByCategory(id, query, filter, is_featured, limit));
-        return res.data;
-    },
-    
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.product.products.getOne(id));
-        return res.data;
-    },
-    getAllFeatured: async () => {
-        const res = await axios.get(API_ROUTES.product.products.getAllFeatured);
         return res.data;
     },
     getSearchSuggestions: async (query = '', filter = '', is_featured) => {
@@ -81,17 +66,8 @@ const products = {
 
 // ==== Product Categories ====
 const product_categories = {
-     getList: async (id = '', query = '') => {
+    getList: async (id = '', query = '') => {
         const res = await axios.get(API_ROUTES.product.product_categories.getList(id, query));
-        return res.data;
-    },
-
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.product.product_categories.getOne(id));
-        return res.data;
-    },
-    getAllFeatured: async () => {
-        const res = await axios.get(API_ROUTES.product.product_categories.getAllFeatured);
         return res.data;
     },
     getSearchSuggestions: async (query = '') => {
@@ -133,7 +109,6 @@ const getQuantity = async()=>{
 }
 
 export default {
-    getAll,
     getProductPage,
     updateProductPage,
     products,

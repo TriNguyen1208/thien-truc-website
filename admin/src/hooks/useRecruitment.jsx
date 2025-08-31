@@ -2,14 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import recruitmentServices from "../services/recruitment.api.js";
 import { toast } from 'react-toastify';
 
-function useGetAll(){
-    return useQuery({
-        queryKey: ["recruitment"],
-        queryFn: recruitmentServices.getAll,
-        staleTime: 10 * 60 * 1000,
-    })
-}
-
 function useGetRecruitmentPage(){
     return useQuery({
         queryKey: ["recruitment_page"],
@@ -76,8 +68,7 @@ const updateRecruitmentPage = {
     }
 }
 export default {
-    getAll: useGetAll,
-    getRecruitmentPage: useGetRecruitmentPage,//
+    getRecruitmentPage: useGetRecruitmentPage,
     updateRecruitmentPage: {
         banner: updateRecruitmentPage.useUpdateBanner,
         visibility: updateRecruitmentPage.useUpdateVisibility,

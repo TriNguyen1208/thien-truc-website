@@ -70,13 +70,6 @@ const support_agents = {
             staleTime: 10 * 60 * 1000,
         })
     },
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["contact_support_agents", id],
-            queryFn: () => contactServices.support_agents.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
     useCreateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -118,17 +111,6 @@ const support_agents = {
         });
     },
 }
-function useSubmitContact() {
-    return useMutation({
-        mutationFn: (data) => contactServices.submitContact(data),
-        onSuccess: (success) => {
-            toast.success(success.message);
-        },
-        onError: (error) => {   
-            toast.error(error.message);
-        }
-    })
-}
 
 function useGetQuantity() {
     return useQuery({
@@ -150,12 +132,10 @@ export default {
     },
     support_agents: {
         getAll: support_agents.useGetAll,//
-        getOne: support_agents.useGetOne,
         createOne: support_agents.useCreateOne,//
         updateOne: support_agents.useUpdateOne,//
         deleteOne: support_agents.useDeleteOne//
     },
-    submitContact: useSubmitContact,
     getQuantity: useGetQuantity,//
 }
 

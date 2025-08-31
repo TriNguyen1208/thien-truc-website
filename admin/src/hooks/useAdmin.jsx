@@ -27,13 +27,6 @@ const manager = {
             staleTime: 10 * 60 * 1000,
         })
     },
-    useGetOne: (username) => {
-        return useQuery({
-            queryKey: ["manager", username],
-            queryFn: () => adminServices.manager.getOne(username),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
     useCreateOne:() =>{
         const queryClient = useQueryClient();
         return useMutation({
@@ -80,7 +73,6 @@ const manager = {
 export default {
     manager: {
         getAll: manager.useGetAll,//
-        getOne: manager.useGetOne,
         createOne: manager.useCreateOne,//
         updateOne: manager.useUpdateOne,//
         deleteOne: manager.useDeleteOne//

@@ -62,17 +62,6 @@ const company_services = {
             staleTime: 10 * 60 * 1000,
         })
     },
-    
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["company_services", id],
-            queryFn: () => aboutUsServices.company_services.getOne(id),
-            staleTime: 10 * 60 * 1000,
-            enabled: !!id,
-        })
-    },
-        
-
     useCreateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -86,7 +75,6 @@ const company_services = {
             },
         });
     },
-
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -100,7 +88,6 @@ const company_services = {
             },
         });
     },
-
     useDeleteOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -125,16 +112,6 @@ const why_choose_us = {
             staleTime: 10 * 60 * 1000,
         })
     },
-
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["why_choose_us", id],
-            queryFn: () => aboutUsServices.why_choose_us.getOne(id),
-            staleTime: 10 * 60 * 1000,
-            enabled: !!id,
-        })
-    },
-
     useCreateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -148,7 +125,6 @@ const why_choose_us = {
             },
         });
     },
-
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -162,7 +138,6 @@ const why_choose_us = {
             },
         });
     },
-
     useDeleteOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -187,14 +162,12 @@ export default {
     },
     company_services: {
         getAll: company_services.useGetAll,//
-        getOne: company_services.useGetOne,
         createOne: company_services.useCreateOne,//
         updateOne: company_services.useUpdateOne,//
         deleteOne: company_services.useDeleteOne,//
     },
     why_choose_us: {
         getAll: why_choose_us.useGetAll,//
-        getOne: why_choose_us.useGetOne,
         createOne: why_choose_us.useCreateOne,//
         updateOne: why_choose_us.useUpdateOne,//
         deleteOne: why_choose_us.useDeleteOne,//
