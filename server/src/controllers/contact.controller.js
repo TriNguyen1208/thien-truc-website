@@ -19,7 +19,7 @@ const updateContactPage ={
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi cập nhật Banner trang Liên Hệ: ', error);
+            console.error('Lỗi cập nhật Banner trang Liên hệ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     },
@@ -46,7 +46,7 @@ const updateCompanyInfo = async (req, res) => {
         if (status == 200) logActivity(req.user.username, action);
         res.status(status).json({ message: message });
     } catch (error) {
-        console.error('Lỗi cập nhật Thông Tin Công Ty: ', error);
+        console.error('Lỗi cập nhật Thông tin công ty: ', error);
         res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
     }
     
@@ -68,7 +68,7 @@ const support_agents = {
         if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi tạo Người Liên Lạc: ', error);
+            console.error('Lỗi tạo Người liên hệ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
@@ -79,7 +79,7 @@ const support_agents = {
         if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi chỉnh sửa Người Liên Lạc: ', error);
+            console.error('Lỗi chỉnh sửa Người liên hệ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
@@ -90,7 +90,7 @@ const support_agents = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi xóa Người Liên Lạc: ', error);
+            console.error('Lỗi xóa Người liên hệ: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
