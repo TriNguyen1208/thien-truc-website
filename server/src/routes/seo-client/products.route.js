@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
                 <meta name="description" content="${banner_title}\n${banner_description}" />
                 <meta property="og:title" content="${banner_title}" />
                 <meta property="og:description" content="${banner_description}" />
-                <link rel="canonical" href="http://${process.env.VITE_CLIENT_URL}/san-pham" />
+                <link rel="canonical" href="${process.env.VITE_CLIENT_URL}/san-pham" />
             </head>
             <body>
                 <div id="root"></div>
@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
                 <meta name="description" content="${description}" />
                 <meta property="og:title" content="${name}" />
                 <meta property="og:description" content="${description}" />
-                <link rel="canonical" href="http://${process.env.VITE_CLIENT_URL}/san-pham/${id}" />
+                <link rel="canonical" href="${process.env.VITE_CLIENT_URL}/san-pham/${id}" />
             </head>
             <body>
                 <div id="root"></div>
