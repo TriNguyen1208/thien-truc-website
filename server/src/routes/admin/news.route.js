@@ -18,11 +18,10 @@ router.get('/news_contents/:id', newsController.news_contents.getOne);
 router.get('/search_suggestions', newsController.news.getSearchSuggestions);
 router.get('/search_categories_suggestions', newsController.news_categories.getSearchSuggestions);
 router.get('/count', newsController.count);
-router.get('/featured_news', newsController.featured_news.getAll);
+router.get('/featured_news', newsController.news.getAllFeatured);
 
 router.patch('/news/update_categories', authenticateToken, newsController.news.updateCategory);
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
-router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
 router.post('/news', authenticateToken,  upload.fields([
     { name: 'main_image', maxCount: 1 },
@@ -43,7 +42,7 @@ router.post('/news_categories', authenticateToken, newsController.news_categorie
 router.patch('/news_categories/:id', authenticateToken, newsController.news_categories.updateOne);
 router.patch('/news_page/banner', authenticateToken, newsController.updateNewsPage.banner);
 router.patch('/news_page/visibility', authenticateToken, newsController.updateNewsPage.visibility);
-router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
+router.patch('/featured_news', authenticateToken, newsController.news.updateFeaturedNews);
 
 // delete
 router.delete('/news/:id', authenticateToken, newsController.news.deleteOne);

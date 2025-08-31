@@ -342,6 +342,42 @@ const news = {
         }};
         return news;
     },
+    getAllFeatured: async () => {
+        const news_rows = (await pool.query(`
+            SELECT
+                FN.sort,
+                FN.news_id,
+                N.main_img,
+                N.title,
+                C.name,
+                N.public_date
+            FROM
+                news.featured_news FN
+                JOIN news.news N ON FN.news_id = N.id
+                JOIN news.news_categories C ON N.category_id = C.id
+            ORDER BY FN.sort ASC 
+        `)).rows;
+        
+        const switch_time = (await pool.query(`
+            SELECT news_switch_time
+            FROM home.home_page    
+        `)).rows[0].news_switch_time;
+
+        const news = news_rows.map(row => ({
+            sort: row.sort,
+            id: row.news_id,
+            img: row.main_img,
+            main_content: row.main_content,
+            title: row.title,
+            name: row.name,
+            date: (new Date(row.public_date)).toLocaleDateString('vi-VN')
+        }));
+
+        return {
+            switch_time: switch_time,
+            featured_news: [...news]
+        };
+    },
     getSearchSuggestions: async (query, filter, is_published) => {
         query = query.trim().replaceAll(`'`, ``);
         filter = filter.trim().replaceAll(`'`, ``);
@@ -581,6 +617,26 @@ const news = {
             message: "Cập nhật tin tức thành công",
             action: `Cập nhật tin tức${note}: ${id} - ${title}`
         }        
+    },
+    updateFeaturedNews: async (data) => {
+        const {
+            news_ids,
+            switch_time
+        } = data
+
+        await pool.query('DELETE FROM news.featured_news');
+
+        for (let sort = 1; sort <= news_ids.length; sort++) {
+            await pool.query('INSERT INTO news.featured_news (news_id, sort) VALUES ($1, $2)', [news_ids[sort - 1], sort]);
+        }
+        
+        await pool.query('UPDATE home.home_page SET news_switch_time = $1', [switch_time]);
+
+        return {
+            status: 200,
+            message: "Cập nhật Tin Tức Nổi Bật thành công",
+            action: `Cập nhật tin tức nổi bật`
+        }
     },
     updateNumReaders: async (id) => {
         const query = `
@@ -991,63 +1047,4 @@ const count = async () => {
     };
 }
 
-const featured_news = {
-    getAll: async () => {
-        const news_rows = (await pool.query(`
-            SELECT
-                FN.sort,
-                FN.news_id,
-                N.main_img,
-                N.title,
-                C.name,
-                N.public_date
-            FROM
-                news.featured_news FN
-                JOIN news.news N ON FN.news_id = N.id
-                JOIN news.news_categories C ON N.category_id = C.id
-            ORDER BY FN.sort ASC 
-        `)).rows;
-        
-        const switch_time = (await pool.query(`
-            SELECT news_switch_time
-            FROM home.home_page    
-        `)).rows[0].news_switch_time;
-
-        const news = news_rows.map(row => ({
-            sort: row.sort,
-            id: row.news_id,
-            img: row.main_img,
-            main_content: row.main_content,
-            title: row.title,
-            name: row.name,
-            date: (new Date(row.public_date)).toLocaleDateString('vi-VN')
-        }));
-
-        return {
-            switch_time: switch_time,
-            featured_news: [...news]
-        };
-    },
-    updateAll: async (data) => {
-        const {
-            news_ids,
-            switch_time
-        } = data
-
-        await pool.query('DELETE FROM news.featured_news');
-
-        for (let sort = 1; sort <= news_ids.length; sort++) {
-            await pool.query('INSERT INTO news.featured_news (news_id, sort) VALUES ($1, $2)', [news_ids[sort - 1], sort]);
-        }
-        
-        await pool.query('UPDATE home.home_page SET news_switch_time = $1', [switch_time]);
-
-        return {
-            status: 200,
-            message: "Cập nhật Tin Tức Nổi Bật thành công",
-            action: `Cập nhật tin tức nổi bật`
-        }
-    }
-}
-
-export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, count, featured_news};
+export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, count};
