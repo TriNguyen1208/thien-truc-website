@@ -50,7 +50,14 @@ const products = {
             staleTime: 10 * 60 * 1000,
         });
     },
-
+    useGetOne: (id) => {
+        return useQuery({
+            queryKey: ["product", id],
+            queryFn: () => productsServices.products.getOne(id),
+            enabled: id != null,
+            staleTime: 10 * 60 * 1000,
+        });
+    },
     useGetListByCategory: (id = '', query = '', filter = '', is_featured = undefined, limit = undefined) => {
         return useQuery({
             queryKey: ["product_by_category", id, query, filter, is_featured, limit],
@@ -266,6 +273,7 @@ export default {
     },
     products: {
         getList: products.useGetList,//
+        getOne: products.useGetOne,
         getListByCategory: products.useGetListByCategory,//
         getSearchSuggestions: products.useGetSearchSuggestions,//
         createOne: products.useCreateOne,//

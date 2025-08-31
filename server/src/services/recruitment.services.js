@@ -174,7 +174,7 @@ const updateRecruitmentPage = {
                 culture_img_4 img_4
             FROM recruitment.recruitment_page
         `)).rows[0]; // <-- Lấy phần tử đầu tiên
-
+        
         // Tạo danh sách promise upload song song
         const uploadTasks = Array.from({ length: 4 }, (_, i) => {
             const index = i + 1;
