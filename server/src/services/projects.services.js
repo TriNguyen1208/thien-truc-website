@@ -13,8 +13,8 @@ const getAllTables = async (filter = '') => {
         project_regions: _project_regions
     };
 }
-const getNumPage = async (query, filter) => {
-    let totalCount = 0;
+const getNumPage = async (query = '', filter = '') => {
+    /*let totalCount = 0;
     const hasQuery = query !== '';
     const hasFilter = filter !== '';
     // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
@@ -50,8 +50,44 @@ const getNumPage = async (query, filter) => {
         const results = await pool.query(sql, [filter]);
         totalCount = parseInt(results.rows[0].total);
         return totalCount;
+    }*/
+    query = query.trim().replaceAll(`'`, ``); // clean
+    filter = filter.trim().replaceAll(`'`, ``); // clean
+    let where = [];
+
+    if (query != '') {
+        where.push(
+            `(unaccent(prj.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
+            similarity(unaccent(prj.title::text), unaccent('${query}'::text)) > 0.1)`
+        );
+        
+        order.push(
+            `similarity(unaccent(prj.title), unaccent('${query}')) DESC`
+        );
     }
+
+    if (filter != '') {
+        where.push(
+            `unaccent(prj_reg.name) ILIKE unaccent('${filter}')`
+        );
+    }
+    
+    if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
+
+    const totalCount = parseInt((await pool.query(`
+        SELECT COUNT(*) AS total
+        FROM project.projects prj
+        JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
+        ${where}
+    `)).rows?.[0]?.total);
+
+    if (!totalCount) {
+        throw new Error("Can't get projects totalCount");
+    }
+
+    return totalCount;
 }
+
 const getProjectPage = async () => {
     const project_page = (await pool.query("SELECT * FROM project.project_page")).rows[0];
     if(!project_page){
@@ -67,7 +103,7 @@ const updateProjectPage = {
             description
         } = data;
 
-        const result = await pool.query(`
+        await pool.query(`
             UPDATE project.project_page
             SET
                 banner_title = $1,
@@ -77,24 +113,20 @@ const updateProjectPage = {
         return {
             status: 200,
             message: "Cập nhật Banner thành công",
-            action: "Cập nhật Banner trang Dự Án"
+            action: "Cập nhật Banner trang Dự án"
         };
     },
     visibility: async (data) => {
-        const {
-            visibility
-        } = data;
-
         await pool.query(`
             UPDATE project.project_page
             SET
                 is_visible = $1
-        `, [visibility]);
-        const visibility_state = visibility == true ? "Bật" : "Tắt";
+        `, [data]);
+        const visibility_state = data == true ? "Bật" : "Tắt";
         return {
             status: 200,
-            message: `${visibility_state} chế độ hiển thị trang dự án thành công`,
-            action: `${visibility_state} chế độ hiển thị trang dự án`
+            message: `${visibility_state} chế độ hiển thị trang Dự án thành công`,
+            action: `${visibility_state} chế độ hiển thị trang Dự án`
         }
     }
 }
@@ -329,13 +361,20 @@ const projects = {
         const limit = 'LIMIT ' + suggestions_limit;
 
         if (query != '') {
-            where.push(`(unaccent(P.title::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
-                similarity(unaccent(P.title::text), unaccent('${query}'::text)) > 0)`);
-            order.push(`similarity(unaccent(P.title::text), unaccent('${query}'::text)) DESC`);
+            where.push(`
+                (unaccent(P.title::text) ILIKE '%' || unaccent('${query})'::text) || '%' OR
+                similarity(unaccent(P.title::text), unaccent('${query}'::text)) > 0)
+            `);
+
+            order.push(`
+                similarity(unaccent(P.title::text), unaccent('${query}'::text)) DESC
+            `);
         }
+
         if (filter != '') {
             where.push(`unaccent(R.name) ILIKE unaccent('${filter}')`);
         }
+
         if (is_featured == 'false' || is_featured == 'true') {
             where.push(`P.is_featured = ${is_featured}`);
         }
@@ -343,7 +382,6 @@ const projects = {
         // Chuẩn hóa các thành phần query
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
-        
 
         const sql = `
             SELECT P.title, P.id, P.main_img
@@ -366,12 +404,25 @@ const projects = {
     },
     createOne: async (data, files) => {
         let contentHTML= data?.content;
-        if(files?.images?.length){
-            for(const img of files.images){
-                const fakeName = img.originalname;
-                const url = await uploadImage(img, 'project');
+        
+        // Upload cùng lúc nhiều ảnh trong content
+        if (files?.images?.length) {
+            const uploadPromises = files.images.map(img => 
+                uploadImage(img, 'project').then(url => ({
+                    fakeName: img.originalname,
+                    url
+                }))
+            );
+
+            const uploadedResults = await Promise.all(uploadPromises);
+            for (const { fakeName, url } of uploadedResults) {
                 contentHTML = contentHTML.replaceAll(fakeName, url);
             }
+        }  
+
+        let cloud_avatar_img = null;
+        if (files?.main_image?.[0]) {
+            cloud_avatar_img = await uploadImage(files.main_image[0], 'project');
         }
         const {
             title,
@@ -382,19 +433,16 @@ const projects = {
             province,
             completeTime
         } = data;
-        let cloud_avatar_img = null;
-        if (files?.main_image?.[0]) {
-            cloud_avatar_img = await uploadImage(files.main_image[0], 'project');
-        }  
         const final_main_image = main_image || cloud_avatar_img || null;
-        //Get news_categories id
+
+        // Get project_regions id
         const regionRes = await pool.query(
             `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
             [region_name]
         );
         const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
 
-        //Insert news
+        // Insert projects
         const insertProjectSql = `
             INSERT INTO project.projects (
             region_id, title, province, complete_time,
@@ -439,13 +487,21 @@ const projects = {
     },
     updateOne: async (id, data, files) => {
         let contentHTML= data?.content;
-        if(files?.images?.length){
-            for(const img of files.images){
-                const fakeName = img.originalname;
-                const url = await uploadImage(img, 'project');
+
+        // Upload cùng lúc nhiều ảnh trong content
+        if (files?.images?.length) {
+            const uploadPromises = files.images.map(img => 
+                uploadImage(img, 'project').then(url => ({
+                    fakeName: img.originalname,
+                    url
+                }))
+            );
+
+            const uploadedResults = await Promise.all(uploadPromises);
+            for (const { fakeName, url } of uploadedResults) {
                 contentHTML = contentHTML.replaceAll(fakeName, url);
             }
-        }
+        }  
 
         let imagesToDelete = data.delete_images;
         if (typeof imagesToDelete === 'string') {
@@ -476,14 +532,14 @@ const projects = {
         }  
         const final_main_image = cloud_avatar_img || main_image || null;
 
-        //Get news_categories id
+        // Get project_regions id
         const regionRes = await pool.query(
             `SELECT id FROM project.project_regions WHERE name ILIKE $1`,
             [region_name]
         );
         const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
 
-        //Update project content
+        // Update project content
         const updateProjectContentSql = `
             update project.project_contents
             set 
@@ -492,7 +548,7 @@ const projects = {
         `
         await pool.query(updateProjectContentSql, [contentHTML, id]);
         
-        //Insert updateNews
+        // Insert updateProject
         const updateProjectSql = `
             update project.projects
             set 
@@ -604,7 +660,6 @@ const projects = {
             }
         } catch (error) {
             await client.query("ROLLBACK");
-            console.error("Error during DB updateRegion:", error);
             throw error;
         } finally {
             client.release();
@@ -636,22 +691,22 @@ const projects = {
 
             // Giảm item_count trong project_regions
             await client.query(`
-            UPDATE project.project_regions
-            SET item_count = item_count - 1
-            WHERE id = (SELECT region_id FROM project.projects WHERE id = $1)
+                UPDATE project.project_regions
+                SET item_count = item_count - 1
+                WHERE id = (SELECT region_id FROM project.projects WHERE id = $1)
             `, [id]);
 
             // Xoá nội dung dự án
             await client.query(`
-            DELETE FROM project.project_contents
-            WHERE project_id = $1
+                DELETE FROM project.project_contents
+                WHERE project_id = $1
             `, [id]);
 
             // Xoá dự án
             const result = await client.query(`
-            DELETE FROM project.projects
-            WHERE id = $1
-            RETURNING *
+                DELETE FROM project.projects
+                WHERE id = $1
+                RETURNING *
             `, [id]);
 
             await client.query('COMMIT');
@@ -680,14 +735,14 @@ const projects = {
 const project_regions = {
     getAll: async () => {
         const project_regions = (await pool.query("SELECT * FROM project.project_regions ORDER BY id")).rows;
-        if(!project_regions){
+        if(!project_regions) {
             throw new Error("Can't get project_regions");
         }
         return project_regions
     },
     getOne: async (id) => {
         const project_region = (await pool.query(`SELECT * FROM project.project_regions WHERE id = $1`, [id])).rows[0];
-        if(!project_region){
+        if(!project_region) {
             throw new Error("Can't get project_regions");
         }
         return project_region
@@ -757,9 +812,12 @@ const project_regions = {
         const { name, rgb_color } = data;
         await pool.query(
             `UPDATE project.project_regions
-             SET name = $1, rgb_color = $2
-             WHERE id = $3`,
-             [name, rgb_color, id]
+            SET
+                name = $1,
+                rgb_color = $2
+            WHERE
+                id = $3`,
+            [name, rgb_color, id]
         );
 
         const note = (old_name != name) ? ' (đã đổi tên)' : '';
@@ -775,7 +833,12 @@ const project_regions = {
             // Câu 1: Xoá project_contents
             try {
             await client.query(
-                'DELETE FROM project.project_contents WHERE project_id IN (SELECT id FROM project.projects WHERE region_id = $1)',
+                `DELETE FROM project.project_contents
+                WHERE project_id IN (
+                    SELECT id
+                    FROM project.projects
+                    WHERE region_id = $1
+                )`,
                 [id]
             );
             } catch (err) {
@@ -818,8 +881,8 @@ const project_regions = {
             client.release();
         }
     }
-
 }
+
 //  href = {companyInfoData.googlemaps_url}
 const project_contents = {
     getAll: async () => {

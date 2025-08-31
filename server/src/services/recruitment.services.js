@@ -1,14 +1,15 @@
 import pool from '#@/config/db.js'
 import sendMail from '#@/utils/mailer.js'
 import { updateImage } from '#@/utils/image.js';
-const getAllTables = async (req, res) => {
+
+const getAllTables = async () => {
     const _recruitment_page = await getRecruitmentPage();
     return {
         recruitment_page: _recruitment_page
     };
 }
 
-const getRecruitmentPage = async (req, res) => {
+const getRecruitmentPage = async () => {
     const recruitment_page = (await pool.query("SELECT * FROM recruitment.recruitment_page")).rows[0];
     if(!recruitment_page){
         throw new Error("Can't get recruitment_page");
@@ -77,25 +78,21 @@ const updateRecruitmentPage = {
 
         return {
             status: 200,
-            message: "Cập nhật Banner trang Tuyển Dụng thành công",
-            action: `Cập nhật Banner trang Tuyển Dụng`
+            message: "Cập nhật Banner trang Tuyển dụng thành công",
+            action: `Cập nhật Banner trang Tuyển dụng`
         };
     },
     visibility: async (data) => {
-        const {
-            visibility
-        } = data;
-
         await pool.query(`
             UPDATE recruitment.recruitment_page
             SET
                 is_visible = $1
-        `, [visibility]);
-        const visibility_state = visibility == true ? "Bật" : "Tắt";
+        `, [data]);
+        const visibility_state = data == true ? "Bật" : "Tắt";
         return {
             status: 200,
-            message: `${visibility_state} chế độ hiển thị trang tuyển dụng thành công`,
-            action: `${visibility_state} chế độ hiển thị trang tuyển dụng`
+            message: `${visibility_state} chế độ hiển thị trang Tuyển dụng thành công`,
+            action: `${visibility_state} chế độ hiển thị trang Tuyển dụng`
         }
     },
     culture: async (data) => {
@@ -107,8 +104,8 @@ const updateRecruitmentPage = {
 
         return {
             status: 200,
-            message: "Cập nhật Văn hóa của chúng tôi trang Tuyển Dụng thành công",
-            action: `Cập nhật Văn hóa của chúng tôi trang Tuyển Dụng`
+            message: "Cập nhật Văn hóa của chúng tôi trang Tuyển dụng thành công",
+            action: `Cập nhật Văn hóa của chúng tôi trang Tuyển dụng`
         };
     },
     culture_images: async (data, files) => {
@@ -121,22 +118,25 @@ const updateRecruitmentPage = {
             FROM recruitment.recruitment_page
         `)).rows[0]; // <-- Lấy phần tử đầu tiên
 
-        const updatedImages = [];
-        for (let i = 1; i <= 4; i++) {
-            const key = `culture_img_${i}`;
-            const old = old_img[`img_${i}`];
-            const local = files[key]?.[0] ?? null; // ảnh mới ở vị trí i, có thể undefined nếu không upload ảnh mới
+        // Tạo danh sách promise upload song song
+        const uploadTasks = Array.from({ length: 4 }, (_, i) => {
+            const index = i + 1;
+            const key = `culture_img_${index}`;
+            const old = old_img[`img_${index}`];
+            const local = files[key]?.[0] ?? null;
             const external = data[key] ?? null;
-            const updated = await updateImage(old, local, external, 'recruitment');
-            updatedImages.push(updated);
-        }
-        // Sau khi update xong:
+
+            // Trả về promise
+            return updateImage(old, local, external, 'recruitment');
+        });
+
+        // Chạy song song tất cả updateImage
         const [
             final_culture_img_1,
             final_culture_img_2,
             final_culture_img_3,
             final_culture_img_4
-        ] = updatedImages;
+        ] = await Promise.all(uploadTasks);
 
         await pool.query(`
             UPDATE recruitment.recruitment_page
@@ -149,8 +149,8 @@ const updateRecruitmentPage = {
 
         return {
             status: 200,
-            message: "Cập nhật Ảnh Văn hóa của chúng tôi trang Tuyển Dụng thành công",
-            action: `Cập nhật Ảnh Văn hóa của chúng tôi trang Tuyển Dụng`
+            message: "Cập nhật Ảnh Văn hóa của chúng tôi trang Tuyển dụng thành công",
+            action: `Cập nhật Ảnh Văn hóa của chúng tôi trang Tuyển dụng`
         };
     }
 }

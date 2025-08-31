@@ -15,7 +15,7 @@ const getAllTables = async () => {
 
 const getContactPage = async () => {
     const contact_page = (await pool.query("SELECT * FROM contact.contact_page")).rows[0];
-    if(!contact_page){
+    if(!contact_page) {
         throw new Error("Can't get contact_page");
     }
     return contact_page;
@@ -38,37 +38,35 @@ const updateContactPage = {
         return {
             status: 200,
             message: "Cập nhật Banner thành công",
-            action: `Cập nhật Banner trang Liên Hệ`
+            action: `Cập nhật Banner trang Liên hệ`
         }
     },
     visibility: async (data) => {
-        const {
-            visibility
-        } = data;
-
         await pool.query(`
             UPDATE contact.contact_page
             SET
                 is_visible = $1
-        `, [visibility]);
-        const visibility_state = visibility == true ? "Bật" : "Tắt";
+        `, [data]);
+
+        const visibility_state = data == true ? "Bật" : "Tắt";
         return {
             status: 200,
-            message: `${visibility_state} chế độ hiển thị trang liên hệ thành công`,
-            action: `${visibility_state} chế độ hiển thị trang liên hệ`
+            message: `${visibility_state} chế độ hiển thị trang Liên hệ thành công`,
+            action: `${visibility_state} chế độ hiển thị trang Liên hệ`
         }
     }
 }
 
 const getCompanyInfo = async () => {
     let company_info = (await pool.query("SELECT * FROM contact.company_info")).rows[0];
-    if(!company_info){
+    if(!company_info) {
         throw new Error("Can't get company_info");
     }
 
     let { main_office_id, office_address, googlemaps_embed_url, ...rest } = company_info;
     office_address = office_address.map(element => JSON.parse(element || '{}'));
     const main_office = office_address[main_office_id - 1] || '{}';
+
     company_info = {
         ...rest,
         office_address : office_address,
@@ -127,14 +125,14 @@ const updateCompanyInfo = async (data) => {
 const support_agents = {
     getAll: async () => {
         const support_agents = (await pool.query("SELECT * FROM contact.support_agents ORDER BY id")).rows;
-        if (!support_agents){
+        if (!support_agents) {
             throw new Error("Can't get support_agents");
         }
         return support_agents
     },
     getOne: async (id) => {
         const support_agent_with_id = (await pool.query(`SELECT * FROM contact.support_agents WHERE id = ${id}`)).rows[0];
-        if (!support_agent_with_id){
+        if (!support_agent_with_id) {
             throw new Error("Can't get support_agents");
         }
         return support_agent_with_id;
@@ -209,8 +207,8 @@ const support_agents = {
         const note = (old_name != name) ? ' (đã đổi tên)' : '';
         return {
             status: 200,
-            message: "Cập nhật Người Liên Hệ thành công",
-            action: `Cập nhật Người Liên Hệ${note}: ${name}`
+            message: "Cập nhật Người Liên hệ thành công",
+            action: `Cập nhật Người Liên hệ${note}: ${name}`
         } 
     },
     deleteOne: async (id) => {
@@ -228,8 +226,8 @@ const support_agents = {
         const name = result.rows[0].name;
         return {
             status: 200,
-            message: "Xóa Người Liên Hệ thành công",
-            action: `Xóa Người Liên Hệ: ${name}`
+            message: "Xóa Người liên Hệ thành công",
+            action: `Xóa Người liên Hệ: ${name}`
         }
     }
     
@@ -286,7 +284,7 @@ const count = async () => {
         FROM contact.support_agents
     `)).rows[0];
 
-    if(!data){
+    if(!data) {
         throw new Error("Can't get support_agents");
     }
 

@@ -39,10 +39,6 @@ const API_ROUTES = {
             getOne: (id) => `${PRODUCT_BASE}/product_categories/${id}`,
             getAllFeatured: `${PRODUCT_BASE}/featured_product_categories`
         },
-        product_prices: {
-            getAll: (query, filter) => `${PRODUCT_BASE}/product_prices?query=${uri(query)}&filter=${uri(filter)}`,
-            getOne: (id) => `${PRODUCT_BASE}/product_prices/${id}`,
-        },
         price_page: `${PRODUCT_BASE}/price_page`,
     },
     project: {

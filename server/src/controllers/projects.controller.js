@@ -19,7 +19,7 @@ const updateProjectPage = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Lỗi cập nhật trang dự án: ', error);
+            console.error('Lỗi cập nhật trang Dự án: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
@@ -29,7 +29,7 @@ const updateProjectPage = {
             if(status == 200) logActivity(req.user.username, action);
             res.status(status).json({message: message});
         }catch(error){
-            console.error('Lỗi chế độ hiển thị trang dự án: ', error);
+            console.error('Lỗi chế độ hiển thị trang Dự án: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
         }
     }
@@ -64,7 +64,7 @@ const projects = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message, id });
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('Lỗi tạo dự án: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }        
     },
@@ -75,13 +75,13 @@ const projects = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('Lỗi cập nhật dự án: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     },
     updateFeatureOne: async (req, res) => {
-        const { id, status: project_status } = req.params;
         try {
+            const { id, status: project_status } = req.params;
             const { status, message, action = null } = await projectsServices.projects.updateFeatureOne(id, project_status);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -91,24 +91,24 @@ const projects = {
         }
     },
     updateRegion: async (req, res) => {
-        const { changedItems } = req.body; 
         try {
+            const { changedItems } = req.body; 
             const { status, message, action = null } = await projectsServices.projects.updateRegion(changedItems);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Lỗi gán khu vực dự án: ', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     }, 
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await projectsServices.projects.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Lỗi máy chủ', error);
+            console.error('Lỗi xóa dự án: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }
@@ -139,29 +139,29 @@ const project_regions = {
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('Lỗi tạo khu vực dự án: ', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
     updateOne: async(req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await projectsServices.project_regions.updateOne(req.body, id); 
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Lỗi cập nhật khu vực dự án: ', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
     deleteOne: async(req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await projectsServices.project_regions.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('Lỗi xóa khu vực dự án: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }

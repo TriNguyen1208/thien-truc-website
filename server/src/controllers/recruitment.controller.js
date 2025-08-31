@@ -17,7 +17,7 @@ const submitApplication = async (req, res) => {
     await recruitmentServices.submitApplication(req.body);
     res.status(200).json({ success: true, message: "Ứng tuyển thành công" });
   } catch (error) {
-    console.error(error);
+    console.error('Lỗi gửi đơn tuyển dụng: ', error);
     res.status(500).json({ success: false, message: "Gửi đơn ứng tuyển thất bại", error: error.message });
   }
 };
@@ -29,7 +29,7 @@ const updateRecruitmentPage = {
       if (status == 200) logActivity(req.user.username, action);
       res.status(status).json({ success: true, message });
     } catch (error) {
-      console.error(error);
+      console.error('Lỗi cập nhật Banner trang Tuyển dụng: ', error);
       res.status(500).json({ success: false, message: "Cập nhật thất bại", error: error.message });
     }
   },
@@ -39,7 +39,7 @@ const updateRecruitmentPage = {
       if (status == 200) logActivity(req.user.username, action);
       res.status(status).json({ success: true, message });
     } catch (error) {
-      console.error(error);
+      console.error('Lỗi cập nhật hiển thị trang Tuyển dụng: ', error);
       res.status(500).json({ success: false, message: "Cập nhật thất bại", error: error.message });
     }
   },
@@ -49,7 +49,7 @@ const updateRecruitmentPage = {
       if (status == 200) logActivity(req.user.username, action);
       res.status(status).json({ success: true, message });
     } catch (error) {
-      console.error(error);
+      console.error('Lỗi cập nhật Văn hóa của chúng tôi trang Tuyển dụng: ', error);
       res.status(500).json({ success: false, message: "Cập nhật thất bại", error: error.message });
     }
   },
@@ -59,7 +59,7 @@ const updateRecruitmentPage = {
       if (status == 200) logActivity(req.user.username, action);
       res.status(status).json({ success: true, message });
     } catch (error) {
-      console.error(error);
+      console.error('Lỗi cập nhật Ảnh Văn hóa của chúng tôi trang Tuyển dụng: ', error);
       res.status(500).json({ success: false, message: "Cập nhật thất bại", error: error.message });
     }
   },
