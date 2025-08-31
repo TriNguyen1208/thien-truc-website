@@ -27,7 +27,7 @@ const updateProductPage = {
         try{
             const {status, message, action = null} = await productServices.updateProductPage.visibility(req.body);
             if(status == 200) logActivity(req.user.username, action);
-            res.status(status).json({message: message});
+            res.status(status).json({ message: message });
         }catch(error){
             console.error('Lỗi chế độ hiển thị trang sản phẩm: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
@@ -59,8 +59,8 @@ const products = {
         res.status(200).json(data);
     },
     updateFeatureOne: async (req, res) => {
-        const { id, status: product_status } = req.params;
         try {
+            const { id, status: product_status } = req.params;
             const { status, message, action = null } = await productServices.products.updateFeatureOne(id, product_status);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -70,8 +70,8 @@ const products = {
         }
     },
     updateCategory: async (req, res) => {
-        const { changedItems } = req.body;
         try {
+            const { changedItems } = req.body;
             const { status, message, action = null } = await productServices.products.updateCategory(changedItems);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -91,8 +91,8 @@ const products = {
         }
     },
     updateOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.products.updateOne(req.body, req.file, id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -102,8 +102,8 @@ const products = {
         }
     },
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.products.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -116,7 +116,7 @@ const products = {
 
 const product_categories = {
     getList: async (req, res) => {
-        const { id = '', query ='' } = req.query;
+        const { id = '', query = '' } = req.query;
         const data = await productServices.product_categories.getList(id, query);
         res.status(200).json(data);
     },
@@ -147,8 +147,8 @@ const product_categories = {
         }
     },
     updateOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.product_categories.updateOne(req.body, id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -158,8 +158,8 @@ const product_categories = {
         }
     },
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.product_categories.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
