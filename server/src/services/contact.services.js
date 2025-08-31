@@ -48,7 +48,7 @@ const updateContactPage = {
                 is_visible = $1
         `, [data]);
 
-        const visibility_state = visibility == true ? "Bật" : "Tắt";
+        const visibility_state = data == true ? "Bật" : "Tắt";
         return {
             status: 200,
             message: `${visibility_state} chế độ hiển thị trang Liên hệ thành công`,
