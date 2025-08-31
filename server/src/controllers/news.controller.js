@@ -55,6 +55,10 @@ const news = {
         const data = await newsServices.news.getOne(id);
         res.status(200).json(data);
     },
+    getAllFeatured: async (req, res) => {
+        const data = await newsServices.news.getAllFeatured();
+        res.status(200).json(data);
+    },
     getSearchSuggestions: async (req, res) => {
         const query = req.query.query || '';
         const filter = req.query.filter || '';
@@ -83,6 +87,16 @@ const news = {
         } catch (error) {
             console.error('Lỗi cập nhật tin tức: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    updateFeaturedNews: async (req, res) => {
+        try {
+            const { status, message, action = null } = await newsServices.news.updateFeaturedNews(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            res.status(status).json({ message: message });
+        } catch(error) {
+            console.error('Lỗi cập nhật Tin tức nổi bật: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
     updateNumReaders: async(req, res)=>{
@@ -180,20 +194,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-const featured_news = {
-    getAll: async (req, res) => {
-        const data = await newsServices.featured_news.getAll();
-        res.status(200).json(data);
-    },
-    updateAll: async (req, res) => {
-        try {
-            const { status, message, action = null } = await newsServices.featured_news.updateAll(req.body);
-            if (status == 200) logActivity(req.user.username, action);
-            res.status(status).json({ message: message });
-        } catch(error) {
-            console.error('Lỗi cập nhật Tin tức nổi bật: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
-        }
-    }
-}
-export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, count, featured_news};
+export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, count};
