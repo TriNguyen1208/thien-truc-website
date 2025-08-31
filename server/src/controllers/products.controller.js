@@ -198,19 +198,6 @@ const updatePricePage = {
     }
 }
 
-const product_prices = {
-    getAll: async (req, res) => {
-        const {query ='', filter = ''} = req.query;
-        const data = await productServices.product_prices.getAll(query, filter);
-        res.status(200).json(data);
-    },
-    getOne: async (req, res) => {
-        const product_id = req.params.product_id
-        const data = await productServices.product_prices.getOne(product_id);
-        res.status(200).json(data);
-    }
-}
-
 const getHighlightProducts = async (req, res) => {
     const data = await productServices.getHighlightProducts();
     res.status(200).json(data);
@@ -221,4 +208,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, count };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, getHighlightProducts, count };
