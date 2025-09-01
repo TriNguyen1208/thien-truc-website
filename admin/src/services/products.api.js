@@ -12,7 +12,7 @@ const updateProductPage = {
         return res.data;
     },
     visibility: async (data) => {
-        const res = await axios.patch(API_ROUTES.product.updatePricePage.visibility, data);
+        const res = await axios.patch(API_ROUTES.product.updateProductPage.visibility, data);
         return res.data;
     }
 }

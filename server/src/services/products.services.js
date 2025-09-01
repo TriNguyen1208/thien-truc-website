@@ -959,12 +959,13 @@ const updatePricePage = {
         }
     },
     visibility: async (data) => {
+        const { visibility } = data;
         await pool.query(`
             UPDATE product.price_page
             SET
                 is_visible = $1
-        `, [data]);
-        const visibility_state = data == true ? "Bật" : "Tắt";
+        `, [visibility]);
+        const visibility_state = visibility == true ? "Bật" : "Tắt";
         return {
             status: 200,
             message: `${visibility_state} chế độ hiển thị trang bảng giá thành công`,

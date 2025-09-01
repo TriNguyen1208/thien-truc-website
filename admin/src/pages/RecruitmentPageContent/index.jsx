@@ -23,12 +23,12 @@ const RecruitmentPageContent = () => {
     const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
 
     //-----------------------Lưu trạng thái của form sẽ gửi lên backend--------------
+    //Dùng useState để lưu trạng thái
     const [valuesBanner, setValuesBanner] = useState(null);
     const [valuesCulture, setValuesCulture] = useState(null);
     const [valuesCultureImages, setValuesCultureImages] = useState(null);
     const [initialValuesCultureImages, setInitialValuesCultureImages] = useState(null);
     const [isVisible, setIsVisible] = useState(null);
-
     //Set trạng thái đầu tiên của hình
     useEffect(() => {
         if(isLoadingRecruitment || isFetchingRecruitment || isPendingUpdateVisibility){
@@ -61,17 +61,17 @@ const RecruitmentPageContent = () => {
     const {setLayoutProps} = useLayout();
     useEffect(()=>{
         setLayoutProps({
-        title: "Nội dung Trang tuyển dụng",
-        description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
-        hasButton: false,
-        buttonToggle: {
-            currentState: isVisible,
-            handleToggle: handleToggle,
-        }
+            title: "Nội dung Trang tuyển dụng",
+            description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
+            hasButton: false,
+            buttonToggle: {
+                currentState: isVisible,
+                handleToggle: handleToggle,
+            }
         })
     }, [isVisible])
     //Prop cho banner của trang tuyển dụng
-    const propsBanner = {
+    const bannerProps = {
         title: "Nội dung Trang tuyển dụng",
         description: "Quản lý nội dung hiển thị trên trang tuyển dụng",
         listInput: [
@@ -100,7 +100,7 @@ const RecruitmentPageContent = () => {
         }
     }
     //Prop cho banner văn hóa của chúng tôi
-    const propsCulture = {
+    const cultureProps = {
         title: "Văn hóa của chúng tôi",
         description: "Đoạn văn có thể xuống dòng",
         listInput: [
@@ -186,7 +186,7 @@ const RecruitmentPageContent = () => {
     };
 
     //-------------Custom button props-------------
-    const propsButton ={
+    const buttonProps ={
         Icon: SaveIcon,
         text: "Lưu thay đổi",
         colorText: "#ffffff",
@@ -227,8 +227,8 @@ const RecruitmentPageContent = () => {
     return (
         <>
             <div className='flex flex-col gap-5'>
-                <EditBanner {...propsBanner}/>
-                <EditBanner {...propsCulture}/>
+                <EditBanner {...bannerProps}/>
+                <EditBanner {...cultureProps}/>
                 <form onSubmit={(e) => {e.preventDefault(); setOpenCultureImagesNotification(true)}} className='flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px]'>
                     <div className="flex flex-col mb-[16px]">
                         <label className="mb-[8px] font-medium">Ảnh văn hóa công ty <span className='text-red-500 ml-1'>*</span></label>
@@ -240,7 +240,7 @@ const RecruitmentPageContent = () => {
                         </div>
                     </div>
                     <div className='h-40[px]'>
-                        <button type='submit'> <Button {...propsButton}/></button>
+                        <button type='submit'> <Button {...buttonProps}/></button>
                     </div>                
                 </form>
             </div>

@@ -154,12 +154,12 @@ const updateRecruitmentPage = {
         }
     },
     culture: async (data) => {
-        const { content } = data;
+        const { culture_content } = data;
         await pool.query(`
             UPDATE recruitment.recruitment_page
             SET 
                 culture_content = $1
-        `, [content]);
+        `, [culture_content]);
 
         return {
             status: 200,

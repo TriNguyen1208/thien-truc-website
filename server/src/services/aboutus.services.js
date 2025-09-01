@@ -40,12 +40,12 @@ const updateAboutUsPage = {
         }
     },
     ourStory: async (data) => {
-        const { content } = data;
+        const { our_story_content } = data;
         await pool.query(`
             UPDATE about_us.about_us_page
             SET
                 our_story_content = $1 
-        `, [content]);
+        `, [our_story_content]);
 
         return {
             status: 200,

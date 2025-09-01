@@ -8,7 +8,7 @@ import Notification from '@/components/Notification'
 
 const NewsPageContent = () => {
     //------------------API------------------
-    const { data: NewsPage, isLoading: isLoadingNewsPage} = useNews.getNewsPage()
+    const { data: newsPage, isLoading: isLoadingNewsPage} = useNews.getNewsPage()
     const { mutate: updateNewsPage, isPending } = useNews.updateNewsPage.banner();
     const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useNews.updateNewsPage.visibility();
 
@@ -17,8 +17,8 @@ const NewsPageContent = () => {
     const [isVisible, setIsVisible] = useState(null);
     useEffect(() => {
         if(isLoadingNewsPage) return
-        setIsVisible(NewsPage.is_visible);
-    }, [NewsPage, isLoadingNewsPage]);
+        setIsVisible(newsPage.is_visible);
+    }, [newsPage, isLoadingNewsPage]);
 
     //Xu ly nut isVisible
     function handleToggle(checked){
@@ -56,7 +56,7 @@ const NewsPageContent = () => {
                 name: "title",
                 label: "Tiêu đề Banner",
                 placeholder: "Vd: Tin tức công ty...",
-                contentCurrent: NewsPage?.banner_title ?? "",
+                contentCurrent: newsPage?.banner_title ?? "",
                 isRequire: true,
                 maxLength: 100,
                 rows: 1
@@ -65,7 +65,7 @@ const NewsPageContent = () => {
                 name: "description",
                 label: "Mô tả Banner",
                 placeholder: "Vd: Tin tức của chúng tôi...",
-                contentCurrent: NewsPage?.banner_description ?? "",
+                contentCurrent: newsPage?.banner_description ?? "",
                 isRequire: true,
                 maxLength: 300,
                 rows: 3
