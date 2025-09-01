@@ -14,21 +14,19 @@ router.get('/products/:id', productController.products.getOne);
 router.get('/product_categories', productController.product_categories.getList);
 router.get('/product_categories/:id', productController.product_categories.getOne);
 router.get('/price_page', productController.getPricePage);
-router.get('/product_prices', productController.product_prices.getAll);
-router.get('/product_prices/:product_id', productController.product_prices.getOne);
 router.get('/highlight_products', productController.getHighlightProducts);
-router.get('/search_suggestions', productController.getSearchSuggestions);
-router.get('/search_categories_suggestions', productController.getSearchCategoriesSuggestions);
+router.get('/search_suggestions', productController.products.getSearchSuggestions);
+router.get('/search_categories_suggestions', productController.product_categories.getSearchSuggestions);
 router.get('/count', productController.count);
 router.get('/featured_product_categories', productController.product_categories.getAllFeatured);
 
 router.post('/products', authenticateToken, upload.single('local_image'), productController.products.createOne);
 router.post('/product_categories', authenticateToken, productController.product_categories.createOne);
 
-router.patch('/product_page', authenticateToken, productController.updateProductPage);
-router.patch('/product_page/visibility', authenticateToken, productController.updateProductVisibility);
-router.patch('/price_page', authenticateToken, productController.updatePricePage);
-router.patch('/price_page/visibility', authenticateToken, productController.updatePriceVisibility);
+router.patch('/product_page/banner', authenticateToken, productController.updateProductPage.banner);
+router.patch('/product_page/visibility', authenticateToken, productController.updateProductPage.visibility);
+router.patch('/price_page/banner', authenticateToken, productController.updatePricePage.banner);
+router.patch('/price_page/visibility', authenticateToken, productController.updatePricePage.visibility);
 
 router.patch('/products/update-categories', authenticateToken, productController.products.updateCategory);
 router.patch('/products/:id', authenticateToken, upload.single('local_image'), productController.products.updateOne);

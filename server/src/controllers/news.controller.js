@@ -17,24 +17,26 @@ const getHighlightNews = async (req, res) => {
     res.status(200).json(data);
 }
 
-const updateNewsPage = async (req, res) => {
-    try {
-        const { status, message, action } = await newsServices.updateNewsPage(req.body);
-        if (status == 200) logActivity(req.user.username, action);
-        return res.status(status).json({ message });
-    } catch (error) {
-        console.error('Lỗi cập nhật trang dự án: ', error);
-        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
-    }
-}
-const updateVisibility = async (req, res) => {
-    try {
-        const { status, message, action } = await newsServices.updateVisibility(req.body);
-        if (status == 200) logActivity(req.user.username, action);
-        return res.status(status).json({ message });
-    } catch (error) {
-        console.error('Lỗi cập nhật trang tin tức: ', error);
-        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+const updateNewsPage = {
+    banner: async (req, res) => {
+        try {
+            const { status, message, action } = await newsServices.updateNewsPage.banner(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật Banner trang Tin tức: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    visibility: async (req, res) => {
+        try {
+            const { status, message, action } = await newsServices.updateNewsPage.visibility(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật hiển thị trang Tin tức: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
     }
 }
 const news = {
@@ -53,30 +55,74 @@ const news = {
         const data = await newsServices.news.getOne(id);
         res.status(200).json(data);
     },
+    getAllFeatured: async (req, res) => {
+        const data = await newsServices.news.getAllFeatured();
+        res.status(200).json(data);
+    },
+    getSearchSuggestions: async (req, res) => {
+        const query = req.query.query || '';
+        const filter = req.query.filter || '';
+        const is_published = req.query.is_published;
+
+        const data = await newsServices.news.getSearchSuggestions(query, filter, is_published);
+        res.status(200).json(data);
+    },
+    createOne: async (req, res) => {
+        try {
+            const { status, message, action = null, id } = await newsServices.news.createOne(req.body, req.files);
+            if (status == 200) logActivity(req.user.username, action);
+            res.status(status).json({ message, id });
+        } catch (error) {
+            console.error('Lỗi tạo tin tức: ', error);
+            return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });
+        }
+        
+    },
+    updateOne: async(req, res) => {
+        try {
+            const { id } = req.params;
+            const { status, message, action = null } = await newsServices.news.updateOne(id, req.body, req.files)
+            if (status == 200) logActivity(req.user.username, action);
+            res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật tin tức: ', error);
+            return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    updateFeaturedNews: async (req, res) => {
+        try {
+            const { status, message, action = null } = await newsServices.news.updateFeaturedNews(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            res.status(status).json({ message: message });
+        } catch(error) {
+            console.error('Lỗi cập nhật Tin tức nổi bật: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
     updateNumReaders: async(req, res)=>{
         const id = req.params.id;
         const data = await newsServices.news.updateNumReaders(id);
         res.status(200).json(data);
     },
     updateCategory: async (req, res) => {
-        const { changedItems } = req.body; 
         try {
+            const { changedItems } = req.body; 
             const { status, message, action = null } = await newsServices.news.updateCategory(changedItems);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Lỗi gán loại tin tức', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     }, 
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await newsServices.news.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.error('Lỗi máy chủ', error);
+            console.error('Lỗi xóa tin tức: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }
@@ -92,35 +138,40 @@ const news_categories = {
         const data = await newsServices.news_categories.getOne(id);
         res.status(200).json(data);
     },
+    getSearchSuggestions: async (req, res) => {
+        const query = req.query.query || '';
+        const data = await newsServices.news_categories.getSearchSuggestions(query);
+        res.status(200).json(data);
+    },
     createOne: async(req, res) => {
         try {
             const { status, message, action = null } = await newsServices.news_categories.createOne(req.body);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('Lỗi tạo loại tin tức: ', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
     updateOne: async(req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await newsServices.news_categories.updateOne(req.body, id);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Lỗi cập nhật loại tin tức: ', error);
             res.status(500).json({message: 'Lỗi máy chủ nội bộ'});
         }
     },
     deleteOne: async(req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action} = await newsServices.news_categories.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message });
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('Lỗi xóa loại tin tức: ', error);
             return res.status(500).json({message: 'Lỗi máy chủ'});
         }
     }
@@ -135,45 +186,7 @@ const news_contents = {
         const id = req.params.id;
         const data = await newsServices.news_contents.getOne(id);
         res.status(200).json(data);
-    },
-    postOne: async (req, res) => {
-        try {
-            const { status, message, action = null, id } = await newsServices.news_contents.postOne(req.body, req.files);
-            if (status == 200) logActivity(req.user.username, action);
-            res.status(status).json({ message, id });
-        } catch (error) {
-            console.error('Error: ', error);
-            return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });
-        }
-        
-    },
-    updateOne: async(req, res) => {
-        try {
-            const { id } = req.params;
-            const { status, message, action = null } = await newsServices.news_contents.updateOne(id, req.body, req.files)
-            if (status == 200) logActivity(req.user.username, action);
-            res.status(status).json({ message });
-        } catch (error) {
-            console.error('Error: ', error);
-            return res.status(500).json({message: 'Lỗi máy chủ nội bộ' });
-        }
-        
     }
-}
-
-const getSearchCategoriesSuggestions = async (req, res) => {
-    const query = req.query.query || '';
-    const data = await newsServices.getSearchCategoriesSuggestions(query);
-    res.status(200).json(data);
-}
-
-const getSearchSuggestions = async (req, res) => {
-    const query = req.query.query || '';
-    const filter = req.query.filter || '';
-    const is_published = req.query.is_published;
-
-    const data = await newsServices.getSearchSuggestions(query, filter, is_published);
-    res.status(200).json(data);
 }
 
 const count = async (req, res) => {
@@ -181,20 +194,4 @@ const count = async (req, res) => {
     res.status(200).json(data);
 }
 
-const featured_news = {
-    getAll: async (req, res) => {
-        const data = await newsServices.featured_news.getAll();
-        res.status(200).json(data);
-    },
-    updateAll: async (req, res) => {
-        try {
-            const { status, message, action = null } = await newsServices.featured_news.updateAll(req.body);
-            if (status == 200) logActivity(req.user.username, action);
-            res.status(status).json({ message: message });
-        } catch(error) {
-            console.error('Lỗi cập nhật Tin Tức Nổi Bật: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
-        }
-    }
-}
-export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, getSearchSuggestions, getSearchCategoriesSuggestions, count, featured_news, updateVisibility};
+export default { getAllTables, getNewsPage, getHighlightNews, updateNewsPage, news, news_categories, news_contents, count};

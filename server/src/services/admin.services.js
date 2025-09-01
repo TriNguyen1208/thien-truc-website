@@ -26,7 +26,7 @@ const activity_logs = {
             LIMIT 50
         `));
 
-        if(!rows){
+        if(!rows) {
             throw new Error("Can't get activity_logs or accounts");
         }
         
@@ -92,7 +92,7 @@ const manager = {
 
         const hashed_password = await authUtil.hashPassword(password);
 
-        const result = await pool.query(`
+        await pool.query(`
             INSERT INTO admin.accounts (username, role, password, fullname, phone, email, position, description)
             VALUES ($1, 'manager', $2, $3, $4 ,$5, $6, $7);
         `, [username, hashed_password, fullname, phone, email, position, description]);
@@ -111,7 +111,6 @@ const manager = {
         }
 
         const {
-            // username
             password,
             fullname,
             phone,
