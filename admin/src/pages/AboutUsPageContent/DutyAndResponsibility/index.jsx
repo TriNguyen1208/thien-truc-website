@@ -175,12 +175,12 @@ const DutyAndResponsibility = () => {
                                 <CardList
                                     {...item}
                                     buttonEdit={
-                                        <button onClick={() => configDutyAndResponsibility.handleEditButton(item)}>
+                                        <button onClick={() => configDutyAndResponsibility.handleEditButton(item)} className='cursor-pointer'>
                                             <EditIcon />
                                         </button>
                                     }
                                     buttonDelete={
-                                        <button onClick={() => configDutyAndResponsibility.handleDeleteButton(item)}>
+                                        <button onClick={() => configDutyAndResponsibility.handleDeleteButton(item)} className='cursor-pointer'>
                                             <DeleteIcon />
                                         </button>
                                     }

@@ -96,14 +96,14 @@ const BannerImages = () => {
                     component: 
                         <div className='flex flex-col gap-2'>
                             <button
-                                className={`px-3 border border-gray-300 rounded-sm w-[50px]`}
+                                className={`px-3 border border-gray-300 rounded-sm w-[50px] cursor-pointer`}
                                 onClick={() => handleMoveUpPictures(index)}
                                 disabled={index === 0}
                             >
                                 <ArrowUpIcon className={index === 0 ? "text-gray-300" : "text-gray-600"} />
                             </button>
                             <button
-                                className={`px-3 border border-gray-300 rounded-sm w-[50px]`}
+                                className={`px-3 border border-gray-300 rounded-sm w-[50px] cursor-pointer`}
                                 onClick={() => handleMoveDownPictures(index)}
                                 disabled={index === highlightPicturesList.length - 1}
                             >
@@ -233,7 +233,14 @@ const BannerImages = () => {
         handleAddPicture: handleAddPicture,
         handleSubmitBannerImage: handleSubmitBannerImage,
         switchTimePictures: switchTimePictures,
-        handleChangeSwitchTimePictures: handleChangeSwitchTimePictures
+        handleChangeSwitchTimePictures: handleChangeSwitchTimePictures,
+        propsSaveButton: {
+            Icon: SaveIcon,
+            text: "Lưu ảnh nổi bật",
+            colorText: "#ffffff",
+            colorBackground: "#000000",
+            padding: 8,
+        }
     }
     if(isPendingUpdateBannerImages || isLoadingHomePageData || isFetchingHomePageData){
         return <Loading/>
@@ -241,7 +248,7 @@ const BannerImages = () => {
     return (
         <div>
             <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] my-[40px]">
-                <div className='flex items-center justify-between mb-[30px]'>
+                <div className='flex items-center justify-between'>
                     <div>
                         <div className="mb-[4px]">
                             <h1 className="text-[24px] text-black font-semibold">
@@ -284,13 +291,10 @@ const BannerImages = () => {
                         />
                         <span className="text-gray-600">giây</span>
                     </div>
-                    <button
-                        type='submit'
-                        className="flex items-center gap-4 w-[200px] px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors mt-[30px]"
-                    >
-                        <span><SaveIcon /></span>
-                        <span>Lưu ảnh nổi bật</span>
-                    </button>
+                    <div className='h-[45px] mt-3'>
+                        <button type='submit' className='h-full'> <Button {...configHighlightPictures.propsSaveButton} /></button>
+                    </div>
+                    
                 </form>
             </div>
         </div>

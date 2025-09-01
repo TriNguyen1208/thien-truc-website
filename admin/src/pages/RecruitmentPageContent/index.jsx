@@ -1,15 +1,10 @@
 import React, { useEffect, useState} from 'react'
 import { useLayout } from '../../layouts/LayoutContext'
-import CustomButton from '@/components/ButtonLayout'
 import {SaveIcon} from "@/components/Icon"
-import DynamicForm from "@/components/DynamicForm"
 import EditBanner from '../../components/EditBanner'
 import useRecruitment from '../../hooks/useRecruitment'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
-import { CancelPopup } from "../../components/Popup";
-import { useRef } from 'react'
-import { UploadIcon } from '../../components/Icon'
 import Button from '@/components/Button'
 import changeToFormData from '../../utils/changeToFormData'
 import UploadImage from '@/components/UploadImage'

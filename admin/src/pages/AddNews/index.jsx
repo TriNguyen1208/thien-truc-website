@@ -10,27 +10,15 @@ import { extractBlogImages } from '../../utils/handleImage';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
 import changeToFormData from '../../utils/changeToFormData';
-function normalizeContent(content = '') {
-    return content
-        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-        .trim();
-}
-function normalizeForm(form) {
-    return {
-        ...form,
-        content: normalizeContent(form.content),
-        // nếu có nhiều field HTML thì thêm normalize ở đây
-    };
-}
+
 const AddNews = () => {
+    //================== API ===================
+    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
+    const {mutate: mutateNews, isPending: isPendingNews} = useNews.news.createOne()
     //useState
     const [form, setForm] = useState(null);
     const [saveOpen, setSaveOpen] = useState(false);
     const [recoverOpen, setRecoverOpen] = useState(false);
-    //Call API
-    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
-    const {mutate: mutateNews, isPending: isPendingNews} = useNews.news.createOne()
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -42,7 +30,6 @@ const AddNews = () => {
     }, [])
 
     //check is change
-    // const { setShouldWarn } = useNavigationGuardContext(); 
     const initialForm = useMemo(() => {
         if (isLoadingCategories) return null;
         return {
@@ -60,19 +47,6 @@ const AddNews = () => {
             setForm(initialForm);
         }
     }, [initialForm]);
-    // useEffect(() => {
-    //     if(form == null || initialForm == null){
-    //         return;
-    //     }
-    //     const stripCountWord = (obj) => {
-    //         const { countWord, ...rest } = obj;
-    //         return rest;
-    //     };
-    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-    //     setShouldWarn(isDirty);
-    // }, [form]);
-
     //Helper function
     const handleSave = async () => {
         if(form.isPublished == true && (form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0)){

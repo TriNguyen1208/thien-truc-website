@@ -1,6 +1,9 @@
 import React from 'react'
 import LazyLoad from '@/components/LazyLoad';
-const ItemTable = ({ data, width }) => {
+const ItemTable = ({ 
+    data, 
+    width 
+}) => {
     return (
         <>
             {(data || []).map((item, index) => (
@@ -36,7 +39,7 @@ const ItemTable = ({ data, width }) => {
                         <div className="flex gap-3 items-center">
                             <input
                                 type="checkbox"
-                                className="w-4 h-4 accent-green-600"
+                                className="w-4 h-4 accent-green-600 cursor-pointer"
                                 checked={item.checked}
                                 onChange={item.onChange}
                             />

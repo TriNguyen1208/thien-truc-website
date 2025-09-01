@@ -94,6 +94,7 @@ const projects = {
                 queryClient.invalidateQueries({ queryKey: ["project"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_content"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -188,7 +189,8 @@ const project_regions = {
             mutationFn: ({ name, rgb_color, id }) => projectsServices.project_regions.updateOne(name, rgb_color, id),
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
-                queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_region"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
                 toast.success(success.message);
             },
             onError: (error) => {

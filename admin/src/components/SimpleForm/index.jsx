@@ -2,7 +2,10 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { Modal } from 'antd';
 import { ChromePicker } from "react-color";
 
-const SimpleForm = ({ data, config }) => {
+const SimpleForm = ({ 
+    data, 
+    config 
+}) => {
     const [focusedFields, setFocusedFields] = useState({});
     const defaultField = {
         type: 'text',
@@ -11,7 +14,7 @@ const SimpleForm = ({ data, config }) => {
         label: '',
         value: '',
         isRequired: false,
-         limitRowDynamicFields: undefined,
+        limitRowDynamicFields: undefined,
         width: 12,
     }
     const defaultConfig = {
@@ -117,7 +120,6 @@ const SimpleForm = ({ data, config }) => {
                     <div
                         className="flex items-center border border-gray-300 rounded px-2 pr-53 py-2 cursor-pointer"
                         onClick={() => setShowPicker(true)}
-                        // style={{backgroundColor: value}}
                         >
                         <div
                             style={{
@@ -133,7 +135,7 @@ const SimpleForm = ({ data, config }) => {
                             {...commonProps}
                             type="text"
                             value={value}
-                            className=" font-normal w-full outline-none bg-transparent"
+                            className=" font-normal w-full outline-none bg-transparent cursor-pointer"
                             style={{ width: '100px', cursor: 'pointer' }}   
                         />
                     </div>
@@ -164,7 +166,7 @@ const SimpleForm = ({ data, config }) => {
                             display: 'inline-block',
                             marginRight: '0.5rem' // tương đương với Tailwind `mr-2`
                         }}
-                        className="accent-black"
+                        className="accent-black cursor-pointer"
                     />
                 );
             default:
@@ -228,7 +230,7 @@ const SimpleForm = ({ data, config }) => {
                                     setFormData(initialValues);
                                     config.setIsModalOpenSimple(false)
                                 }}
-                                className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px]"
+                                className="mt-4 px-4 py-2 border border-gray-300 rounded-md mr-[10px] cursor-pointer"
                             >
                                 {config.contentCancelButton || defaultConfig.contentCancelButton}
                             </button>

@@ -11,37 +11,21 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
 import changeToFormData from '../../utils/changeToFormData';
-function normalizeContent(content = '') {
-    return content
-        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-        .trim();
-}
-function normalizeForm(form) {
-    return {
-        ...form,
-        content: normalizeContent(form.content),
-        // nếu có nhiều field HTML thì thêm normalize ở đây
-    };
-}
 const EditProject = () => {
-    //navigate
-    const navigate = useNavigate();
-    //getID URL
+    //===================getID URL======================
     const {id: project_id} = useParams();
-
-    //useState
+    //========================= API =====================================
+    const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
+    const {data: project_contents, isLoading: isLoadingProjectContent, isFetching: isFetchingProjectContent} = useProjects.project_contents.getOne(project_id);
+    const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.projects.updateOne()
+    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
+    //UseState
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [saveOpen, setSaveOpen] = useState(false);
     const [recoverOpen, setRecoverOpen] = useState(false);
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
-    
-    //Call API
-    const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const {data: project_contents, isLoading: isLoadingProjectContent, isFetching: isFetchingProjectContent} = useProjects.project_contents.getOne(project_id);
-    const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.projects.updateOne()
-    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
+
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -52,8 +36,7 @@ const EditProject = () => {
         })
     }, [])
 
-    //check is change
-    // const { setShouldWarn } = useNavigationGuardContext(); 
+
     useEffect(() => {
         if (isLoadingProjectContent || isFetchingProjectContent) return;
         if (!project_contents) return;
@@ -66,24 +49,11 @@ const EditProject = () => {
             main_image: project_contents.project.main_img ?? '',
             province: project_contents.project.province ?? '',
             completeTime: project_contents.project.complete_time ?? '',
-            countWord: normalizeContent(project_contents.content).replace(/<[^>]+>/g, '').trim().length
+            countWord: project_contents.content.trim().length
         }
         setInitialForm(initialForm);
         setForm(initialForm);
     }, [isLoadingProjectContent, isFetchingProjectContent, project_contents])
-    
-    // useEffect(() => {
-    //     if(form == null || initialForm == null){
-    //         return;
-    //     }
-    //     const stripCountWord = (obj) => {
-    //         const { countWord, ...rest } = obj;
-    //         return rest;
-    //     };
-    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-    //     setShouldWarn(isDirty);
-    // }, [form, initialForm, setShouldWarn]);
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){

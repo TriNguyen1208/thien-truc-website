@@ -155,7 +155,10 @@ const ProductCategories = () => {
   const convertProductCategoriesListToTableData = (productCategoriesList) => {
     return productCategoriesList.map((item) => {
       return [
-        { type: "text", content: `${item.id}` }, // STT
+        { 
+          type: "text", 
+          content: `${item.id}` 
+        }, // STT
         {
           type: "text",
           content: `${item.name}`

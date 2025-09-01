@@ -7,8 +7,6 @@ import useNews from '../../../hooks/useNews'
 import { useNavigate } from 'react-router-dom'
 import {useEffect, useState, useRef } from 'react';
 import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon,UploadIcon } from '@/components/Icon';
-import Notification from '@/components/Notification'
-import SimpleForm from '@/components/SimpleForm'
 import ProductImageCell from '@/components/ProductImageCell'
 import AddHighlight from '@/components/AddHighlight';
 
@@ -107,14 +105,14 @@ const HighlightNews = () => {
                     component: 
                         <div className='flex flex-col gap-2'>
                             <button
-                                className={`px-3 border border-gray-300 rounded-sm w-[50px]`}
+                                className={`px-3 border border-gray-300 rounded-sm w-[50px] cursor-pointer`}
                                 onClick={() => handleMoveUp(index)}
                                 disabled={index === 0}
                             >
                                 <ArrowUpIcon className={index === 0 ? "text-gray-300" : "text-gray-600"} />
                             </button>
                             <button
-                                className={`px-3 border border-gray-300 rounded-sm w-[50px]`}
+                                className={`px-3 border border-gray-300 rounded-sm w-[50px] cursor-pointer`}
                                 onClick={() => handleMoveDown(index)}
                                 disabled={index === highlightNewsList.length - 1}
                             >
@@ -173,49 +171,13 @@ const HighlightNews = () => {
             colorBackground: "#000000",
             padding: 8,
         },
-        configAddHighlightNews: {
-            title: "Thêm tin tức nổi bật",
-            description: "Điền thông tin thành tựu nổi bật của công ty",
-            contentCancelButton: "Hủy",
-            contentSubmitButton: "Thêm mới",
-            widthModal: 700,
-            isModalOpenSimple: isModalOpenAddHighlightNews,
-            handleSubmitButton: handleSubmitButtonAddHighlightNews,
-            handleCancelButton: handleCancelButtonAddHighlightNews,
-            setIsModalOpenSimple: setIsModalOpenAddHighlightNews,
+        propsSaveButton: {
+            Icon: SaveIcon,
+            text: "Lưu tin tức nổi bật",
+            colorText: "#ffffff",
+            colorBackground: "#000000",
+            padding: 8,
         },
-        dataAddHighlightNews: 
-        [
-            {
-                name: 'search',
-                label: 'Tìm kiếm sản phẩm',
-                width: 12,
-                customInput: ({ value }) => (
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <SearchBar
-                            data={{
-                                hasButtonCategory: true,
-                                categories: ["Tất cả danh mục", "Điện thoại", "Sản phẩm"],
-                                currentCategory: "Tất cả danh mục",
-                                placeholder: "Tìm kiếm...",
-                                currentQuery: value,
-                                handleEnter: (id) => {},
-                                onSearch: (query, category, display) => {},
-                                handleSearchSuggestion: (query) => {
-                                    return useNews.news.getSearchSuggestions(query);
-                                }
-                            }}
-                        />
-                    </div>
-                )
-            },
-            { 
-                name: 'putOnTop', 
-                label: 'Đặt lên đầu', 
-                type: 'checkbox', 
-                width: 12 
-            }
-        ],
         table: {
             columns: ["Thứ tự", "Mã tin tức", "Ảnh", "Tiêu đề", "Loại tin tức", "Ngày xuất bản", "Thao tác"],
             width: ['10%', '13%', '8%', '25%', '14%', '17%', '20%'],
@@ -233,7 +195,7 @@ const HighlightNews = () => {
     return (
         <div>
             <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
-                <div className='flex items-center justify-between mb-[30px]'>
+                <div className='flex items-center justify-between'>
                     <div>
                         <div className="mb-[4px]">
                             <h1 className="text-[24px] text-black font-semibold">
@@ -268,17 +230,9 @@ const HighlightNews = () => {
                         />
                         <span className="text-gray-600">giây</span>
                     </div>
-                    <button
-                        type='submit'
-                        className="flex items-center gap-4 w-[200px] px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors mt-[30px]"
-                    >
-                        <span>
-                            <SaveIcon />
-                        </span>
-                        <span>
-                            Lưu tin tức nổi bật
-                        </span>
-                    </button>
+                    <div className='h-[45px] mt-3'>
+                        <button type='submit' className='h-full'> <Button {...configHighlightNews.propsSaveButton} /></button>
+                    </div>
                 </form>
             </div>
             <AddHighlight
@@ -288,7 +242,6 @@ const HighlightNews = () => {
                 useData={useNews.news}
                 useDataCategories={useNews.news_categories}
                 onSave={async (changedItems) => {
-                    // var newItemObject  = null;
                     if (changedItems) {
 
                         const { data, isCheckbox } = changedItems;
@@ -318,7 +271,6 @@ const HighlightNews = () => {
                     }
                 }}
             />
-            <SimpleForm data={configHighlightNews.dataAddHighlightNews} config={configHighlightNews.configAddHighlightNews} />
         </div>
         
     )

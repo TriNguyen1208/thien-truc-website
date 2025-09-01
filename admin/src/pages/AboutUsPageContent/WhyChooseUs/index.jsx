@@ -174,12 +174,12 @@ const WhyChooseUs = () => {
                                 <CardList
                                     {...item}
                                     buttonEdit={
-                                        <button onClick={() => configWhyChooseUs.handleEditButton(item)}>
+                                        <button onClick={() => configWhyChooseUs.handleEditButton(item)} className='cursor-pointer'>
                                             <EditIcon />
                                         </button>
                                     }
                                     buttonDelete={
-                                        <button onClick={() => configWhyChooseUs.handleDeleteButton(item)}>
+                                        <button onClick={() => configWhyChooseUs.handleDeleteButton(item)} className='cursor-pointer'>
                                             <DeleteIcon />
                                         </button>
                                     }

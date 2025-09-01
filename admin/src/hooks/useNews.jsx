@@ -197,6 +197,7 @@ const news_categories = {
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["news_categories"] });
                 queryClient.invalidateQueries({ queryKey: ["news_category"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["news_list"], exact: false });
                 toast.success(success.message);
             },
             onError: (error) => {
@@ -211,7 +212,7 @@ const news_categories = {
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["news_categories"] });
                 queryClient.invalidateQueries({ queryKey: ["news_categories_suggestions"], exact: false });
-                
+                queryClient.invalidateQueries({ queryKey: ["news_list"], exact: false })
                 toast.success(success.message);
             },
             onError: (error) => {

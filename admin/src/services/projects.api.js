@@ -38,7 +38,7 @@ const projects = {
         return res.data;
     },
     updateOne: async (id, data) => {
-        const res = await axios.patch(API_ROUTES.project.project_contents.updateOne(id), data, {
+        const res = await axios.patch(API_ROUTES.project.projects.updateOne(id), data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },

@@ -181,12 +181,12 @@ const HighlightFeature = () => {
                                 title={item.number_text}
                                 description={item.label}
                                 buttonEdit={
-                                    <button onClick={() => configHighlightFeature.handleEditButton(item)}>
+                                    <button onClick={() => configHighlightFeature.handleEditButton(item)} className='cursor-pointer'>
                                         <EditIcon />
                                     </button>
                                 }  
                                 buttonDelete={
-                                    <button onClick={() => configHighlightFeature.handleDeleteButton(item)}>
+                                    <button onClick={() => configHighlightFeature.handleDeleteButton(item)} className='cursor-pointer'>
                                         <DeleteIcon />
                                     </button>
                                 }

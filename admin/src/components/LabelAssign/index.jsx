@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-const LabelAssgin = ({current, onAssign}) => {
+const LabelAssign = ({
+    current, 
+    onAssign
+}) => {
     const [assign, setAssign] = useState(current);
     useEffect(() => {
         setAssign(current);
@@ -32,4 +35,4 @@ const LabelAssgin = ({current, onAssign}) => {
     )
 }
 
-export default LabelAssgin
+export default LabelAssign
