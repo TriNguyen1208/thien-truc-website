@@ -225,10 +225,10 @@ export default function ProjectCategories() {
                                     isOpen: true,
                                     content: {
                                         ...prev.content,
-                                        category: item.name,
+                                        category: item.name ?? item.query,
                                         category_id: item.id,
-                                        title: `Quản lý dự án thuộc khu vực: ${item.name}`,
-                                        description: `Chọn hoặc bỏ chọn các dự án thuộc khu vực ${item.name}`
+                                        title: `Quản lý dự án thuộc khu vực: ${item.name ?? item.query}`,
+                                        description: `Chọn hoặc bỏ chọn các dự án thuộc khu vực ${item.name ?? item.query}`
                                     }
                                 }));
                             }}

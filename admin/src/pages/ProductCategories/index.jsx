@@ -175,7 +175,6 @@ export default function ProductCategories() {
     const columnsTable = ["Mã loại sản phẩm", "Tên loại sản phẩm", "Số lượng", "Thao tác"];
     const convertToDataTable = (productsCategoriesList) => {
         return productsCategoriesList.map((item) => {
-            console.log(item.item_count)
             return [
                 { 
                     type: "text", 
@@ -200,10 +199,10 @@ export default function ProductCategories() {
                                     isOpen: true,
                                     content: {
                                         ...prev.content,
-                                        category: item.name,
+                                        category: item.name ?? item.query,
                                         category_id: item.id,
-                                        title: `Quản lý sản phẩm thuộc loại: ${item.name}`,
-                                        description: `Chọn hoặc bỏ chọn các sản phẩm thuộc loại ${item.name}`
+                                        title: `Quản lý sản phẩm thuộc loại: ${item.name ?? item.query}`,
+                                        description: `Chọn hoặc bỏ chọn các sản phẩm thuộc loại ${item.name ?? item.query}`
                                     }
                                 }));
                             }}
