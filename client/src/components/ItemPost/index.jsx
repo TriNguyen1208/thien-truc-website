@@ -9,7 +9,7 @@ import {
 import ShareButton from '@/components/ShareButton';
 import LazyLoad from 'react-lazyload';
 
-const ItemPost = ({ data, id= ""}) => {
+const ItemPost = ({ data = {}, id= ""}) => {
     const {
         type, // 'project' hoặc 'news'
         title,

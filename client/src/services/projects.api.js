@@ -1,58 +1,27 @@
-import axios from "@/services/axiosInstance.js"
+import {fetchData} from "./apiHelper"
 import API_ROUTES from "../../../shared/routesAPI";
 
-const getAll = async () => {
-    const res = await axios.get(API_ROUTES.project.base);
-    return res.data;
-}
-
-const getProjectPage = async () => {
-    const res = await axios.get(API_ROUTES.project.project_page);
-    return res.data;
-}
-
-const projects = {
-    getList: async (query = undefined, filter = undefined, is_featured = undefined, page = 1, limit = undefined) => {
-        const res = await axios.get(API_ROUTES.project.projects.getList(query, filter, is_featured,  page, limit));
-        return res.data;
+const projectServices = {
+    general: {
+        getAll: async () => fetchData(API_ROUTES.project.base),
+        getProjectPage: async () => fetchData(API_ROUTES.project.project_page)
     },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.project.projects.getOne(id));
-        return res.data;
-    }
-}
-const project_regions = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.project.project_regions.getAll);
-        return res.data;
+    projects: {
+        getList: async (query = undefined, filter = undefined, is_featured = undefined, page = 1, limit = undefined) => 
+            fetchData(API_ROUTES.project.projects.getList(query, filter, is_featured,  page, limit)),
+        getOne: async (id) => fetchData(API_ROUTES.project.projects.getOne(id)),
+        getAllFeatured: async (filter = undefined) => fetchData(API_ROUTES.project.projects.getAllFeatured(filter)),
+        getSearchSuggestions: async (query, filter) => fetchData(API_ROUTES.project.projects.getSearchSuggestions(query, filter))
     },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.project.project_regions.getOne(id));
-        return res.data;
+    project_regions: {
+        getAll: async () => fetchData(API_ROUTES.project.project_regions.getAll),
+        getOne: async (id) => fetchData(API_ROUTES.project.project_regions.getOne(id)),
+        getAllFeatured: async () => fetchData(API_ROUTES.project.project_regions.getAllFeatured)
     },
-    getAllFeatured: async () => {
-        const res = await axios.get(API_ROUTES.project.project_regions.getAllFeatured);
-        return res.data;
-    }
-}
-const project_contents = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.project.project_contents.getAll);
-        return res.data;
-    },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.project.project_contents.getOne(id));
-        return res.data;
+    project_contents: {
+        getAll: async () => fetchData(API_ROUTES.project.project_contents.getAll),
+        getOne: async (id) => fetchData(API_ROUTES.project.project_contents.getOne(id))
     }
 }
 
-const getHighlightProjects = async (filter) => {
-    const res = await axios.get(API_ROUTES.project.highlight_projects(filter));
-    return res.data;
-}
-
-const getSearchSuggestions = async (query, filter) => {
-    const res = await axios.get(API_ROUTES.project.search_suggestions(query, filter));
-    return res.data
-}
-export default { getAll, getProjectPage, projects, project_regions, project_contents, getHighlightProjects, getSearchSuggestions };
+export default projectServices;

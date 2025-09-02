@@ -1,110 +1,46 @@
-import { useQuery } from "@tanstack/react-query";
+import { useCustomQuery } from "./customQuery";
 import productsServices from "@/services/products.api.js";
 
-function useGetAll(){
-    return useQuery({
-        queryKey: ["product"],
-        queryFn: productsServices.getAll,
-        staleTime: 10 * 60 * 1000,
-    })
+function useGetAll(query, filter){
+    return useCustomQuery(["products", "general", "get_all", query, filter], () => productsServices.general.getAll(query, filter));
 }
 function useGetProductPage(){
-    return useQuery({
-        queryKey: ["product_page"],
-        queryFn: productsServices.getProductPage,
-        staleTime: 10 * 60 * 1000,
-    })
+    return useCustomQuery(["products", "general", "get_product_page"], productsServices.general.getProductPage);
 }
+function useGetPricePage(){
+    return useCustomQuery(["products", "general", "get_price_page"], productsServices.general.getPricePage);
+}
+function useGetHighlightProducts(){
+    return useCustomQuery(["products", "products", "highlight_products"], productsServices.products.getAllFeatured);
+}
+function useSearchSuggest(query, filter){
+    return useCustomQuery(["products", "products", "search_suggest", query, filter], () => productsServices.products.getSearchSuggestions(query, filter));
+}
+
 const products = {
-    useGetList: (query = '', filter = '', is_featured = '', page = 1, limit='')=>{
-        return useQuery({
-            queryKey: ["product-list", query, filter, is_featured, page, limit],
-            queryFn: ()=> productsServices.products.getList(query, filter, is_featured, page, limit),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetListByCategory: (id, query ='', filter ='', is_featured, limit)=>{
-        return useQuery({
-            queryKey: ["product-list",id, query, filter, is_featured, limit],
-            queryFn: ()=> productsServices.products.getListByCategory(id, query, filter, is_featured, limit),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetOne: (id)=>{
-        return useQuery({
-            queryKey: ["product", id],
-            queryFn: () => productsServices.products.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    }
+    useGetList: (query = '', filter = '', is_featured = '', page = 1, limit='') => 
+        useCustomQuery(["products", "products", "get_list", query, filter, is_featured, page, limit], () => productsServices.products.getList(query, filter, is_featured, page, limit)),
+    useGetListByCategory: (id, query ='', filter ='', is_featured, limit) =>
+        useCustomQuery(["products", "products", "get_list_by_category", id, query, filter, is_featured, limit], () => productsServices.products.getListByCategory(id, query, filter, is_featured, limit)),
+    useGetOne: (id) => 
+        useCustomQuery(["products", "products", "get_one", id], () => productsServices.products.getOne(id))
    
 }
 const product_categories = {
-    useGetAll: ()=>{
-        return useQuery({
-            queryKey: ["product_categories"],
-            queryFn: productsServices.product_categories.getAll,
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetList: (id, query)=>{
-        return useQuery({
-            queryKey: ["product_categories", id, query],
-            queryFn: productsServices.product_categories.getList(id, query),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetOne: (id)=>{
-        return useQuery({
-            queryKey: ["product_category", id],
-            queryFn: () => productsServices.product_categories.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    } 
-}
-const product_prices = {
-     useGetAll: (query = '', filter = '')=>{
-        return useQuery({
-            queryKey: ["product_prices", query, filter],
-            queryFn: ()=> productsServices.product_prices.getAll(query, filter),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetOne: (id)=>{
-        return useQuery({
-            queryKey: ["product_price", id],
-            queryFn: () => productsServices.product_prices.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    }
-}
-function useGetPricePage(){
-    return useQuery({
-        queryKey: ["price_page"],
-        queryFn: productsServices.getPricePage,
-        staleTime: 10 * 60 * 1000,
-    })
+    useGetAll: () =>
+        useCustomQuery(["products", "product_categories", "get_all"], productsServices.product_categories.getAll),
+    useGetList: (id, query) =>
+        useCustomQuery(["products", "product_categories", "get_list", id, query], () => productsServices.product_categories.getList(id, query)),
+    useGetOne: (id) =>
+        useCustomQuery(["products", "product_categories", "get_one", id], () => productsServices.product_categories.getOne(id))
 }
 
-function useGetHighlightProducts(){
-    return useQuery({
-        queryKey: ["highlight_products"],
-        queryFn: productsServices.getHighlightProducts,
-        staleTime: 10 * 60 * 1000,
-    })
-}
-
-function useSearchSuggest(query, filter){
-    return useQuery({
-        queryKey: ['product-suggestions', query, filter],
-        queryFn: () => productsServices.getSearchSuggestions(query, filter),
-        staleTime: 10 * 60 * 1000,
-        
-    })
-}
 export default {
     getAll: useGetAll,
     getProductPage: useGetProductPage,
+    getPricePage: useGetPricePage,
+    getHighlightProducts: useGetHighlightProducts,
+    getSearchSuggestions: useSearchSuggest,
     products: {
         getList: products.useGetList,
         getListByCategory: products.useGetListByCategory,
@@ -115,11 +51,8 @@ export default {
         getList: product_categories.useGetList,
         getOne: product_categories.useGetOne
     },
-    product_prices: {
-        getAll: product_prices.useGetAll,
-        getOne: product_prices.useGetOne
-    },
-    getPricePage: useGetPricePage,
-    getHighlightProducts: useGetHighlightProducts,
-    getSearchSuggestions: useSearchSuggest,
+    // product_prices: {
+    //     getAll: product_prices.useGetAll,
+    //     getOne: product_prices.useGetOne
+    // },
   };

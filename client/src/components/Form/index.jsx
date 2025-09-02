@@ -7,7 +7,7 @@ import {
     PhoneOutlined,
     EnvironmentOutlined,
 } from '@ant-design/icons';
-import contactAPI from '@/services/contact.api';
+import contactServices from '@/services/contact.api';
 import recruitmentAPI from '@/services/recruitment.api';
 import {toast} from 'react-toastify'
 
@@ -51,7 +51,7 @@ const Form = ({ data }) => {
 
         try {
             if (type === 'lien-he') {
-                response = await contactAPI.postContactForm(formToSubmit);
+                response = await contactServices.general.postContactForm(formToSubmit);
             } else if (type === 'tuyen-dung') {
                 response = await recruitmentAPI.postRecruitmentForm(formToSubmit);
             }

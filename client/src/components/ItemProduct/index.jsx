@@ -1,4 +1,3 @@
-import GreenButton from "@/components/GreenButton";
 import { FeatureDotIcon } from "../Icon";
 import {
     ProductOutlined
@@ -33,6 +32,7 @@ function handleDisplayHighlights(product) {
     )
 }
 function ItemProduct({product, handleClick , width = "w-full", height = "h-full"}) {
+
     return (
         <div
             className="flex flex-col overflow-hidden h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out leading-none"

@@ -24,7 +24,7 @@ const API_ROUTES = {
         },
     },
     product: {
-        base: PRODUCT_BASE,
+        base: (query = '', filter = '') => `${PRODUCT_BASE}?query=${uri(query)}&filter=${uri(filter)}`,
         product_page: `${PRODUCT_BASE}/product_page`,
         products: {
             getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${uri(page)}&limit=${uri(limit)}`,

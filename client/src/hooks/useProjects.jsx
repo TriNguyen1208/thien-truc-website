@@ -1,93 +1,54 @@
-import { useQuery } from "@tanstack/react-query";
+import { useCustomQuery } from "./customQuery";
 import projectsServices from "@/services/projects.api.js";
 
 function useGetAll() {
-    return useQuery({
-        queryKey: ["projects"],
-        queryFn: projectsServices.getAll,
-        staleTime: 10 * 60 * 1000,
-    })
+    return useCustomQuery(["projects", "general", "get_all"], projectsServices.general.getAll);
 }
 function useGetProjectPage() {
-    return useQuery({
-        queryKey: ["project_page"],
-        queryFn: projectsServices.getProjectPage,
-        staleTime: 10 * 60 * 1000,
-    })
-}
-const projects = {
-    useGetList: (query = '', filter = '', is_featured = undefined, page = 1, limit = undefined) => {
-        return useQuery({
-            queryKey: ["projects_list", query, filter, is_featured, page, limit],
-            queryFn: () => projectsServices.projects.getList(query, filter, is_featured, page, limit),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["project", id],
-            queryFn: () => projectsServices.projects.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    }
-}
-const project_regions = {
-    useGetAll: () => {
-        return useQuery({
-            queryKey: ["project_regions"],
-            queryFn: projectsServices.project_regions.getAll,
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["project_region", id],
-            queryFn: () => projectsServices.project_regions.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetAllFeatured: () => {
-        return useQuery({
-            queryKey: ["project_regions_featured"],
-            queryFn: projectsServices.project_regions.getAllFeatured,
-            staleTime: 10 * 60 * 1000,
-        })
-    }
-}
-const project_contents = {
-    useGetAll: () => {
-        return useQuery({
-            queryKey: ["project_contents"],
-            queryFn: projectsServices.project_contents.getAll,
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["project_content", id],
-            queryFn: () => projectsServices.project_contents.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    }
+    return useCustomQuery(["projects", "general", "project_page"], projectsServices.general.getProjectPage);
 }
 function useGetHighlightProjects(filter) {
-    return useQuery({
-        queryKey: ["highlight_projects", filter],
-        queryFn: () =>  projectsServices.getHighlightProjects(filter),
-        staleTime: 10 * 60 * 1000,
-    })
+    return useCustomQuery(["projects", "projects", "highlight_projects", filter], () =>  projectsServices.projects.getAllFeatured(filter));
+}
+function useSearchSuggest(query, filter) {
+    return useCustomQuery(["projects", "projects", "search_suggestions", query, filter], () => projectsServices.projects.getSearchSuggestions(query, filter));
 }
 
-function useSearchSuggest(query, filter) {
-    return useQuery({
-        queryKey: ['project-suggestions', query, filter],
-        queryFn: () => projectsServices.getSearchSuggestions(query, filter),
-        staleTime: 10 * 60 * 1000,
-    })
+const projects = {
+    useGetList: (query = '', filter = '', is_featured = undefined, page = 1, limit = undefined) => {
+        return useCustomQuery(["projects", "projects", "get_list", query, filter, is_featured, page, limit], () => projectsServices.projects.getList(query, filter, is_featured, page, limit));
+    },
+    useGetOne: (id) => {
+        return useCustomQuery(["projects", "projects", "get_one", id], () => projectsServices.projects.getOne(id));
+    }
 }
+
+const project_regions = {
+    useGetAll: () => {
+        return useCustomQuery(["projects", "project_regions", "get_all"], projectsServices.project_regions.getAll);
+    },
+    useGetOne: (id) => {
+        return useCustomQuery(["projects", "project_regions", "get_one", id], () => projectsServices.project_regions.getOne(id));
+    },
+    useGetAllFeatured: () => {
+        return useCustomQuery(["projects", "project_regions", "get_all_featured"], projectsServices.project_regions.getAllFeatured);
+    }
+}
+
+const project_contents = {
+    useGetAll: () => {
+        return useCustomQuery(["projects", "project_contents", "get_all"], projectsServices.project_contents.getAll);
+    },
+    useGetOne: (id) => {
+        return useCustomQuery(["projects", "project_contents", "get_one", id], () => projectsServices.project_contents.getOne(id));
+    },
+}
+
 export default {
     getAll: useGetAll,
     getProjectPage: useGetProjectPage,
+    getHighlightProjects: useGetHighlightProjects,
+    getSearchSuggestions: useSearchSuggest,
     projects: {
         getList: projects.useGetList,
         getOne: projects.useGetOne,
@@ -101,6 +62,4 @@ export default {
         getAll: project_contents.useGetAll,
         getOne: project_contents.useGetOne,
     },
-    getHighlightProjects: useGetHighlightProjects,
-    getSearchSuggestions: useSearchSuggest,
 };

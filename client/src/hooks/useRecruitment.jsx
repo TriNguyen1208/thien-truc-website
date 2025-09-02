@@ -1,20 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useCustomQuery } from "./customQuery";
 import recruitmentServices from "@/services/recruitment.api.js";
 
 function useGetAll(){
-    return useQuery({
-        queryKey: ["recruitment"],
-        queryFn: recruitmentServices.getAll,
-        staleTime: 10 * 60 * 1000,
-    })
+    return useCustomQuery(["recruitment", "general", "get_all"], recruitmentServices.general.getAll);
 }
 function useGetRecruitmentPage(){
-    return useQuery({
-        queryKey: ["recruitment_page"],
-        queryFn: recruitmentServices.getRecruitmentPage,
-        staleTime: 10 * 60 * 1000,
-    })
+    return useCustomQuery(["recruitment", "general", "recruitment_page"], recruitmentServices.general.getRecruitmentPage);
 }
+
 export default {
     getAll: useGetAll,
     getRecruitmentPage: useGetRecruitmentPage

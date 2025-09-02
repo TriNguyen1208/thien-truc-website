@@ -1,18 +1,16 @@
 import pool from '#@/config/db.js'
 import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
 
-const getAllTables = async () => {
+const getAllTables = async (query = '', filter = '') => {
     const _product_page = await getProductPage();
-    const _products = await products.getList();
+    const _products = await products.getList(query, filter);
     const _product_categories = await product_categories.getAll();
     const _price_page = await getPricePage();
-    const _product_prices = await product_prices.getAll();
     return {
         product_page: _product_page,
         products: _products,
         product_categories: _product_categories,
         price_page: _price_page,
-        product_prices: _product_prices
     };
 }
 
@@ -725,6 +723,13 @@ const products = {
 }
 
 const product_categories = {
+    getAll: async () => {
+        const product_categories = (await pool.query(`SELECT * FROM product.product_categories`)).rows;
+        if (!product_categories) {
+            throw new Error("Can't get product_categories");
+        }
+        return product_categories;
+    },
     getList: async (id, query) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         id = id.trim().replace(/^['"]|['"]$/g, '');
