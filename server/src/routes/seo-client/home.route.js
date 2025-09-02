@@ -1,6 +1,23 @@
 import express from 'express'
-import pool from '#@/config/db.js';
 const router = express.Router();
+
+router.get('/sitemap.xml', async (req, res) => {
+    const urls = `
+        <url>
+            <loc>${process.env.VITE_API_URL}</loc>
+            <changefreq>daily</changefreq>
+            <priority>1.0</priority>
+        </url>
+    `;
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        ${urls}
+    </urlset>`;
+
+    res.header("Content-Type", "application/xml");
+    res.send(xml);
+});
 
 router.get('/', async (req, res) => {
     res.send(`
