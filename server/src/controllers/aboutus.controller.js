@@ -19,8 +19,8 @@ const updateAboutUsPage = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi cập nhật Banner trang Về chúng tôi: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     },
     ourStory: async (req, res) => {
@@ -29,8 +29,8 @@ const updateAboutUsPage = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi cập nhật Banner Trang Về Chúng Tôi: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi cập nhật Câu chuyện của chúng tôi trang Về chúng tôi: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     },
     visibility: async (req, res) => {
@@ -39,8 +39,8 @@ const updateAboutUsPage = {
             if(status == 200) logActivity(req.user.username, action);
             res.status(status).json({message: message});
         }catch(error){
-            console.error('Lỗi chế độ hiển thị trang về chúng tôi: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi chế độ hiển thị trang Về chúng tôi: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     }
 }
@@ -61,30 +61,30 @@ const company_services = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi tạo Nhiệm Vụ Và Trách Nhiệm: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi tạo Nhiệm vụ và Trách nhiệm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     },
     updateOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await aboutUsServices.company_services.updateOne(req.body, id);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi cập nhật Nhiệm Vụ Và Trách Nhiệm: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi cập nhật nhiệm vụ và Trách nhiệm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     },
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await aboutUsServices.company_services.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi xóa Nhiệm Vụ Và Trách Nhiệm: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi xóa Nhiệm vụ và Trách nhiệm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     }
 }
@@ -105,30 +105,30 @@ const why_choose_us = {
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi tạo Tại Sao Chọn Thiên Trúc: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi tạo Tại sao chọn Thiên Trúc: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     },
     updateOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await aboutUsServices.why_choose_us.updateOne(req.body, id);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi cập nhật Tại Sao Chọn Thiên Trúc: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi cập nhật Tại sao chọn Thiên Trúc: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     },
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await aboutUsServices.why_choose_us.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             res.status(status).json({ message: message });
         } catch (error) {
-            console.error('Lỗi xóa Tại Sao Chọn Thiên Trúc: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+            console.error('Lỗi xóa Tại sao chọn Thiên Trúc: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ'});
         }
     }
 }

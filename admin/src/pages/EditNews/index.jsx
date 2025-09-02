@@ -6,43 +6,26 @@ import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import PostSettings from '../../components/PostSettings';
 import useNews from '../../hooks/useNews';
-import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
 import changeToFormData from '../../utils/changeToFormData';
-function normalizeContent(content = '') {
-    return content
-        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-        .trim();
-}
-function normalizeForm(form) {
-    return {
-        ...form,
-        content: normalizeContent(form.content),
-        // nếu có nhiều field HTML thì thêm normalize ở đây
-    };
-}
 const EditNews = () => {
-    //navigate
-    const navigate = useNavigate();
-    //getID URL
+    //=============getID URL=========================
     const {id: news_id} = useParams();
+    //===================== API ==========================
+    const {data: news_contents, isLoading: isLoadingNewsContent, isFetching: isFetchingNewsContent} = useNews.news_contents.getOne(news_id);
+    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
+    const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news.updateOne()
+    const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne();
     //useState
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [saveOpen, setSaveOpen] = useState(false);
     const [recoverOpen, setRecoverOpen] = useState(false);
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
-    //Call API
-
-    const {data: news_contents, isLoading: isLoadingNewsContent, isFetching: isFetchingNewsContent} = useNews.news_contents.getOne(news_id);
-    const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
-    const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news_contents.updateOne()
-    const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne(() => navigate('/quan-ly-tin-tuc'));
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -53,8 +36,6 @@ const EditNews = () => {
         })
     }, [])
 
-    //check is change
-    // const { setShouldWarn } = useNavigationGuardContext();
     useEffect(() => {
         if (isLoadingNewsContent || isFetchingNewsContent) return;
         if (!news_contents) return;
@@ -65,23 +46,11 @@ const EditNews = () => {
             category_name: news_contents.news.category.name ?? '',
             isPublished: news_contents.news.is_published ?? true,
             main_image: news_contents.news.main_img ?? "",
-            countWord: normalizeContent(news_contents.content).replace(/<[^>]+>/g, '').trim().length
+            countWord: news_contents.content.trim().length
         };
         setInitialForm(initialForm);
         setForm(initialForm);
     }, [isLoadingNewsContent, isFetchingNewsContent, news_contents]) 
-    // useEffect(() => {
-    //     if(form == null || initialForm == null){
-    //         return;
-    //     }
-    //     const stripCountWord = (obj) => {
-    //         const { countWord, ...rest } = obj;
-    //         return rest;
-    //     };
-    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-    //     setShouldWarn(isDirty);
-    // }, [form, initialForm, setShouldWarn]);
     
     //Helper function
     const handleSave = async () => {

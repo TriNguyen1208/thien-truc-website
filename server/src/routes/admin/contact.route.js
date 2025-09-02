@@ -14,7 +14,7 @@ router.get('/support_agents', contactController.support_agents.getAll);
 router.get('/support_agents/:id', contactController.support_agents.getOne);
 router.get('/count', contactController.count);
 
-router.post('/contact_messages', validateForm.validateContact, contactController.postContactMessage);
+router.post('/contact_messages', validateForm.validateContact, contactController.submitContact);
 router.post('/support_agents', authenticateToken, upload.single('local_image'), contactController.support_agents.createOne);
 
 router.patch('/company_info', authenticateToken, contactController.updateCompanyInfo);

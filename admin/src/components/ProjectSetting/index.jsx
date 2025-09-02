@@ -93,7 +93,7 @@ const ProjectSetting = ({
                         }}
                         maxDate={new Date()}
                         dateFormat="dd/MM/yyyy"
-                        className="px-4 w-full h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none"
+                        className="px-4 w-full h-10 text-sm rounded-md border border-[#e4e4e7] focus:border-gray-300 focus:outline-none cursor-pointer"
                         placeholderText="Chọn ngày hoàn thành"
                     />
                 </div>
@@ -106,9 +106,10 @@ const ProjectSetting = ({
                             const checked = e.target.checked;
                             setForm((prev) => ({ ...prev, isFeatured: checked }));
                         }}
+                        className='cursor-pointer'
                     />
 
-                    <label htmlFor="display" className='text-[#090908]'>Trưng bày ở trang chủ</label>
+                    <label htmlFor="display" className='text-[#090908] cursor-pointer'>Trưng bày ở trang chủ</label>
                 </div>
             </div>
         </div>  

@@ -5,34 +5,23 @@ import CustomButton from '../../components/ButtonLayout';
 import { SaveIcon, RecoveryIcon } from '../../components/Icon';
 import ContentManagement from '../../components/ContentManagement';
 import useProjects from '../../hooks/useProjects';
-import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
 import {extractBlogImages} from '../../utils/handleImage';
 import ProjectSetting from '../../components/ProjectSetting';
 import Notification from '@/components/Notification'
 import Loading from '../../components/Loading';
 import changeToFormData from '../../utils/changeToFormData';
-function normalizeContent(content = '') {
-    return content
-        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-        .trim();
-}
-function normalizeForm(form) {
-    return {
-        ...form,
-        content: normalizeContent(form.content),
-        // nếu có nhiều field HTML thì thêm normalize ở đây
-    };
-}
+
 const AddProject = () => {
-    //useState
+    //==================== API =========================
+    const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
+    const {mutate: mutateProject, isPending: isPendingProject} = useProjects.projects.createOne()
+
+    //================== useState =====================
     const [form, setForm] = useState(null);
     const [saveOpen, setSaveOpen] = useState(false);
     const [recoverOpen, setRecoverOpen] = useState(false);
 
-    //Call API
-    const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const {mutate: mutateProject, isPending: isPendingProject} = useProjects.project_contents.postOne()
+    //====================set layout =================
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -43,8 +32,6 @@ const AddProject = () => {
         })
     }, [])
 
-    //check is change
-    // const { setShouldWarn } = useNavigationGuardContext(); 
     const initialForm = useMemo(() => {
         if (isLoadingRegions) return null;
         return {
@@ -64,18 +51,7 @@ const AddProject = () => {
             setForm(initialForm);
         }
     }, [initialForm]);
-    // useEffect(() => {
-    //     if(form == null || initialForm == null){
-    //         return;
-    //     }
-    //     const stripCountWord = (obj) => {
-    //         const { countWord, ...rest } = obj;
-    //         return rest;
-    //     };
-    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-    //     setShouldWarn(isDirty);
-    // }, [form]);
+    
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){

@@ -11,7 +11,6 @@ const AddHighlight = ({
     content,
     onSave,
     useData,
-    useDataSuggestion,
     useDataCategories
 }) => {
     const {
@@ -112,7 +111,7 @@ const AddHighlight = ({
     };
 
     const handleSearchSuggestion = (query, filter) => {
-        return useDataSuggestion.getSearchSuggestions(query, filter);
+        return useData.getSearchSuggestions(query, filter);
     };
 
     const handleToggle = (id) => {
@@ -232,10 +231,10 @@ const AddHighlight = ({
                             id="highlight-checkbox"
                             checked={isHighlightChecked}
                             onChange={(e) => setIsHighlightChecked(e.target.checked)}
-                            className="w-4 h-4"
+                            className="w-4 h-4 cursor-pointer"
                             disabled={!selectedId} // Chỉ enable khi đã chọn item
                         />
-                        <label htmlFor="highlight-checkbox" className={`text-[#4b5563] ${!selectedId ? 'opacity-50' : ''}`}>
+                        <label htmlFor="highlight-checkbox" className={`text-[#4b5563] cursor-pointer ${!selectedId ? 'opacity-50' : ''}`}>
                             Đặt lên đầu tin tức nổi bật
                         </label>
                     </div>

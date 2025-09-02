@@ -1,31 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import contactServices from "@/services/contact.api.js";
+import contactServices from "../services/contact.api.js";
 import { toast } from "react-toastify";
 
-function useGetQuantity() {
-    const queryClient = useQueryClient();
-    queryClient.invalidateQueries(['admin_contact_quantity']);
-    return useQuery({
-        queryKey: ['admin_contact_quantity'],
-        queryFn: contactServices.getQuantity,
-        staleTime: 10 * 60 * 1000
-    })
-}
-function useGetCompanyInfo() {
-    return useQuery({
-        queryKey: ["admin_company_info"],
-        queryFn: contactServices.getCompanyInfo,
-        staleTime: 10 * 60 * 1000,
-    })
-}
 function useGetContactPage() {
     return useQuery({
-        queryKey: ["admin_contact_page"],
+        queryKey: ["contact_page"],
         queryFn: contactServices.getContactPage,
         staleTime: 10 * 60 * 1000,
     })
 }
-
 const updateContactPage = {
     useUpdateBanner: () => {
         const queryClient = useQueryClient();
@@ -33,7 +16,7 @@ const updateContactPage = {
             mutationFn: (data) => contactServices.updateContactPage.banner(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ['admin_contact_page'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -46,7 +29,7 @@ const updateContactPage = {
             mutationFn: (data) => contactServices.updateContactPage.visibility(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ['admin_contact_page'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -54,28 +37,36 @@ const updateContactPage = {
         });
     },
 }
-function usePatchCompanyInfo() {
-    const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (updatedCompanyInfo) => contactServices.patchCompanyInfo(updatedCompanyInfo),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin_company_info'] });
-        },
-    });
-}
-const support_agents = {
-    useGetAll: () => {
+const company_info = {
+    get: () => {
         return useQuery({
-            queryKey: ["admin_contact_support_agents"],
-            queryFn: contactServices.support_agents.getAll,
+            queryKey: ["company_info"],
+            queryFn: contactServices.company_info.get,
             staleTime: 10 * 60 * 1000,
         })
     },
-    useGetOne: (id) => {
+    update: () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (updatedCompanyInfo) => contactServices.company_info.update(updatedCompanyInfo),
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ['company_info'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
+                toast.success(success.message)
+            },
+            onError: (error) => {
+                toast.error(error.message)
+            }
+        });
+    }
+}
+
+const support_agents = {
+    useGetAll: () => {
         return useQuery({
-            queryKey: ["admin_contact_support_agents", id],
-            queryFn: () => contactServices.support_agents.getOne(id),
+            queryKey: ["contact_support_agents"],
+            queryFn: contactServices.support_agents.getAll,
             staleTime: 10 * 60 * 1000,
         })
     },
@@ -83,47 +74,72 @@ const support_agents = {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (newsupport_agents) => contactServices.support_agents.createOne(newsupport_agents),
-            onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ['contact_support_agents'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_quantity'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
+                toast.success(success.message)
             },
+            onError: (error) => {
+                toast.error(error.message)
+            }
         });
     },
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: ({ id, updatedsupport_agents }) => contactServices.support_agents.updateOne(id, updatedsupport_agents),
-            onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ['contact_support_agents'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
+                toast.success(success.message)
             },
+            onError: (error) => {
+                toast.error(error.message)
+            }
         });
     },
     useDeleteOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: (id) => contactServices.support_agents.deleteOne(id),
-            onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ['admin_contact_support_agents'] });
+            onSuccess: (success) => {
+                queryClient.invalidateQueries({ queryKey: ['contact_support_agents'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_quantity'] });
+                queryClient.invalidateQueries({ queryKey: ['contact_page'] });
+                toast.success(success.message)
             },
+            onError: (error) => {
+                toast.error(error.message)
+            }
         });
     },
-
-
 }
+
+function useGetQuantity() {
+    return useQuery({
+        queryKey: ['contact_quantity'],
+        queryFn: contactServices.getQuantity,
+        staleTime: 10 * 60 * 1000
+    })
+}
+
 export default {
-    support_agents: {
-        getAll: support_agents.useGetAll,
-        getOne: support_agents.useGetOne,
-        createOne: support_agents.useCreateOne,
-        updateOne: support_agents.useUpdateOne,
-        deleteOne: support_agents.useDeleteOne
-    },
+    getContactPage: useGetContactPage,//
     updateContactPage: {
-        updateBanner: updateContactPage.useUpdateBanner,
-        updateVisibility: updateContactPage.useUpdateVisibility
+        updateBanner: updateContactPage.useUpdateBanner,//
+        updateVisibility: updateContactPage.useUpdateVisibility//
     },
-    getCompanyInfo: useGetCompanyInfo,
-    patchCompanyInfo: usePatchCompanyInfo,
-    getQuantity: useGetQuantity,
-    getContactPage: useGetContactPage,
+    company_info: {
+        get: company_info.get,//
+        update: company_info.update//
+    },
+    support_agents: {
+        getAll: support_agents.useGetAll,//
+        createOne: support_agents.useCreateOne,//
+        updateOne: support_agents.useUpdateOne,//
+        deleteOne: support_agents.useDeleteOne//
+    },
+    getQuantity: useGetQuantity,//
 }
 
