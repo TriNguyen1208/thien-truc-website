@@ -28,11 +28,10 @@ export default function PricePage() {
     const rawFilter = searchParams.get('filter') || '';
     const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : 'Tất cả sản phẩm';
 
-    const { data: productAll = [], isLoading: isLoadingProductAll } = useProducts.getAll();
-    
+    const { data: productAll = [], isLoading: isLoadingProductAll } = useProducts.getAll(query, filter === "Tất cả sản phẩm" ? '' : filter);
+
     // Handlers
     const handleEnter = (id) => navigate(`/san-pham/${id}`);
-    const handleSearchSuggestion = (query, filter) => useProducts.getSearchSuggestions(query, filter);
     const handleButton = (category, query) => {
         const newParams = new URLSearchParams();
         newParams.set('query', query);
@@ -55,7 +54,7 @@ export default function PricePage() {
         currentCategory: filter,
         contentPlaceholder: 'Nhập vào đây',
         handleButton,
-        handleSearchSuggestion,
+        handleSearchSuggestion: useProducts.getSearchSuggestions,
         handleEnter,
     }), [pricePage, categories, query, filter]);
 

@@ -1,8 +1,8 @@
 import { useCustomQuery } from "./customQuery";
 import productsServices from "@/services/products.api.js";
 
-function useGetAll(){
-    return useCustomQuery(["products", "general", "get_all"], productsServices.general.getAll);
+function useGetAll(query, filter){
+    return useCustomQuery(["products", "general", "get_all", query, filter], () => productsServices.general.getAll(query, filter));
 }
 function useGetProductPage(){
     return useCustomQuery(["products", "general", "get_product_page"], productsServices.general.getProductPage);

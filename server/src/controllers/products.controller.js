@@ -3,7 +3,8 @@ import activityLogServices from "#@/services/activity-log.services.js";
 const { logActivity } = activityLogServices;
 
 const getAllTables = async (req, res) => {
-    const data = await productServices.getAllTables();
+    const {query ='', filter = ''} = req.query;
+    const data = await productServices.getAllTables(query, filter);
     res.status(200).json(data);
 }
 

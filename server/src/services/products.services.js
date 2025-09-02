@@ -1,9 +1,9 @@
 import pool from '#@/config/db.js'
 import { uploadImage, deleteImage, updateImage, isCloudinary } from '#@/utils/image.js';
 
-const getAllTables = async () => {
+const getAllTables = async (query = '', filter = '') => {
     const _product_page = await getProductPage();
-    const _products = await products.getList();
+    const _products = await products.getList(query, filter);
     const _product_categories = await product_categories.getAll();
     const _price_page = await getPricePage();
     return {

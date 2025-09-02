@@ -3,7 +3,7 @@ import API_ROUTES from "../../../shared/routesAPI";
 
 const productServices = {
     general: {
-        getAll: async () => fetchData(API_ROUTES.product.base),
+        getAll: async (query = '', filter = '') => fetchData(API_ROUTES.product.base(query, filter)),
         getProductPage: async () => fetchData(API_ROUTES.product.product_page),
         getPricePage: async () => fetchData(API_ROUTES.product.price_page)
     },
