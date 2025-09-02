@@ -1,53 +1,23 @@
-import { useQuery } from "@tanstack/react-query";
+import { useCustomQuery} from "@/hooks/customQuery";
 import aboutUsServices from "@/services/aboutus.api.js";
 
 function useGetAll(){
-    return useQuery({
-        queryKey: ["about_us"],
-        queryFn: aboutUsServices.getAll,
-        staleTime: 10 * 60 * 1000,
-    })
+    return useCustomQuery(["about_us", "general", "get_all"], aboutUsServices.general.getAll);
 }
+
 function useGetAboutUsPage(){
-    return useQuery({
-        queryKey: ["about_us_page"],
-        queryFn: aboutUsServices.getAboutUsPage,
-        staleTime: 10 * 60 * 1000,
-    })
+    return useCustomQuery(["about_us", "general", "about_us_page"], aboutUsServices.general.getAboutUsPage);
 }
+
 const company_services = {
-    useGetAll: () => {
-        return useQuery({
-            queryKey: ["company_services"],
-            queryFn: aboutUsServices.company_services.getAll,
-            staleTime: 10 * 60 * 1000,
-        })
-    },
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["company_service", id],
-            queryFn: () => aboutUsServices.company_services.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    } 
+    useGetAll: () => useCustomQuery(["about_us", "company_services", "get_all"], aboutUsServices.company_services.getAll),
+    useGetOne: (id) => useCustomQuery(["about_us", "company_services", "get_one", id], () => aboutUsServices.company_services.getOne(id))
 }
 const why_choose_us = {
-    useGetAll: () => {
-        return useQuery({
-            queryKey: ["why_choose_us"],
-            queryFn: aboutUsServices.why_choose_us.getAll,
-            staleTime: 10 * 60 * 1000,
-            
-        })
-    },
-    useGetOne: (id) => {
-        return useQuery({
-            queryKey: ["why_choose_us", id],
-            queryFn: () => aboutUsServices.why_choose_us.getOne(id),
-            staleTime: 10 * 60 * 1000,
-        })
-    } 
-}
+    useGetAll: () => useCustomQuery(["about_us", "why_choose_us", "get_all"], aboutUsServices.why_choose_us.getAll),
+    useGetOne: (id) => useCustomQuery(["about_us", "why_choose_us", "get_one", id], () => aboutUsServices.why_choose_us.getOne(id))
+};
+
 export default {
     getAll: useGetAll,
     getAboutUsPage: useGetAboutUsPage,
