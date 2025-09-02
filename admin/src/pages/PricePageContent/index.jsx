@@ -1,15 +1,14 @@
 import {useEffect} from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
-import useProducts from '../../hooks/useProducts'
+import useProducts from '@/hooks/useProducts'
 import EditBanner from '@/components/EditBanner'
-import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'
 import { useState } from 'react';
 import Notification from '@/components/Notification'
 
 const PricePageContent = () => {
     //------------------API------------------
-    const {data: pricePage, isLoading: isLoadingPricePage, isFetching: isFetchingPricePage} = useProducts.getPricePage()
+    const {data: pricePage, isLoading: isLoadingPricePage} = useProducts.getPricePage()
     const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useProducts.updatePricePage.banner();
     const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProducts.updatePricePage.visibility();
 
@@ -99,7 +98,7 @@ const PricePageContent = () => {
         buttonAction2: handleConfirmNotification
     }
 
-    if(isLoadingPricePage || isPendingUpdateBanner || isPendingUpdateVisibility || isFetchingPricePage){
+    if(isLoadingPricePage || isPendingUpdateBanner || isPendingUpdateVisibility ){
         return(<Loading/>)
     }
     return (

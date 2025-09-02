@@ -6,7 +6,7 @@ import StoryAndAchievement from './components/StoryAndAchievement';
 import Services from './components/ServicesSection';
 import CoreValues from './components/CoreValues';
 import WhyChooseUs from './components/WhyChooseUs';
-import ContactBanner from './components/ConTactBanner';
+import ContactBanner from './components/ContactBanner';
 import ComingSoon from '@/pages/ComingSoon';
 import { useNavigation } from 'react-router-dom';
 

@@ -1,9 +1,9 @@
 import React from 'react'
 import { useLayout } from "@/layouts/LayoutContext"
 import { useEffect } from "react"
-import EditBanner from "../../components/EditBanner"
+import EditBanner from "@/components/EditBanner"
 import { useState } from 'react';
-import useAboutUs from '../../hooks/useAboutUs';
+import useAboutUs from '@/hooks/useAboutUs';
 import Notification from '@/components/Notification'
 import Loading from '@/components/Loading'
 import DutyAndResponsibility from './DutyAndResponsibility'
@@ -11,7 +11,7 @@ import WhyChooseUs from './WhyChooseUs'
 const AboutUsPageContent = () => {
     //------------------API------------------
     //API cho trang về chúng tôi và câu chuyện của chúng tôi + visibility
-    const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData, isFetching: isFetchingAboutUsPageData} = useAboutUs.getAboutUsPage();
+    const { data: aboutUsPageData, isLoading: isLoadingAboutUsPageData} = useAboutUs.getAboutUsPage();
     const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useAboutUs.updateAboutUsPage.banner();
     const { mutate: updateOurStory, isPending: isPendingUpdateOurStory } = useAboutUs.updateAboutUsPage.ourStory();
     const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useAboutUs.updateAboutUsPage.visibility();
@@ -144,7 +144,7 @@ const AboutUsPageContent = () => {
         buttonLabel2: "Xác nhận", 
         buttonAction2: handleConfirmStory
     }
-    if (isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory || isFetchingAboutUsPageData || isPendingUpdateVisibility) {
+    if (isLoadingAboutUsPageData || isPendingUpdateBanner || isPendingUpdateOurStory || isPendingUpdateVisibility) {
         return (
             <Loading/>
         )

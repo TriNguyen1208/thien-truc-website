@@ -1,12 +1,12 @@
-import EditBanner from '../../components/EditBanner'
+import EditBanner from '@/components/EditBanner'
 import { useLayout } from "@/layouts/LayoutContext"
 import { useEffect, useState } from 'react'
-import useContact from '../../hooks/useContact';
+import useContact from '@/hooks/useContact';
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 const ContactPageContent = () => {
     //------------------API------------------
-    const { data: contactPage, isLoading: isLoadingContactPage, isFetching: isFetchingContactPage } = useContact.getContactPage();
+    const { data: contactPage, isLoading: isLoadingContactPage } = useContact.getContactPage();
     const { mutate: updateBanner, isPendingUpdateBanner: isPendingUpdateBanner } = useContact.updateContactPage.updateBanner();
     const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useContact.updateContactPage.updateVisibility();
     
@@ -95,7 +95,7 @@ const ContactPageContent = () => {
         buttonLabel2: "Xác nhận", 
         buttonAction2: handleConfirmNotification
     }
-    if (isLoadingContactPage || isPendingUpdateBanner || isFetchingContactPage || isPendingUpdateVisibility) {
+    if (isLoadingContactPage || isPendingUpdateBanner || isPendingUpdateVisibility) {
         return (
             <Loading/>
         )

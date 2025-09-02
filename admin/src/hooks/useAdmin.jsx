@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import adminServices from "../services/admin.api.js";
+import adminServices from "@/services/admin.api.js";
 import { toast } from "react-toastify";
 
 function useGetQuantity() {

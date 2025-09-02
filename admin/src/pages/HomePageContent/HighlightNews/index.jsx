@@ -1,19 +1,18 @@
-import React from 'react'
 import Button from '@/components/Button'
 import Table from '@/components/Table'
 import Loading from '@/components/Loading'
-import useHome from '../../../hooks/useHome'
-import useNews from '../../../hooks/useNews'
+import useHome from '@/hooks/useHome'
+import useNews from '@/hooks/useNews'
 import { useNavigate } from 'react-router-dom'
-import {useEffect, useState, useRef } from 'react';
-import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon,UploadIcon } from '@/components/Icon';
+import {useEffect, useState } from 'react';
+import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon } from '@/components/Icon';
 import ProductImageCell from '@/components/ProductImageCell'
 import AddHighlight from '@/components/AddHighlight';
 
 const HighlightNews = () => {
     //========================= API ====================
-    const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
-    const { data: highlightNewsData, isLoading: isLoadingHighlightNews, isFetching: isFetchingHighlightNews  } = useNews.news.getAllFeatured();
+    const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
+    const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.news.getAllFeatured();
     const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
     
     //Thao tác cập nhật tin tức nổi bật
@@ -21,7 +20,6 @@ const HighlightNews = () => {
     
     const navigate = useNavigate();
     const [arrayHighlightNews, setArrayHighlightNews] = useState([]);
-    const [isModalOpenAddHighlightNews, setIsModalOpenAddHighlightNews] = useState(false);
     const [switchTime, setSwitchTime] = useState(0);
     const contentSetting = {
         title: `Quản lý danh sách tin tức`,
@@ -77,14 +75,6 @@ const HighlightNews = () => {
             setSwitchTime(value);
         }
     };
-
-
-    const handleSubmitButtonAddHighlightNews = (valueForm) => {
-        setIsModalOpenAddHighlightNews(false)
-    }
-    const handleCancelButtonAddHighlightNews = () => {
-        setIsModalOpenAddHighlightNews(false)
-    }
     const handleDeleteFeatureNews = (item) => {
         const newArr = arrayHighlightNews.filter(data => data.id != item.id);
         setArrayHighlightNews(newArr);
@@ -188,8 +178,7 @@ const HighlightNews = () => {
         switchTime: switchTime,
         handleChangeSwitchTime: handleChangeSwitchTime
     }
-    if(isLoadingHighlightNews || isLoadingHomePageData || isLoadingNewsData
-         || isFetchingHighlightNews || isFetchingHomePageData || isPendingUpdateFeatureNews
+    if(isLoadingHighlightNews || isLoadingHomePageData || isLoadingNewsData || isPendingUpdateFeatureNews
     ) 
         return <Loading/>
     return (

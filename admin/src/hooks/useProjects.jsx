@@ -121,7 +121,8 @@ const projects = {
                 projectsServices.projects.updateRegion(changedItems),
             onSuccess: (success) => {
                 toast.success(success?.message ?? "Cập nhật khu vực thành công");
-                queryClient.invalidateQueries({ queryKey: ["projects_list"] });
+                queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);

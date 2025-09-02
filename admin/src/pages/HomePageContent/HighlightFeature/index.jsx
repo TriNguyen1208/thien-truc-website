@@ -1,10 +1,9 @@
-import React from 'react'
 import Button from '@/components/Button'
-import FeatureCard from '../../../components/FeatureCard'
+import FeatureCard from '@/components/FeatureCard'
 import Loading from '@/components/Loading'
-import useHome from '../../../hooks/useHome'
-import {useEffect, useState, useRef } from 'react';
-import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon,UploadIcon } from '@/components/Icon';
+import useHome from '@/hooks/useHome'
+import { useState } from 'react';
+import { AddIcon, EditIcon, SaveIcon, DeleteIcon } from '@/components/Icon';
 import Notification from '@/components/Notification'
 import SimpleForm from '@/components/SimpleForm'
 

@@ -6,7 +6,7 @@ import useProducts from '@/hooks/useProducts'
 import useProjects from '@/hooks/useProjects'
 import useRecruitment from '@/hooks/useRecruitment'
 import Loading from '@/components/Loading'
-import { queryClient } from '../../queryClient';
+import { queryClient } from '@/queryClient';
 
 import aboutUsServices from "@/services/aboutus.api.js";
 import contactServices from "@/services/contact.api.js";

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef} from 'react'
 import { useLayout } from '@/layouts/LayoutContext';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
-import Notification from '../../components/Notification';
+import Notification from '@/components/Notification';
 import SearchBar from '@/components/Search';
-import useProjects from '../../hooks/useProjects';
+import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
 import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';

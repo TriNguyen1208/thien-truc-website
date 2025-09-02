@@ -1,17 +1,15 @@
-import React from 'react'
-import EditBanner from '../../components/EditBanner'
 import { useLayout } from "@/layouts/LayoutContext"
 import { useEffect, useMemo, useRef } from "react"
-import DynamicForm from '../../components/DynamicForm'
-import SearchBar from '../../components/Search'
+import DynamicForm from '@/components/DynamicForm'
+import SearchBar from '@/components/Search'
 import { useState } from 'react';
-import useProducts from '../../hooks/useProducts';
+import useProducts from '@/hooks/useProducts';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import Table from "../../components/Table"
-import { DeleteIcon, EditIcon, UploadIcon } from "../../components/Icon"
+import Table from "@/components/Table"
+import { DeleteIcon, EditIcon } from "@/components/Icon"
 import Notification from '@/components/Notification'
-import ProductImageCell from '../../components/ProductImageCell'
-import changeToFormData from '../../utils/changeToFormData'
+import ProductImageCell from '@/components/ProductImageCell'
+import changeToFormData from '@/utils/changeToFormData'
 import Loading from '@/components/Loading'
 const Product = () => {
     //Config display và searchParams

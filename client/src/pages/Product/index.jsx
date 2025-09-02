@@ -57,7 +57,6 @@ export default function Product() {
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage();
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll();
 
-    console.log("ff", productCategories);
     const categoriesName = useMemo(() => [
         ALL_CATEGORIES,
         ...((productCategories || []).map((category) => category.name) ?? []),

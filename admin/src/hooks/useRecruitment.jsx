@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import recruitmentServices from "../services/recruitment.api.js";
+import recruitmentServices from "@/services/recruitment.api.js";
 import { toast } from 'react-toastify';
 
 function useGetRecruitmentPage(){

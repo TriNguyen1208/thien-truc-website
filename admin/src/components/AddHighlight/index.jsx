@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import SearchBar from '../Search'
+import SearchBar from '@/components/Search'
 import { useState } from 'react'
-import Table from '../Table'
+import Table from '@/components/Table'
 import { Modal } from 'antd'
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 

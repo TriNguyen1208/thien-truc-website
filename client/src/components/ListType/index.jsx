@@ -1,6 +1,5 @@
-import React from 'react'
 import { useEffect } from 'react';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef } from 'react';
 
 const ListType = ({categories, handleClick, current}) => {
     const [category, setCategory] = useState(current);

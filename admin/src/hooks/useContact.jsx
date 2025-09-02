@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import contactServices from "../services/contact.api.js";
+import contactServices from "@/services/contact.api.js";
 import { toast } from "react-toastify";
 
 function useGetContactPage() {

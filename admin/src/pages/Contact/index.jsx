@@ -1,5 +1,5 @@
 import {useLayout} from '@/layouts/LayoutContext'
-import useContact from '../../hooks/useContact';
+import useContact from '@/hooks/useContact';
 import { useEffect,useState } from 'react'
 import Table from '@/components/Table'
 import Button from '@/components/Button'
@@ -13,7 +13,7 @@ import Loading from '@/components/Loading'
 
 const Contact = () => {
     //=================API=================
-    const {data: supportAgents, isLoading: isLoadingSupportAgent, isFetching: isFetchingSupportAgent} = useContact.support_agents.getAll()
+    const {data: supportAgents, isLoading: isLoadingSupportAgent} = useContact.support_agents.getAll()
     const {mutate: addAgent, isPending : isPendingCreateAgent} = useContact.support_agents.createOne()
     const {mutate: deleteAgent, isPending : isPendingDeleteAgent} = useContact.support_agents.deleteOne()
     const {mutate: updateAgent, isPending : isPendingUpdateAgent} = useContact.support_agents.updateOne()
@@ -227,7 +227,7 @@ const Contact = () => {
     }
     //====================================================End Table=======================================================
     
-    if(isLoadingSupportAgent || isPendingCreateAgent || isPendingDeleteAgent|| isPendingUpdateAgent || isFetchingSupportAgent){
+    if(isLoadingSupportAgent || isPendingCreateAgent || isPendingDeleteAgent|| isPendingUpdateAgent){
         return(<Loading/>)
     }
     return (

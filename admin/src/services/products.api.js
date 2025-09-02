@@ -73,6 +73,10 @@ const product_categories = {
         const res = await axios.get(API_ROUTES.product.product_categories.getList(id, query));
         return res.data;
     },
+    getOne: async (id) => {
+        const res = await axios.get(API_ROUTES.product.product_categories.getOne(id));
+        return res.data;
+    },
     getSearchSuggestions: async (query = '') => {
         const res = await axios.get(API_ROUTES.product.product_categories.getSearchSuggestions(query));
         return res.data;

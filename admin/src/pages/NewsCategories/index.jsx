@@ -1,18 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
 import { useLayout } from '@/layouts/LayoutContext';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
 import { SettingIcon, DeleteIcon, EditIcon } from '@/components/Icon';
 import Notification from '@/components/Notification'
 import Setting from '@/components/Setting';
 import SearchBar from '@/components/Search';
 import SimpleForm from '@/components/SimpleForm';
-import useNews from '../../hooks/useNews';
+import useNews from '@/hooks/useNews';
 import Loading from '@/components/Loading'
-import Table from '../../components/Table';
-// Còn api thêm loại tin tức, chỉnh sửa loại tin tức, xóa loại tin tức, cài đặt loại tin tức
-export default function NewsCategories() {
+import Table from '@/components/Table';
 
+export default function NewsCategories() {
     //===========================API=====================
     const { mutateAsync: createOne, isPending: isPendingCreateCategories } = useNews.news_categories.createOne();
     const { mutateAsync: updateOne, isPending: isPendingUpdateCategories } = useNews.news_categories.updateOne();

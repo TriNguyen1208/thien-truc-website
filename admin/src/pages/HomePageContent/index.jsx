@@ -1,30 +1,19 @@
-import EditBanner from "../../components/EditBanner"
-import FeatureCard from '../../components/FeatureCard';
-import Button from '@/components/Button'
-import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon,UploadIcon } from '../../components/Icon';
-import SimpleForm from '../../components/SimpleForm'
-import {useEffect, useState, useRef } from 'react';
+import EditBanner from "@/components/EditBanner"
+import {useEffect, useState } from 'react';
 import Notification from '@/components/Notification'
-import Table from "../../components/Table"
-import SearchBar from '../../components/Search'
-import ProductImageCell from '../../components/ProductImageCell'
-import useHome from '../../hooks/useHome';
-import useNews from '../../hooks/useNews';
-import AddHighlight from '../../components/AddHighlight';
+import useHome from '@/hooks/useHome';
 import Loading from '@/components/Loading'
-import { useNavigate } from 'react-router-dom';
 import { useLayout } from "@/layouts/LayoutContext"
 
-import UploadImage from '@/components/UploadImage'
-import changeToFormData from '../../utils/changeToFormData';
 import BannerImages from './BannerImages';
 import HighlightNews from './HighlightNews';
 import ImageAboutUs from './ImageAboutUs';
 import HighlightFeature from './HighlightFeature';
+
 const HomePageContent = () => {
     //------------------API------------------
     //Lấy dữ liệu của homepage
-    const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
+    const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
 
     //Update aboutus, visibility
     const { mutate: updateAboutUs, isPending: isPendingUpdateAboutUs } = useHome.updateHomePage.aboutUs();
@@ -95,7 +84,7 @@ const HomePageContent = () => {
             setAboutusNotification(true)
         }
     }
-    if (isLoadingHomePageData || isPendingUpdateAboutUs || isFetchingHomePageData || isPendingUpdateVisibility) {
+    if (isLoadingHomePageData || isPendingUpdateAboutUs || isPendingUpdateVisibility) {
         return <Loading/>
     }
     return (

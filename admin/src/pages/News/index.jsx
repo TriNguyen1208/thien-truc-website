@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef} from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'; 
 import { useLayout } from '@/layouts/LayoutContext';
-import Notification from '../../components/Notification';
+import Notification from '@/components/Notification';
 import { EditIcon, DeleteIcon } from '@/components/Icon';
 import SearchBar from '@/components/Search';
-import useNews from '../../hooks/useNews';
+import useNews from '@/hooks/useNews';
 import Loading from '@/components/Loading'
-// Còn api xóa tin tứcs
 import Table from '@/components/Table';
 import ProductImageCell from '@/components/ProductImageCell';
 export default function News() {

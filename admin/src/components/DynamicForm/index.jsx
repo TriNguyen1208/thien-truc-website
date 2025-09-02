@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Modal } from 'antd';
-import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
+import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "@/components/Icon";
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
     const [visible, setVisible] = useState(false);

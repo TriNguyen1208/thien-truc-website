@@ -1,4 +1,4 @@
-import { FeatureDotIcon } from "../Icon";
+import { FeatureDotIcon } from "@/components/Icon";
 import {
     ProductOutlined
 } from '@ant-design/icons';

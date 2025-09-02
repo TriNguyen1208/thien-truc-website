@@ -1,16 +1,14 @@
-import React from 'react'
-import Table from '../../../components/Table'
+import Table from '@/components/Table'
 import Button from '@/components/Button'
 import Loading from '@/components/Loading'
-import useHome from '../../../hooks/useHome'
+import useHome from '@/hooks/useHome'
 import {useEffect, useState, useRef } from 'react';
-import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon,UploadIcon } from '@/components/Icon';
-import Notification from '@/components/Notification'
+import { AddIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, UploadIcon } from '@/components/Icon';
 import ProductImageCell from '@/components/ProductImageCell'
 
 const BannerImages = () => {
     const { mutate: updateBannerImages, isPending: isPendingUpdateBannerImages } = useHome.updateHomePage.bannerImages();
-    const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
+    const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
     
     const [switchTimePictures, setSwitchTimePictures] = useState(0);
     const [uploadImage, setUploadImage] = useState([])
@@ -242,7 +240,7 @@ const BannerImages = () => {
             padding: 8,
         }
     }
-    if(isPendingUpdateBannerImages || isLoadingHomePageData || isFetchingHomePageData){
+    if(isPendingUpdateBannerImages || isLoadingHomePageData){
         return <Loading/>
     }
     return (

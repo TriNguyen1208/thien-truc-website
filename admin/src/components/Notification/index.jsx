@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
-import Button from '../Button';
+import Button from '@/components/Button';
 import {ExclamationCircleOutlined  } from '@ant-design/icons'
+
 export const Notification = ({ 
     open, 
     setOpen, 

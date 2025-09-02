@@ -4,7 +4,6 @@ import { logoutUser } from '@/services/auth.api.js'
 import AdminAccountModal, { ManagerAccountModal } from '@/components/Header/AccountModal';
 import PasswordChangeModal from '@/components/Header/PasswordChangeModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { logout } from '@/slices/auth.slice.js' 
 
 const Header = () => {

@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react'
 import { useLayout } from "@/layouts/LayoutContext";
-import UploadImage from '../../components/UploadImage'
-import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';
-import ContentManagement from '../../components/ContentManagement';
-import ProjectSetting from '../../components/ProjectSetting';
-import useProjects from '../../hooks/useProjects';
-import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
-import { useParams, useNavigate } from 'react-router-dom';
+import UploadImage from '@/components/UploadImage'
+import CustomButton from '@/components/ButtonLayout';
+import { SaveIcon, DeleteIcon, RecoveryIcon } from '@/components/Icon';
+import ContentManagement from '@/components/ContentManagement';
+import ProjectSetting from '@/components/ProjectSetting';
+import useProjects from '@/hooks/useProjects';
+import { addDeleteImage, extractBlogImages } from '@/utils/handleImage';
+import { useParams } from 'react-router-dom';
 import Notification from '@/components/Notification'
-import Loading from '../../components/Loading';
-import changeToFormData from '../../utils/changeToFormData';
+import Loading from '@/components/Loading';
+import changeToFormData from '@/utils/changeToFormData';
 const EditProject = () => {
     //===================getID URL======================
     const {id: project_id} = useParams();
     //========================= API =====================================
     const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const {data: project_contents, isLoading: isLoadingProjectContent, isFetching: isFetchingProjectContent} = useProjects.project_contents.getOne(project_id);
+    const {data: project_contents, isLoading: isLoadingProjectContent} = useProjects.project_contents.getOne(project_id);
     const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.projects.updateOne()
     const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
     //UseState
@@ -38,7 +38,7 @@ const EditProject = () => {
 
 
     useEffect(() => {
-        if (isLoadingProjectContent || isFetchingProjectContent) return;
+        if (isLoadingProjectContent) return;
         if (!project_contents) return;
         const initialForm = {
             title: project_contents.project.title ?? '',
@@ -53,7 +53,7 @@ const EditProject = () => {
         }
         setInitialForm(initialForm);
         setForm(initialForm);
-    }, [isLoadingProjectContent, isFetchingProjectContent, project_contents])
+    }, [isLoadingProjectContent, project_contents])
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){
@@ -128,7 +128,7 @@ const EditProject = () => {
     };
 
     //Loading
-    if(isLoadingRegions || isLoadingProjectContent || form == null || isPendingDeleteProject || isPendingUpdateProject || isFetchingProjectContent){
+    if(isLoadingRegions || isLoadingProjectContent || form == null || isPendingDeleteProject || isPendingUpdateProject){
         return <Loading/>
     }
     const regionNames = regions.map(item => item.name);

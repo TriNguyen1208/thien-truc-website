@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import aboutUsServices from "../services/aboutus.api.js";
+import aboutUsServices from "@/services/aboutus.api.js";
 import { toast } from "react-toastify";
 
 // ==== About Us Page ====

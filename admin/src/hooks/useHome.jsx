@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import homeServices from "../services/home.api";
+import homeServices from "@/services/home.api";
 import { toast } from 'react-toastify';
 
 function useGetHomePage() {

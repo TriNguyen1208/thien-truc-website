@@ -1,16 +1,16 @@
-import Card from '@/components/Card'
-import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon, PulseIcon, ActivityIcon} from '@/components/Icon'
+import {UserIcon, PhoneIcon, BoxIcon, ProjectIcon, NewsIcon, PulseIcon} from '@/components/Icon'
 import { useEffect } from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useLayout} from '@/layouts/LayoutContext'
 import Loading from '@/components/Loading'
 import useProjects from '@/hooks/useProjects'
-import useProducts from '../../hooks/useProducts'
+import useProducts from '@/hooks/useProducts'
 import useNews from '@/hooks/useNews'
 import useAdmin from '@/hooks/useAdmin'
-import useContact from '../../hooks/useContact'
+import useContact from '@/hooks/useContact'
 import DisplayCards from './DisplayCards'
 import ItemActivity from './ItemActivity'
+
 const ControlPanel = () => {
     //============= API ================
     const { data: quantityProject, isLoading: isLoadingQuantityProject} = useProjects.getQuantity()
@@ -23,11 +23,11 @@ const ControlPanel = () => {
     //============ Set layout =====================
     const {setLayoutProps} = useLayout()
     useEffect(()=>{
-      setLayoutProps({
-        title: "Bảng điều khiển",
-        description: "Chào mừng bạn đến với trang quản trị",
-        hasButton: false,
-      })
+        setLayoutProps({
+            title: "Bảng điều khiển",
+            description: "Chào mừng bạn đến với trang quản trị",
+            hasButton: false,
+        })
     },[])
     //================ Dùng để navigate ========================
     const navigate = useNavigate()
@@ -85,7 +85,6 @@ const ControlPanel = () => {
             }
         ]
     }
-
     if(isLoadingQuantityProject || isLoadingQuantityProduct || isLoadingQuantityNews || isLoadingQuantityAdmin || isLoadingQuantityContact || isLoadingActivity){
         return(<Loading/>)
     }

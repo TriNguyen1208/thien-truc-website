@@ -1,12 +1,13 @@
 import {useState, useEffect } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
-import useProjects from '../../hooks/useProjects'
+import useProjects from '@/hooks/useProjects'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
+
 const ProjectPageContent = () => {
     //------------------API------------------
-    const {data: projectPage, isLoading: isLoadingProjectPage, isFetching: isFetchingProjectPage} = useProjects.getProjectPage()
+    const {data: projectPage, isLoading: isLoadingProjectPage} = useProjects.getProjectPage()
     const { mutate: updateBanner, isPending: isPendingUpdateBanner } = useProjects.updateProjectPage.banner();
     const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProjects.updateProjectPage.visibility();
 
@@ -95,7 +96,7 @@ const ProjectPageContent = () => {
         buttonLabel2: "Xác nhận", 
         buttonAction2: handleConfirmNotification
     }
-    if(isLoadingProjectPage || isPendingUpdateBanner || isFetchingProjectPage || isPendingUpdateVisibility){
+    if(isLoadingProjectPage || isPendingUpdateBanner || isPendingUpdateVisibility){
         return(<Loading/>)
     }
     return (

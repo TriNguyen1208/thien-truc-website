@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLayout } from '@/layouts/LayoutContext';
 import Button from '@/components/Button';
 import { DeleteIcon, PlusIcon, SaveIcon } from '@/components/Icon';
-import useContact from '../../hooks/useContact'
+import useContact from '@/hooks/useContact'
 import Notification from '@/components/Notification'
 import { toast } from 'react-toastify';
 import Loading from '@/components/Loading'

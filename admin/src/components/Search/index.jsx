@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { SearchIcon, FilterIcon, OpenIcon } from '../Icon';
+import { SearchIcon, FilterIcon, OpenIcon } from '@/components/Icon';
 import LazyLoad from '@/components/LazyLoad';
 const SearchBar = ({data}) => {
     //prop

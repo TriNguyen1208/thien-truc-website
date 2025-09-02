@@ -1,5 +1,5 @@
 import Button from '@/components/Button'
-import {SaveIcon}  from '../Icon';
+import {SaveIcon}  from '@/components/Icon';
 import { useRef } from 'react';
 import Input from './Input';
 

@@ -6,7 +6,7 @@ import Banner from "@/components/Banner";
 import Loading from "@/components/Loading";
 import Map from "./components/Map";
 import ContactUs from "./components/ContactUs";
-import SupportAgents from "./components/supportAgents";
+import SupportAgents from "./components/SupportAgents";
 
 export default function Contact() {
     const { data: dataAll, isLoading: isLoadingDataAll } = useContact.getAll();

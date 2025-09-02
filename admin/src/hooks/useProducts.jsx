@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import productsServices from "../services/products.api.js";
+import productsServices from "@/services/products.api.js";
 import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -165,6 +165,13 @@ const product_categories = {
             staleTime: 10 * 60 * 1000,
         });
     },
+    useGetOne: (id) => {
+        return useQuery({
+            queryKey: ["product_by_category", id],
+            queryFn: () => productsServices.product_categories.getOne(id),
+            staleTime: 10 * 60 * 1000,
+        });
+    },
     useGetSearchSuggestions: (query = '') => {
         return useQuery({
             queryKey: ["product_categories_suggestions", query],
@@ -287,6 +294,7 @@ export default {
     },
     product_categories: {
         getAll: product_categories.useGetList,//
+        getOne: product_categories.useGetOne,
         getSearchSuggestions: product_categories.useGetSearchSuggestions,//
         createOne: product_categories.useCreateOne,//
         updateOne: product_categories.useUpdateOne,//

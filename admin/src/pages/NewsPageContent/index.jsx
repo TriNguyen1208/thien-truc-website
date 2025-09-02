@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
-import useNews from '../../hooks/useNews'
-import { toast } from 'react-toastify';
+import useNews from '@/hooks/useNews'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 

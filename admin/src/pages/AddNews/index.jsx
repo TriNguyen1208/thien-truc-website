@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLayout } from "@/layouts/LayoutContext";
-import UploadImage from '../../components/UploadImage';
-import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon, RecoveryIcon } from '../../components/Icon';
-import ContentManagement from '../../components/ContentManagement';
-import PostSettings from '../../components/PostSettings';
-import useNews from '../../hooks/useNews';
-import { extractBlogImages } from '../../utils/handleImage';
+import UploadImage from '@/components/UploadImage';
+import CustomButton from '@/components/ButtonLayout';
+import { SaveIcon, RecoveryIcon } from '@/components/Icon';
+import ContentManagement from '@/components/ContentManagement';
+import PostSettings from '@/components/PostSettings';
+import useNews from '@/hooks/useNews';
+import { extractBlogImages } from '@/utils/handleImage';
 import Notification from '@/components/Notification'
-import Loading from '../../components/Loading';
-import changeToFormData from '../../utils/changeToFormData';
+import Loading from '@/components/Loading';
+import changeToFormData from '@/utils/changeToFormData';
 
 const AddNews = () => {
     //================== API ===================

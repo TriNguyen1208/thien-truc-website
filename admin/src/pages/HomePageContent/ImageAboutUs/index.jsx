@@ -1,23 +1,22 @@
-import React from 'react'
 import UploadImage from '@/components/UploadImage'
 import Button from '@/components/Button'
 import Loading from '@/components/Loading'
-import useHome from '../../../hooks/useHome'
-import {useEffect, useState, useRef } from 'react';
-import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon, DeleteIcon,UploadIcon } from '@/components/Icon';
+import useHome from '@/hooks/useHome'
+import {useEffect, useState } from 'react';
+import { SaveIcon } from '@/components/Icon';
 import Notification from '@/components/Notification'
 import changeToFormData from '@/utils/changeToFormData';
 
 const ImageAboutUs = () => {
     const { mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs } = useHome.updateHomePage.imageAboutUs();
-    const { data: homePageData, isLoading: isLoadingHomePageData, isFetching: isFetchingHomePageData } = useHome.getHomePage();
+    const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
 
     //================= Image giới thiệu công ty Thiên Trúc ========================
     const [valuesImageAboutus, setValuesImageAboutus] = useState(null); //giong form
     const [initialValuesImageAboutus, setInitialValuesImageAboutus] = useState(null);
     const [imageNotification, setImageNotification] = useState(false);
     useEffect(() => {
-        if (isLoadingHomePageData || isFetchingHomePageData) {
+        if (isLoadingHomePageData) {
             return;
         }
         const initialImage = {
@@ -25,7 +24,7 @@ const ImageAboutUs = () => {
         }
         setValuesImageAboutus(initialImage);
         setInitialValuesImageAboutus(initialImage);
-    }, [isLoadingHomePageData, isFetchingHomePageData])
+    }, [isLoadingHomePageData])
 
     const handleButtonImage = () => {
         const formData = changeToFormData(valuesImageAboutus);
@@ -61,7 +60,7 @@ const ImageAboutUs = () => {
             padding: 10,
         }
     }
-    if(isLoadingHomePageData || isFetchingHomePageData || isPendingUpdateImageAboutUs){
+    if(isLoadingHomePageData || isPendingUpdateImageAboutUs){
         return <Loading/>
     }
     return (

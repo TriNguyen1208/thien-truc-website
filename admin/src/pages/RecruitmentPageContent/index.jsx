@@ -1,12 +1,12 @@
 import React, { useEffect, useState} from 'react'
-import { useLayout } from '../../layouts/LayoutContext'
+import { useLayout } from '@/layouts/LayoutContext'
 import {SaveIcon} from "@/components/Icon"
-import EditBanner from '../../components/EditBanner'
-import useRecruitment from '../../hooks/useRecruitment'
+import EditBanner from '@/components/EditBanner'
+import useRecruitment from '@/hooks/useRecruitment'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 import Button from '@/components/Button'
-import changeToFormData from '../../utils/changeToFormData'
+import changeToFormData from '@/utils/changeToFormData'
 import UploadImage from '@/components/UploadImage'
 
 const RecruitmentPageContent = () => {
@@ -15,7 +15,7 @@ const RecruitmentPageContent = () => {
     const {mutate: updateCulture, isPending: isPendingUpdateCulture} = useRecruitment.updateRecruitmentPage.culture();
     const {mutate: updateCultureImages, isPending: isPendingUpdateCultureImages} = useRecruitment.updateRecruitmentPage.culture_images();
     const {mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useRecruitment.updateRecruitmentPage.visibility();
-    const {data: recruitment, isLoading: isLoadingRecruitment, isFetching: isFetchingRecruitment} = useRecruitment.getRecruitmentPage();
+    const {data: recruitment, isLoading: isLoadingRecruitment} = useRecruitment.getRecruitmentPage();
 
     //-----------------------Lưu trạng thái của form sẽ gửi lên backend--------------
     //Dùng useState để lưu trạng thái
@@ -26,7 +26,7 @@ const RecruitmentPageContent = () => {
     const [isVisible, setIsVisible] = useState(null);
     //Set trạng thái đầu tiên của hình
     useEffect(() => {
-        if(isLoadingRecruitment || isFetchingRecruitment || isPendingUpdateVisibility){
+        if(isLoadingRecruitment || isPendingUpdateVisibility){
             return;
         }
         const initialForm = {
@@ -37,7 +37,7 @@ const RecruitmentPageContent = () => {
         }
         setInitialValuesCultureImages(initialForm);
         setValuesCultureImages(initialForm)
-    }, [isLoadingRecruitment, isFetchingRecruitment])
+    }, [isLoadingRecruitment])
 
     //----------------------Nút visibility--------------
     //Set visible
@@ -216,7 +216,7 @@ const RecruitmentPageContent = () => {
             keyImage: "culture_img_4"
         },
     }
-    if(isLoadingRecruitment || isPendingUpdateBanner || isFetchingRecruitment || isPendingUpdateCulture || isPendingUpdateCultureImages || isPendingUpdateVisibility){
+    if(isLoadingRecruitment || isPendingUpdateBanner || isPendingUpdateCulture || isPendingUpdateCultureImages || isPendingUpdateVisibility){
         return <Loading/>
     }
     return (

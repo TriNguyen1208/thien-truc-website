@@ -5,7 +5,7 @@ import CustomButton from "@/components/ButtonLayout";
 import { PlusOutlined, ArrowLeftOutlined} from "@ant-design/icons";
 import { useLayout } from "@/layouts/LayoutContext";
 import { useNavigate } from "react-router-dom";
-import SwitchButton from "../../components/SwitchButton";
+import SwitchButton from "@/components/SwitchButton";
 
 export default function DefaultLayout() {
 

@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLayout } from "@/layouts/LayoutContext";
-import UploadImage from '../../components/UploadImage'
-import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon, RecoveryIcon } from '../../components/Icon';
-import ContentManagement from '../../components/ContentManagement';
-import useProjects from '../../hooks/useProjects';
-import {extractBlogImages} from '../../utils/handleImage';
-import ProjectSetting from '../../components/ProjectSetting';
+import UploadImage from '@/components/UploadImage'
+import CustomButton from '@/components/ButtonLayout';
+import { SaveIcon, RecoveryIcon } from '@/components/Icon';
+import ContentManagement from '@/components/ContentManagement';
+import useProjects from '@/hooks/useProjects';
+import {extractBlogImages} from '@/utils/handleImage';
+import ProjectSetting from '@/components/ProjectSetting';
 import Notification from '@/components/Notification'
-import Loading from '../../components/Loading';
-import changeToFormData from '../../utils/changeToFormData';
+import Loading from '@/components/Loading';
+import changeToFormData from '@/utils/changeToFormData';
 
 const AddProject = () => {
     //==================== API =========================

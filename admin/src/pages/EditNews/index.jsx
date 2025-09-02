@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useLayout } from "@/layouts/LayoutContext";
-import UploadImage from '../../components/UploadImage'
-import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';
-import ContentManagement from '../../components/ContentManagement';
-import PostSettings from '../../components/PostSettings';
-import useNews from '../../hooks/useNews';
-import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
+import UploadImage from '@/components/UploadImage'
+import CustomButton from '@/components/ButtonLayout';
+import { SaveIcon, DeleteIcon, RecoveryIcon } from '@/components/Icon';
+import ContentManagement from '@/components/ContentManagement';
+import PostSettings from '@/components/PostSettings';
+import useNews from '@/hooks/useNews';
+import { addDeleteImage, extractBlogImages } from '@/utils/handleImage';
 import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import Notification from '@/components/Notification'
-import Loading from '../../components/Loading';
-import changeToFormData from '../../utils/changeToFormData';
+import Loading from '@/components/Loading';
+import changeToFormData from '@/utils/changeToFormData';
 const EditNews = () => {
     //=============getID URL=========================
     const {id: news_id} = useParams();
     //===================== API ==========================
-    const {data: news_contents, isLoading: isLoadingNewsContent, isFetching: isFetchingNewsContent} = useNews.news_contents.getOne(news_id);
+    const {data: news_contents, isLoading: isLoadingNewsContent} = useNews.news_contents.getOne(news_id);
     const {data: categories, isLoading: isLoadingCategories} = useNews.news_categories.getAll();
     const {mutate: updateNews, isPending: isPendingUpdateNews} = useNews.news.updateOne()
     const {mutate: deleteNews, isPending: isPendingDeleteNews} = useNews.news.deleteOne();
@@ -37,7 +36,7 @@ const EditNews = () => {
     }, [])
 
     useEffect(() => {
-        if (isLoadingNewsContent || isFetchingNewsContent) return;
+        if (isLoadingNewsContent) return;
         if (!news_contents) return;
         const initialForm = {
             title: news_contents.news.title ?? '',
@@ -50,7 +49,7 @@ const EditNews = () => {
         };
         setInitialForm(initialForm);
         setForm(initialForm);
-    }, [isLoadingNewsContent, isFetchingNewsContent, news_contents]) 
+    }, [isLoadingNewsContent, news_contents]) 
     
     //Helper function
     const handleSave = async () => {
@@ -132,7 +131,7 @@ const EditNews = () => {
         buttonLabel2: 'Khôi phục',
         buttonAction2: handleRecover
     };
-    if(isLoadingCategories || isLoadingNewsContent || form == null || isPendingDeleteNews || isPendingUpdateNews || isFetchingNewsContent){
+    if(isLoadingCategories || isLoadingNewsContent || form == null || isPendingDeleteNews || isPendingUpdateNews){
         return <Loading/>
     }
     return (
