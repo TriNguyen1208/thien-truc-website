@@ -1,18 +1,18 @@
 import { useRef, useState } from 'react';
-import useContact from '@/hooks/useContact';
-import GreenButton from '@/components/GreenButton';
-import Loading from '@/components/Loading'; // Import component Loading của bạn
+import {toast} from 'react-toastify'
 import {
     MailOutlined,
     PhoneOutlined,
     EnvironmentOutlined,
 } from '@ant-design/icons';
+import useContact from '@/hooks/useContact';
+import GreenButton from '@/components/GreenButton';
+import Loading from '@/components/Loading'; 
 import contactServices from '@/services/contact.api';
 import recruitmentAPI from '@/services/recruitment.api';
-import {toast} from 'react-toastify'
 
 const Form = ({ data }) => {
-    const [isSubmitting, setIsSubmitting] = useState(false); // Thêm state loading
+    const [isSubmitting, setIsSubmitting] = useState(false); 
     const {
         title = 'Gửi tin nhắn cho chúng tôi',
         type,
@@ -41,7 +41,7 @@ const Form = ({ data }) => {
 
     const handleClickSendMessage = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true); // Bắt đầu loading
+        setIsSubmitting(true); 
         let response = null;
 
         const formToSubmit = { ...formData };
@@ -72,7 +72,7 @@ const Form = ({ data }) => {
         } catch {
             toast.error(response?.message || "Gửi thất bại");
         } finally {
-            setIsSubmitting(false); // Kết thúc loading
+            setIsSubmitting(false); 
         }
     };
 
@@ -89,7 +89,7 @@ const Form = ({ data }) => {
                     <form onSubmit={handleClickSendMessage} className="w-full mx-auto bg-[#F0FDF4] flex flex-col gap-5">
                         <div className='grid grid-cols-12 gap-3 sm:gap-8'>
                             <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
-                                <label for="name" className="text-sm font-medium text-[#374151]">
+                                <label htmlFor="name" className="text-sm font-medium text-[#374151]">
                                     Họ và tên <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -105,7 +105,7 @@ const Form = ({ data }) => {
                             </div>
 
                             <div className="flex flex-col gap-3 col-span-12 sm:col-span-6">
-                                <label for="email" className="text-sm font-medium text-[#374151]">
+                                <label htmlFor="email" className="text-sm font-medium text-[#374151]">
                                     Email <span className="text-red-500">*</span>
                                 </label>
                                 <input

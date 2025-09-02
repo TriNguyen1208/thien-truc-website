@@ -1,13 +1,11 @@
-import React from 'react';
 import {
     EnvironmentOutlined,
     CalendarOutlined,
     EyeOutlined,
-    ShareAltOutlined,
     MailOutlined
 } from '@ant-design/icons';
-import ShareButton from '@/components/ShareButton';
 import LazyLoad from 'react-lazyload';
+import ShareButton from '@/components/ShareButton';
 
 const ItemPost = ({ data = {}, id= ""}) => {
     const {

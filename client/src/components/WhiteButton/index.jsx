@@ -1,5 +1,3 @@
-import React from 'react'
-
 const WhiteButton = ({data}) => {
   const {
     content,

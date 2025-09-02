@@ -49,15 +49,16 @@ const useProductParams = (validCategories) => {
 };
 
 export default function Product() {
+    // Hook
     const scrollTargetRef = useRef(null);
     const navigate = useNavigate();
     const navigation = useNavigation();
     const location = useLocation();
 
+    // Data fetching
     const { data: productPage, isLoading: isLoadingPage } = useProducts.getProductPage();
     const { data: productCategories, isLoading: isLoadingCategories } = useProducts.product_categories.getAll();
 
-    console.log("ff", productCategories);
     const categoriesName = useMemo(() => [
         ALL_CATEGORIES,
         ...((productCategories || []).map((category) => category.name) ?? []),
@@ -77,17 +78,20 @@ export default function Product() {
     // Fetch data cho chế độ "Tất cả sản phẩm" (theo category)
     const { data: productsByCat, isLoading: isLoadingProductsByCat } = useProducts.products.getListByCategory('', '', '', '', ITEMS_PER_CATEGORY_SLIDER);
 
+    // Utils
     useEffect(() => {
         if (scrollTargetRef.current) {
             scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [params]);
 
+    // Handlers
     const handleSearch = (category, query) => updateParams({ filter: category, query });
     const handleEnterSearch = (idProduct) => navigate(`${location.pathname}/${idProduct}`);
     const handleViewMore = (categoryName) => updateParams({ filter: categoryName, query: '' });
     const goBack = () => updateParams({ filter: ALL_CATEGORIES, query: '' });
 
+    // Data
     const bannerMainData = useMemo(() => ({
         title: productPage?.banner_title,
         description: productPage?.banner_description,

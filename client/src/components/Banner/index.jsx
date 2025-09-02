@@ -1,4 +1,3 @@
-import React from 'react'
 import WhiteButton from '@/components/WhiteButton'
 import SearchBar from '@/components/Search';
 

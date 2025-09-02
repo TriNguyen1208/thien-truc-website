@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react'
 import {
     FacebookShareButton,
@@ -8,10 +7,10 @@ import {
     TwitterIcon,
     TelegramIcon,
 } from 'react-share'
-import {Modal, Button, message, Space} from 'antd'
+import { Modal, Button, message, Space } from 'antd'
 import { ShareAltOutlined, CopyOutlined  } from '@ant-design/icons'
 import logoZalo from '@/assets/images/logo_zalo.png';
-import LazyLoad from 'react-lazyload';
+
 const ShareButton = ({id}) => {
     const [open, setOpen] = useState(false);
     const currentUrl = window.location.href + `/${id}`

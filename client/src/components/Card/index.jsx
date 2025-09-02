@@ -1,7 +1,7 @@
 import { CheckCircleOutlined } from "@ant-design/icons";
 
 
-function Card({card,iconTitle, width="100%", height="100%", padding="25px"}){
+function Card({card, iconTitle, width="100%", height="100%", padding="25px"}){
     if (!card) {
         return <p>No card data available</p>;
     }

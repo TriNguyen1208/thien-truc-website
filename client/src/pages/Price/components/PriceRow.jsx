@@ -26,13 +26,14 @@ export default function PriceRow({ product, index, isLast, navigate }) {
             } hover:bg-gray-200 transition-colors duration-200 grid grid-cols-1s p-[12px] gap-y-[12px] md:flex md:p-0`}
         >
             {/* Mobile View */}
-            <div className="flex flex-row justify-between md:hidden">
-                <td className="">
-                    <span>#</span>
-                    {index + 1}
-                </td>
-                {formatPrice(product.price)}
-            </div>
+            <td className="md:hidden" colSpan={5}>
+                <div className="flex flex-row justify-between">
+                    <span>
+                        <span>#</span> {index + 1}
+                    </span>
+                    {formatPrice(product.price)}
+                </div>
+            </td>
             <td className="hidden md:table-cell md:w-[8%] md:p-[12px] md:text-center">{index + 1}</td>
             <td className="md:w-[40%] md:p-[12px]">{product.name}</td>
             <td className="font-semibold hidden md:table-cell md:w-[15%] md:p-[12px] md:text-center">
@@ -57,22 +58,24 @@ export default function PriceRow({ product, index, isLast, navigate }) {
                 </div>
             </td>
             {/* Mobile View */}
-            <div className="flex flex-row justify-between md:hidden">
-                <td className="">Bảo hành: {formatWarranty(product.warranty)}</td>
-                <td className="text-green-800">
-                    <Button
-                        type="default"
-                        style={{
-                            borderColor: '#00c37e',
-                            color: '#00c37e',
-                        }}
-                        className="border border-[#00c37e] text-[#00c37e] hover:!bg-[#00c37e] hover:!text-white active:!bg-green-900"
-                        onClick={() => navigate(`/san-pham/${product.id}`)}
-                    >
-                        Xem chi tiết
-                    </Button>
-                </td>
-            </div>
+            <td className="md:hidden" colSpan={5}>
+                <div className="flex flex-row justify-between">
+                    <span>Bảo hành: {formatWarranty(product.warranty)}</span>
+                    <span className="text-green-800">
+                        <Button
+                            type="default"
+                            style={{
+                                borderColor: '#00c37e',
+                                color: '#00c37e',
+                            }}
+                            className="border border-[#00c37e] text-[#00c37e] hover:!bg-[#00c37e] hover:!text-white active:!bg-green-900"
+                            onClick={() => navigate(`/san-pham/${product.id}`)}
+                        >
+                            Xem chi tiết
+                        </Button>
+                    </span>
+                </div>
+            </td>
         </tr>
     );
 }

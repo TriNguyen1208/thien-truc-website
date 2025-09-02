@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
 import { MenuOutlined } from '@ant-design/icons';
-import { Image } from 'antd';
-import logo from '@/assets/images/logo.png';
+import { useState, useEffect, useRef } from 'react';
+import { NavLink } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
+import logo from '@/assets/images/logo.png';
+
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const wrapperRef = useRef();

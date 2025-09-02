@@ -1,5 +1,3 @@
-import React from 'react';
-
 const LabelProject = ({data}) => {
   const {content, color }  = data
   return (
