@@ -4,7 +4,7 @@ import authServices from '#@/services/auth.services.js';
 const login = async (req, res) => {
     try {
         const { status, message, token = null, user = null } = await authServices.login(req.body);
-        
+        const { remember } = req.body 
         if (token) {
             const { accessToken, refreshToken } = token;
             // Gửi token qua HttpOnly cookie
@@ -13,7 +13,7 @@ const login = async (req, res) => {
                 secure: process.env.NODE_ENV === 'production', // chỉ gửi qua HTTPS (tắt nếu đang dev)
                 sameSite: 'Strict',      // bảo vệ CSRF
                 path: '/',
-                maxAge: 15 * 60 * 1000   // 15 phút
+                ...(remember ? {maxAge: 15 * 60 * 1000} : {})
             });
 
             res.cookie('refreshToken', refreshToken, {
@@ -21,7 +21,7 @@ const login = async (req, res) => {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'Strict',
                 path: '/',
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
+                ...(remember ? {maxAge: 7 * 24 * 60 * 60 * 1000} : {})
             });
         }
 
