@@ -46,6 +46,13 @@ router.get('/', async (req, res) => {
             </head>
             <body>
                 <div id="root"></div>
+                <noscript>
+                    <h1>Trang Tin tức công ty Thiên Trúc</h1>
+                    <h1>Tin tức mới nhất công ty Thiên Trúc</h1>
+                    <h2>${banner_title}</h2>
+                    <h3>${banner_description}</h3>
+                    <p> Công ty Thiên Trúc, Cao Lãnh, Đồng Tháp </p>
+                </noscript>
             </body>
         </html>
     `);
@@ -54,6 +61,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
     const { title, main_content, is_published, main_img } = (await pool.query('SELECT * FROM news.news WHERE id = $1', [id])).rows?.[0];
+    const { content } = (await pool.query('SELECT * FROM news.news_content WHERE id = $1', [id])).rows?.[0];
 
     if (!is_published) {
         // đuổi con bot đi
@@ -73,6 +81,13 @@ router.get('/:id', async (req, res) => {
             </head>
             <body>
                 <div id="root"></div>
+                <noscript>
+                    <h1>Tin tức "${title}" công ty Thiên Trúc</h1>
+                    <h2>${main_content}</h2>
+                    ${main_img ? `<img src="${main_img}" alt="Tin tức ${title} - Công ty Thiên Trúc" />` : ""}
+                    <h3>${content}</h3>
+                    <p> Công ty Thiên Trúc, Cao Lãnh, Đồng Tháp </p>
+                </noscript>
             </body>
         </html>
     `);

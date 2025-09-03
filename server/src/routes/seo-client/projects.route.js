@@ -46,6 +46,12 @@ router.get('/', async (req, res) => {
             </head>
             <body>
                 <div id="root"></div>
+                <noscript>
+                    <h1>Trang Dự án công ty Thiên Trúc</h1>
+                    <h2>${banner_title}</h2>
+                    <h3>${banner_description}</h3>
+                    <p> Công ty Thiên Trúc, Cao Lãnh, Đồng Tháp </p>
+                </noscript>
             </body>
         </html>
     `);
@@ -53,7 +59,8 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    const { title, main_content } = (await pool.query('SELECT * FROM project.projects WHERE id = $1', [id])).rows?.[0];
+    const { title, main_content, main_img } = (await pool.query('SELECT * FROM project.projects WHERE id = $1', [id])).rows?.[0];
+    const { content } = (await pool.query('SELECT * FROM project.project_contents WHERE id = $1', [id])).rows?.[0];
 
     res.send(`
         <!DOCTYPE html>
@@ -63,10 +70,18 @@ router.get('/:id', async (req, res) => {
                 <meta name="description" content="${main_content}" />
                 <meta property="og:title" content="${title}" />
                 <meta property="og:description" content="${main_content}" />
+                ${main_img ? `<meta property="og:image" content="${main_img}" />` : ""}
                 <link rel="canonical" href="${process.env.VITE_CLIENT_URL}/du-an/${id}" />
             </head>
             <body>
                 <div id="root"></div>
+                <noscript>
+                    <h1>Dự án "${title}" công ty Thiên Trúc</h1>
+                    <h2>${main_content}</h2>
+                    ${main_img ? `<img src="${main_img}" alt="Dự án ${title} - Công ty Thiên Trúc" />` : ""}
+                    <h3>${content}</h3>
+                    <p> Công ty Thiên Trúc, Cao Lãnh, Đồng Tháp </p>
+                </noscript>
             </body>
         </html>
     `);

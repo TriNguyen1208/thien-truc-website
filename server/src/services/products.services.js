@@ -819,7 +819,7 @@ const product_categories = {
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
         
         const sql = `
-            SELECT P.name, P.id
+            SELECT P.name, P.id, P.item_count
             FROM product.product_categories P
             ${where}
             ${order}
@@ -830,7 +830,8 @@ const product_categories = {
             const result = await pool.query(sql);
             return result.rows.map(row => ({
                 query: row.name,
-                id: row.id
+                id: row.id,
+                item_count: row.item_count || 0
             }));
         } catch (err) {
             throw new Error(`DB error: ${err.message}`);

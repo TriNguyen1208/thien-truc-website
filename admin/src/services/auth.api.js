@@ -1,12 +1,13 @@
 import axios from "@/services/axiosInstance.js"
 import API_ROUTES from "../../../shared/routesAPIServer";
-import { setCredentials, logout, setLoading } from '../slices/auth.slice';
+import { setCredentials, logout, setLoading } from '@/slices/auth.slice';
 
-export const loginUser = (username, password) => async (dispatch) => {
+export const loginUser = (username, password, remember) => async (dispatch) => {
     try {
         const res = await axios.post(API_ROUTES.auth.login, {
             username,
-            password
+            password,
+            remember //True hoặc false
         });
 
         const user = res.data.user;

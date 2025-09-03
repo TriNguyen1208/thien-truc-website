@@ -225,10 +225,10 @@ export default function NewsCategories() {
                                     isOpen: true,
                                     content: {
                                         ...prev.content,
-                                        category: item.name,
+                                        category: item.name ?? item.query,
                                         category_id: item.id,
-                                        title: `Quản lý tin tức thuộc loại: ${item.name}`,
-                                        description: `Chọn hoặc bỏ chọn các tin tức thuộc loại ${item.name}`
+                                        title: `Quản lý tin tức thuộc loại: ${item.name ?? item.query}`,
+                                        description: `Chọn hoặc bỏ chọn các tin tức thuộc loại ${item.name ?? item.query}`
                                     }
                                 }));
                             }}
