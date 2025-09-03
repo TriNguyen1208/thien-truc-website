@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
-import SearchBar from '../Search'
+import SearchBar from '@/components/Search'
 import { useState } from 'react'
-import Table from '../Table'
-import { AcceptIcon, ExitIcon } from '../Icon'
-import LabelAssign from "../LabelAssgin"
+import Table from '@/components/Table'
+import { AcceptIcon, ExitIcon } from '@/components/Icon'
+import LabelAssign from "@/components/LabelAssign"
 import { Modal } from 'antd'
 import Loading from '@/components/Loading'
-// import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 
 const Setting = ({
     isOpen,
@@ -14,7 +13,6 @@ const Setting = ({
     onSave,
     content,
     useData,
-    useDataSuggestion,
     useDataCategories,
     searchSettingRef
 }) => {
@@ -154,7 +152,7 @@ const Setting = ({
         setTrigger(prev => prev + 1)
     };
     const handleSearchSuggestion = (query, filter) => {
-        return useDataSuggestion.getSearchSuggestions(query, filter);
+        return useData.getSearchSuggestions(query, filter);
     };
     const handleToggle = (id) => {
         setSelectedId((prev) =>

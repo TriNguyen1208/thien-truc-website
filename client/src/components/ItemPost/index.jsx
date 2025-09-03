@@ -1,15 +1,13 @@
-import React from 'react';
 import {
     EnvironmentOutlined,
     CalendarOutlined,
     EyeOutlined,
-    ShareAltOutlined,
     MailOutlined
 } from '@ant-design/icons';
 import ShareButton from '@/components/ShareButton';
 import LazyLoad from 'react-lazyload';
 
-const ItemPost = ({ data, id= ""}) => {
+const ItemPost = ({ data = {}, id= ""}) => {
     const {
         type, // 'project' hoặc 'news'
         title,
@@ -120,7 +118,7 @@ const ItemPost = ({ data, id= ""}) => {
 
     return (
         <div
-            className="w-full bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-102 transition-transform transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
+            className="w-full bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-102 transition-shadow duration-200 overflow-hidden cursor-pointer h-120 relative"
            
         >
             {renderImage()}

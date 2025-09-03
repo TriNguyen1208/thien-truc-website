@@ -15,7 +15,6 @@ export const loginUser = (username, password) => async (dispatch) => {
         dispatch(setCredentials({ user }));
 
         return res.data; // { status, message, user }
-        // Chuyển hướng sang trang chính sau khi login
     } catch (err) {
         throw err;
     }
@@ -66,22 +65,6 @@ export const verifyFromToken = () => async (dispatch) => {
     }finally{
         dispatch(setLoading(false))
     }
-    // dispatch(setLoading(true));
-    // try{
-    //     const res = await axios.get(API_ROUTES.auth.verifyLogin);
-    //     if (res.status === 200) {
-    //         dispatch(setCredentials({
-    //             user: JSON.parse(localStorage.getItem('user')) || null
-    //         }));
-    //     } else {
-    //         dispatch(logout());
-    //     }
-    // } catch (err) {
-    //     dispatch(logout());
-    //     console.error("Lỗi xác thực token:", err);
-    // } finally {
-    //     dispatch(setLoading(false));
-    // }
 }
 export const updateProfile = (data) => async (dispatch) => {
     try {

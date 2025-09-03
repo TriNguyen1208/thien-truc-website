@@ -1,48 +1,31 @@
 import { useEffect, useState } from 'react'
 import { useLayout } from "@/layouts/LayoutContext";
-import UploadImage from '../../components/UploadImage'
-import CustomButton from '../../components/ButtonLayout';
-import { SaveIcon, DeleteIcon, RecoveryIcon } from '../../components/Icon';
-import ContentManagement from '../../components/ContentManagement';
-import ProjectSetting from '../../components/ProjectSetting';
-import useProjects from '../../hooks/useProjects';
-import { useNavigationGuardContext } from '../../layouts/NavigatorProvider';
-import { addDeleteImage, extractBlogImages } from '../../utils/handleImage';
-import { useParams, useNavigate } from 'react-router-dom';
+import UploadImage from '@/components/UploadImage'
+import CustomButton from '@/components/ButtonLayout';
+import { SaveIcon, DeleteIcon, RecoveryIcon } from '@/components/Icon';
+import ContentManagement from '@/components/ContentManagement';
+import ProjectSetting from '@/components/ProjectSetting';
+import useProjects from '@/hooks/useProjects';
+import { addDeleteImage, extractBlogImages } from '@/utils/handleImage';
+import { useParams } from 'react-router-dom';
 import Notification from '@/components/Notification'
-import Loading from '../../components/Loading';
-import changeToFormData from '../../utils/changeToFormData';
-function normalizeContent(content = '') {
-    return content
-        .replace(/\r\n/g, '\n') // chuẩn hóa xuống dòng
-        .replace(/&nbsp;/g, ' ') // nếu có dùng &nbsp;
-        .trim();
-}
-function normalizeForm(form) {
-    return {
-        ...form,
-        content: normalizeContent(form.content),
-        // nếu có nhiều field HTML thì thêm normalize ở đây
-    };
-}
+import Loading from '@/components/Loading';
+import changeToFormData from '@/utils/changeToFormData';
 const EditProject = () => {
-    //navigate
-    const navigate = useNavigate();
-    //getID URL
+    //===================getID URL======================
     const {id: project_id} = useParams();
-
-    //useState
+    //========================= API =====================================
+    const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
+    const {data: project_contents, isLoading: isLoadingProjectContent} = useProjects.project_contents.getOne(project_id);
+    const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.projects.updateOne()
+    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne();
+    //UseState
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [saveOpen, setSaveOpen] = useState(false);
     const [recoverOpen, setRecoverOpen] = useState(false);
     const [form, setForm] = useState(null);
     const [initialForm, setInitialForm] = useState(null);
-    
-    //Call API
-    const {data: regions, isLoading: isLoadingRegions} = useProjects.project_regions.getAll();
-    const {data: project_contents, isLoading: isLoadingProjectContent, isFetching: isFetchingProjectContent} = useProjects.project_contents.getOne(project_id);
-    const {mutate: updateProject, isPending: isPendingUpdateProject} = useProjects.project_contents.updateOne()
-    const {mutate: deleteProject, isPending: isPendingDeleteProject} = useProjects.projects.deleteOne(() => navigate('/quan-ly-du-an'));
+
     //set layout 
     const {setLayoutProps} = useLayout();
     useEffect(() => {
@@ -53,10 +36,9 @@ const EditProject = () => {
         })
     }, [])
 
-    //check is change
-    // const { setShouldWarn } = useNavigationGuardContext(); 
+
     useEffect(() => {
-        if (isLoadingProjectContent || isFetchingProjectContent) return;
+        if (isLoadingProjectContent) return;
         if (!project_contents) return;
         const initialForm = {
             title: project_contents.project.title ?? '',
@@ -67,24 +49,11 @@ const EditProject = () => {
             main_image: project_contents.project.main_img ?? '',
             province: project_contents.project.province ?? '',
             completeTime: project_contents.project.complete_time ?? '',
-            countWord: normalizeContent(project_contents.content).replace(/<[^>]+>/g, '').trim().length
+            countWord: project_contents.content.trim().length
         }
         setInitialForm(initialForm);
         setForm(initialForm);
-    }, [isLoadingProjectContent, isFetchingProjectContent, project_contents])
-    
-    // useEffect(() => {
-    //     if(form == null || initialForm == null){
-    //         return;
-    //     }
-    //     const stripCountWord = (obj) => {
-    //         const { countWord, ...rest } = obj;
-    //         return rest;
-    //     };
-    //     const isDirty = JSON.stringify(stripCountWord(normalizeForm(form))) !==
-    //                     JSON.stringify(stripCountWord(normalizeForm(initialForm)));
-    //     setShouldWarn(isDirty);
-    // }, [form, initialForm, setShouldWarn]);
+    }, [isLoadingProjectContent, project_contents])
     //Helper function
     const handleSave = async () => {
         if(form.title.length == 0 || form.main_content.length == 0 || form.content.length == 0){
@@ -159,7 +128,7 @@ const EditProject = () => {
     };
 
     //Loading
-    if(isLoadingRegions || isLoadingProjectContent || form == null || isPendingDeleteProject || isPendingUpdateProject || isFetchingProjectContent){
+    if(isLoadingRegions || isLoadingProjectContent || form == null || isPendingDeleteProject || isPendingUpdateProject){
         return <Loading/>
     }
     const regionNames = regions.map(item => item.name);

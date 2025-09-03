@@ -1,15 +1,15 @@
-import Banner from "@/components/Banner";
-import ItemPost from "@/components/ItemPost";
-import PostCategory from "@/components/PostCategory";
-import { Link, useNavigate, useNavigation, useSearchParams } from 'react-router-dom';
-import useProjects from "@/hooks/useProjects";
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useNavigation, useSearchParams } from 'react-router-dom';
+import useProjects from "@/hooks/useProjects";
+import ComingSoon from '@/pages/ComingSoon';
+import Banner from "@/components/Banner";
 import Paging from "@/components/Paging";
 import Loading from "@/components/Loading";
-import ComingSoon from '@/pages/ComingSoon'
+import ProjectsGrid from './components/ProjectGrid';
+import ProjectsToolbar from './components/ProjectToolbar';
+
 
 export default function Project() {
-
     // Khai bao cac hooks
     const [currentPage, setCurrentPage] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -22,27 +22,23 @@ export default function Project() {
     }, [searchParams]);
 
     // Lay params
-    var query = searchParams.get('query') || undefined;
+    const query = searchParams.get('query') || undefined;
     const filter = searchParams.get('filter') || undefined;
     const is_featured = searchParams.get('is_featured') || undefined;
     const page = Number(searchParams.get('page')) || 1;
     const limit = searchParams.get('limit') || undefined;
 
-
     // fetch data 
     const { data: projectPageData, isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
     const { data: projectRegionData, isLoading: isLoadingProjectRegion } = useProjects.project_regions.getAll();
-    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter === "Tất cả dự án" ? undefined : filter, is_featured,  page, limit);
-    
-    if (isLoadingProjectPage || isLoadingProjectRegion) {
-        return (
-            <Loading />
-        )
-    }
+    const { data: projectData, isLoading: isLoadingProject } = useProjects.projects.getList(query, filter === "Tất cả dự án" ? undefined : filter, is_featured, page, limit);
+
+    if (isLoadingProjectPage || isLoadingProjectRegion)
+        return <Loading />;
 
     // Khai bao bien 
-    let categoriesData = projectRegionData.map(item => item.name);
     const categoriesDefault = ["Tất cả dự án"];
+    let categoriesData = projectRegionData.map(item => item.name);
     categoriesData = [...categoriesDefault, ...categoriesData];
     const totalProjects = Number(projectData?.totalCount || 0);
     const pageSizes = 9;
@@ -52,10 +48,7 @@ export default function Project() {
         numberPagination: numberPages,
     };
 
-    // Dinh nghia cac ham bat su kien 
-    const handleSearchSuggestion = (query, filter) => {
-        return useProjects.getSearchSuggestions(query, filter)
-    }
+    // Handlers
     const handleEnter = (id) => {
         navigate(`/du-an/${id}`);
     }
@@ -74,26 +67,20 @@ export default function Project() {
         const params = new URLSearchParams();
         if (query) params.set("query", query);
         if (filter && filter !== categoriesDefault[0]) params.set("filter", filter);
-        if (page >= 2) params.set('page', page)
+        if (page >= 2) params.set('page', page);
 
         setSearchParams(params);
-        const queryString = params.toString();
-        navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
-        // setCurrentPage(Number(page));
-        // const params = new URLSearchParams();
-        // if (page >= 2) params.set("page", page);
-        // const queryString = params.toString();
-        // navigate(`/du-an${queryString ? `?${queryString}` : ''}`);
         setTimeout(() => {
             scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
         }, 0);
     };
+
     const handleClickPostCategory = (idCategory) => {
         const params = new URLSearchParams();
         const nameRegion = categoriesData[idCategory];
         const region = projectRegionData.find(item => item.name === nameRegion);
-        query = undefined;
-        if (region && region.name != categoriesDefault) {
+        
+        if (region && region.name !== categoriesDefault[0]) {
             params.set("filter", nameRegion);
             setSearchParams(params);
         }
@@ -103,29 +90,27 @@ export default function Project() {
         setTimeout(() => {
             scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
         }, 0);
-       
     }
 
     const handleButton = () => {
         navigate('/lien-he');
     }
 
-    const dataBanner = {
+    const bannerData = {
         title: projectPageData.banner_title,
         description: projectPageData.banner_description,
         colorBackground: "var(--gradient-banner)",
         colorText: "#ffffff",
         hasSearch: projectPageData.is_visible ? true : false,
         categories: categoriesData || categoriesDefault,
-        contentPlaceholder: "Nhập vào đây",
-        currentQuery: query, 
+        contentPlaceholder: "Nhập vào đây",
+        currentQuery: query,
         currentCategory: categoriesData[idSelectedCategories],
         handleButton: handleSearchSubmit,
-        handleSearchSuggestion: handleSearchSuggestion,
+        handleSearchSuggestion: useProjects.getSearchSuggestions,
         handleEnter: handleEnter,
         scrollTargetRef: scrollTargetRef
     };
-
 
     const bannerContactData = {
         title: "Sẵn sàng bắt đầu dự án của bạn",
@@ -137,58 +122,34 @@ export default function Project() {
         handleButton: handleButton
     };
 
-
-
-
-
-
     return (
         <>
-            {navigation.state == 'loading' && <Loading/>}
-            <Banner data={dataBanner} />
-            {projectPageData.is_visible ? <div>
-                <div className="container-fluid">
-                    <div className="my-[40px] text-center">
-                        <h1 className='text-4xl mb-[30px] font-bold'>Công trình tiêu biểu</h1>
-                        <div className="mb-[30px] max-w-[70%] mx-auto">
-                            <   PostCategory categories={categoriesData || ["Tất cả dự án"]} handleClick={handleClickPostCategory} idCategories={idSelectedCategories} />
-                        </div>
+            {navigation.state === 'loading' && <Loading />}
+            <Banner data={bannerData} />
+            {projectPageData.is_visible ? (
+                <div>
+                    <ProjectsToolbar
+                        categories={categoriesData}
+                        idSelectedCategories={idSelectedCategories}
+                        handleClick={handleClickPostCategory}
+                        scrollTargetRef={scrollTargetRef}
+                    />
+                    <ProjectsGrid
+                        projects={projectData?.results}
+                        isLoading={isLoadingProject}
+                    />
+                    <div className="mb-[30px] container-fluid">
+                        <Paging
+                            data={dataPagination}
+                            onPageChange={handlePageChange}
+                            currentPage={currentPage}
+                        />
                     </div>
-                    <div className="grid grid-cols-12 gap-5 md:gap-10">
-                        {
-                            isLoadingProject ? <Loading/> : 
-                                (projectData.results || []).map((item, index) => {
-                                const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
-                                const dataProject = {
-                                    type: 'project',
-                                    title: item?.title ?? "",
-                                    description: item?.main_content ?? "",
-                                    location: item?.province ?? "",
-                                    date: complete_time,
-                                    tag: item?.region.name ?? "",
-                                    tagColor: item?.region.rgb_color ?? "",
-                                    image: item?.main_img ?? "",
-                                }
-                                return (
-                                    <Link key={index} to={`/du-an/${item.id}`}
-                                    className="col-span-12 lg:col-span-4 md:col-span-6 max-md:max-w-[500px] max-md:w-full  max-md:mx-auto"
-                                    >
-                                        <div    
-                                        >
-                                            <ItemPost data={dataProject}/>
-                                        </div>
-                                    </Link>
-
-                                );
-                        })}
-                    </div>
-                    <div className="mb-[30px]">
-                        <Paging data={dataPagination} onPageChange={handlePageChange} currentPage={currentPage} />
-                    </div>
+                    <Banner data={bannerContactData} />
                 </div>
-                <Banner data={bannerContactData} />
-            </div>: <ComingSoon/>}
-
+            ) : (
+                <ComingSoon />
+            )}
         </>
-    )
+    );
 }

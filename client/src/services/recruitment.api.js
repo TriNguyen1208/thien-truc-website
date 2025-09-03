@@ -1,16 +1,11 @@
-import axios from "@/services/axiosInstance.js"
+import { fetchData, postData } from "./apiHelper";
 import API_ROUTES from "../../../shared/routesAPI";
-const getAll = async () =>{
-    const res = await axios.get(API_ROUTES.recruitment.base);
-    return res.data;
+const recruitmentServices = {
+    general: {
+        getAll: async () => fetchData(API_ROUTES.recruitment.base),
+        getRecruitmentPage: async () => fetchData(API_ROUTES.recruitment.recruitment_page),
+        postRecruitmentForm: async (formData) => postData(API_ROUTES.recruitment.submit_application, formData)
+    }
 }
-const getRecruitmentPage = async () => {
-    const res = await axios.get(API_ROUTES.recruitment.recruitment_page);
-    return res.data;
-}
-// TODO: Add 
-const postRecruitmentForm = async (formData) => {
-    const res = await axios.post(API_ROUTES.recruitment.submit_application, formData);
-    return res.data;
-}
-export default {getAll, getRecruitmentPage, postRecruitmentForm};
+
+export default recruitmentServices;

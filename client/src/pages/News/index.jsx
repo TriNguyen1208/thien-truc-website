@@ -1,185 +1,118 @@
-import Banner from "@/components/Banner";
+import { useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
+import { useRef, useMemo, useEffect } from "react";
 import useNews from "@/hooks/useNews";
+import Banner from "@/components/Banner";
 import Loading from "@/components/Loading";
-import ItemByType from "@/components/ItemByType";
-import ListType from "@/components/ListType";
-import ItemPost from "@/components/ItemPost";
-import { Link, useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
-import Paging from "@/components/Paging";
-import { useRef } from "react";
-import ComingSoon from '@/pages/ComingSoon'
+import NewsContent from "./components/NewsContent"; 
+
+// --- Constants ---
+const ITEMS_PER_PAGE = 9;
+const ALL_CATEGORIES = "Tất cả thể loại";
+const SORT_OPTIONS = [
+  { label: "Mới nhất", value: "date_desc" },
+  { label: "Phổ biến", value: "popular" },
+];
+const DEFAULT_SORT_BY = SORT_OPTIONS[0].value;
+
+// Custom hook để quản lý URL params (giữ nguyên như lần refactor trước)
+const useNewsParams = (validCategories) => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const params = useMemo(() => {
+        const query = searchParams.get("query") || "";
+        const limit = searchParams.get('limit') || ITEMS_PER_PAGE;
+        const rawSortBy = searchParams.get("sort_by");
+        const sortBy = SORT_OPTIONS.some(opt => opt.value === rawSortBy) ? rawSortBy : DEFAULT_SORT_BY;
+        const rawPage = parseInt(searchParams.get("page"), 10);
+        const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+        const rawFilter = searchParams.get("filter");
+        const filter = validCategories.includes(rawFilter) ? rawFilter : ALL_CATEGORIES;
+        return { query, limit, sortBy, page, filter };
+    }, [searchParams, validCategories]);
+
+    const updateParams = (newValues) => {
+        const newParams = new URLSearchParams(searchParams);
+        Object.entries(newValues).forEach(([key, value]) => newParams.set(key, value));
+        if (!('page' in newValues) || Object.keys(newValues).length > 1) {
+          newParams.set("page", "1");
+        }
+        setSearchParams(newParams);
+    };
+
+    return [params, updateParams];
+};
 
 export default function News() {
-  const scrollTargetRef = useRef(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const navigation = useNavigation();
-  const sortBys = ["date_desc", "popular"];
+    const scrollTargetRef = useRef(null);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const navigation = useNavigation();
 
-  // Lấy giá trị từ URL và kiểm tra hợp lệ
-  const query = searchParams.get("query") || "";
-  const limit = searchParams.get('limit') || "";
+    // --- Data Fetching ---
+    const { data: newsPage, isLoading: isLoadingNewsPage } = useNews.getNewsPage();
+    const { data: newsCategories, isLoading: isLoadingCategories } = useNews.news_categories.getAll();
 
-  const rawSortBy = searchParams.get("sort_by");
-  const sortBy = sortBys.includes(rawSortBy) ? rawSortBy : "date_desc";
+    const categories = useMemo(() => [
+        ALL_CATEGORIES,
+        ...(newsCategories?.map((cat) => cat.name) ?? []),
+    ], [newsCategories]);
 
-  const rawPage = parseInt(searchParams.get("page"));
-  const currentPage = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+    const [params, updateParams] = useNewsParams(categories);
 
-  // Gọi API danh mục trước để có categories hợp lệ
-  const { data: newsPage, isLoading: isLoadingNewsPage } = useNews.getNewsPage();
-  const { data: newsfilter, isLoading: isLoadingfilter } = useNews.news_categories.getAll();
+    const { data: filteredData, isLoading: isLoadingFilteredData } = useNews.news.getList(
+        params.query,
+        params.filter === ALL_CATEGORIES ? undefined : params.filter,
+        true,
+        params.sortBy,
+        params.page,
+        params.limit
+    );
 
-  // Lúc này mới tạo categories (sau khi có newsfilter)
-  const categories = [
-    "Tất cả thể loại",
-    ...(newsfilter?.map((filter) => filter.name) ?? []),
-  ];
-  const rawFilter = searchParams.get("filter");
-  const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : "Tất cả thể loại";
-  // Gọi API với params đã xử lý
-  const { data: dataFilter, isLoading: isLoadingDataFilter } = useNews.news.getList(
-    query,
-    filter === "Tất cả thể loại" ? undefined : filter,
-    true,
-    sortBy,
-    currentPage,
-    limit
-  );
-  if (isLoadingNewsPage || isLoadingfilter) return <Loading />;
-  // Gọi API với params từ URL
+    // --- Side Effects ---
+    useEffect(() => {
+        if (scrollTargetRef.current) {
+          scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [params]);
 
-  // Helper cập nhật URL
-  const updateParam = (key, value) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set(key, value);
-    if (key !== "page") newParams.set("page", "1");
-    setSearchParams(newParams);
-  };
+    // --- Memoized Props ---
+    const bannerData = useMemo(() => ({
+        title: newsPage?.banner_title,
+        description: newsPage?.banner_description,
+        hasSearch: newsPage?.is_visible,
+        categories: categories,
+        currentQuery: params.query,
+        currentCategory: params.filter,
+        handleButton: (filter, query) => updateParams({ filter, query }),
+        handleSearchSuggestion: useNews.getSearchSuggestions,
+        handleEnter: (id) => navigate(`/tin-tuc/${id}`),
+        // Các props khác cho Banner
+        colorBackground: "var(--gradient-banner)",
+        colorText: "#ffffff",
+        contentPlaceholder: "Nhập vào đây",
+    }), [newsPage, categories, params.query, params.filter, navigate, updateParams]);
+    
+    // --- Render Logic ---
+    if (isLoadingNewsPage || isLoadingCategories) {
+      return <Loading />;
+    }
 
-  // Handlers
-  const handleButton = (filter, query) => {
-    const newParams = new URLSearchParams();
-    newParams.set("query", query);
-    newParams.set("filter", filter);
-    newParams.set("sort_by", sortBy);
-    newParams.set("page", "1");
-    setSearchParams(newParams);
-    setTimeout(() => {
-      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
-    }, 0);
-  };
-
-  const handleEnter = (id) => {
-    navigate(`/tin-tuc/${id}`);
-  };
-
-  const handleSearchSuggestion = (query, filter) => {
-    return useNews.getSearchSuggestions(query, filter);
-  };
-
-  const handleClickfilter = (filter) => {
-    updateParam("filter", filter);
-    setTimeout(() => {
-      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
-    }, 0);
-  };
-
-  const handlePageChange = (page) => {
-    updateParam("page", String(page));
-    setTimeout(() => {
-      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
-    }, 0);
-  };
-
-  const handleSortChange = (index) => {
-    const newSort = sortBys[index];
-    updateParam("sort_by", newSort);
-    setTimeout(() => {
-      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
-    }, 0);
-  };
-  const bannerData = {
-    title: newsPage.banner_title,
-    description: newsPage.banner_description,
-    colorBackground: "var(--gradient-banner)",
-    colorText: "#ffffff",
-    hasSearch: newsPage.is_visible ? true : false,
-    categories: categories,
-    contentPlaceholder: "Nhập vào đây",
-    currentQuery: query,
-    currentCategory: filter,
-    handleButton: handleButton,
-    handleSearchSuggestion: handleSearchSuggestion,
-    handleEnter: handleEnter,
-    scrollTargetRef: scrollTargetRef
-  };
-
-  return (
-    <>
-      {navigation.state == 'loading' && <Loading/>}
-      <Banner data={bannerData} />
-      {newsPage.is_visible ? <div className="container-fluid flex flex-col gap-10 pt-10">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-0 ">
-          <div className="lg:flex-1 justify-center" />
-          <div className="flex justify-center px-4">
-            <ItemByType
-              types={["Mới nhất", "Phổ biến"]}
-              handleClick={handleSortChange}
-              current={sortBys.indexOf(sortBy)}
-            />
-          </div>
-          <div className="flex-1 flex justify-end px-4">
-            <ListType
+    return (
+        <>
+            {navigation.state === 'loading' && <Loading />}
+            <Banner data={bannerData} />
+            <NewsContent
+              scrollTargetRef={scrollTargetRef}
+              isVisible={newsPage?.is_visible}
+              isLoading={isLoadingFilteredData}
+              filteredData={filteredData}
+              params={params}
+              updateParams={updateParams}
               categories={categories}
-              handleClick={handleClickfilter}
-              current={filter}
+              sortOptions={SORT_OPTIONS}
+              itemsPerPage={ITEMS_PER_PAGE}
+              location={location}
             />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-12 gap-5 md:gap-10">
-          {isLoadingDataFilter ? (
-            <Loading/>
-          ) : (
-            dataFilter.results?.map((item) => {
-              const data = {
-                type: "news",
-                title: item.title,
-                description: item.main_content,
-                tag: item.category.name,
-                tagColor: item.category.rgb_color,
-                image: item.main_img,
-                status: {
-                  duration: `${item.measure_time} phút đọc`,
-                  views: item.num_readers,
-                  date: item.public_date
-                },
-              };
-              return (
-                <Link to={`${location.pathname}/${item.id}`} key={item.id}
-                className="col-span-12 lg:col-span-4 md:col-span-6 max-md:max-w-[500px] max-md:w-full  max-md:mx-auto"
-                >
-                  <ItemPost data={data} id={item.id}/>
-                </Link>
-              );
-            })
-          )}
-        </div>
-
-        <div className="flex flex-row justify-center mb-20">
-          {!isLoadingDataFilter && (
-            <Paging
-              data={{
-                numberPagination: Math.ceil(dataFilter.totalCount / 9),
-              }}
-              onPageChange={handlePageChange}
-              currentPage={currentPage}
-            />
-          )}
-        </div>
-      </div>: <ComingSoon/>}
-    </>
-  );
+        </>
+    );
 }

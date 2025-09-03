@@ -1,4 +1,3 @@
-import React from 'react'
 import WhiteButton from '@/components/WhiteButton'
 import SearchBar from '@/components/Search';
 
@@ -40,7 +39,6 @@ const Banner = ({data}) =>{
                         />
                     ) : <></>}
                     {hasSearch ? ( 
-                        // <SearchBar categories={categories} contentPlaceholder={contentPlaceholder} onSearch={handleButton}/>
                         <SearchBar 
                             data={{
                                 categories: categories,

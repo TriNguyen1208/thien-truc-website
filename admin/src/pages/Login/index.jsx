@@ -9,163 +9,175 @@ import { useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import Loading from '@/components/Loading'
 
 const AuthPopupManager = () => {
-  const [step, setStep] = useState('login'); // login | forgot | reset | success
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const rawToken = searchParams.get('token');
-  const token = rawToken?.trim();
-  const [send, isSending] = useState(false);
-  const [kp, iskp] = useState(false);
-  const urlStep = searchParams.get('step');
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-      if (localStorage.getItem('user')) {
-        if (step === 'login') {
-          const backTo = location.state?.from?.pathname || '/';
-          toast.error('Bạn đã đăng nhập, đăng xuất nếu muốn đăng nhập lại');
-          navigate(backTo);
+    //Kiểm tra xem đang ở hành động nào
+    const [step, setStep] = useState('login'); // login | forgot | reset | success
+    //Lấy hành động hiện tại từ url
+    const urlStep = searchParams.get('step');
+    //Lấy token
+    const rawToken = searchParams.get('token');
+    const token = rawToken?.trim();
+    
+    //check xem có phải đang gửi reset password hay không
+    const [isSending, setIsSending] = useState(false);
+    //
+    const [isResetting, setIsResetting] = useState(false);
+
+    //Nếu như đã đăng nhập rồi. Có lưu trong cache
+    useEffect(() => {
+        if (localStorage.getItem('user')) {
+            if (step === 'login') {
+                const backTo = location.state?.from?.pathname || '/';
+                toast.error('Bạn đã đăng nhập, đăng xuất nếu muốn đăng nhập lại');
+                navigate(backTo);
+            }
         }
-      }
-  }, [step, navigate]);
+    }, [step, navigate]);
 
-  useEffect(() => {
-    if (urlStep === 'forgot') {
-      setStep('forgot');
-      searchParams.delete('step'); // xóa param khỏi URL
-      navigate({ search: searchParams.toString() }, { replace: true });
-    } else if (token && step !== 'reset') {
-      setStep('reset');
-    }
-  }, [token, step, urlStep]);
-  
-  
+    //Nếu như là forgot password
+    useEffect(() => {
+        if (urlStep === 'forgot') {
+            setStep('forgot');
+            searchParams.delete('step'); // xóa param khỏi URL
+            navigate({ search: searchParams.toString() }, { replace: true });
+        } else if (token && step !== 'reset') {
+            setStep('reset');
+        }
+    }, [token, step, urlStep]);
+    
 
-  const handleLogin = async ({ username, password }) => {
-    try {
-      const res = await dispatch(loginUser(username, password));
-      toast.success(res?.message || 'Đăng nhập thành công');
-      navigate(location.state?.from?.pathname || '/');
-    } catch (err) {
-      const message = err?.response?.data?.message || err?.message || "Đăng nhập thất bại";
-      toast.error(message);
-    }
-  };
+    //Bấm nút login
+    const handleLogin = async ({ username, password }) => {
+        try {
+            const res = await dispatch(loginUser(username, password));
+            toast.success(res?.message || 'Đăng nhập thành công');
+            navigate(location.state?.from?.pathname || '/');
+        } catch (err) {
+            const message = err?.response?.data?.message || err?.message || "Đăng nhập thất bại";
+            toast.error(message);
+        }
+    };
 
-  const handleSendReset = async ({ username, email }) => {
-    isSending(true);
-    try {
-      const res = await dispatch(sendResetPassword(username, email)); // <-- lấy res
-      if (res.status === 200) {
-        toast.success(res.data?.message || 'Đã gửi email khôi phục mật khẩu');
-        setStep('sendSuccess');
-      } else {
-        toast.error(res.data?.message || 'Không thể gửi email khôi phục');
-      }
-    } catch (err) {
-      const message = err?.response?.data?.message || err?.message || "Khôi phục thất bại";
-      toast.error(message);
-    } finally {
-      isSending(false);
-    }
-  };
+    //Xử lý hành động gửi reset password
+    const handleSendReset = async ({ username, email }) => {
+        setIsSending(true);
+        try {
+            const res = await dispatch(sendResetPassword(username, email)); // <-- lấy res
+            if (res.status === 200) {
+                toast.success(res.data?.message || 'Đã gửi email khôi phục mật khẩu');
+                setStep('sendSuccess');
+            } else {
+                toast.error(res.data?.message || 'Không thể gửi email khôi phục');
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err?.message || "Khôi phục thất bại";
+            toast.error(message);
+        } finally {
+            setIsSending(false);
+        }
+    };
 
-  const handleResetPassword = async ({ newPassword, confirmPassword }) => {
-    iskp(true);
-    if (newPassword !== confirmPassword) {
-      return toast.error('Mật khẩu không khớp');
-    }
-    try {
-      const res = await dispatch(resetPassword(token, newPassword)); // <-- lấy res
+    const handleResetPassword = async ({ newPassword, confirmPassword }) => {
+        setIsResetting(true);
+        if (newPassword !== confirmPassword) {
+            toast.error('Mật khẩu không khớp');
+            setIsResetting(false);
+            return;
+        }
+        try {
+            const res = await dispatch(resetPassword(token, newPassword)); // <-- lấy res
+            if (res.status === 200) {
+                toast.success(res.data?.message || 'Khôi phục mật khẩu thành công');
+                searchParams.delete('token');
+                navigate({ search: searchParams.toString() });
+                setStep('success');
+            } else {
+                toast.error(res?.message || 'Lỗi khi khôi phục mật khẩu');
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err?.message || "Lỗi khi khôi phục mật khẩu";
+            toast.error(message);
+        } finally {
+            setIsResetting(false);
+        }
+    };
 
-      if (res.status === 200) {
-        toast.success(res.data?.message || 'Khôi phục mật khẩu thành công');
-        searchParams.delete('token');
-        navigate({ search: searchParams.toString() });
-        setStep('success');
-      } else {
-        toast.error(res?.message || 'Lỗi khi khôi phục mật khẩu');
-      }
-    } catch (err) {
-      const message = err?.response?.data?.message || err?.message || "Lỗi khi khôi phục mật khẩu";
-      toast.error(message);
-    } finally {
-      iskp(false);
-    }
-  };
+    const steps = {
+        login: {
+            icon: LockIconBackground,
+            title: 'Đăng nhập',
+            description: 'Nhập thông tin đăng nhập để truy cập hệ thống quản trị',
+            onSubmit: handleLogin,
+            submitLabel: 'Đăng nhập',
+            fields: 
+            [
+                { name: 'username', label: 'Tên đăng nhập', placeholder: 'Nhập tên đăng nhập', type: 'text', icon: <AccountIcon /> },
+                { name: 'password', label: 'Mật khẩu', placeholder: 'Nhập mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> }
+            ],
+            extraAction: 'Quên mật khẩu?',
+            onExtraAction: () => setStep('forgot')
+        },
+        forgot: {
+            icon: LockIconBackground,
+            title: 'Quên mật khẩu',
+            description: 'Nhập tên đăng nhập và email để khôi phục mật khẩu',
+            onSubmit: handleSendReset,
+            fields: 
+            [
+                { name: 'username', label: 'Tên đăng nhập', placeholder: 'Nhập tên đăng nhập', type: 'text', icon: <AccountIcon /> },
+                { name: 'email', label: 'Email', placeholder: 'Nhập email', type: 'email', icon: <LockIcon /> }
+            ],
+            extraAction: 'Trở lại đăng nhập',
+            onExtraAction: () => setStep('login'),
+            submitLabel: 'Gửi yêu cầu'
+        },
+        sendSuccess: {
+            icon: CheckCircleIcon,
+            title: 'Yêu cầu đã được gửi',
+            description: 'Vui lòng kiểm tra email để khôi phục mật khẩu',
+            onSubmit: () => setStep('login'),
+            fields: [],
+            submitLabel: 'Trở lại đăng nhập',
+        },
+        reset: {
+            icon: LockIconBackground,
+            title: 'Khôi phục mật khẩu',
+            description: 'Đặt lại mật khẩu mới cho tài khoản của bạn',
+            onSubmit: handleResetPassword,
+            fields: [
+                { name: 'newPassword', label: 'Mật khẩu mới', placeholder: 'Nhập mật khẩu mới', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> },
+                { name: 'confirmPassword', label: 'Xác nhận mật khẩu', placeholder: 'Nhập lại mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> }
+            ],
+            submitLabel: 'Xác nhận'
+        },
+        success: {
+            icon: CheckCircleIcon,
+            title: 'Khôi phục mật khẩu thành công!',
+            onSubmit: () => setStep('login'),
+            fields: [],
+            submitLabel: 'Về trang đăng nhập'
+        }
+    };
+    const currentStep = steps[step];
 
-  const steps = {
-    login: {
-      icon: LockIconBackground,
-      title: 'Đăng nhập',
-      description: 'Nhập thông tin đăng nhập để truy cập hệ thống quản trị',
-      onSubmit: handleLogin,
-      submitLabel: 'Đăng nhập',
-      fields: [
-        { name: 'username', label: 'Tên đăng nhập', placeholder: 'Nhập tên đăng nhập', type: 'text', icon: <AccountIcon /> },
-        { name: 'password', label: 'Mật khẩu', placeholder: 'Nhập mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> }
-      ],
-      extraAction: 'Quên mật khẩu?',
-      onExtraAction: () => setStep('forgot')
-    },
-    forgot: {
-      icon: LockIconBackground,
-      title: 'Quên mật khẩu',
-      description: 'Nhập tên đăng nhập và email để khôi phục mật khẩu',
-      onSubmit: handleSendReset,
-      fields: [
-        { name: 'username', label: 'Tên đăng nhập', placeholder: 'Nhập tên đăng nhập', type: 'text', icon: <AccountIcon /> },
-        { name: 'email', label: 'Email', placeholder: 'Nhập email', type: 'email', icon: <LockIcon /> }
-      ],
-      extraAction: 'Trở lại đăng nhập',
-      onExtraAction: () => setStep('login'),
-      submitLabel: 'Gửi yêu cầu'
-    },
-    sendSuccess: {
-      icon: CheckCircleIcon,
-      title: 'Yêu cầu đã được gửi',
-      description: 'Vui lòng kiểm tra email để khôi phục mật khẩu',
-      onSubmit: () => setStep('login'),
-      fields: [],
-      submitLabel: 'Trở lại đăng nhập',
-    },
-    reset: {
-      icon: LockIconBackground,
-      title: 'Khôi phục mật khẩu',
-      description: 'Đặt lại mật khẩu mới cho tài khoản của bạn',
-      onSubmit: handleResetPassword,
-      fields: [
-        { name: 'newPassword', label: 'Mật khẩu mới', placeholder: 'Nhập mật khẩu mới', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> },
-        { name: 'confirmPassword', label: 'Xác nhận mật khẩu', placeholder: 'Nhập lại mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> }
-      ],
-      submitLabel: 'Xác nhận'
-    },
-    success: {
-      icon: CheckCircleIcon,
-      title: 'Khôi phục mật khẩu thành công!',
-      onSubmit: () => setStep('login'),
-      fields: [],
-      submitLabel: 'Về trang đăng nhập'
-    }
-  };
-
-  const currentStep = steps[step];
-
-  if (step === 'forgot' && send) return <Loading />;
-  if (step === 'reset' && kp) return <Loading />;
-  return (
-    <PopupForm
-      icon={currentStep.icon}
-      title={currentStep.title}
-      description={currentStep.description}
-      fields={currentStep.fields}
-      onSubmit={currentStep.onSubmit}
-      submitLabel={currentStep.submitLabel}
-      extraAction={currentStep.extraAction}
-      onExtraAction={currentStep.onExtraAction}
-    />
-  );
+    if (step === 'forgot' && isSending) return <Loading />;
+    if (step === 'reset' && isResetting) return <Loading />;
+    return (
+        <PopupForm
+            icon={currentStep.icon}
+            title={currentStep.title}
+            description={currentStep.description}
+            fields={currentStep.fields}
+            onSubmit={currentStep.onSubmit}
+            submitLabel={currentStep.submitLabel}
+            extraAction={currentStep.extraAction}
+            onExtraAction={currentStep.onExtraAction}
+        />
+    );
 };
 
 export default AuthPopupManager;

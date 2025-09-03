@@ -15,25 +15,24 @@ router.get('/news_categories', newsController.news_categories.getAll);
 router.get('/news_categories/:id', newsController.news_categories.getOne);
 router.get('/news_contents', newsController.news_contents.getAll);
 router.get('/news_contents/:id', newsController.news_contents.getOne);
-router.get('/search_suggestions', newsController.getSearchSuggestions);
-router.get('/search_categories_suggestions', newsController.getSearchCategoriesSuggestions);
+router.get('/search_suggestions', newsController.news.getSearchSuggestions);
+router.get('/search_categories_suggestions', newsController.news_categories.getSearchSuggestions);
 router.get('/count', newsController.count);
-router.get('/featured_news', newsController.featured_news.getAll);
+router.get('/featured_news', newsController.news.getAllFeatured);
 
 router.patch('/news/update_categories', authenticateToken, newsController.news.updateCategory);
 router.patch('/news/:id/num_readers', newsController.news.updateNumReaders);
-router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
 
-router.post('/news_contents/', authenticateToken,  upload.fields([
+router.post('/news', authenticateToken,  upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 }])
-, newsController.news_contents.postOne);
+, newsController.news.createOne);
 
-router.patch('/news_contents/:id', authenticateToken, upload.fields([
+router.patch('/news/:id', authenticateToken, upload.fields([
     { name: 'main_image', maxCount: 1 },
     { name: 'images', maxCount: 20 },
 ])
-, newsController.news_contents.updateOne);
+, newsController.news.updateOne);
 
 
 // post
@@ -41,9 +40,9 @@ router.post('/news_categories', authenticateToken, newsController.news_categorie
 
 // patch
 router.patch('/news_categories/:id', authenticateToken, newsController.news_categories.updateOne);
-router.patch('/news_page', authenticateToken, newsController.updateNewsPage);
-router.patch('/news_page/visibility', authenticateToken, newsController.updateVisibility);
-router.patch('/featured_news', authenticateToken, newsController.featured_news.updateAll);
+router.patch('/news_page/banner', authenticateToken, newsController.updateNewsPage.banner);
+router.patch('/news_page/visibility', authenticateToken, newsController.updateNewsPage.visibility);
+router.patch('/featured_news', authenticateToken, newsController.news.updateFeaturedNews);
 
 // delete
 router.delete('/news/:id', authenticateToken, newsController.news.deleteOne);

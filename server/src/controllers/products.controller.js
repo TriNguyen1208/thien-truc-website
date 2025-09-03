@@ -3,7 +3,8 @@ import activityLogServices from "#@/services/activity-log.services.js";
 const { logActivity } = activityLogServices;
 
 const getAllTables = async (req, res) => {
-    const data = await productServices.getAllTables();
+    const {query ='', filter = ''} = req.query;
+    const data = await productServices.getAllTables(query, filter);
     res.status(200).json(data);
 }
 
@@ -12,34 +13,26 @@ const getProductPage = async (req, res) => {
     res.status(200).json(data);
 }
 
-const updateProductPage = async (req, res) => {
-    try {
-        const { status, message, action = null } = await productServices.updateProductPage(req.body);
-        if (status == 200) logActivity(req.user.username, action);
-        return res.status(status).json({ message });
-    } catch (error) {
-        console.error('Lỗi cập nhật trang sản phẩm: ', error);
-        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
-    }
-}
-const updateProductVisibility = async(req, res) => {
-    try{
-        const {status, message, action = null} = await productServices.updateProductVisibility(req.body);
-        if(status == 200) logActivity(req.user.username, action);
-        res.status(status).json({message: message});
-    }catch(error){
-        console.error('Lỗi chế độ hiển thị trang sản phẩm: ', error);
-        res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
-    }
-}
-const updatePriceVisibility = async(req, res) => {
-    try{
-        const {status, message, action = null} = await productServices.updatePriceVisibility(req.body);
-        if(status == 200) logActivity(req.user.username, action);
-        res.status(status).json({message: message});
-    }catch(error){
-        console.error('Lỗi chế độ hiển thị trang bảng giá: ', error);
-        res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+const updateProductPage = {
+    banner: async (req, res) => {
+        try {
+            const { status, message, action = null } = await productServices.updateProductPage.banner(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật trang sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    visibility: async(req, res) => {
+        try{
+            const {status, message, action = null} = await productServices.updateProductPage.visibility(req.body);
+            if(status == 200) logActivity(req.user.username, action);
+            res.status(status).json({ message: message });
+        }catch(error){
+            console.error('Lỗi chế độ hiển thị trang sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
     }
 }
 const products = {
@@ -58,9 +51,17 @@ const products = {
         const data = await productServices.products.getOne(id);
         res.status(200).json(data);
     },
+    getSearchSuggestions: async (req, res) => {
+        const query = req.query.query || '';
+        const filter = req.query.filter || '';
+        const is_featured = req.query.is_featured;
+
+        const data = await productServices.products.getSearchSuggestions(query, filter, is_featured);
+        res.status(200).json(data);
+    },
     updateFeatureOne: async (req, res) => {
-        const { id, status: product_status } = req.params;
         try {
+            const { id, status: product_status } = req.params;
             const { status, message, action = null } = await productServices.products.updateFeatureOne(id, product_status);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -70,8 +71,8 @@ const products = {
         }
     },
     updateCategory: async (req, res) => {
-        const { changedItems } = req.body;
         try {
+            const { changedItems } = req.body;
             const { status, message, action = null } = await productServices.products.updateCategory(changedItems);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -91,8 +92,8 @@ const products = {
         }
     },
     updateOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.products.updateOne(req.body, req.file, id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -102,8 +103,8 @@ const products = {
         }
     },
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.products.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -116,7 +117,7 @@ const products = {
 
 const product_categories = {
     getList: async (req, res) => {
-        const { id = '', query ='' } = req.query;
+        const { id = '', query = '' } = req.query;
         const data = await productServices.product_categories.getList(id, query);
         res.status(200).json(data);
     },
@@ -127,6 +128,13 @@ const product_categories = {
     },
     getAllFeatured: async (req, res) => {
         const data = await productServices.product_categories.getAllFeatured();
+        res.status(200).json(data);
+    },
+    getSearchSuggestions: async (req, res) => {
+        const query = req.query.query || '';
+        const id = req.query.id || '';
+
+        const data = await productServices.product_categories.getSearchSuggestions(id, query);
         res.status(200).json(data);
     },
     createOne: async (req, res) => { 
@@ -140,8 +148,8 @@ const product_categories = {
         }
     },
     updateOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.product_categories.updateOne(req.body, id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -151,8 +159,8 @@ const product_categories = {
         }
     },
     deleteOne: async (req, res) => {
-        const id = req.params.id;
         try {
+            const id = req.params.id;
             const { status, message, action = null } = await productServices.product_categories.deleteOne(id);
             if (status == 200) logActivity(req.user.username, action);
             return res.status(status).json({ message });
@@ -168,27 +176,26 @@ const getPricePage = async (req, res) => {
     res.status(200).json(data);
 }
 
-const updatePricePage = async (req, res) => { // <------------------
-    try {
-        const { status, message, action = null } = await productServices.updatePricePage(req.body);
-            if (status == 200) logActivity(req.user.username, action);
-            return res.status(status).json({ message });
-    } catch (error) {
-        console.error('Lỗi cập nhật trang bảng giá: ', error);
-        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
-    }
-}
-
-const product_prices = {
-    getAll: async (req, res) => {
-        const {query ='', filter = ''} = req.query;
-        const data = await productServices.product_prices.getAll(query, filter);
-        res.status(200).json(data);
+const updatePricePage = {
+    banner: async (req, res) => {
+        try {
+            const { status, message, action = null } = await productServices.updatePricePage.banner(req.body);
+                if (status == 200) logActivity(req.user.username, action);
+                return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật trang bảng giá: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
     },
-    getOne: async (req, res) => {
-        const product_id = req.params.product_id
-        const data = await productServices.product_prices.getOne(product_id);
-        res.status(200).json(data);
+    visibility: async(req, res) => {
+        try{
+            const {status, message, action = null} = await productServices.updatePricePage.visibility(req.body);
+            if(status == 200) logActivity(req.user.username, action);
+            res.status(status).json({message: message});
+        }catch(error){
+            console.error('Lỗi chế độ hiển thị trang bảng giá: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ '});
+        }
     }
 }
 
@@ -197,26 +204,9 @@ const getHighlightProducts = async (req, res) => {
     res.status(200).json(data);
 }
 
-const getSearchSuggestions = async (req, res) => {
-    const query = req.query.query || '';
-    const filter = req.query.filter || '';
-    const is_featured = req.query.is_featured;
-
-    const data = await productServices.getSearchSuggestions(query, filter, is_featured);
-    res.status(200).json(data);
-}
-
-const getSearchCategoriesSuggestions = async (req, res) => {
-    const query = req.query.query || '';
-    const id = req.query.id || '';
-
-    const data = await productServices.getSearchCategoriesSuggestions(id, query);
-    res.status(200).json(data);
-}
-
 const count = async (req, res) => {
     const data = await productServices.count();
     res.status(200).json(data);
 }
 
-export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, product_prices, getHighlightProducts, getSearchSuggestions, getSearchCategoriesSuggestions, count, updateProductVisibility, updatePriceVisibility };
+export default { getAllTables, getProductPage, updateProductPage, products, product_categories, getPricePage, updatePricePage, getHighlightProducts, count };

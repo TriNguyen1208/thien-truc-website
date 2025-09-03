@@ -1,9 +1,5 @@
-import React from 'react'
-import {Editor} from "@tinymce/tinymce-react"
-import EditorWord from '../../components/EditorWord';
-import CustomButton from '../../components/ButtonLayout';
-import { PlusIcon } from '../../components/Icon';
-import { useState } from 'react';
+import EditorWord from '@/components/EditorWord';
+
 const ContentManagement = ({
     type, //tin tuc hoac du an
     form,

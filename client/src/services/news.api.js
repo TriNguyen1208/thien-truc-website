@@ -1,66 +1,28 @@
-import axios from "@/services/axiosInstance.js"
+import { fetchData, patchData } from "./apiHelper";
 import API_ROUTES from "../../../shared/routesAPI";
 
-const getAll = async () =>{
-    const res = await axios.get(API_ROUTES.news.base);
-    return res.data;
-}
-
-const getNewsPage = async() => {
-    const res = await axios.get(API_ROUTES.news.news_page);
-    return res.data;
-}
-
-const getHighlightNews = async () => {
-    const res = await axios.get(API_ROUTES.news.highlight_news);
-    return res.data;
-}
-
-const news = {
-    getList: async (query = '', filter = '', is_published = '', sort_by = '', page = 1, limit = undefined) => {
-        const res = await axios.get(API_ROUTES.news.news.getList(query, filter, is_published, sort_by, page, limit));
-        return res.data;
+const newsServices = {
+    general: {
+        getAll: async () => fetchData(API_ROUTES.news.base),
+        getNewsPage: async () => fetchData(API_ROUTES.news.news_page),
+        getHighlightNews: async () => fetchData(API_ROUTES.news.getHighlightNews)
     },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.news.news.getOne(id));
-        return res.data;
+    news: {
+        getList: async (query = '', filter = '', is_published = '', sort_by = '', page = 1, limit = undefined) => 
+            fetchData(API_ROUTES.news.news.getList(query, filter, is_published, sort_by, page, limit)),
+        getOne: async (id) => fetchData(API_ROUTES.news.news.getOne(id)),
+        getAllFeatured: async () => fetchData(API_ROUTES.news.news.getAllFeatured),
+        getSearchSuggestions: async (query, filter) => fetchData(API_ROUTES.news.news.getSearchSuggestions(query, filter)),
+        updateNumReaders: async (id) => patchData(API_ROUTES.news.news.updateNumReaders(id))
     },
-    updateNumReaders: async (id) => {
-        const res = await axios.patch(API_ROUTES.news.news.updateNumReaders(id));
-        return res.data;
-    }
-}
-const new_categories = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.news.news_categories.getAll);
-        return res.data;
+    new_categories: {
+        getAll: async () => fetchData(API_ROUTES.news.news_categories.getAll),
+        getOne: async (id) => fetchData(API_ROUTES.news.news_categories.getOne(id))
     },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.news.news_categories.getOne(id));
-        return res.data;
+    new_contents: {
+        getAll: async () => fetchData(API_ROUTES.news.news_contents.getAll),
+        getOne: async (id) => fetchData(API_ROUTES.news.news_contents.getOne(id))
     }
 }
 
-const new_contents = {
-    getAll: async () => {
-        const res = await axios.get(API_ROUTES.news.news_contents.getAll);
-        return res.data;
-    },
-    getOne: async (id) => {
-        const res = await axios.get(API_ROUTES.news.news_contents.getOne(id));
-        return res.data;
-    },
-    postOne: async (data) => {
-        
-    }
-}
-const getFeaturedNews = async () => {
-    const res = await axios.get(API_ROUTES.news.getFeaturedNews);
-    return res.data;
-}
-
-const getSearchSuggestions = async (query, filter) => {
-    const res = await axios.get(API_ROUTES.news.search_suggestions(query, filter))
-    return res.data;
-}
-export default {getAll, getNewsPage, getHighlightNews, news, new_categories, new_contents, getSearchSuggestions, getFeaturedNews};
+export default newsServices;

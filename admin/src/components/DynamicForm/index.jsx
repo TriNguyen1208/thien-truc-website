@@ -1,7 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Modal } from 'antd';
-import SimpleForm from "../SimpleForm"
-import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "../Icon/index";
+import { DeleteIcon, EyeIcon, EyeOffIcon, UploadIcon } from "@/components/Icon";
 const DynamicForm = ({ data, config }) => {
     const fileInputRef = useRef();
     const [visible, setVisible] = useState(false);
@@ -272,10 +271,10 @@ const DynamicForm = ({ data, config }) => {
                             {...commonProps}
                             value={value}
 
-                            className="flex-1 border border-gray-300 rounded-[5px]"
+                            className="flex-1 border border-gray-300 rounded-[5px] cursor-pointer"
                         >
                             {(item.options || defaultField.options).map((opt, idx) => (
-                                <option key={idx} value={opt.value} className="text-center">{opt.label}</option>
+                                <option key={idx} value={opt.value} className="text-center cursor-pointer">{opt.label}</option>
                             ))}
 
                         </select>
@@ -292,7 +291,7 @@ const DynamicForm = ({ data, config }) => {
                             display: 'inline-block',
                             marginRight: '0.5rem' // tương đương với Tailwind `mr-2`
                         }}
-                        className="accent-black"
+                        className="accent-black cursor-pointer"
                     />
                 );
             case 'file':
@@ -300,7 +299,7 @@ const DynamicForm = ({ data, config }) => {
                     <input
                         {...commonProps}
                         type="file"
-                        className="block w-full border border-gray-300"
+                        className="block w-full border border-gray-300 cursor-pointer"
                     />
                 );
             case 'image_upload': {
@@ -320,7 +319,7 @@ const DynamicForm = ({ data, config }) => {
                                     }));
                                 }}
                                 placeholder="Nhập link ảnh"
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md w-full"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md w-full cursor-pointer"
                             />
                             {/* File Upload */}
                             <input
@@ -359,7 +358,7 @@ const DynamicForm = ({ data, config }) => {
                                 <button
                                     type="button"
                                     onClick={() => removeImage(nameColumn)}
-                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 cursor-pointer"
                                 >
                                     ×
                                 </button>
@@ -394,7 +393,7 @@ const DynamicForm = ({ data, config }) => {
                                                 false
                                             )
                                         }
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
                                         placeholder={item.placeholder?.[0] ?? defaultField.placeholder}
                                     />
 
@@ -404,7 +403,7 @@ const DynamicForm = ({ data, config }) => {
                                     value={
                                         isSingle
                                             ? (item.isCheckbox
-                                                ? entry.value || ''     // ✅ Truy cập đúng value trong object
+                                                ? entry.value || ''     // Truy cập đúng value trong object
                                                 : entry || '')          // Nếu không checkbox thì là string
                                             : entry.value || ''
                                     }
@@ -413,13 +412,13 @@ const DynamicForm = ({ data, config }) => {
                                         handleDynamicFieldsChange(
                                             nameColumn,
                                             index,
-                                            item.isCheckbox || !isSingle ? 'value' : index, // ✅ Sửa chỗ này
+                                            item.isCheckbox || !isSingle ? 'value' : index, // Sửa chỗ này
                                             e.target.value,
                                             isSingle,
                                             item.isCheckbox
                                         )
                                     }
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md cursor-pointer"
                                     placeholder={isSingle ? item.placeholder : item.placeholder?.[1] || defaultField.placeholder}
 
                                 />
@@ -439,7 +438,7 @@ const DynamicForm = ({ data, config }) => {
                                                 true
                                             )
                                         }
-                                        className="accent-black"
+                                        className="accent-black cursor-pointer"
                                     />
                                 )}
 
@@ -480,6 +479,7 @@ const DynamicForm = ({ data, config }) => {
                             type={visible ? 'text' : 'password'}
                             value={value}
                             placeholder={item.placeholder || defaultField.placeholder}
+                            className="cursor-pointer"
                         />
                         <span
                             className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
@@ -497,10 +497,10 @@ const DynamicForm = ({ data, config }) => {
                     value={value}
                     placeholder={item.placeholder || defaultField.placeholder}
                     maxLength={item.maxLength || undefined}
+                    className="cursor-pointer"
                 />;
         }
     }
-
     return (
         <>
             <Modal
@@ -519,7 +519,6 @@ const DynamicForm = ({ data, config }) => {
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-12 gap-4">
                             {data.map((item, index) => {
-
                                 const nameColumn = item.name || defaultField.name;
                                 return (
                                     <div key={index} style={{ gridColumn: `span ${item.width}` }}>
@@ -569,7 +568,6 @@ const DynamicForm = ({ data, config }) => {
                     </form>
                 </div>
             </Modal>
-
         </>
     )
 }

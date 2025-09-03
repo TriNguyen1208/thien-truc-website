@@ -1,6 +1,4 @@
-import React from 'react'
 import Home from "@/pages/Home"
-// import Product from '../pages/Product'
 import Product from '@/pages/Product'
 import Project from '@/pages/Project'
 import Price from '@/pages/Price'
@@ -9,13 +7,13 @@ import Recruitment from '@/pages/Recruitment'
 import Contact from '@/pages/Contact'
 import AboutUs from '@/pages/AboutUs'
 import PageNotFound from '@/pages/PageNotFound'
-import DefaultLayout from "@/layouts/DefaultLayout"
 import ProjectDetail from '@/pages/ProjectDetail'
 import NewsDetail from '@/pages/NewsDetail'
 import ProductDetail from '@/pages/ProductDetail'
-import { createBrowserRouter } from "react-router-dom";
+import DefaultLayout from "@/layouts/DefaultLayout"
 import Loading from '@/components/Loading'
-import { LoadingAboutUs, LoadingContact, LoadingHome, LoadingNews, LoadingPrice, LoadingProduct, LoadingProject, LoadingRecruitment, LoadingProjectDetail, LoadingProductDetail, LoadingNewsDetail } from '../components/LoadingPage'
+import { LoadingAboutUs, LoadingContact, LoadingHome, LoadingNews, LoadingPrice, LoadingProduct, LoadingProject, LoadingRecruitment, LoadingProjectDetail, LoadingProductDetail, LoadingNewsDetail } from '@/components/LoadingPage'
+import { createBrowserRouter } from "react-router-dom";
 export const router = createBrowserRouter([
     {
         path: "/",

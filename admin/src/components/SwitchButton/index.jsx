@@ -1,7 +1,10 @@
 import Switch from 'react-switch'
 import { useEffect, useState } from 'react';
 import Loading from '@/components/Loading'
-export default function SwitchButton({handleToggle, currentState}){
+export default function SwitchButton({
+    handleToggle, 
+    currentState
+}){
     const [checked, setChecked] = useState(currentState);
     //Cập nhật checked khi currentstate thay đổi
     useEffect(() => {
