@@ -60,6 +60,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
     const { title, main_content, main_img } = (await pool.query('SELECT * FROM project.projects WHERE id = $1', [id])).rows?.[0];
+    const { content } = (await pool.query('SELECT * FROM project.project_contents WHERE id = $1', [id])).rows?.[0];
 
     res.send(`
         <!DOCTYPE html>
@@ -69,6 +70,7 @@ router.get('/:id', async (req, res) => {
                 <meta name="description" content="${main_content}" />
                 <meta property="og:title" content="${title}" />
                 <meta property="og:description" content="${main_content}" />
+                ${main_img ? `<meta property="og:image" content="${main_img}" />` : ""}
                 <link rel="canonical" href="${process.env.VITE_CLIENT_URL}/du-an/${id}" />
             </head>
             <body>
