@@ -35,6 +35,12 @@ router.get('/', async (req, res) => {
             </head>
             <body>
                 <div id="root"></div>
+                <noscript>
+                    <h1>Trang Về chúng tôi công ty Thiên Trúc</h1>
+                    <h2>${banner_title}</h2>
+                    <h3>${banner_description}</h3>
+                    <p> Công ty Thiên Trúc, Cao Lãnh, Đồng Tháp </p>
+                </noscript>
             </body>
         </html>
     `);
