@@ -28,7 +28,7 @@ export default function NewsDetail() {
     
     // Tối ưu useEffect, chỉ gọi mutate khi news_id thay đổi.
     useEffect(() => {
-        if (news_id && news) {
+        if (news_id) {
             updateNumReaders({news_id});
         }
     }, [news_id, updateNumReaders]);

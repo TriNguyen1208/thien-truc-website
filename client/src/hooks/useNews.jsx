@@ -23,7 +23,7 @@ const news = {
     useGetOne: (id) => 
         useCustomQuery(["news", "news", "get_one", id], () => newsServices.news.getOne(id)),
     useUpdateNumReaders: (id) => (
-        useCustomMutation(["news", "news", "get_list", id], () => newsServices.news.updateNumReaders(id))
+        useCustomMutation(["news", "news", "get_list"], () => newsServices.news.updateNumReaders(id))
     )
 }
 

@@ -651,6 +651,7 @@ const news = {
             id: row.id,
             num_readers: row.num_readers,
         }
+        console.log("Updated news readers:", res.id, res.num_readers);
         return res;
     },
     updateCategory: async (changedItems) => {
