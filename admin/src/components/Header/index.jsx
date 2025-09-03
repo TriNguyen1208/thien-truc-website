@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { UserIcon } from '@/components/Icon';
 import { logoutUser } from '@/services/auth.api.js'
 import AdminAccountModal, { ManagerAccountModal } from '@/components/Header/AccountModal';
@@ -9,7 +9,6 @@ import { logout } from '@/slices/auth.slice.js'
 const Header = () => {
     // Lấy thông tin người dùng từ Redux store
     const user = useSelector((state) => state.auth.user);
-
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [showAccountModal, setShowAccountModal] = useState(false);

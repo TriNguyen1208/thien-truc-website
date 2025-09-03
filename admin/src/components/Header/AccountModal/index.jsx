@@ -12,10 +12,11 @@ export default function AdminAccountModal({
     user 
 }) {
     const [fullname, setFullName] = useState(user.fullname);
+    const [email, setEmail] = useState(user.email);
     const dispatch = useDispatch();
     const handleUpdate = async () => {
         try {
-            const payload = {fullname}; // bổ sung field cần cập nhật
+            const payload = {fullname, email}; // bổ sung field cần cập nhật
             await dispatch(updateProfile(payload));
             toast.success('Cập nhật thành công');
             onClose(); // đóng modal nếu cần
@@ -64,6 +65,16 @@ export default function AdminAccountModal({
                             className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
                             defaultValue={user.fullname}
                             onChange={(e) => setFullName(e.target.value)}
+                        />
+                    </div>
+
+                    <div >
+                        <label className="block text-sm font-medium mb-1">Email</label>
+                        <input
+                            type="email"
+                            className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
+                            defaultValue={user.email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                 </div>

@@ -122,6 +122,13 @@ const Footer = () => {
         <p className="text-sm text-green-200">
           © 2025 Công Ty Thiên Trúc. Tất cả các quyền được bảo lưu.
         </p>
+        <p className="text-sm text-green-300">
+          Phát triển bởi <span className="font-semibold">HCMUS Dev Team</span>
+        </p>
+        <p className="text-sm text-green-400">
+              Huỳnh Gia Âu (Project Manager) · Đỗ Văn Hà, Nguyễn Đức Trí (FullStack Developer) · 
+              Đỗ Nguyễn Minh Trí, Nguyễn Minh Luân (Frontend Developer)
+      </p>
       </div>
     </footer>
   );
