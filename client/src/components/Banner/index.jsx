@@ -39,7 +39,6 @@ const Banner = ({data}) =>{
                         />
                     ) : <></>}
                     {hasSearch ? ( 
-                        // <SearchBar categories={categories} contentPlaceholder={contentPlaceholder} onSearch={handleButton}/>
                         <SearchBar 
                             data={{
                                 categories: categories,

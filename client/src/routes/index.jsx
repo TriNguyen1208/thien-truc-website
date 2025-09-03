@@ -12,7 +12,7 @@ import NewsDetail from '@/pages/NewsDetail'
 import ProductDetail from '@/pages/ProductDetail'
 import DefaultLayout from "@/layouts/DefaultLayout"
 import Loading from '@/components/Loading'
-import { LoadingAboutUs, LoadingContact, LoadingHome, LoadingNews, LoadingPrice, LoadingProduct, LoadingProject, LoadingRecruitment, LoadingProjectDetail, LoadingProductDetail, LoadingNewsDetail } from '../components/LoadingPage'
+import { LoadingAboutUs, LoadingContact, LoadingHome, LoadingNews, LoadingPrice, LoadingProduct, LoadingProject, LoadingRecruitment, LoadingProjectDetail, LoadingProductDetail, LoadingNewsDetail } from '@/components/LoadingPage'
 import { createBrowserRouter } from "react-router-dom";
 export const router = createBrowserRouter([
     {

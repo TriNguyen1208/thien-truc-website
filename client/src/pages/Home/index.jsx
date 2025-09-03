@@ -1,5 +1,4 @@
 import { Helmet } from "react-helmet";
-import { useNavigation } from "react-router-dom";
 import useHome from "@/hooks/useHome";
 import ComingSoon from '@/pages/ComingSoon';
 import Loading from "@/components/Loading";

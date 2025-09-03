@@ -1,8 +1,6 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react'
-import CustomButton from '../ButtonLayout'
-import { PlusIcon, OpenIcon, SaveIcon } from '../Icon'
-import UploadImage from '../UploadImage';
-import SaveEdit from '../SaveEdit';
+import React, { useRef, useState, useEffect } from 'react'
+import CustomButton from '@/components/ButtonLayout'
+
 const PostSettings = ({
     categories,
     displays,

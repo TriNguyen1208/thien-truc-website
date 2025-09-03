@@ -51,8 +51,4 @@ export default {
         getList: product_categories.useGetList,
         getOne: product_categories.useGetOne
     },
-    // product_prices: {
-    //     getAll: product_prices.useGetAll,
-    //     getOne: product_prices.useGetOne
-    // },
   };

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { SearchIcon, FilterIcon, OpenIcon } from '../Icon';
+import { SearchIcon, FilterIcon, OpenIcon } from '@/components/Icon';
 import LazyLoad from '@/components/LazyLoad';
 const SearchBar = ({data}) => {
     //prop
@@ -238,7 +238,7 @@ const SearchBar = ({data}) => {
                                 </button>
                                 {
                                     dropdownOpenCategory && (
-                                        <ul className="absolute z-10 left-0 py-2 mt-12 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[160px] overflow-y-auto"
+                                        <ul className="absolute z-1000 left-0 py-2 mt-12 w-full bg-[#F9FAFB] rounded-md shadow-md max-h-[160px] overflow-y-auto"
                                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                         >
                                             {categories.map((item, index) => (
@@ -273,7 +273,7 @@ const SearchBar = ({data}) => {
                                 </button>
                                 {
                                     dropdownOpenDisplay && (
-                                        <ul className="absolute z-10 left-0 py-2 mt-12 w-full bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
+                                        <ul className="absolute z-1000 left-0 py-2 mt-12 w-full bg-white rounded-md shadow-md max-h-[160px] overflow-y-auto"
                                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                         >
                                             {displays.map((item, index) => (

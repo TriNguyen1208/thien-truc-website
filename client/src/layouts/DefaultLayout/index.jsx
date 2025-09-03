@@ -7,7 +7,6 @@ export default function DefaultLayout(){
         <div>
             <Header/>
             <main>
-                {/* <LoadingPage/> */}
                 <ScrollToTop/>
                 <Outlet />
             </main>

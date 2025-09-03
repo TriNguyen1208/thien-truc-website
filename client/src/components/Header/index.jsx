@@ -44,7 +44,7 @@ const Header = () => {
               <img
                 width={100}
                 src={logo}
-                alt="ThienTruc Logo"
+                alt="Thiên Trúc"
               />
             </LazyLoad>
           </div>

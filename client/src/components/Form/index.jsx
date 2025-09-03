@@ -171,7 +171,6 @@ const Form = ({ data }) => {
                         <GreenButton
                             content="Gửi tin nhắn"
                             type="submit"
-                            // handleClick={handleClickSendMessage}
                         />
                     </form>
 

@@ -16,6 +16,11 @@ router.post('/submit_application', validateForm.validateRecruitment, recruitment
 router.patch('/recruitment_page/banner', authenticateToken, recruitmentController.updateRecruitmentPage.banner);
 router.patch('/recruitment_page/visibility', authenticateToken, recruitmentController.updateRecruitmentPage.visibility);
 router.patch('/recruitment_page/culture', authenticateToken, recruitmentController.updateRecruitmentPage.culture);
-router.patch('/recruitment_page/culture_images', authenticateToken, recruitmentController.updateRecruitmentPage.culture_images);
+router.patch('/recruitment_page/culture_images', authenticateToken, upload.fields([
+  { name: 'culture_img_1', maxCount: 1 },
+  { name: 'culture_img_2', maxCount: 1 },
+  { name: 'culture_img_3', maxCount: 1 },
+  { name: 'culture_img_4', maxCount: 1 },
+]), recruitmentController.updateRecruitmentPage.culture_images);
 
 export default router;

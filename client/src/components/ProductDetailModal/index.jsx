@@ -41,7 +41,6 @@ export default function ProductDetailModal({ product, onClose }) {
           <table className="w-full text-sm text-gray-700">
             <tbody>
               {product.product_specifications &&
-                // eslint-disable-next-line no-unused-vars
                 Object.entries(product.product_specifications).map(([key, value], idx) => (
                   <tr key={key} className="idx odd:bg-gray-50 even:bg-white">
                     <td className="py-2 font-medium w-1/3">{key}</td>

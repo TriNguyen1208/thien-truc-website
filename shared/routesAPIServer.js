@@ -151,12 +151,14 @@ const API_ROUTES = {
             getListByCategory: (query, filter, is_published, sort_by, limit) => `${NEWS_BASE}/news/get_by_category?query=${uri(query)}&filter=${uri(filter)}&is_published=${is_published}&sort_by=${uri(sort_by)}&limit=${limit}`,
             getOne: (id) => `${NEWS_BASE}/news/${id}`,
             getSearchSuggestions: (query='', filter='', is_published) => `${NEWS_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_published=${uri(is_published)}`,
+            getAllFeatured: `${NEWS_BASE}/featured_news`,
             // post
             createOne: `${NEWS_BASE}/news`,
             // patch
             updateOne: (id) => `${NEWS_BASE}/news/${id}`,
             updateNumReaders: (id) => `${NEWS_BASE}/news/${id}/num_readers`,
             updateCategory: `${NEWS_BASE}/news/update_categories`, 
+            updateFeaturedNews: `${NEWS_BASE}/featured_news`,
             // delete
             deleteOne: (id) => `${NEWS_BASE}/news/${id}`,
         },
@@ -176,8 +178,6 @@ const API_ROUTES = {
             getAll: `${NEWS_BASE}/news_contents`,   
             getOne: (id) => `${NEWS_BASE}/news_contents/${id}`,
         },
-        getFeaturedNews: `${NEWS_BASE}/featured_news`,
-        updateFeaturedNews: `${NEWS_BASE}/featured_news`, // patch
         count: `${NEWS_BASE}/count`
     },
     recruitment: {
