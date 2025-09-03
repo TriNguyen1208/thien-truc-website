@@ -34,7 +34,12 @@ router.get('/', async (req, res) => {
                 <link rel="canonical" href="${process.env.VITE_CLIENT_URL}/tuyen-dung" />
             </head>
             <body>
-                <div id="root"></div>
+                <div id="root"></div><noscript>
+                    <h1>Trang Tuyển dụng công ty Thiên Trúc</h1>
+                    <h2>${banner_title}</h2>
+                    <h3>${banner_description}</h3>
+                    <p> Công ty Thiên Trúc, Cao Lãnh, Đồng Tháp </p>
+                </noscript>
             </body>
         </html>
     `);
