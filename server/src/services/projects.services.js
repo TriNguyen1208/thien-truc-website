@@ -512,7 +512,10 @@ const projects = {
             await deleteImage(imagesToDelete);
         }
         
-        const old_title = (await pool.query('SELECT title FROM project.projects WHERE id = $1', [id])).rows?.[0]?.title;
+        const {
+            title: old_title,
+            region_id: old_region_id
+        } = (await pool.query('SELECT title, region_id FROM project.projects WHERE id = $1', [id])).rows?.[0];
         if (!old_title) return {
             status: 404,
             message: "Không tìm thấy dự án"
@@ -541,13 +544,14 @@ const projects = {
         const region_id = regionRes.rows.length > 0 ? regionRes.rows[0].id : null;
 
         // Update project content
+        let promises = [];
         const updateProjectContentSql = `
             update project.project_contents
             set 
                 content = $1
             where project_id = $2
         `
-        await pool.query(updateProjectContentSql, [contentHTML, id]);
+        promises.push(pool.query(updateProjectContentSql, [contentHTML, id]));
         
         // Insert updateProject
         const updateProjectSql = `
@@ -573,8 +577,25 @@ const projects = {
             isFeatured,
             id
         ];
-        await pool.query(updateProjectSql, updateValues);
+        promises.push(pool.query(updateProjectSql, updateValues));
         
+        // Update item count
+        if (old_region_id != region_id) {
+            promises.push(await pool.query(`
+                UPDATE project.project_regions
+                SET item_count = item_count - 1
+                WHERE id = $1    
+            `, [old_region_id]));
+
+            promises.push(await pool.query(`
+                UPDATE project.project_regions
+                SET item_count = item_count + 1
+                WHERE id = $1    
+            `, [region_id]));
+        }
+
+        await Promise.all(promises);
+
         const note = (old_title != title) ? ' (đã đổi tên)' : '';
         return {
             status: 200,

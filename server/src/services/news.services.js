@@ -524,7 +524,10 @@ const news = {
         }
     },
     updateOne: async (id, data, files) => {
-        const old_title = (await pool.query(`SELECT title FROM news.news WHERE id = $1`, [id])).rows?.[0]?.title;
+        const { 
+            title: old_title, 
+            category_id: old_category_id 
+        }= (await pool.query(`SELECT title, category_id FROM news.news WHERE id = $1`, [id])).rows?.[0];
 
         let contentHTML= data?.content;
 
@@ -567,7 +570,7 @@ const news = {
         }  
         const final_main_image = cloud_avatar_img || main_image || null;
         
-        //Get news_categories id
+        // Get news_categories id
         const categoryRes = await pool.query(
             `SELECT id FROM news.news_categories WHERE name ILIKE $1`,
             [category_name]
@@ -575,15 +578,16 @@ const news = {
         
         const category_id = categoryRes.rows.length > 0 ? categoryRes.rows[0].id : null;
         
-        //Update news content
+        // Update news content
+        let promises = [];
         const updateNewsContentSql = `
             UPDATE news.news_contents
             SET content = $1
             WHERE news_id = $2
         `;
-        await pool.query(updateNewsContentSql, [contentHTML, id]);
+        promises.push(pool.query(updateNewsContentSql, [contentHTML, id]));
         
-        //Insert updateNews
+        // Insert updateNews
         const updateNewsSql = `
             update news.news
             set 
@@ -610,7 +614,24 @@ const news = {
             main_content,
             id
         ];
-        await pool.query(updateNewsSql, updateValues);
+        promises.push(pool.query(updateNewsSql, updateValues));
+
+        // Update item count
+        if (old_category_id != category_id) {
+            promises.push(await pool.query(`
+                UPDATE news.news_categories
+                SET item_count = item_count - 1
+                WHERE id = $1    
+            `, [old_category_id]));
+
+            promises.push(await pool.query(`
+                UPDATE news.news_categories
+                SET item_count = item_count + 1
+                WHERE id = $1    
+            `, [category_id]));
+        }
+
+        await Promise.all(promises);
 
         const note = (old_title != title) ? ' (đã đổi tên)' : '';
         return {

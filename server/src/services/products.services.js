@@ -570,8 +570,9 @@ const products = {
     updateOne: async (data, file, id) => {
         const { 
             product_img: old_avatar_img,
-            name: old_name
-        } = (await pool.query('SELECT product_img, name FROM product.products WHERE id = $1', [id])).rows?.[0];
+            name: old_name,
+            category_id: old_category_id
+        } = (await pool.query('SELECT product_img, name, category_id FROM product.products WHERE id = $1', [id])).rows?.[0];
 
         if (!old_name) return {
             status: 404,
@@ -618,6 +619,7 @@ const products = {
             .filter(index => index !== -1);
 
         // 3. Insert into products
+        let promises = [];
         const insertSql = `
             UPDATE product.products 
             SET
@@ -644,17 +646,34 @@ const products = {
             isDisplayHomePage,
             id
         ];
-        await pool.query(insertSql, insertValues);
+        promises.push(pool.query(insertSql, insertValues));
 
         // 4. Update product prices
-        await pool.query(
+        promises.push(await pool.query(
             `
                 UPDATE product.product_prices
                 SET price = $2
                 WHERE product_id = $1
             `,
             [id, price]
-        );
+        ));
+
+        // 5. Cập nhật số lượng sản phẩm ở category
+        if (category_id != old_category_id) {
+            promises.push(await pool.query(`
+                UPDATE product.product_categories
+                SET item_count = item_count - 1
+                WHERE id = $1    
+            `, [old_category_id]));
+
+            promises.push(await pool.query(`
+                UPDATE product.product_categories
+                SET item_count = item_count + 1
+                WHERE id = $1    
+            `, [category_id]));
+        }
+        
+        await Promise.all(promises);
 
         const note = (old_name != productName) ? ' (đã đổi tên)' : '';
         return {
