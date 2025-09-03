@@ -24,14 +24,18 @@ const PopupForm = ({
             return acc;
         }, {});
         setFormData(initialFormData);
-
         const initialFocus = fields.reduce((acc, field) => {
             acc[field.name] = false;
             return acc;
         }, {});
         setFocusStates(initialFocus);
+        if (title === 'Đăng nhập') {
+            setFormData({
+                ...initialFormData,
+                remember: false,
+            });
+        }
     }, [fields]);
-
     useEffect(() => {
         const handleClickOutside = (e) => {
             formRefs.current.forEach((ref, index) => {
@@ -116,9 +120,34 @@ const PopupForm = ({
                                         </span>
                                     )}
                                 </div>
-
                                 {/* Nút phụ (extraAction) chỉ hiển thị 1 lần sau trường cuối cùng nếu có */}
-                                {index === fields.length - 1 && extraAction && (
+                                {index === fields.length - 1 && title == 'Đăng nhập' &&
+                                    <div className='flex flex-row justify-between mt-1'>
+                                        <div className='flex flex-row gap-3'>
+                                            <input
+                                                type="checkbox"
+                                                id="remember"
+                                                className='cursor-pointer'
+                                                checked={formData['remember'] || false}
+                                                onChange={(e) => handleChange('remember', !formData['remember'])}
+                                            />
+                                            <label
+                                                className='cursor-pointer'
+                                                htmlFor='remember'
+                                            >
+                                                Ghi nhớ thông tin đăng nhập
+                                            </label>
+                                        </div>
+                                        <button
+                                            type='button'
+                                            onClick={handleExtraAction}
+                                            className="text-sm text-gray-400 hover:underline cursor-pointer self-end"
+                                        >
+                                            {extraAction}
+                                        </button>
+                                    </div>
+                                }
+                                {index === fields.length - 1 && extraAction && title !== 'Đăng nhập' && (
                                     <button
                                         type='button'
                                         onClick={handleExtraAction}

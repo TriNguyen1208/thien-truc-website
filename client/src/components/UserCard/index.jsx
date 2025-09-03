@@ -1,6 +1,6 @@
-import React from 'react';
 import { Phone } from 'lucide-react';
 import LazyLoad from 'react-lazyload';
+
 const UserCard = ({ data }) => {
   const {
     image_avatar,

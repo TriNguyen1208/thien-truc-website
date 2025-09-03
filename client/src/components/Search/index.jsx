@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import LazyLoad from 'react-lazyload';
+
 const SearchBar = ({ data }) => {
   const {
     categories,
@@ -14,7 +15,7 @@ const SearchBar = ({ data }) => {
   const [category, setCategory] = useState(categories?.[0] ?? null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [query, setQuery] = useState(currentQuery);
+  const [query, setQuery] = useState(currentQuery ?? "");
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -38,7 +39,7 @@ const SearchBar = ({ data }) => {
 
   //Giữ trạng thái của query
   useEffect(() => {
-      setQuery(currentQuery)
+      setQuery(currentQuery ?? "")
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuery]);
   
@@ -134,7 +135,7 @@ const SearchBar = ({ data }) => {
           type="text"
           placeholder={contentPlaceholder || "Nhập từ khóa tìm kiếm..."}
           className="w-full text-gray-700 focus:outline-none focus:text-gray-700"
-          value={query}
+          value={query ?? ""}
           onFocus={() => {
             setIsFocused(true);
             setShowSuggestions(true);

@@ -51,9 +51,9 @@ const AuthPopupManager = () => {
     
 
     //Bấm nút login
-    const handleLogin = async ({ username, password }) => {
+    const handleLogin = async ({ username, password, remember }) => {
         try {
-            const res = await dispatch(loginUser(username, password));
+            const res = await dispatch(loginUser(username, password, remember));
             toast.success(res?.message || 'Đăng nhập thành công');
             navigate(location.state?.from?.pathname || '/');
         } catch (err) {
@@ -116,7 +116,7 @@ const AuthPopupManager = () => {
             fields: 
             [
                 { name: 'username', label: 'Tên đăng nhập', placeholder: 'Nhập tên đăng nhập', type: 'text', icon: <AccountIcon /> },
-                { name: 'password', label: 'Mật khẩu', placeholder: 'Nhập mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> }
+                { name: 'password', label: 'Mật khẩu', placeholder: 'Nhập mật khẩu', type: 'passwordToggle', icon: <LockIcon />, eyeIcon: <EyeIcon />, eyeOffIcon: <EyeOffIcon /> },
             ],
             extraAction: 'Quên mật khẩu?',
             onExtraAction: () => setStep('forgot')
@@ -163,7 +163,6 @@ const AuthPopupManager = () => {
         }
     };
     const currentStep = steps[step];
-
     if (step === 'forgot' && isSending) return <Loading />;
     if (step === 'reset' && isResetting) return <Loading />;
     return (
