@@ -1,5 +1,3 @@
-import React from 'react'
-
 const LabelType = ({data}) => {
     const {content, color }  = data
     return (
@@ -12,4 +10,4 @@ const LabelType = ({data}) => {
     );
 }
 
-export default LabelType
+export default LabelType;

@@ -22,8 +22,9 @@ const news = {
         useCustomQuery(["news", "news", "get_list", query, filter, is_published, sort_by, page, limit], () => newsServices.news.getList(query, filter, is_published, sort_by, page, limit)),
     useGetOne: (id) => 
         useCustomQuery(["news", "news", "get_one", id], () => newsServices.news.getOne(id)),
-    useUpdateNumReaders: (id) => 
-        useCustomMutation(["news", "news", "get_list"], () => newsServices.news.updateNumReaders(id))
+    useUpdateNumReaders: (id) => (
+        useCustomMutation(["news", "news", "get_list", id], () => newsServices.news.updateNumReaders(id))
+    )
 }
 
 const news_categories = {

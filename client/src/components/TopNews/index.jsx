@@ -1,9 +1,9 @@
 // src/components/TopNews.jsx
-import React from 'react';
-import { useState, useEffect,  } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useNews from "@/hooks/useNews";
 import LazyLoad from 'react-lazyload';
+import useNews from "@/hooks/useNews";
+
 const TopNews = () => {
   const { data: topNews, isLoading, error } = useNews.getHighlightNews();
   const [currentIndex, setCurrentIndex] = useState(0);

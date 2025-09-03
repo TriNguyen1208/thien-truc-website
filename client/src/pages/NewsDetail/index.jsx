@@ -21,15 +21,15 @@ export default function NewsDetail() {
     const { id: news_id } = useParams();
     
     // Sử dụng react-query's onSuccess/onError callback để xử lý logic sau khi mutation
-    const { mutate: updateNumReaders } = useNews.news.updateNumReaders();
+    const { mutate: updateNumReaders } = useNews.news.updateNumReaders(news_id);
     
     // Fetch dữ liệu tin tức và trạng thái loading
     const { data: news, isLoading: isNewsLoading, isError } = useNews.news_contents.getOne(news_id);
     
     // Tối ưu useEffect, chỉ gọi mutate khi news_id thay đổi.
     useEffect(() => {
-        if (news_id) {
-            updateNumReaders({ news_id });
+        if (news_id && news) {
+            updateNumReaders({news_id});
         }
     }, [news_id, updateNumReaders]);
 
