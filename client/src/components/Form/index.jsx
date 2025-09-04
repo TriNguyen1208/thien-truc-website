@@ -98,7 +98,7 @@ const Form = ({ data }) => {
                                     id="name"
                                     value={formData.name}
                                     onChange={handleChangeDataForm}
-                                    placeholder="Đỗ Thanh Tùng"
+                                    placeholder="Nguyễn Văn A"
                                     required
                                     className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500"
                                 />
@@ -114,7 +114,7 @@ const Form = ({ data }) => {
                                     id="email"
                                     value={formData.email}
                                     onChange={handleChangeDataForm}
-                                    placeholder="thientruc@gmail.com"
+                                    placeholder="nguyenvana@gmail.com"
                                     required
                                     className="border border-gray-300 rounded-md px-4 py-3 outline-none text-gray-700 focus:border-gray-500"
                                 />
