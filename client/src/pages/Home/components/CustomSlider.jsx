@@ -8,7 +8,7 @@ const SliderButton = ({onClick, direction}) => (
         ${direction === "left" ? "left-[-40px] md:left-[-20px]" : "right-[-40px] md:right-[-20px]"}`}
         onClick={onClick}
     >
-        <div className="w-[45px] h-[45px] bg-gray-400 hover:bg-gray-500 rounded-full flex items-center justify-center cursor-pointer shadow-md transition">
+        <div className="w-[45px] h-[45px] bg-black opacity-50 hover:opacity-70 rounded-full flex items-center justify-center cursor-pointer shadow-md transition">
             {direction === "left" ? <ArrowLeft color="white" size={20} /> : <ArrowRight color="white" size={20} />}
         </div>
     </button>

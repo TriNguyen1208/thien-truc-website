@@ -6,7 +6,7 @@ const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
         <div
-            className={`!flex !items-center !justify-center !w-[45px] !h-[45px] bg-gray-400 hover:!bg-gray-500 rounded-full cursor-pointer shadow-md transition absolute z-50 left-4 top-1/2 -translate-y-1/2`}
+            className={`!flex !items-center !justify-center !w-[45px] !h-[45px] bg-black opacity-50 hover:opacity-70 rounded-full cursor-pointer shadow-md transition absolute z-50 left-4 top-1/2 -translate-y-1/2`}
             onClick={onClick}
         >
             <ArrowLeft color="white" size={20} />
@@ -18,7 +18,7 @@ const CustomNextArrow = (props) => {
     const { onClick } = props;
     return (
         <div
-            className={`!w-[45px] !h-[45px] bg-gray-400 hover:!bg-gray-500 rounded-full !flex !items-center !justify-center cursor-pointer shadow-md transition absolute z-50 right-4 top-1/2 -translate-y-1/2`}
+            className={`!w-[45px] !h-[45px] bg-black opacity-50 hover:opacity-70 rounded-full !flex !items-center !justify-center cursor-pointer shadow-md transition absolute z-50 right-4 top-1/2 -translate-y-1/2`}
             onClick={onClick}
         >
             <ArrowRight color="white" size={20} />
