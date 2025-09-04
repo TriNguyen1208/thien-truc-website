@@ -79,7 +79,7 @@ export default function AdminAccountModal({
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-2 mt-28">
+                <div className="flex justify-end gap-2 mt-15">
                     <button
                         onClick={onClose}
                         className="px-4 py-2 rounded border border-gray-400 text-sm hover:bg-gray-100 cursor-pointer"
