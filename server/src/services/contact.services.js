@@ -80,6 +80,7 @@ const getCompanyInfo = async () => {
 
 const updateCompanyInfo = async (data) => {
     let {
+        taxcode,
         office_address,
         main_office_id,
         googlemaps_embed_url,
@@ -106,20 +107,21 @@ const updateCompanyInfo = async (data) => {
     await pool.query(`
         UPDATE contact.company_info
         SET
-            office_address = $1,
-            main_office_id = $2,
-            googlemaps_embed_url = $3,
-            working_hours = $4,
-            company_email = $5,
-            company_phone = $6,
-            hotline = $7,
-            fanpage_url = $8            
-    `, [office_address_json, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, hotline, fanpage_url]);
+            taxcode = $1,
+            office_address = $2,
+            main_office_id = $3,
+            googlemaps_embed_url = $4,
+            working_hours = $5,
+            company_email = $6,
+            company_phone = $7,
+            hotline = $8,
+            fanpage_url = $9            
+    `, [taxcode, office_address_json, main_office_id, googlemaps_embed_url, working_hours, company_email, company_phone, hotline, fanpage_url]);
 
     return {
         status: 200,
-        message: 'Cập nhật Thông Tin Công Ty thành công',
-        action: `Cập nhật Thông Tin Công Ty`
+        message: 'Cập nhật Thông tin công ty thành công',
+        action: `Cập nhật Thông tin công ty`
     }
 }
 
@@ -161,18 +163,18 @@ const support_agents = {
 
         if (result.rowCount == 0) return {
             status: 500,
-            message: "Không thể tạo Người Liên Hệ"
+            message: "Không thể tạo Người liên hệ"
         }; else if (result.rowCount > 0) return {
             status: 200,
-            message: "Tạo Người Liên Hệ thành công",
-            action: `Tạo Người Liên Hệ: ${name}`
+            message: "Tạo Người liên hệ thành công",
+            action: `Tạo Người liên hệ: ${name}`
         } 
     },
     updateOne: async (data, file, id) => {
         const old_name = (await pool.query('SELECT name FROM contact.support_agents WHERE id = $1', [id])).rows?.[0]?.name;
         if (!old_name) return {
             status: 404,
-            message: "Không tìm thấy Người Liên Hệ"
+            message: "Không tìm thấy Người liên hệ"
         }
         
         const old_avatar_img = (await pool.query('SELECT avatar_img FROM contact.support_agents WHERE id = $1', [id])).rows[0].avatar_img;
@@ -208,15 +210,15 @@ const support_agents = {
         const note = (old_name != name) ? ' (đã đổi tên)' : '';
         return {
             status: 200,
-            message: "Cập nhật Người Liên hệ thành công",
-            action: `Cập nhật Người Liên hệ${note}: ${name}`
+            message: "Cập nhật Người liên hệ thành công",
+            action: `Cập nhật Người liên hệ${note}: ${name}`
         } 
     },
     deleteOne: async (id) => {
         const result = await pool.query('DELETE FROM contact.support_agents WHERE id = $1 returning name, avatar_img', [id]);
         if (result.rowCount == 0) return {
             status: 404,
-            message: "Không tìm thấy Người Liên Hệ"
+            message: "Không tìm thấy Người liên hệ"
         };
 
         const deleted_avatar_img = result.rows[0].avatar_img;
@@ -227,8 +229,8 @@ const support_agents = {
         const name = result.rows[0].name;
         return {
             status: 200,
-            message: "Xóa Người liên Hệ thành công",
-            action: `Xóa Người liên Hệ: ${name}`
+            message: "Xóa Người liên hệ thành công",
+            action: `Xóa Người liên hệ: ${name}`
         }
     }
     
@@ -254,7 +256,7 @@ const submitContact = async (applicationData) => {
                 
                 <div style="padding: 20px;">
                 
-                    <h2 style="font-size: 18px; color: #4CAF50; margin: 0 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Chi tiết người liên hệ</h2>
+                    <h2 style="font-size: 18px; color: #4CAF50; margin: 0 0 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0;">Chi tiết Người liên hệ</h2>
                     <div style="background-color: #ffffff; padding: 15px; border-left: 4px solid #4CAF50; border-radius: 4px;">
                         <p style="margin: 0 0 5px; font-size: 16px;"><strong>Họ tên:</strong> <span style="color: #00796b;"><strong>${name}</strong></span></p>
                         <p style="margin: 0 0 5px; font-size: 16px;"><strong>Email:</strong> <span style="color: #00796b;"><strong>${email}</strong></span></p>
