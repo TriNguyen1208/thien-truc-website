@@ -72,7 +72,7 @@ export default function PriceTable({ productPrices, isLoading, navigate, query, 
                             <tr className="sticky top-0 md:top-[48px] z-10 bg-[#00c37e]">
                                 <td colSpan={5}>
                                     <div
-                                        className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[16px] font-semibold cursor-pointer shadow-xl rounded-md mb-[1px]"
+                                        className="flex items-center justify-between px-2 md:px-3 py-[3px] bg-[#00c37e] text-white text-[16px] font-semibold cursor-pointer rounded-md mb-[1px]"
                                         onClick={() => toggleCategory(cat.category)}
                                     >
                                         <div className="flex items-center gap-1 w-full">
