@@ -52,8 +52,8 @@ const ContactPageContent = () => {
         [
             { 
                 name: "title", 
-                label: 'Tiêu đề banner', 
-                placeholder: 'Nhập nội dung banner...', 
+                label: 'Tiêu đề Banner', 
+                placeholder: 'Nhập nội dung Banner...', 
                 contentCurrent: contactPage?.banner_title ?? "", 
                 isRequire: true, 
                 rows: 1, 
@@ -61,7 +61,7 @@ const ContactPageContent = () => {
             },
             { 
                 name: "description", 
-                label: 'Mô tả banner', 
+                label: 'Mô tả Banner', 
                 placeholder: 'Nhập nội dung mô tả...', 
                 contentCurrent: contactPage?.banner_description ?? "", 
                 isRequire: true, 
