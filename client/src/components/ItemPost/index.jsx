@@ -105,6 +105,7 @@ const ItemPost = ({ data = {}, id= ""}) => {
                                 <div className="flex items-center gap-1">
                                     <EyeOutlined style={{ fontSize: '16px' }} />
                                     <span>{status.views}</span>
+                                    lượt truy cập
                                 </div>
                             </div>
                         </div>
