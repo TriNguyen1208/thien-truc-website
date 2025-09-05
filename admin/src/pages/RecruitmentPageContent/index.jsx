@@ -37,7 +37,7 @@ const RecruitmentPageContent = () => {
         }
         setInitialValuesCultureImages(initialForm);
         setValuesCultureImages(initialForm)
-    }, [isLoadingRecruitment])
+    }, [isLoadingRecruitment, recruitment])
 
     //----------------------Nút visibility--------------
     //Set visible

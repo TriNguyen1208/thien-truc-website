@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
-import useProducts from '../../hooks/useProducts'
-import { toast } from 'react-toastify';
+import useProducts from '@/hooks/useProducts'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 const ProductPageContent = () => {

@@ -21,6 +21,8 @@ const getHomePage = async() => {
 }
 
 const updateHomePage = {
+    //Code này sai chỗ data['Tiêu đề Banner'] và data['Mô tả Banner'] nhưng mà không ảnh hưởng nên không sửa
+    //bởi vì không dùng tới updateBanner
     banner: async(data) => {
         const title = data["Tiêu đề Banner"];
         const description = data["Mô tả Banner"];

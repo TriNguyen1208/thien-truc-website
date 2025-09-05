@@ -857,11 +857,11 @@ const product_categories = {
         }
     },
     createOne: async (data) => {
-        const { productNameCategories } = data;
+        const { name } = data;
 
         const result = await pool.query(
             `INSERT INTO product.product_categories (name, item_count) VALUES ($1, 0) RETURNING id`,
-            [productNameCategories]
+            [name]
         );
 
         const { id } = result.rows[0];
@@ -879,18 +879,18 @@ const product_categories = {
             message: "Không tìm thấy loại sản phẩm"
         }
 
-        const { productNameCategories } = data;
+        const { name } = data;
         await pool.query(`
             UPDATE product.product_categories
             SET name = $1
             WHERE id = $2
-        `, [productNameCategories, id]);
+        `, [name, id]);
 
-        const note = (old_name != productNameCategories) ? ' (đã đổi tên)' : '';
+        const note = (old_name != name) ? ' (đã đổi tên)' : '';
         return {
             status: 200,
             message: "Cập nhật loại sản phẩm thành công",
-            action: `Cập nhật loại sản phẩm${note}: ${id} - ${productNameCategories}`
+            action: `Cập nhật loại sản phẩm${note}: ${id} - ${name}`
         }
     },
     deleteOne: async (id) => {
