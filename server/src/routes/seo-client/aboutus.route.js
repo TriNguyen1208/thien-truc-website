@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/sitemap.xml', async (req, res) => {
     const urls = `
         <url>
-            <loc>${process.env.VITE_API_URL}/ve-chung-toi</loc>
+            <loc>${process.env.VITE_CLIENT_URL}/ve-chung-toi</loc>
             <changefreq>daily</changefreq>
             <priority>0.8</priority>
         </url>

@@ -20,6 +20,7 @@ create table contact.support_agents (
 );
 
 create table contact.company_info (
+	taxcode varchar(20),
 	company_email varchar(50),
 	company_phone varchar(20)[],
 	hotline varchar(20)[],
@@ -65,8 +66,9 @@ values (
 	'https://www.facebook.com/dvan.ha.2024'
 );
 
-insert into contact.company_info (company_email, company_phone, hotline, office_address, main_office_id, googlemaps_embed_url, working_hours, fanpage_url)
+insert into contact.company_info (taxcode, company_email, company_phone, hotline, office_address, main_office_id, googlemaps_embed_url, working_hours, fanpage_url)
 values (
+	'1401569469',
 	'thientruc@gmail.com',
 	ARRAY['+84 (28) 3823-4567', '1400 6569'],
 	ARRAY['1900 1234', '1400 5678'],
