@@ -113,7 +113,6 @@ export default function Product() {
 
     const isAllCategoriesView = params.filter === ALL_CATEGORIES && !params.query;
 
-    console.log("day la categories: ", productCategories);
     return (
         <>
             {navigation.state === 'loading' && <Loading />}
