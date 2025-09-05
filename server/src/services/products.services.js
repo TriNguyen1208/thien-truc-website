@@ -868,7 +868,7 @@ const product_categories = {
         return {
             status: 200,
             message: "Tạo loại sản phẩm thành công",
-            action: `Tạo loại sản phẩm: ${id} - ${productNameCategories}`
+            action: `Tạo loại sản phẩm: ${id} - ${name}`
         }
 
     },
