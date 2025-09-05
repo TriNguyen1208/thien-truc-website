@@ -111,7 +111,7 @@ const PopupForm = ({
                                     />
                                     {field.type === 'passwordToggle' && (
                                         <span
-                                            className="flex items-center cursor-pointer"
+                                            className="flex items-center cursor-pointer text-gray-400"
                                             onClick={() =>
                                                 handleChange(`${field.name}_visible`, !formData[`${field.name}_visible`])
                                             }
@@ -132,7 +132,7 @@ const PopupForm = ({
                                                 onChange={(e) => handleChange('remember', !formData['remember'])}
                                             />
                                             <label
-                                                className='cursor-pointer'
+                                                className='cursor-pointer '
                                                 htmlFor='remember'
                                             >
                                                 Ghi nhớ thông tin đăng nhập

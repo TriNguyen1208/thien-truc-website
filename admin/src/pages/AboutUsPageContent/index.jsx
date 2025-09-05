@@ -64,7 +64,7 @@ const AboutUsPageContent = () => {
         [
             { 
                 name: "title", 
-                label: 'Tiêu đề banner', 
+                label: 'Tiêu đề Banner', 
                 placeholder: 'Nhập nội dung tiêu đề...', 
                 contentCurrent: aboutUsPageData?.banner_title ?? "", 
                 isRequire: true, 
@@ -72,7 +72,7 @@ const AboutUsPageContent = () => {
                 maxLength: 100 },
             { 
                 name: "description", 
-                label: 'Mô tả banner', 
+                label: 'Mô tả Banner', 
                 placeholder: 'Nhập nội dung mô tả...', 
                 contentCurrent: aboutUsPageData?.banner_description ?? "", 
                 isRequire: true, 
