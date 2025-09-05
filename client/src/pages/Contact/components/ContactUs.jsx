@@ -69,7 +69,7 @@ export default function ContactUs({ companyInfoData }) {
         type: 'lien-he'
     }
     return (
-        <section className="container-fluid flex py-[70px] grid grid-cols-12 gap-5 sm:gap-10">
+        <section className="container-fluid py-[70px] grid grid-cols-12 gap-5 sm:gap-10">
             <div className="col-span-12 lg:col-span-6 text-[var(--dark-green)] font-[400] ">
                 <div className="text-[30px] font-[600] mb-[15px]">
                     Liên hệ về chúng tôi

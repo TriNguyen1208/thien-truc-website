@@ -179,7 +179,7 @@ const Form = ({ data }) => {
                             <div className="flex flex-col items-center space-y-2">
                                 <MailOutlined style={{ fontSize: '24px', color: '#22C55E' }} />
                                 <div className="font-semibold">Email</div>
-                                <div className="text-[#4B5563]">{contact.company_email}</div>
+                                <div className="text-[#4B5563] break-all">{contact.company_email}</div>
                             </div>
 
                             <div className="flex flex-col items-center space-y-2">
@@ -187,7 +187,7 @@ const Form = ({ data }) => {
                                 <div className="font-semibold">Điện thoại</div>
                                 <div className="text-[#4B5563]">
                                     {contact.company_phone.map((item, index) => (
-                                        <div key={index}>{item} </div>
+                                        <div key={index} className='break-all'>{item} </div>
                                     ))}</div>
                             </div>
 
@@ -197,7 +197,7 @@ const Form = ({ data }) => {
                                 <div className="text-[#4B5563] text-sm">
                                     {/* {contact.office_address} */}
                                     {contact.office_address.map((item, index) => (
-                                        <div key={index}>{item.address} </div>
+                                        <div key={index} className='break-all'>{item.address} </div>
                                     ))}
 
                                 </div>
