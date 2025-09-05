@@ -4,7 +4,8 @@ import {
   InstagramOutlined,
   EnvironmentOutlined,
   PhoneOutlined,
-  MailOutlined
+  MailOutlined,
+  DollarOutlined 
 } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
 import useHome from "@/hooks/useHome";
@@ -57,6 +58,13 @@ const Footer = () => {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold mb-4">Liên hệ với chúng tôi</h3>
           <div className="space-y-3">
+              <div className="flex items-center  space-x-2">
+              <DollarOutlined  className="text-base flex-shrink-0 text-[var(--yellow-bg)]" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
+              <div>
+                Mã số thuế: {companyInfoData.taxcode}
+                
+              </div>
+            </div>
             <div className="flex items-center  space-x-2">
               <EnvironmentOutlined className="text-base flex-shrink-0 text-[var(--yellow-bg)]" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
               <div>

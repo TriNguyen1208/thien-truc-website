@@ -268,6 +268,20 @@ const Company = () => {
                 </span>
             </div>
             <div className=' '>
+                <div className='flex flex-col gap-[12px]'>
+                <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
+                    Mã số thuế <span className="text-red-500 ml-1">*</span>
+                </h2>
+                <input 
+                    type="text"
+                    value={companyTaxCode || ""}
+                    onChange = {(e)=>{setCompanyTaxCode(e.target.value)}}
+                    required 
+                    className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
+                    placeholder='3800...' 
+                    maxLength={20}
+                />
+            </div>
                 <div className='flex flex-row justify-between my-[12px] '>
                     <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
                         Địa chỉ công ty<span className="text-red-500 ml-1">*</span>
@@ -451,20 +465,7 @@ const Company = () => {
                     placeholder='Vd: http://thientruc.com/...' 
                 />
             </div>
-            <div className='flex flex-col gap-[12px]'>
-                <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
-                    Mã số thuế <span className="text-red-500 ml-1">*</span>
-                </h2>
-                <input 
-                    type="text"
-                    value={companyTaxCode || ""}
-                    onChange = {(e)=>{setCompanyTaxCode(e.target.value)}}
-                    required 
-                    className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
-                    placeholder='3800...' 
-                    maxLength={20}
-                />
-            </div>
+            
             <button type = 'submit'>
                 <Button {...submitButton} />
             </button>
