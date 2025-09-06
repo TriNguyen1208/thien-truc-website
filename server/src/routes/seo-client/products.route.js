@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/sitemap.xml', async (req, res) => {
     const page_url = `
         <url>
-            <loc>${process.env.VITE_API_URL}/san-pham</loc>
+            <loc>${process.env.VITE_CLIENT_URL}/san-pham</loc>
             <changefreq>daily</changefreq>
             <priority>0.85</priority>
         </url>
@@ -15,7 +15,7 @@ router.get('/sitemap.xml', async (req, res) => {
 
     const products_urls = products.map(item => `
         <url>
-            <loc>${process.env.VITE_API_URL}/san-pham/${item.id}</loc>
+            <loc>${process.env.VITE_CLIENT_URL}/san-pham/${item.id}</loc>
             <changefreq>daily</changefreq>
             <priority>0.85</priority>
         </url>

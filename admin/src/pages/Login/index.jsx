@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PopupForm from './PopupForm';
 import { LockIcon, LockIconBackground, AccountIcon, EyeIcon, EyeOffIcon, CheckCircleIcon } from '@/components/Icon';
 import { loginUser, sendResetPassword, resetPassword } from '@/services/auth.api';

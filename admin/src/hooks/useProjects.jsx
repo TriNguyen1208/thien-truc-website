@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import projectsServices from "../services/projects.api.js";
+import projectsServices from "@/services/projects.api.js";
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 

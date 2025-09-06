@@ -1,4 +1,4 @@
-import { queryClient } from '../../queryClient';
+import { queryClient } from '@/queryClient';
 import useHome from '@/hooks/useHome'
 import useContact from '@/hooks/useContact'
 import useAboutUs from '@/hooks/useAboutUs'

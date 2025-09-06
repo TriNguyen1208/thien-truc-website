@@ -10,7 +10,6 @@ import changeToFormData from '@/utils/changeToFormData';
 const ImageAboutUs = () => {
     const { mutate: updateImageAboutUs, isPending: isPendingUpdateImageAboutUs } = useHome.updateHomePage.imageAboutUs();
     const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
-
     //================= Image giới thiệu công ty Thiên Trúc ========================
     const [valuesImageAboutus, setValuesImageAboutus] = useState(null); //giong form
     const [initialValuesImageAboutus, setInitialValuesImageAboutus] = useState(null);
@@ -24,7 +23,7 @@ const ImageAboutUs = () => {
         }
         setValuesImageAboutus(initialImage);
         setInitialValuesImageAboutus(initialImage);
-    }, [isLoadingHomePageData])
+    }, [isLoadingHomePageData, homePageData])
 
     const handleButtonImage = () => {
         const formData = changeToFormData(valuesImageAboutus);

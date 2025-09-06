@@ -55,7 +55,7 @@ export default function PriceTable({ productPrices, isLoading, navigate, query, 
     }
 
     return (
-        <div className="overflow-y-auto max-h-[600px] overflow-x-hidden no-scrollbar">
+        <div className="overflow-y-auto max-h-[600px] overflow-x-hidden scroll-table">
             <table className="text-base table-fixed w-full">
                 <thead className="hidden md:table-header-group sticky top-0 z-20 bg-[#00A651] text-white shadow-md">
                     <tr className="w-full">

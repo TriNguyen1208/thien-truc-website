@@ -5,7 +5,7 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 const SliderButton = ({onClick, direction}) => (
     <button 
         className={`absolute top-1/2 z-10 transform -translate-y-1/2 
-        ${direction === "left" ? "left-[-40px] md:left-[-20px]" : "right-[-40px] md:right-[-20px]"}`}
+        ${direction === "left" ? "left-[-30px] md:left-[-20px]" : "right-[-30px] md:right-[-20px]"}`}
         onClick={onClick}
     >
         <div className="w-[45px] h-[45px] bg-black opacity-50 hover:opacity-70 rounded-full flex items-center justify-center cursor-pointer shadow-md transition">

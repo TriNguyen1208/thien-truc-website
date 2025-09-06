@@ -6,7 +6,7 @@ import Notification from '@/components/Notification'
 import Setting from '@/components/Setting';
 import SearchBar from '@/components/Search';
 import SimpleForm from '@/components/SimpleForm';
-import useProjects from '../../hooks/useProjects';
+import useProjects from '@/hooks/useProjects';
 import Loading from '@/components/Loading'
 import Table from '@/components/Table';
 

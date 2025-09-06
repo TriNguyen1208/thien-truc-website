@@ -31,6 +31,7 @@ const Company = () => {
     const [companyFanpageUrl ,setCompanyFanpageUrl] = useState (null)
     const [companyEmail, setCompanyEmail] = useState(null)
     const [companyEmbedUrl, setCompanyEmbedUrl] = useState(null)
+    const [companyTaxCode, setCompanyTaxCode] = useState(null)
 
     const [nextHourId, setNextHourId] = useState(0);
     const [nextPhoneId, setNextPhoneId] = useState(0);
@@ -56,6 +57,7 @@ const Company = () => {
             setCompanyFanpageUrl(companyInfo.fanpage_url)
             setCompanyEmail(companyInfo.company_email)
             setCompanyEmbedUrl(companyInfo.googlemaps_embed_url)
+            setCompanyTaxCode(companyInfo.taxcode)
 
             setCompanyHourList(companyInfo.working_hours.map((hour,index)=>{
                 return({
@@ -129,7 +131,8 @@ const Company = () => {
                 "hotline": companyHotlineList.map((hotline, index) =>{
                     return(hotline.data)
                 }),
-                "fanpage_url": companyFanpageUrl
+                "fanpage_url": companyFanpageUrl,
+                "taxcode": companyTaxCode
             },
         )
     }
@@ -255,6 +258,7 @@ const Company = () => {
     if(isLoadingCompanyInfo || isLoadingUpdateCompanyInfo){
       return(<Loading/>)
     }
+    console.log(companyInfo)
     return (
         <form onSubmit={handleSubmit} className='flex flex-col bg-white p-[24px] border border-gray-300 rounded-[8px] gap-[24px]'>
             <div className=' flex flex-col'>
@@ -445,6 +449,20 @@ const Company = () => {
                     required 
                     className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
                     placeholder='Vd: http://thientruc.com/...' 
+                />
+            </div>
+            <div className='flex flex-col gap-[12px]'>
+                <h2 className='text-[16px] text-black font-medium leading-none flex items-end'>
+                    Mã số thuế <span className="text-red-500 ml-1">*</span>
+                </h2>
+                <input 
+                    type="text"
+                    value={companyTaxCode || ""}
+                    onChange = {(e)=>{setCompanyTaxCode(e.target.value)}}
+                    required 
+                    className='focus:outline-none border border-gray-300 rounded-[8px] p-[8px] '
+                    placeholder='3800...' 
+                    maxLength={20}
                 />
             </div>
             <button type = 'submit'>
