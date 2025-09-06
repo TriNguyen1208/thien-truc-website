@@ -1,4 +1,4 @@
-import { PhoneIcon, EmailIcon, LocationIcon, TimeIcon, FacebookIcon, TaxIcon } from '@/components/Icon'
+import { PhoneIcon, EmailIcon, LocationIcon, TimeIcon, FacebookIcon } from '@/components/Icon'
 import Form from "@/components/Form";
 
 // Hàm custom mỗi line custom theo type = "" / address / fanpage
@@ -22,19 +22,19 @@ const Contact_Section = ({ data, type = "" }) => {
                                         href={item.googlemaps_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-sm hover:underline"
+                                        className="text-sm hover:underline break-all"
                                     >
                                         <div className="font-inherit text-[16px]">
                                             {item.address}
                                         </div>
                                     </a>
                                 ) : (
-                                    <div key={index}>{item}</div>
+                                    <div key={index} className='break-all'>{item}</div>
                                 )
                             )}
                         </div>
                     ) : (
-                        <div>{data?.value}</div>
+                        <div className='break-all'>{data?.value}</div>
                     )
                 )}
             </div>
@@ -57,12 +57,11 @@ const Contact_Section = ({ data, type = "" }) => {
 export default function ContactUs({ companyInfoData }) {
 
     const LIST_CONTACT = [
-    {icon: <TaxIcon />, label: "Mã số thuế", value: companyInfoData.taxcode},
-    {icon: <EmailIcon />, label: "Email", value: companyInfoData.company_email},
-    {icon: <PhoneIcon />, label: "Điện thoại", value: companyInfoData.company_phone},
-    {icon: <LocationIcon />, label: "Văn phòng", value: companyInfoData.office_address},
-    {icon: <TimeIcon />, label: "Giờ làm việc", value: companyInfoData.working_hours},
-    {icon: <FacebookIcon />, label: "Fanpage công ty", value: companyInfoData.fanpage_url}
+        {icon: <EmailIcon />, label: "Email", value: companyInfoData.company_email},
+        {icon: <PhoneIcon />, label: "Điện thoại", value: companyInfoData.company_phone},
+        {icon: <LocationIcon />, label: "Văn phòng", value: companyInfoData.office_address},
+        {icon: <TimeIcon />, label: "Giờ làm việc", value: companyInfoData.working_hours},
+        {icon: <FacebookIcon />, label: "Fanpage công ty", value: companyInfoData.fanpage_url},
     ]
 
     const dataForm = {
@@ -70,8 +69,8 @@ export default function ContactUs({ companyInfoData }) {
         type: 'lien-he'
     }
     return (
-        <section className="container-fluid py-[70px] grid grid-cols-12 gap-5 sm:gap-10">
-            <div className="col-span-12 lg:col-span-6 text-[var(--dark-green)] font-[400] ">
+        <section className="py-[70px] grid grid-cols-12 gap-5 sm:gap-10">
+            <div className="px-[15px] col-span-12 lg:col-span-6 text-[var(--dark-green)] font-[400] ">
                 <div className="text-[30px] font-[600] mb-[15px]">
                     Liên hệ về chúng tôi
                 </div>
@@ -82,13 +81,12 @@ export default function ContactUs({ companyInfoData }) {
                 <div className="flex flex-col gap-[30px]">
                     <Contact_Section data={LIST_CONTACT[0]} />
                     <Contact_Section data={LIST_CONTACT[1]} />
-                    <Contact_Section data={LIST_CONTACT[2]} />
-                    <Contact_Section data={LIST_CONTACT[3]} type="address" />
-                    <Contact_Section data={LIST_CONTACT[4]}  />
-                    <Contact_Section data={LIST_CONTACT[5]} type="fanpage" />
+                    <Contact_Section data={LIST_CONTACT[2]} type="address" />
+                    <Contact_Section data={LIST_CONTACT[3]} />
+                    <Contact_Section data={LIST_CONTACT[4]} type="fanpage" />
                 </div>
             </div>
-            <div className=" mx-[-20px] lg:mx-0 col-span-12 lg:col-span-6 ]">
+            <div className="px-0 lg:px-[15px] col-span-12 lg:col-span-6 ]">
                 <Form data={dataForm} />
             </div>
         </section>

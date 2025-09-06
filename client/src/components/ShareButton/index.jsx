@@ -48,7 +48,7 @@ const ShareButton = ({id}) => {
                 footer={null}
             >
                 <p 
-                    style={{ wordBreak: 'break-word', marginBottom: 8 }}
+                    style={{ wordBreak: 'break-all', marginBottom: 8 }}
                     onMouseDown={(e) => e.stopPropagation()}
                     onClick={(e)=> e.stopPropagation()}
                 >
