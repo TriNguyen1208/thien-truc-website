@@ -28,7 +28,7 @@ export default function PricePage() {
     const rawFilter = searchParams.get('filter') || '';
     const filter = rawFilter && categories.includes(rawFilter) ? rawFilter : 'Tất cả sản phẩm';
 
-    const { data: productAll = [], isLoading: isLoadingProductAll } = useProducts.getAll(query, filter === "Tất cả sản phẩm" ? '' : filter);
+     const { data: productAll = [], isLoading: isLoadingProductAll } = useProducts.products.getListByCategory(undefined, query, filter === "Tất cả sản phẩm" ? '' : filter);
 
     // Handlers
     const handleEnter = (id) => navigate(`/san-pham/${id}`);
