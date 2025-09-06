@@ -1,11 +1,11 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://api.thientruc.vn/sitemap.xml
-Sitemap: https://api.thientruc.vn/san-pham/sitemap.xml
-Sitemap: https://api.thientruc.vn/bang-gia/sitemap.xml
-Sitemap: https://api.thientruc.vn/du-an/sitemap.xml
-Sitemap: https://api.thientruc.vn/tin-tuc/sitemap.xml
-Sitemap: https://api.thientruc.vn/tuyen-dung/sitemap.xml
-Sitemap: https://api.thientruc.vn/lien-he/sitemap.xml
-Sitemap: https://api.thientruc.vn/ve-chung-toi/sitemap.xml
+Sitemap: https://thientruc.vn/sitemap.xml
+Sitemap: https://thientruc.vn/san-pham/sitemap.xml
+Sitemap: https://thientruc.vn/bang-gia/sitemap.xml
+Sitemap: https://thientruc.vn/du-an/sitemap.xml
+Sitemap: https://thientruc.vn/tin-tuc/sitemap.xml
+Sitemap: https://thientruc.vn/tuyen-dung/sitemap.xml
+Sitemap: https://thientruc.vn/lien-he/sitemap.xml
+Sitemap: https://thientruc.vn/ve-chung-toi/sitemap.xml
