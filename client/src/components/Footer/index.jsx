@@ -4,9 +4,10 @@ import {
   InstagramOutlined,
   EnvironmentOutlined,
   PhoneOutlined,
-  MailOutlined
+  MailOutlined,
+  DollarOutlined 
 } from '@ant-design/icons';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import useHome from "@/hooks/useHome";
 import useContact from "@/hooks/useContact";
 import Loading from "@/components/Loading"
@@ -57,6 +58,13 @@ const Footer = () => {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold mb-4">Liên hệ với chúng tôi</h3>
           <div className="space-y-3">
+              <div className="flex items-center  space-x-2">
+              <DollarOutlined  className="text-base flex-shrink-0 text-[var(--yellow-bg)]" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
+              <div>
+                Mã số thuế: {companyInfoData.taxcode}
+                
+              </div>
+            </div>
             <div className="flex items-center  space-x-2">
               <EnvironmentOutlined className="text-base flex-shrink-0 text-[var(--yellow-bg)]" style={{ color: 'var(--yellow-bg)', fontSize: '20px' }} />
               <div>
@@ -125,10 +133,11 @@ const Footer = () => {
         <p className="text-sm text-green-300">
           Phát triển bởi <span className="font-semibold">HCMUS Dev Team</span>
         </p>
-        <p className="text-sm text-green-400">
-              Huỳnh Gia Âu (Project Manager) · Đỗ Văn Hà, Nguyễn Đức Trí (FullStack Developer) · 
-              Đỗ Nguyễn Minh Trí, Nguyễn Minh Luân (Frontend Developer)
-      </p>
+        <Link to="/ve-chung-toi">
+          <p className="text-sm text-green-400 hover:text-green-200 hover:underline cursor-pointer transition-colors">
+            Huỳnh Gia Âu · Đỗ Văn Hà · Nguyễn Đức Trí · Đỗ Nguyễn Minh Trí · Nguyễn Minh Luân
+          </p>
+        </Link>
       </div>
     </footer>
   );

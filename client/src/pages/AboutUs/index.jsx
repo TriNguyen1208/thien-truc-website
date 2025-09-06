@@ -2,6 +2,7 @@ import useAboutUs from '@/hooks/useAboutUs';
 import useContact from '@/hooks/useContact';
 import Banner from '@/components/Banner';
 import Loading from '@/components/Loading';
+import DevelopmentTeam from './components/DevelopmentTeam';
 import StoryAndAchievement from './components/StoryAndAchievement';
 import Services from './components/ServicesSection';
 import CoreValues from './components/CoreValues';
@@ -38,6 +39,7 @@ export default function AboutUs() {
             <Banner data={bannerMain} />
             {aboutusPage.is_visible ? (
                 <>
+                    <DevelopmentTeam />
                     <StoryAndAchievement storyContent={aboutusPage.our_story_content} />
                     <Services />
                     <CoreValues />

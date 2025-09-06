@@ -37,3 +37,15 @@ export const FeatureDotIcon = () => (
     <path d="M14.0398 6.90909L7.39773 13.5909L0.676136 6.90909L7.39773 0.227272L14.0398 6.90909Z" fill="#16A34A"/>
     </svg>
 )
+export const TaxIcon = ()=>(
+  <svg width="53" height="49"viewBox="0 0 53 49"fill="none"xmlns="http://www.w3.org/2000/svg">
+    <rect width="53" height="49" rx="24.5" fill="#F0FDF4" />
+    <rect x="14" y="10" width="25" height="29" rx="2" stroke="#166534" strokeWidth="2"/>
+    <line x1="18" y1="18" x2="35" y2="18" stroke="#166534" strokeWidth="2" />
+    <line x1="18" y1="24" x2="35" y2="24" stroke="#166534" strokeWidth="2" />
+    <line x1="18" y1="30" x2="28" y2="30" stroke="#166534" strokeWidth="2" />
+    <text x="29" y="34" fontSize="10" fontWeight="bold" fill="#166534">
+      #
+    </text>
+  </svg>
+)

@@ -7,16 +7,19 @@ const UserCard = ({ data }) => {
     name,
     role,
     sdt,
-    url_facebook
+    url_email,
+    url_facebook,
+    type
   } = data || {}
   return (
-    <div className="flex flex-col justify-between h-full bg-white rounded-2xl border-2 border-green-200 p-6  shadow-md transform transition duration-300 hover:shadow-xl hover:scale-101 "
-    >
+    <div className={`flex flex-col justify-between bg-white rounded-2xl border-2 border-green-200 p-6 shadow-md transform transition duration-300 hover:shadow-xl hover:scale-101 
+      ${type === "dev" ? "min-h-[500px]" : "h-auto"}`}>
+      
+      {/* Top Section: Avatar, Name, and Role */}
       <div>
-
         {/* Avatar */}
         <div className="flex justify-center mb-4">
-          <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+          <div className="w-30 h-30 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
             {image_avatar ? (
               <LazyLoad
                 height={200}
@@ -44,35 +47,60 @@ const UserCard = ({ data }) => {
         </h2>
 
         {/* Role */}
-        <p className="line-clamp-1 text-center text-green-600 font-medium mb-6">
-          {role || '\u00A0'}
-        </p>
-
-        {/* Phone */}
-        <div className="line-clamp-1 flex items-center justify-center mb-4 text-gray-700">
-          <Phone className="w-4 h-4 mr-2" />
-          <span>{sdt}</span>
-        </div>
-
+        {Array.isArray(role) ? (
+          <div>
+            <p className="line-clamp-1 text-center text-green-600 font-medium mb-4">
+              {role[0] || '\u00A0'}
+            </p>
+            <div className="mb-6">
+              {role.slice(1).map((r, index) => (
+                <p key={index} className="line-clamp-1 text-center text-gray-600 text-[16px] font-normal">
+                  {r || '\u00A0'}
+                </p>
+              ))}
+            </div>
+          </div>  
+        ) : <p className="line-clamp-1 text-center text-green-600 font-medium mb-4">
+            {role || '\u00A0'}
+          </p>}
       </div>
+
+      {/* Bottom Section: Phone and Social Buttons */}
       <div>
-        {/* Facebook Button */}
-        <div className="w-full">
-          <a
-            href={url_facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full bg-green-100 hover:bg-green-200 transition-colors duration-200 rounded-lg py-3 px-4 flex items-center justify-center text-gray-700 font-medium"
-          >
-            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-            </svg>
-            Facebook
-          </a>
+        {/* Phone */}
+          <div className="line-clamp-1 flex items-center justify-center mb-1 text-gray-700">
+            <Phone className="w-4 h-4 mr-2" />
+            <span>{sdt}</span>
+          </div>
+          {url_email && (
+            <div className="line-clamp-1 flex items-center justify-center mb-2 text-gray-700">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+              </svg>
+              <span>{url_email}</span>
+            </div>
+          )}
+          
+        {/* Social Buttons */}
+          {url_facebook && (
+            <div className="w-full">
+              <a
+                href={url_facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-green-100 hover:bg-green-200 transition-colors duration-200 rounded-lg py-3 px-4 flex items-center justify-center text-gray-700 font-medium"
+              >
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+                Facebook
+              </a>
+            </div>
+          )}
         </div>
+
       </div>
-    </div>
   );
 };
 
-export default UserCard 
+export default UserCard;
