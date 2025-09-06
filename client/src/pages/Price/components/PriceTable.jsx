@@ -9,28 +9,11 @@ export default function PriceTable({ productPrices, isLoading, navigate, query, 
     const [openCategories, setOpenCategories] = useState({});
     // Group products by category
     const groupedData = useMemo(() => {
-        const data = Array.isArray(productPrices?.products) ? productPrices.products : [];
-        const groups = data.reduce((acc, item) => {
-            const category = item.category?.name;
-            if (category) {
-                if (!acc[category]) {
-                    acc[category] = [];
-                }
-                acc[category].push({
-                    id: item.id,
-                    name: item.name,
-                    price: item.price,
-                    warranty: item.warranty_period,
-                    description: item.description,
-                    image: item.product_img
-                });
-            }
-            return acc;
-        }, {});
-        return Object.entries(groups).map(([category, products]) => ({
-            category,
-            products,
-        }));
+        return Object.entries(productPrices)
+            .map(([key, value]) => ({
+                category: key,
+                products: value
+            }))
     }, [productPrices]);
 
     const toggleCategory = (category) => {
@@ -41,13 +24,13 @@ export default function PriceTable({ productPrices, isLoading, navigate, query, 
     };
 
     useEffect(() => {
-    if (groupedData.length > 0) {
-        const initialOpen = groupedData.reduce((acc, cat) => {
-        acc[cat.category] = true; // mặc định mở
-        return acc;
-        }, {});
-        setOpenCategories(initialOpen);
-    }
+        if (groupedData.length > 0) {
+            const initialOpen = groupedData.reduce((acc, cat) => {
+                acc[cat.category] = true; // mặc định mở
+                return acc;
+            }, {});
+            setOpenCategories(initialOpen);
+        }
     }, [groupedData]);
 
     if (isLoading) {
@@ -77,9 +60,8 @@ export default function PriceTable({ productPrices, isLoading, navigate, query, 
                                     >
                                         <div className="flex items-center gap-1 w-full">
                                             <ChevronDownIcon
-                                                className={`w-5 h-7 flex-shrink-0 transform transition-transform duration-300 ${
-                                                    openCategories[cat.category] ? 'rotate-180' : ''
-                                                }`}
+                                                className={`w-5 h-7 flex-shrink-0 transform transition-transform duration-300 ${openCategories[cat.category] ? 'rotate-180' : ''
+                                                    }`}
                                             />
                                             <span className="flex-grow flex-shrink min-w-0 max-w-[90%] truncate overflow-hidden whitespace-nowrap block">
                                                 {cat.category}
