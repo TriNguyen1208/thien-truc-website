@@ -10,20 +10,20 @@ const devTeam = [
         facebook_url: "https://web.facebook.com/thoriedgold790",
     },
     {
-        name: "Nguyễn Đức Trí",
-        role: ["Fullstack Developer", "Software Architect", "UI Designer", "Database Designer", "Tester"],
-        avatar_img: "https://res.cloudinary.com/djyicm00q/image/upload/v1757130769/Ảnh_chụp_màn_hình_2025-09-06_105015_pnwqsl.png",
-        phone_number: "(+84) 906 640 981",
-        email_url: "ductri0981@gmail.com",
-        facebook_url: "https://www.facebook.com/tringuyen.0981",
-    },
-    {
         name: "Đỗ Văn Hà",
         role: ["Fullstack Developer", "UI Designer", "Database Designer", "Tester"],
         avatar_img: "https://res.cloudinary.com/djyicm00q/image/upload/v1757152197/8f647c5f899102cf5b80_c5lset.jpg",
         phone_number: "(+84) 389 368 141",
         email_url: "flazerfa123@gmail.com",
         facebook_url: "https://www.facebook.com/dvan.ha.2024",
+    },
+    {
+        name: "Nguyễn Đức Trí",
+        role: ["Fullstack Developer", "Software Architect", "UI Designer", "Database Designer", "Tester"],
+        avatar_img: "https://res.cloudinary.com/djyicm00q/image/upload/v1757130769/Ảnh_chụp_màn_hình_2025-09-06_105015_pnwqsl.png",
+        phone_number: "(+84) 906 640 981",
+        email_url: "ductri0981@gmail.com",
+        facebook_url: "https://www.facebook.com/tringuyen.0981",
     },
     {
         name: "Đỗ Nguyễn Minh Trí",
