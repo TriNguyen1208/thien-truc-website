@@ -30,13 +30,16 @@ const useNewsParams = (validCategories) => {
         return { query, limit, sortBy, page, filter };
     }, [searchParams, validCategories]);
 
-    const updateParams = (newValues) => {
+    const updateParams = (newValues, scrollTargetRef) => {
         const newParams = new URLSearchParams(searchParams);
         Object.entries(newValues).forEach(([key, value]) => newParams.set(key, value));
         if (!('page' in newValues) || Object.keys(newValues).length > 1) {
           newParams.set("page", "1");
         }
         setSearchParams(newParams);
+        if (scrollTargetRef.current) {
+          scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+        }
     };
 
     return [params, updateParams];
@@ -68,16 +71,7 @@ export default function News() {
         params.page,
         params.limit
     );
-
-    // --- Side Effects ---
-    useEffect(() => {
-        if (scrollTargetRef.current) {
-          scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [params]);
-    useEffect(() => {
-         scrollTargetHead.current?.scrollIntoView({ behavior: "smooth" });
-    }, []);
+    
     // --- Memoized Props ---
     const bannerData = useMemo(() => ({
         title: newsPage?.banner_title,
@@ -86,7 +80,7 @@ export default function News() {
         categories: categories,
         currentQuery: params.query,
         currentCategory: params.filter,
-        handleButton: (filter, query) => updateParams({ filter, query }),
+        handleButton: (filter, query) => updateParams({ filter, query }, scrollTargetRef),
         handleSearchSuggestion: useNews.getSearchSuggestions,
         handleEnter: (id) => navigate(`/tin-tuc/${id}`),
         // Các props khác cho Banner

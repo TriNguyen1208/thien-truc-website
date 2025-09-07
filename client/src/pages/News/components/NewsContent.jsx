@@ -26,10 +26,10 @@ const NewsContent = ({
       <NewsToolbar
         sortOptions={sortOptions}
         currentSortBy={params.sortBy}
-        onSortChange={(index) => updateParams({ sort_by: sortOptions[index].value })}
+        onSortChange={(index) => updateParams({ sort_by: sortOptions[index].value }, scrollTargetRef)}
         categories={categories}
         currentFilter={params.filter}
-        onFilterChange={(filter) => updateParams({ filter })}
+        onFilterChange={(filter) => updateParams({ filter }, scrollTargetRef)}
       />
 
       <div className="grid grid-cols-12 gap-5 md:gap-10">
@@ -44,7 +44,7 @@ const NewsContent = ({
         {!isLoading && totalPages > 1 && (
           <Paging
             data={{ numberPagination: totalPages }}
-            onPageChange={(page) => updateParams({ page: String(page) })}
+            onPageChange={(page) => updateParams({ page: String(page) }, scrollTargetRef)}
             currentPage={params.page}
           />
         )}

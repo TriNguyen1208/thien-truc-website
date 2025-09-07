@@ -64,4 +64,7 @@ tr.category-header {
     opacity: 1;
   }
 }
-
+.scroll-top {
+  overflow-y: auto;   /* hoặc scroll */
+  max-height: 100vh;  /* giới hạn chiều cao để tạo scrollbar */
+}
