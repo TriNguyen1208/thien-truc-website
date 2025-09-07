@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import LazyLoad from "react-lazyload";
+import LazyLoad from "@/components/LazyLoad";
 import renderWithLazyLoad from "@/utils/renderWithLazyLoad";
 import useNews from "@/hooks/useNews";
 import ComingSoon from '@/pages/ComingSoon';

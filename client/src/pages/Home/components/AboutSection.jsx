@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import GreenButton from "@/components/GreenButton";
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 
 // Giới thiệu về công ty
 export default function AboutSection({ content, imageUrl, stats = [] }) {

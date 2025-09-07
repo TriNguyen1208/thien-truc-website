@@ -4,7 +4,7 @@ import BackButton from "@/components/BackButton";
 import Banner from "@/components/Banner";
 import useProjects from "@/hooks/useProjects";
 import Loading from "@/components/Loading";
-import LazyLoad from "react-lazyload";
+import LazyLoad from "@/components/LazyLoad";
 import renderWithLazyLoad from "@/utils/renderWithLazyLoad";
 import ComingSoon from "@/pages/ComingSoon";
 

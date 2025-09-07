@@ -1,4 +1,4 @@
-import LazyLoad from "react-lazyload";
+import LazyLoad from "@/components/LazyLoad";
 const ImgComponent = ({ src }) => (
     <LazyLoad
         height={200}

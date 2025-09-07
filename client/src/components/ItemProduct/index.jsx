@@ -1,6 +1,6 @@
 import { FeatureDotIcon } from "../Icon";
 import { ProductOutlined } from '@ant-design/icons';
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 
 function handleDisplayHighlights(product) {
     const numberOfHighlights = Math.min(product.highlight_features.length, 3);
