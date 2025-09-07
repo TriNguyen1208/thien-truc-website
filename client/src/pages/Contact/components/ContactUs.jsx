@@ -22,7 +22,7 @@ const Contact_Section = ({ data, type = "" }) => {
                                         href={item.googlemaps_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-sm hover:underline break-all"
+                                        className="text-sm hover:underline break-words"
                                     >
                                         <div className="font-inherit text-[16px]">
                                             {item.address}
