@@ -44,6 +44,7 @@ const useNewsParams = (validCategories) => {
 
 export default function News() {
     const scrollTargetRef = useRef(null);
+    const scrollTargetHead = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
     const navigation = useNavigation();
@@ -74,7 +75,9 @@ export default function News() {
           scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [params]);
-
+    useEffect(() => {
+         scrollTargetHead.current?.scrollIntoView({ behavior: "smooth" });
+    }, []);
     // --- Memoized Props ---
     const bannerData = useMemo(() => ({
         title: newsPage?.banner_title,
@@ -99,6 +102,7 @@ export default function News() {
 
     return (
         <>
+            <div ref = {scrollTargetHead}></div>
             {navigation.state === 'loading' && <Loading />}
             <Banner data={bannerData} />
             <NewsContent

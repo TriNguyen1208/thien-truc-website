@@ -50,7 +50,8 @@ const useProductParams = (validCategories) => {
 
 export default function Product() {
     // Hook
-    const scrollTargetRef = useRef(null);
+    const scrollTargetFilter = useRef(null);
+    const scrollTargetHead = useRef(null);
     const navigate = useNavigate();
     const navigation = useNavigation();
     const location = useLocation();
@@ -80,11 +81,13 @@ export default function Product() {
 
     // Utils
     useEffect(() => {
-        if (scrollTargetRef.current) {
-            scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (scrollTargetFilter.current) {
+            scrollTargetFilter.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [params]);
-
+    useEffect(() => {
+         scrollTargetHead.current?.scrollIntoView({ behavior: "smooth" });
+    }, []);
     // Handlers
     const handleSearch = (category, query) => updateParams({ filter: category, query });
     const handleEnterSearch = (idProduct) => navigate(`${location.pathname}/${idProduct}`);
@@ -114,13 +117,14 @@ export default function Product() {
     const isAllCategoriesView = params.filter === ALL_CATEGORIES && !params.query;
 
     return (
-        <>
+        <> 
+        <div ref={scrollTargetHead}></div>
             {navigation.state === 'loading' && <Loading />}
-            <Banner data={bannerMainData} />
+            <Banner data={bannerMainData}  />
             {productPage?.is_visible ? (
             <>
                 <FeatureSection navigate={navigate} />
-                <div className="container-fluid flex flex-col" ref={scrollTargetRef}>
+                <div className="container-fluid flex flex-col" ref={scrollTargetFilter}>
                     {isAllCategoriesView ? (
                         <CustomSlider 
                             productsByCat={productsByCat} 
