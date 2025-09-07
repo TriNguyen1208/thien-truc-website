@@ -871,7 +871,6 @@ const product_categories = {
             status: 404,
             message: "Không tìm thấy loại sản phẩm"
         }
-
         const { name } = data;
         await pool.query(`
             UPDATE product.product_categories

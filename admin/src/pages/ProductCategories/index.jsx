@@ -107,7 +107,7 @@ export default function ProductCategories() {
         description: 'Chỉnh sửa thông tin loại sản phẩm',
         contentSubmitButton: "Cập nhật",
         handleSubmitButton: (data) => {
-            updateOne({id: currentEditId, ...data});
+            updateOne({id: currentEditId, data});
             setIsEditModalOpen(false);
         },
     };

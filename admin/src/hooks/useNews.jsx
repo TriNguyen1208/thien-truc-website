@@ -84,6 +84,9 @@ const news = {
                 queryClient.invalidateQueries({ queryKey: ["news_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["feature_news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["news_quantity"] });
+                queryClient.invalidateQueries({ queryKey: ["news_categories"] });
+                queryClient.invalidateQueries({ queryKey: ["news_category"] });
+                queryClient.invalidateQueries({ queryKey: ['news_categories_suggestions'] });
                 navigate('/quan-ly-tin-tuc', {state: { createId: success.id }});
             },
             onError: (error) => {
@@ -104,6 +107,9 @@ const news = {
                 queryClient.invalidateQueries({ queryKey: ["news_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["feature_news"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["news_content"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["news_categories"] });
+                queryClient.invalidateQueries({ queryKey: ["news_category"] });
+                queryClient.invalidateQueries({ queryKey: ['news_categories_suggestions'] });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -145,6 +151,9 @@ const news = {
             onSuccess: (success)=>{
                 queryClient.invalidateQueries({ queryKey: ["news_list"], exact: false });
                 queryClient.invalidateQueries(['news']);
+                queryClient.invalidateQueries({ queryKey: ["news_categories"] });
+                queryClient.invalidateQueries({ queryKey: ["news_category"] });
+                queryClient.invalidateQueries({ queryKey: ['news_categories_suggestions'] });
                 toast.success(success ? success.message: "Xóa thành công!")
                 navigate('/quan-ly-tin-tuc');
             },
