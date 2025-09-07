@@ -82,11 +82,10 @@ export default function Project() {
         
         if (region && region.name !== categoriesDefault[0]) {
             params.set("filter", nameRegion);
-            setSearchParams(params);
         }
-        else {
-            navigate(`/du-an`);
-        }
+        if(query)
+            params.set("query", query)
+        setSearchParams(params);
         setTimeout(() => {
             scrollTargetRef.current?.scrollIntoView({ behavior: 'smooth' });
         }, 0);

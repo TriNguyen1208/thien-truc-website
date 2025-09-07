@@ -3,7 +3,7 @@ import { Button } from 'antd';
 
 export default function PriceRow({ product, index, isLast, navigate }) {
     const formatPrice = (price) => {
-        if (!price || price === '') {
+        if (price === '') {
             return <span className="text-red-400 italic font-normal">Cập nhật sau</span>;
         }
         return <span className="text-[#ff0000] font-semibold">{Number(price).toLocaleString('vi-VN')} đ</span>;

@@ -60,9 +60,7 @@ export default function PriceTable({ productPrices, isLoading, navigate, query, 
                                     >
                                         <div className="flex items-center gap-1 w-full">
                                             <ChevronDownIcon
-                                                className={`w-5 h-7 flex-shrink-0 transform transition-transform duration-300 ${openCategories[cat.category] ? '' : 'rotate-[-90deg]'
-                                                // className={`w-5 h-7 flex-shrink-0 transform transition-transform duration-300"
-                                                    }`}
+                                                className={`w-5 h-7 flex-shrink-0 transform transition-transform duration-300 ${openCategories[cat.category] ? '' : 'rotate-[-90deg]'}`}
                                             />
                                             <span className="flex-grow flex-shrink min-w-0 max-w-[90%] truncate overflow-hidden whitespace-nowrap block">
                                                 {cat.category}

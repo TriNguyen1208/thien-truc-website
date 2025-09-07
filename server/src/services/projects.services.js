@@ -40,10 +40,6 @@ const getNumPage = async (query = '', filter = '') => {
         ${where}
     `)).rows?.[0]?.total);
 
-    if (!totalCount) {
-        throw new Error("Can't get projects totalCount");
-    }
-
     return totalCount;
 }
 

@@ -43,11 +43,6 @@ const getNumPage = async (query = '', filter = '', is_published) => {
         JOIN news.news_categories n_cate on n.category_id = n_cate.id
         ${where}
     `)).rows?.[0]?.total);
-
-    if (!totalCount) {
-        throw new Error("Can't get news totalCount");
-    }
-
     return totalCount;
 }
 
