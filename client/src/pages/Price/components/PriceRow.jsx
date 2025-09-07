@@ -6,7 +6,7 @@ export default function PriceRow({ product, index, isLast, navigate }) {
         if (!price || price === '') {
             return <span className="text-red-400 italic font-normal">Cập nhật sau</span>;
         }
-        return <span className="text-[#ff0000]">{Number(price).toLocaleString('vi-VN')} đ</span>;
+        return <span className="text-[#ff0000] font-semibold">{Number(price).toLocaleString('vi-VN')} đ</span>;
     };
 
     const formatWarranty = (warranty) => {
@@ -36,11 +36,11 @@ export default function PriceRow({ product, index, isLast, navigate }) {
             </td>
             <td className="hidden md:table-cell md:w-[8%] md:p-[12px] md:text-center">{index + 1}</td>
             <td className="md:w-[40%] md:p-[12px]">{product.name}</td>
-            <td className="font-semibold hidden md:table-cell md:w-[15%] md:p-[12px] md:text-center">
+            <td className=" hidden md:table-cell md:w-[15%] md:p-[12px] md:text-center">
                 {formatPrice(product.price)}
             </td>
             <td className="hidden md:table-cell md:w-[17%] md:p-[12px] text-center">
-                {formatWarranty(product.warranty)}
+                {formatWarranty(product.warranty_period)}
             </td>
             <td className="hidden md:table-cell text-green-800 md:w-[20%] md:p-[12px]">
                 <div className="w-full md:flex md:justify-center">
@@ -60,7 +60,7 @@ export default function PriceRow({ product, index, isLast, navigate }) {
             {/* Mobile View */}
             <td className="md:hidden" colSpan={5}>
                 <div className="flex flex-row justify-between">
-                    <span>Bảo hành: {formatWarranty(product.warranty)}</span>
+                    <span>Bảo hành: {formatWarranty(product.warranty_period)}</span>
                     <span className="text-green-800">
                         <Button
                             type="default"

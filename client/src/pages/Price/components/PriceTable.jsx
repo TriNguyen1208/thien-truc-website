@@ -37,6 +37,7 @@ export default function PriceTable({ productPrices, isLoading, navigate, query, 
         return <Loading />;
     }
 
+    console.log("Gia tri filter trong PriceTable: ", groupedData);
     return (
         <div className="overflow-y-auto max-h-[600px] overflow-x-hidden scroll-table">
             <table className="text-base table-fixed w-full">
