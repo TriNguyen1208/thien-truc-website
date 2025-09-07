@@ -96,6 +96,9 @@ export default function Project() {
         navigate('/lien-he');
     }
 
+    const handleSearchSuggestion = (query, filter, is_published) => {
+        return useProjects.getSearchSuggestions(query, filter === 'Tất cả dự án' ? undefined : filter);
+    };
     const bannerData = {
         title: projectPageData.banner_title,
         description: projectPageData.banner_description,
@@ -107,7 +110,7 @@ export default function Project() {
         currentQuery: query,
         currentCategory: categoriesData[idSelectedCategories],
         handleButton: handleSearchSubmit,
-        handleSearchSuggestion: useProjects.getSearchSuggestions,
+        handleSearchSuggestion: handleSearchSuggestion,
         handleEnter: handleEnter,
         scrollTargetRef: scrollTargetRef
     };
