@@ -63,27 +63,12 @@ const ShareButton = ({id}) => {
                     }} 
                     style={{ marginBottom: 16 }}
                 >
-                    <CopyOutlined /> Copy Link
+                    <CopyOutlined /> Sao chép liên kết
                 </Button>
                 <Space wrap>
                     <FacebookShareButton url={currentUrl}><FacebookIcon size={40} round /></FacebookShareButton>
                     <TwitterShareButton url={currentUrl}><TwitterIcon size={40} round /></TwitterShareButton>
                     <TelegramShareButton url={currentUrl}><TelegramIcon size={40} round /></TelegramShareButton>
-
-                    {/* Zalo Share */}
-                    <a
-                        href={`https://zalo.me/share?url=${encodeURIComponent(currentUrl)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img
-                            src={logoZalo}
-                            alt="Zalo"
-                            width={40}
-                            height={40}
-                            style={{ borderRadius: '50%', position: 'relative', top:'-3px'}}
-                        />
-                    </a>
                 </Space>
             </Modal>
         </div>
