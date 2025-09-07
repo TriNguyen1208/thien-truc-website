@@ -55,7 +55,7 @@ const Header = () => {
                                             className="py-1 hover:bg-gray-100 cursor-pointer"
                                             onClick={() => {
                                                 setShowAccountModal(true);
-                                                setOpen(false); // ✅ sửa đúng biến
+                                                setOpen(false); 
                                             }}
                                         >
                                             Thông tin tài khoản
