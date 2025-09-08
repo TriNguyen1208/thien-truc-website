@@ -1,26 +1,36 @@
 import cloudinary from '#@/config/cloudinary.js';
 import fs from 'fs'
 import { JSDOM } from 'jsdom';
-const uploadImage = async (image, type) => {
-    await cloudinary.api.delete_resources(['not existed']);
-    const imageUpload = await cloudinary.uploader.upload(image.path, { 
-        resource_type: "image",
-        folder: type,
-        transformation: [{
+import * as streamifier from 'streamifier';
+
+const uploadImage = (image, type) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+        {
+            resource_type: "image",
+            folder: type,
+            transformation: [{
             width: 1200,
-            crop: 'limit',
-            quality: 'auto:eco',
-            fetch_format: 'auto',
-            flags: 'progressive',
-            format: 'auto',
-        }]
+            crop: "limit",
+            quality: "auto:eco",
+            fetch_format: "auto",
+            flags: "progressive",
+            format: "auto",
+            }]
+        },
+        (err, result) => {
+            if (err) return reject(err);
+            const optimizedUrl = result.secure_url.replace(
+            "/upload/",
+            "/upload/f_auto,q_auto/"
+            );
+            resolve(optimizedUrl);
+        });
+
+        // Đọc file từ ổ cứng rồi pipe vào Cloudinary
+        fs.createReadStream(image.path).pipe(stream);
     });
-    // Tạo URL tối ưu (dùng WebP nếu trình duyệt hỗ trợ)
-    const optimizedUrl = imageUpload.secure_url.replace('/upload/', '/upload/f_auto,q_auto/');
-    // Xoá file tạm trong local
-    fs.unlinkSync(image.path);
-    return optimizedUrl;
-}
+};
 
 const deleteImage = async(image_url_array) => {
     let url_array = [];

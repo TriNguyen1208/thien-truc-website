@@ -526,7 +526,7 @@ const projects = {
             region_id,
             title,
             province,
-            new Date(completeTime.startsWith('"') ? JSON.parse(completeTime) : completeTime),
+            completeTime ? new Date(completeTime.startsWith('"') ? JSON.parse(completeTime) : completeTime) : null,
             final_main_image,
             main_content,
             isFeatured,
