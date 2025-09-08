@@ -81,7 +81,7 @@ const ItemPost = ({ data = {}, id= ""}) => {
                     )}
 
                     {date && (
-                        <div className="flex items-center gap-1">
+                         <div className={`flex items-center gap-1 ${!location ? 'sm:ml-auto' : ''}`}>
                             <CalendarOutlined style={{ fontSize: '16px' }} />
                             {date && (
                                 type === 'project' ? (

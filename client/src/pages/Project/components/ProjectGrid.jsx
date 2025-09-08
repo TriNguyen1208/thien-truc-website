@@ -1,6 +1,8 @@
 // components/ProjectsGrid.jsx
 import { Link } from 'react-router-dom';
 import ItemPost from "@/components/ItemPost";
+import Loading from "@/components/Loading";
+import React from 'react';
 
 const ProjectsGrid = ({ projects}) => {
 
@@ -11,12 +13,11 @@ const ProjectsGrid = ({ projects}) => {
             </div>
         );
     }
-
     return (
         <div className="container-fluid">
             <div className="grid grid-cols-12 gap-5 md:gap-10">
                 {(projects || []).map((item, index) => {
-                    const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
+                    const complete_time = item.complete_time ? (String(new Date(item.complete_time).toLocaleDateString('vi-VN'))) : null;
                     const dataProject = {
                         type: 'project',
                         title: item?.title ?? "",
