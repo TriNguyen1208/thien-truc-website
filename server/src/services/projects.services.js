@@ -410,7 +410,7 @@ const projects = {
             region_id,
             title,
             province,
-            new Date(JSON.parse(completeTime)),
+            completeTime == 'null' ? null : new Date(JSON.parse(completeTime)),
             final_main_image,
             main_content,
             isFeatured
@@ -521,12 +521,12 @@ const projects = {
                 is_featured = $7
             where id = $8
         `
-
+        const processedDate = (completeTime == 'null') ? null : (new Date(completeTime.startsWith('"') ? JSON.parse(completeTime) : completeTime));
         const updateValues = [
             region_id,
             title,
             province,
-            completeTime ? new Date(completeTime.startsWith('"') ? JSON.parse(completeTime) : completeTime) : null,
+            processedDate,
             final_main_image,
             main_content,
             isFeatured,
