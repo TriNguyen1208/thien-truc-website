@@ -1,6 +1,12 @@
 {
+  "name": "my-app",
+  "private": true,
+  "workspaces": [
+    "client",
+    "admin",
+    "server"
+  ],
   "scripts": {
-    "install-all": "concurrently \"npm install --prefix client\" \"npm install --prefix admin\" \"npm install --prefix server\"",
     "start": "vite",
     "dev:server": "npx dotenv -e .env -- nodemon server/src/server.js",
     "dev:client": "concurrently \"npm run dev:server\" \"npm run dev --prefix client\"",
