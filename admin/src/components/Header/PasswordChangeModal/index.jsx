@@ -5,14 +5,17 @@ import { updatePassword } from '@/services/auth.api';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '@/services/auth.api.js'
+import { EyeIcon, EyeOffIcon } from "@/components/Icon";
 
-
-export default function PasswordChangeModal({ 
-    open, 
-    onClose 
+export default function PasswordChangeModal({
+    open,
+    onClose
 }) {
     if (!open) return null;
     const navigate = useNavigate();
+    const [visibleOld, setVisibleOld] = useState(false);
+    const [visibleNew, setVisibleNew] = useState(false);
+    const [visibleConfirmNew, setVisibleConfirmNew] = useState(false);
     const [old_password, setOldPassword] = useState('');
     const [new_password, setNewPassword] = useState('');
     const [verify_password, setConfirmPassword] = useState('');
@@ -44,8 +47,8 @@ export default function PasswordChangeModal({
                 pathname: '/dang-nhap',
                 search: '?step=forgot',
             },
-            { 
-                replace: true 
+            {
+                replace: true
             }
         );
         // Logout server-side không chặn
@@ -55,7 +58,7 @@ export default function PasswordChangeModal({
     };
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-        {/* Khung modal */}
+            {/* Khung modal */}
             <div className="bg-white rounded-lg shadow-lg w-[420px] p-6 relative animate-fade-in">
                 {/* Nút đóng */}
                 <button
@@ -76,15 +79,24 @@ export default function PasswordChangeModal({
                     <div>
                         <label className="block text-sm font-medium mb-2">Mật khẩu cũ</label>
                         <div className="flex gap-2">
-                            <input
-                                type="text"
-                                className="flex-1 px-3 py-2 border border-gray-300  rounded w-full text-sm"
-                                placeholder="Nhập mật khẩu cũ"
-                                onChange={(e) => setOldPassword(e.target.value)}
-                            />   
-                            <button 
+                            <div className='relative flex-1'>
+
+                                <input
+                                    type={visibleOld ? 'text' : 'password'}
+                                    className=" px-3 py-2 border border-gray-300  rounded w-full text-sm pr-10"
+                                    placeholder="Nhập mật khẩu cũ"
+                                    onChange={(e) => setOldPassword(e.target.value)}
+                                />
+                                <span
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                                    onClick={() => setVisibleOld(!visibleOld)}
+                                >
+                                    {visibleOld ? <EyeOffIcon /> : <EyeIcon />}
+                                </span>
+                            </div>
+                            <button
                                 className="px-3 py-2 text-sm border border-gray-300 shadow-sm rounded hover:bg-gray-100 whitespace-nowrap cursor-pointer"
-                                onClick={handleForgotPassword} 
+                                onClick={handleForgotPassword}
                             >
                                 Quên mật khẩu
                             </button>
@@ -93,18 +105,34 @@ export default function PasswordChangeModal({
                     {/* Họ và tên */}
                     <div>
                         <label className="block text-sm font-medium mb-2">Mật khẩu mới</label>
-                        <input
-                            type="text"
-                            className="px-3 py-2 border border-gray-300 rounded w-full text-sm mb-3"
-                            placeholder="Nhập mật khẩu mới"
-                            onChange={(e) => setNewPassword(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            className="px-3 py-2 border border-gray-300 rounded w-full text-sm"
-                            placeholder="Xác nhận mật khẩu mới"
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
+                        <div className='relative mb-3'>
+                            <input
+                                type={visibleNew ? 'text' : 'password'}
+                                className="px-3 py-2 border border-gray-300 rounded w-full text-sm  pr-10"
+                                placeholder="Nhập mật khẩu mới"
+                                onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                            <span
+                                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                                onClick={() => setVisibleNew(!visibleNew)}
+                            >
+                                {visibleNew ? <EyeOffIcon /> : <EyeIcon />}
+                            </span>
+                        </div>
+                        <div className='relative '>
+                            <input
+                                type={visibleConfirmNew ? 'text' : 'password'}
+                                className="px-3 py-2 border border-gray-300 rounded w-full text-sm  pr-10"
+                                placeholder="Xác nhận mật khẩu mới"
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                            <span
+                                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                                onClick={() => setVisibleConfirmNew(!visibleConfirmNew)}
+                            >
+                                {visibleConfirmNew ? <EyeOffIcon /> : <EyeIcon />}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -118,7 +146,7 @@ export default function PasswordChangeModal({
                     </button>
                     <button className="px-4 py-2 rounded bg-black text-white text-sm hover:bg-gray-800 cursor-pointer"
                         onClick={() => {
-                        handleUpdate();
+                            handleUpdate();
                         }}>
                         Cập nhật
                     </button>
