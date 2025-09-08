@@ -1,6 +1,6 @@
 import { ProductOutlined } from "@ant-design/icons";
 import { useParams, useNavigation } from "react-router-dom";
-import LazyLoad from "react-lazyload";
+import LazyLoad from "@/components/LazyLoad";
 import useProducts from "@/hooks/useProducts";
 import ComingSoon from "@/pages/ComingSoon";
 import Loading from "@/components/Loading";

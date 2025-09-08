@@ -238,7 +238,6 @@ const DynamicForm = ({ data, config }) => {
 
             style: {
                 backgroundColor: item.isReadOnly ? '#f3f4f6' : 'white',
-                padding: '8px 12px',
                 display: 'block',
                 width: '100%',
                 borderRadius: '5px',
@@ -257,6 +256,7 @@ const DynamicForm = ({ data, config }) => {
                 return (
                     <textarea
                         {...commonProps}
+                        className="px-3 py-2"
                         value={value}
                         rows={item.numberRows || defaultField.numberRows}
                         placeholder={item.placeholder || defaultField.placeholder}
@@ -271,7 +271,7 @@ const DynamicForm = ({ data, config }) => {
                             {...commonProps}
                             value={value}
 
-                            className="flex-1 border border-gray-300 rounded-[5px] cursor-pointer"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-[5px] cursor-pointer"
                         >
                             {(item.options || defaultField.options).map((opt, idx) => (
                                 <option key={idx} value={opt.value} className="text-center cursor-pointer">{opt.label}</option>
@@ -291,7 +291,7 @@ const DynamicForm = ({ data, config }) => {
                             display: 'inline-block',
                             marginRight: '0.5rem' // tương đương với Tailwind `mr-2`
                         }}
-                        className="accent-black cursor-pointer"
+                        className="accent-black cursor-pointer px-3 py-2"
                     />
                 );
             case 'file':
@@ -299,7 +299,7 @@ const DynamicForm = ({ data, config }) => {
                     <input
                         {...commonProps}
                         type="file"
-                        className="block w-full border border-gray-300 cursor-pointer"
+                        className="block w-full border border-gray-300 cursor-pointer px-3 py-2"
                     />
                 );
             case 'image_upload': {
@@ -479,7 +479,7 @@ const DynamicForm = ({ data, config }) => {
                             type={visible ? 'text' : 'password'}
                             value={value}
                             placeholder={item.placeholder || defaultField.placeholder}
-                            className="cursor-pointer"
+                            className="cursor-pointer px-3 py-2 pr-10"
                         />
                         <span
                             className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
@@ -497,7 +497,7 @@ const DynamicForm = ({ data, config }) => {
                     value={value}
                     placeholder={item.placeholder || defaultField.placeholder}
                     maxLength={item.maxLength || undefined}
-                    className="cursor-pointer"
+                    className="cursor-pointer px-3 py-2"
                 />;
         }
     }

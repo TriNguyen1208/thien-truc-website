@@ -6,14 +6,14 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const ITEMS_PER_PAGE = 12;
 
-export default function ProductToolbar({ products, isLoading, categoryName, query, totalCount, page, goBack, updateParams }) {
+export default function ProductToolbar({ products, isLoading, categoryName, query, totalCount, page, goBack, updateParams, scrollTargetRef }) {
     if (isLoading) {
         return <Loading />;
     }
 
     const numberPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
     
-    const handlePageChange = (newPage) => updateParams({ page: newPage.toString() });
+    const handlePageChange = (newPage) => updateParams({ page: newPage.toString() }, scrollTargetRef);
 
     return (
         <div className='flex flex-col'>

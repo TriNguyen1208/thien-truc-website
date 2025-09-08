@@ -258,7 +258,6 @@ const Company = () => {
     if(isLoadingCompanyInfo || isLoadingUpdateCompanyInfo){
       return(<Loading/>)
     }
-    console.log(companyInfo)
     return (
         <form onSubmit={handleSubmit} className='flex flex-col bg-white p-[24px] border border-gray-300 rounded-[8px] gap-[24px]'>
             <div className=' flex flex-col'>

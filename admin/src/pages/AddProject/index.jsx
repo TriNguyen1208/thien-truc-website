@@ -43,7 +43,7 @@ const AddProject = () => {
             main_image: "",
             province: "",
             countWord: 0,
-            completeTime: new Date()
+            completeTime: null
         }
     }, [isLoadingRegions]);
     useEffect(() => {

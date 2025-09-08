@@ -30,7 +30,7 @@ export default function Recruitment() {
     };
     const content_banner_bottom = {
         title: "Sẵn sàng để gia nhập đội ngũ của chúng tôi",
-        description: "Khám phá cơ hội nghề nghiệp tại NewsDaily và trở thành một phần của đội ngũ báo chí hàng đầu.",
+        description: "Khám phá cơ hội nghề nghiệp tại Thiên Trúc và trở thành một phần của đội ngũ hàng đầu.",
         hasButton: true,
         contentButton: "Ứng tuyển ngay",
         handleButton: handleButtonBanner

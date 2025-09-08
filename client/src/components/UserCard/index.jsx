@@ -1,5 +1,5 @@
 import { Phone } from 'lucide-react';
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 
 const UserCard = ({ data }) => {
   const {

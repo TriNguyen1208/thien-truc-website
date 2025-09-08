@@ -1,6 +1,6 @@
 import { MenuOutlined } from '@ant-design/icons';
 import { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
 import logo from '@/assets/images/logo.png';
 
@@ -41,11 +41,13 @@ const Header = () => {
               placeholder={<div className="w-full h-full bg-gray-200 rounded-t-lg overflow-hidden"></div>}
               style={{width: '100px'}}
             >
-              <img
-                width={100}
-                src={logo}
-                alt="Thiên Trúc"
-              />
+              <Link to={"/"}>
+                <img
+                  width={100}
+                  src={logo}
+                  alt="Thiên Trúc"
+                />
+              </Link>
             </LazyLoad>
           </div>
  

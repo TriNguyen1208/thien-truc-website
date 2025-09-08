@@ -40,11 +40,6 @@ const getNumPage = async (query = '', filter = '') => {
         JOIN product.product_categories pc ON prd.category_id = pc.id
         ${where}
     `)).rows?.[0]?.total);
-
-    if (!totalCount) {
-        throw new Error("Can't get products totalCount");
-    }
-
     return totalCount;
 }
 
@@ -504,7 +499,6 @@ const products = {
 
         if (price == "") price = null;
         warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
-        console.error(warranty);
 
         // 1. Get category_id
         const categoryRes = await pool.query(
@@ -553,7 +547,6 @@ const products = {
             `INSERT INTO product.product_prices (product_id, price) VALUES ($1, $2)`,
             [product_id, price]
         ); 
-
         // 5. Update item_count
         await pool.query(
             `UPDATE product.product_categories SET item_count = item_count + 1 WHERE id = $1`,
@@ -878,7 +871,6 @@ const product_categories = {
             status: 404,
             message: "Không tìm thấy loại sản phẩm"
         }
-
         const { name } = data;
         await pool.query(`
             UPDATE product.product_categories

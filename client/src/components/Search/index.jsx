@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 
 const SearchBar = ({ data }) => {
   const {

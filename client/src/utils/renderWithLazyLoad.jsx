@@ -1,5 +1,5 @@
 import parse, { domToReact } from 'html-react-parser';
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 
 const replaceFn = (domNode) => {
   const placeholder = (

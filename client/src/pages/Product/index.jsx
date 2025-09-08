@@ -28,7 +28,7 @@ const useProductParams = (validCategories) => {
         return { query, filter, page };
     }, [searchParams, validCategories]);
 
-    const updateParams = (newValues) => {
+    const updateParams = (newValues, scrollTargetRef) => {
         const newParams = new URLSearchParams(searchParams);
         Object.entries(newValues).forEach(([key, value]) => {
             if (value !== undefined && value !== null && value !== '') {
@@ -43,6 +43,9 @@ const useProductParams = (validCategories) => {
         }
 
         setSearchParams(newParams);
+        if (scrollTargetRef.current) {
+            scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
     };
 
     return [params, updateParams];
@@ -78,18 +81,13 @@ export default function Product() {
     // Fetch data cho chế độ "Tất cả sản phẩm" (theo category)
     const { data: productsByCat, isLoading: isLoadingProductsByCat } = useProducts.products.getListByCategory('', '', '', '', ITEMS_PER_CATEGORY_SLIDER);
 
-    // Utils
-    useEffect(() => {
-        if (scrollTargetRef.current) {
-            scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [params]);
-
     // Handlers
-    const handleSearch = (category, query) => updateParams({ filter: category, query });
+    const handleSearch = (category, query) => {
+        updateParams({ filter: category, query }, scrollTargetRef);
+    }
     const handleEnterSearch = (idProduct) => navigate(`${location.pathname}/${idProduct}`);
-    const handleViewMore = (categoryName) => updateParams({ filter: categoryName, query: '' });
-    const goBack = () => updateParams({ filter: ALL_CATEGORIES, query: '' });
+    const handleViewMore = (categoryName) => updateParams({ filter: categoryName, query: '' }, scrollTargetRef);
+    const goBack = () => updateParams({ filter: ALL_CATEGORIES, query: '' }, scrollTargetRef);
 
     // Data
     const bannerMainData = useMemo(() => ({
@@ -114,9 +112,9 @@ export default function Product() {
     const isAllCategoriesView = params.filter === ALL_CATEGORIES && !params.query;
 
     return (
-        <>
+        <> 
             {navigation.state === 'loading' && <Loading />}
-            <Banner data={bannerMainData} />
+            <Banner data={bannerMainData}  />
             {productPage?.is_visible ? (
             <>
                 <FeatureSection navigate={navigate} />
@@ -137,6 +135,7 @@ export default function Product() {
                             isLoading={isLoadingFilteredProducts}
                             goBack={goBack}
                             updateParams={updateParams}
+                            scrollTargetRef={scrollTargetRef}
                         />
                     )}
                 </div>

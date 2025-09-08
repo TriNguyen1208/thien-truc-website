@@ -14,43 +14,6 @@ const getAllTables = async (filter = '') => {
     };
 }
 const getNumPage = async (query = '', filter = '') => {
-    /*let totalCount = 0;
-    const hasQuery = query !== '';
-    const hasFilter = filter !== '';
-    // ✅ 1. Có query (search bar). Nếu có searchBar thì không dùng sort_by nữa
-    if (hasQuery) {
-        const sql = `
-            SELECT COUNT(*) AS total
-            FROM project.projects prj
-            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
-            WHERE
-                ($2 = '' OR unaccent(prj_reg.name) ILIKE unaccent($2)) AND
-                similarity(unaccent(prj.title::text), unaccent($1::text)) > 0.1
-        `;
-        const values = [query, filter];
-        const result = await pool.query(sql, values);
-        totalCount = parseInt(result.rows[0].total);
-        return totalCount;
-    }
-
-    // ✅ 2. Không có query
-    if (!hasFilter) {
-        // Trả về tối đa 9 trang, sắp xếp theo sortBy
-        const result = await pool.query(`SELECT COUNT(*) AS total FROM project.projects`);
-        totalCount = parseInt(result.rows[0].total);
-        return totalCount;
-    } else {
-        // Có filter (theo category), phân trang theo sortBy
-        const sql = `
-            SELECT COUNT(*) AS total
-            FROM project.projects prj
-            JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
-                WHERE unaccent(prj_reg.name) ILIKE unaccent($1)
-        `;
-        const results = await pool.query(sql, [filter]);
-        totalCount = parseInt(results.rows[0].total);
-        return totalCount;
-    }*/
     query = query.trim().replaceAll(`'`, ``); // clean
     filter = filter.trim().replaceAll(`'`, ``); // clean
     let where = [];
@@ -59,10 +22,6 @@ const getNumPage = async (query = '', filter = '') => {
         where.push(
             `(unaccent(prj.title::text) ILIKE '%' || unaccent('${query}'::text) || '%' OR
             similarity(unaccent(prj.title::text), unaccent('${query}'::text)) > 0.1)`
-        );
-        
-        order.push(
-            `similarity(unaccent(prj.title), unaccent('${query}')) DESC`
         );
     }
 
@@ -80,10 +39,6 @@ const getNumPage = async (query = '', filter = '') => {
         JOIN project.project_regions prj_reg ON prj.region_id = prj_reg.id
         ${where}
     `)).rows?.[0]?.total);
-
-    if (!totalCount) {
-        throw new Error("Can't get projects totalCount");
-    }
 
     return totalCount;
 }
@@ -455,7 +410,7 @@ const projects = {
             region_id,
             title,
             province,
-            new Date(JSON.parse(completeTime)),
+            completeTime == 'null' ? null : new Date(JSON.parse(completeTime)),
             final_main_image,
             main_content,
             isFeatured
@@ -566,12 +521,12 @@ const projects = {
                 is_featured = $7
             where id = $8
         `
-
+        const processedDate = (completeTime == 'null') ? null : (new Date(completeTime.startsWith('"') ? JSON.parse(completeTime) : completeTime));
         const updateValues = [
             region_id,
             title,
             province,
-            new Date(completeTime.startsWith('"') ? JSON.parse(completeTime) : completeTime),
+            processedDate,
             final_main_image,
             main_content,
             isFeatured,

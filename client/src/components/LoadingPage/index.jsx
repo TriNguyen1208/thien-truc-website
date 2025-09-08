@@ -18,23 +18,23 @@ import recruitmentServices from "@/services/recruitment.api.js";
 export const LoadingAboutUs = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
-          queryKey: ["about_us_page"],
-          queryFn: aboutUsServices.getAboutUsPage,
+          queryKey: ["about_us", "general", "about_us_page"],
+          queryFn: aboutUsServices.general.getAboutUsPage,
           staleTime: 1000 * 60 * 10
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["company_services"],
+          queryKey: ["about_us", "company_services", "get_all"],
           queryFn: aboutUsServices.company_services.getAll, 
           staleTime: 1000 * 60 * 10
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["why_choose_us"],
+          queryKey: ["about_us", "why_choose_us", "get_all"],
           queryFn: aboutUsServices.why_choose_us.getAll, 
           staleTime: 1000 * 60 * 10
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["company_info"],
-          queryFn: contactServices.getCompanyInfo, 
+          queryKey: ["contact", "company_info"],
+          queryFn: contactServices.general.getCompanyInfo, 
           staleTime: 1000 * 60 * 10,
       }),
     ]);
@@ -43,18 +43,38 @@ export const LoadingAboutUs = async () => {
 export const LoadingHome = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
-          queryKey: ["home"],
-          queryFn: homeServices.getAll,
+          queryKey: ["home", "general", "get_all"],
+          queryFn: homeServices.general.getAll,
           staleTime: 10 * 60 * 1000,
       }),
-    ]);
+      queryClient.prefetchQuery({ 
+          queryKey: ["news", "news", "featured_news"],
+          queryFn: newsServices.news.getAllFeatured,
+          staleTime: 10 * 60 * 1000,
+      }),
+      queryClient.prefetchQuery({ 
+          queryKey: ["products", "products", "highlight_products"],
+          queryFn: productsServices.products.getAllFeatured,
+          staleTime: 10 * 60 * 1000,
+      }),
+      queryClient.prefetchQuery({ 
+          queryKey: ["projects", "projects", "highlight_projects", ""],
+          queryFn: () =>  projectsServices.projects.getAllFeatured(""),
+          staleTime: 10 * 60 * 1000,
+      }),
+      queryClient.prefetchQuery({ 
+          queryKey: ["projects", "project_regions", "get_all_featured"],
+          queryFn: projectsServices.project_regions.getAllFeatured,
+          staleTime: 10 * 60 * 1000,
+      }),
+  ]);
   return null;
 }
 export const LoadingContact = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
-          queryKey: ["contact"],
-          queryFn: contactServices.getAll,
+          queryKey: ["contact", "general", "contact"],
+          queryFn: contactServices.general.getAll,
           staleTime: 10 * 60 * 1000,
       }),
     ]);
@@ -63,18 +83,18 @@ export const LoadingContact = async () => {
 export const LoadingNews = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
-          queryKey: ["news_page"],
-          queryFn: newsServices.getNewsPage,
+          queryKey: ["news", "general", "news_page"],
+          queryFn: newsServices.general.getNewsPage,
           staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["news_categories"],
+          queryKey: ["news", "news_categories", "get_all"],
           queryFn: newsServices.new_categories.getAll,
           staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["news_list", "", true, "", "date_desc", 1, ""],
-          queryFn: () => newsServices.news.getList("", undefined, "", "date_desc", 1, ""),
+          queryKey: ["news", "news", "get_list", "", undefined, true, "date_desc", 1, 9],
+          queryFn: () => newsServices.news.getList("", undefined, true, "date_desc", 1, 9),
           staleTime: 10 * 60 * 1000,
       }),
     ]);
@@ -86,7 +106,7 @@ export const LoadingNewsDetail = async({params}) => {
     throw new Error("Product ID is not existed");
   }
   await queryClient.prefetchQuery({
-    queryKey: ["news_content", id],
+    queryKey: ["news", "news_contents", "get_one", id],
     queryFn: () => newsServices.new_contents.getOne(id),
     staleTime: 10 * 60 * 1000,
   })
@@ -95,23 +115,18 @@ export const LoadingNewsDetail = async({params}) => {
 export const LoadingPrice = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
-          queryKey: ["price_page"],
-          queryFn: productsServices.getPricePage,
+          queryKey: ["products", "general", "get_price_page"],
+          queryFn: productsServices.general.getPricePage,
           staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["product_categories"],
+          queryKey: ["products", "product_categories", "get_all"],
           queryFn: productsServices.product_categories.getAll,
           staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["product-list", "", "", "", 1, ""],
-          queryFn: ()=> productsServices.products.getList("", "", "", 1, ""),
-          staleTime: 10 * 60 * 1000,
-      }),
-      queryClient.prefetchQuery({ 
-          queryKey: ["product_prices", "", ""],
-          queryFn: ()=> productsServices.product_prices.getAll("", ""),
+          queryKey: ["products", "products", "get_list_by_category", undefined, '', '', undefined, undefined],
+          queryFn: () => productsServices.products.getListByCategory(undefined, '', '', undefined, undefined),
           staleTime: 10 * 60 * 1000,
       }),
     ]);
@@ -120,18 +135,18 @@ export const LoadingPrice = async () => {
 export const LoadingProduct = async () => {
   await Promise.all([
     queryClient.prefetchQuery({ 
-      queryKey: ["product_page"],
-      queryFn: productsServices.getProductPage,
+      queryKey: ["products", "general", "get_product_page"],
+      queryFn: productsServices.general.getProductPage,
       staleTime: 10 * 60 * 1000,
     }),
     queryClient.prefetchQuery({
-      queryKey: ["product_categories"],
+      queryKey: ["products", "product_categories", "get_all"],
       queryFn: productsServices.product_categories.getAll,
       staleTime: 10 * 60 * 1000,
     }),
     queryClient.prefetchQuery({
-      queryKey: ["product-list", '','','','',4],
-      queryFn: ()=> productsServices.products.getListByCategory('','','','',4),
+      queryKey: ["products", "products", "get_list", undefined, undefined, undefined, 1, 12],
+      queryFn: () => productsServices.products.getList(undefined, undefined, undefined, 1, 12),
       staleTime: 10 * 60 * 1000,
     })
   ]);
@@ -143,7 +158,7 @@ export const LoadingProductDetail = async ({params}) => {
     throw new Error("Product ID is not existed");
   }
   await queryClient.prefetchQuery({
-    queryKey: ["product", id],
+    queryKey: ["products", "products", "get_one", id],
     queryFn: () => productsServices.products.getOne(id),
     staleTime: 10 * 60 * 1000,
   })
@@ -152,18 +167,18 @@ export const LoadingProductDetail = async ({params}) => {
 export const LoadingProject = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
-          queryKey: ["project_page"],
-          queryFn: projectsServices.getProjectPage,
+          queryKey: ["projects", "general", "project_page"],
+          queryFn: projectsServices.general.getProjectPage,
           staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["project_regions"],
+          queryKey: ["projects", "project_regions", "get_all"],
           queryFn: projectsServices.project_regions.getAll,
           staleTime: 10 * 60 * 1000,
       }),
       queryClient.prefetchQuery({ 
-          queryKey: ["projects_list", "", "", undefined, 1, undefined],
-          queryFn: () => projectsServices.projects.getList("", "", undefined, 1, undefined),
+          queryKey: ["projects", "projects", "get_list", undefined, undefined, undefined, 1, undefined],
+          queryFn: () => projectsServices.projects.getList(undefined, undefined, undefined, 1, undefined),
           staleTime: 10 * 60 * 1000,
       }),
     ]);
@@ -175,7 +190,7 @@ export const LoadingProjectDetail = async({params}) => {
     throw new Error("Project ID is not existed");
   }
   await queryClient.prefetchQuery({
-      queryKey: ["project_content", id],
+      queryKey: ["projects", "project_contents", "get_one", id],
       queryFn: () => projectsServices.project_contents.getOne(id),
       staleTime: 10 * 60 * 1000,
   })
@@ -184,47 +199,10 @@ export const LoadingProjectDetail = async({params}) => {
 export const LoadingRecruitment = async () => {
   await Promise.all([
       queryClient.prefetchQuery({ 
-          queryKey: ["recruitment_page"],
-          queryFn: recruitmentServices.getRecruitmentPage,
+          queryKey: ["recruitment", "general", "recruitment_page"],
+          queryFn: recruitmentServices.general.getRecruitmentPage,
           staleTime: 10 * 60 * 1000,
       }),
     ]);
   return null;
 } 
-export default function LoadingPage(){
-    const {isLoading: isLoadingAboutUsPage} = useAboutUs.getAboutUsPage();
-    const {isLoading: isLoadingAboutUsContactServices} = useAboutUs.company_services.getAll();
-    const {isLoading: isLoadingAboutUsChoose} = useAboutUs.why_choose_us.getAll();
-
-    const {isLoading: isLoadingContactInfo} = useContact.getCompanyInfo();
-    const {isLoading: isLoadingContact} = useContact.getAll();
-
-    const {isLoading: isLoadingHome } = useHome.getAll();
-
-    const {isLoading: isLoadingNewsPage } = useNews.getNewsPage();
-    const {isLoading: isLoadingNewsCategories } = useNews.news_categories.getAll();
-    const {isLoading: isLoadingNews } = useNews.news.getList("", undefined, "", "date_desc", 1, "");
-    
-    const {isLoading: isLoadingPricePage } = useProducts.getPricePage();
-    const {isLoading: isLoadingPrices } = useProducts.product_prices.getAll(
-        "",
-        ""
-    );
-
-    const {isLoading: isLoadingProducts } = useProducts.products.getList(); //TODO: Sau này bỏ
-    const {data: categoriesProduct, isLoading: isLoadingProductCategories } = useProducts.product_categories.getAll();
-    const {isLoading: isLoadingProductPage } = useProducts.getProductPage();
-    const {isLoading: isLoadingProduct} = useProducts.products.getList('', undefined, false, 1, '');
-
-    const {isLoading: isLoadingProjectPage } = useProjects.getProjectPage();
-    const {isLoading: isLoadingProjectRegion } = useProjects.project_regions.getAll();
-    const {isLoading: isLoadingProject } = useProjects.projects.getList(undefined, undefined, undefined, 1, undefined);
-
-    const {isLoading: isLoadingRecruitmentPage } = useRecruitment.getRecruitmentPage();
-    if(
-        isLoadingAboutUsPage || isLoadingAboutUsContactServices || isLoadingAboutUsChoose || isLoadingContactInfo || isLoadingContact ||
-        isLoadingHome || isLoadingNewsPage || isLoadingNewsCategories || isLoadingNews || isLoadingPricePage || isLoadingProductCategories || isLoadingPrices ||
-        isLoadingProductPage || isLoadingProduct || isLoadingProjectPage || isLoadingProjectRegion || isLoadingProject || isLoadingRecruitmentPage || isLoadingProducts
-    )
-      return <Loading/>
-}

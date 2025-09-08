@@ -82,10 +82,12 @@ const products = {
             mutationFn: (data) => productsServices.products.createOne(data),
             onSuccess: (success) => {
                 toast.success(success.message);
-                queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false});
                 queryClient.invalidateQueries({ queryKey: ["product_quantity"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false});
+                queryClient.invalidateQueries({ queryKey: ["product_categories_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
                 navigate(location.pathname, { state: {createId: success.id} });
             },
             onError: (error) => {
@@ -103,6 +105,8 @@ const products = {
                 queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -148,6 +152,8 @@ const products = {
                 queryClient.invalidateQueries({ queryKey: ["product_quantity"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_list"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -206,6 +212,7 @@ const product_categories = {
                 queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -222,6 +229,7 @@ const product_categories = {
                 queryClient.invalidateQueries({ queryKey: ["product_categories_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);

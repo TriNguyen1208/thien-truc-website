@@ -26,8 +26,8 @@ const Banner = ({data}) =>{
         >
             <div className='flex flex-col gap-3 items-center w-full px-4 sm:px-6 lg:px-8 mx-auto'>
                 <div className='flex flex-col gap-3 w-full max-w-4xl mx-auto text-center'>
-                    <h1 className='text-4xl md:text-5xl font-bold break-all leading-15'>{title}</h1>
-                    <p className='text-lg md:text-xl font-normal leading-[28px] break-all'>{description}</p>
+                    <h1 className='text-4xl md:text-5xl font-bold break-words leading-15'>{title}</h1>
+                    <p className='text-lg md:text-xl font-normal leading-[28px] break-words'>{description}</p>
                 </div>
                 <div ref={scrollTargetRef} className='mt-3 w-full text-center'>
                     {hasButton ? (

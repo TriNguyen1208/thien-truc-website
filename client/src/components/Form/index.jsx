@@ -53,7 +53,7 @@ const Form = ({ data }) => {
             if (type === 'lien-he') {
                 response = await contactServices.general.postContactForm(formToSubmit);
             } else if (type === 'tuyen-dung') {
-                response = await recruitmentAPI.postRecruitmentForm(formToSubmit);
+                response = await recruitmentAPI.general.postRecruitmentForm(formToSubmit);
             }
             
             if (response?.success === true) {

@@ -4,7 +4,7 @@ import {
     EyeOutlined,
     MailOutlined
 } from '@ant-design/icons';
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 import ShareButton from '@/components/ShareButton';
 
 const ItemPost = ({ data = {}, id= ""}) => {

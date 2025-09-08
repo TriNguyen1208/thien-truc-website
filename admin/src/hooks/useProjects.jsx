@@ -76,6 +76,9 @@ const projects = {
                 queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_quantity"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_region"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ['project_categories_suggestions'], exact: false });
                 navigate('/quan-ly-du-an', {state: { createId: success.id }});
             },
             onError: (error) => {
@@ -95,6 +98,9 @@ const projects = {
                 queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_content"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_region"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ['project_categories_suggestions'], exact: false });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -139,6 +145,9 @@ const projects = {
                 queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_suggestions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_quantity"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["project_region"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ['project_categories_suggestions'], exact: false });
                 toast.success(success ? success.message: "Xóa thành công!")
                 navigate("/quan-ly-du-an");
             },
@@ -206,6 +215,7 @@ const project_regions = {
             onSuccess: (success) => {
                 queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
                 queryClient.invalidateQueries({ queryKey: ["project_categories_suggestions"], exact: false });
+                queryClient.invalidateQueries({ queryKey: ["projects_list"], exact: false });
                 toast.success(success.message);
             },
             onError: (error) => {

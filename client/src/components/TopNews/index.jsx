@@ -1,7 +1,7 @@
 // src/components/TopNews.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LazyLoad from 'react-lazyload';
+import LazyLoad from '@/components/LazyLoad';
 import useNews from "@/hooks/useNews";
 
 const TopNews = () => {

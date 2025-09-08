@@ -4,9 +4,9 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { Outlet } from "react-router-dom";
 export default function DefaultLayout(){
     return (
-        <div>
+        <div className="scroll-wrapper">
             <Header/>
-            <main>
+            <main >
                 <ScrollToTop/>
                 <Outlet />
             </main>
