@@ -9,7 +9,7 @@ import CustomSlider from "./CustomSlider";
 // Component hiển thị một dự án
 // Tạo dữ liệu cho một dự án
 const ProjectItem = (item) => {
-    const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
+    const complete_time = item.complete_time ? String(new Date(item.complete_time).toLocaleDateString('vi-VN')) : null
     const dataProject = {
         type: 'project',
         title: item?.title ?? "",
