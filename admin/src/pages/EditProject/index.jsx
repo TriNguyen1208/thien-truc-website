@@ -7,7 +7,7 @@ import ContentManagement from '@/components/ContentManagement';
 import ProjectSetting from '@/components/ProjectSetting';
 import useProjects from '@/hooks/useProjects';
 import { addDeleteImage, extractBlogImages } from '@/utils/handleImage';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '@/components/Loading';
 import changeToFormData from '@/utils/changeToFormData';
@@ -28,11 +28,18 @@ const EditProject = () => {
 
     //set layout 
     const {setLayoutProps} = useLayout();
+    //navigate
+    const navigate = useNavigate();
+    //button back action
+    const buttonBackAction = () => {
+        navigate('/quan-ly-du-an', {state: { createId: project_id }});
+    }
     useEffect(() => {
         setLayoutProps({
             title: "Chỉnh sửa dự án",
             description: "Chỉnh sửa nội dung dự án",
             hasButtonBack: true,
+            buttonBackAction: buttonBackAction
         })
     }, [])
 

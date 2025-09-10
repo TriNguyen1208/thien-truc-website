@@ -17,7 +17,8 @@ const {
     hasButtonBack = false,
     buttonLabel = '',
     buttonAction = () => {},
-    buttonToggle = null
+    buttonToggle = null,
+    buttonBackAction = null
 } = layoutProps ?? {};
     const navigate = useNavigate();
     return (
@@ -33,12 +34,12 @@ const {
                         <div className="flex items-center gap-3">
                             {hasButtonBack && (
                                 <CustomButton
-                                icon={<ArrowLeftOutlined />}
-                                onClick={() => navigate(-1)}
-                                backgroundColor="#fff"
-                                borderColor="#ccc"
-                                textColor="#000"
-                                height={40}
+                                    icon={<ArrowLeftOutlined />}
+                                    onClick={buttonBackAction ? buttonBackAction : () => navigate(-1)}
+                                    backgroundColor="#fff"
+                                    borderColor="#ccc"
+                                    textColor="#000"
+                                    height={40}
                                 />
                             )}
                             <div>
