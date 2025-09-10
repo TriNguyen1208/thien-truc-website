@@ -48,7 +48,7 @@ const EditProject = () => {
             isFeatured: project_contents.project.is_featured,
             main_image: project_contents.project.main_img ?? '',
             province: project_contents.project.province ?? '',
-            completeTime: project_contents.project.complete_time ?? '',
+            completeTime: project_contents.project.complete_time ?? null,
             countWord: project_contents.content.trim().length
         }
         setInitialForm(initialForm);
