@@ -23,7 +23,7 @@ const ProjectItem = (item) => {
 
     return (
         <Link to={`/du-an/${item.id}`} className="flex w-full justify-center md:w-1/2 lg:w-1/3 flex-shrink-0 px-2">
-            <div>
+            <div className="w-full">
                 <ItemPost data={dataProject} />
             </div>
         </Link>
