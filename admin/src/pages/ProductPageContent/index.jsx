@@ -4,6 +4,7 @@ import EditBanner from '@/components/EditBanner'
 import useProducts from '@/hooks/useProducts'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
+import FlashSale from './FlashSale'
 const ProductPageContent = () => {
     //------------------API------------------
     const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
@@ -100,6 +101,7 @@ const ProductPageContent = () => {
     return (
         <div>
         <EditBanner {...bannerProps}/>
+        <FlashSale/>
         <Notification {...notificationProps}/>
         </div>
     )
