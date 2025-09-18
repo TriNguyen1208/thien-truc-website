@@ -739,6 +739,46 @@ const products = {
             action: `Cập nhật sản phẩm${note}: ${id} - ${productName}`
         }
     },
+    updateSale: async (data) => {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            await client.query(`
+                UPDATE product.products
+                SET is_sale = false
+                WHERE is_sale = true
+            `);
+
+            const promises = data.map(item => {
+                const { id, discount_percent, final_price } = item
+                return client.query(`
+                    UPDATE product.products
+                    SET
+                        is_sale = true,
+                        discount_percent = $1,
+                        final_price = $2
+                    WHERE
+                        id = $3
+                `, [discount_percent, final_price, id]);
+            });
+            
+            await Promise.all(promises);
+
+            await client.query('COMMIT');
+
+            return {
+                status: 200,
+                message: "Cập nhật Sale giảm giá thành công",
+                action: "Cập nhật Sale giảm giá"
+            }
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw err;
+        } finally {
+            client.release();
+        }
+    },
     deleteOne: async (id) => {
         const client = await pool.connect();
         try {

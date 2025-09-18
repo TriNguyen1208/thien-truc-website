@@ -60,6 +60,16 @@ const products = {
         const data = await productServices.products.getSearchSuggestions(query, filter, is_featured, is_sale);
         res.status(200).json(data);
     },
+    createOne: async (req, res) => {
+        try {
+            const { status, message, action = null, id } = await productServices.products.createOne(req.body, req.file);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message, id });
+        } catch (error) {
+            console.error('Lỗi tạo sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
     updateFeatureOne: async (req, res) => {
         try {
             const { id, status: product_status } = req.params;
@@ -82,16 +92,6 @@ const products = {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
-    createOne: async (req, res) => {
-        try {
-            const { status, message, action = null, id } = await productServices.products.createOne(req.body, req.file);
-            if (status == 200) logActivity(req.user.username, action);
-            return res.status(status).json({ message, id });
-        } catch (error) {
-            console.error('Lỗi tạo sản phẩm: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
-        }
-    },
     updateOne: async (req, res) => {
         try {
             const id = req.params.id;
@@ -100,6 +100,17 @@ const products = {
             return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi cập nhật sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    updateSale: async (req, res) => {
+        try {
+            const { data } = req.body
+            const { status, message, action = null } = await productServices.products.updateSale(data);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật Sale giảm giá: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },

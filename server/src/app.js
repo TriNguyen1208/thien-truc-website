@@ -8,6 +8,7 @@ import { cookie } from 'express-validator';
 const app = express();
 
 const allowedOrigins = [
+    // 'https://hoppscotch.io',
     'http://localhost:3001',
     'http://localhost:3002',
     'http://127.0.0.1:3001',
