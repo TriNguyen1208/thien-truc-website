@@ -46,7 +46,7 @@ export default function HeroBanner({ images = [], switchTime = 0 }) {
                     <div className="w-full h-full animate-slide-in-right">
                         <div className="relative w-full h-full bg-black overflow-hidden">
                             <div
-                                className="w-full aspect-[4/1] bg-cover bg-center"
+                                className="w-full aspect-[3/1] bg-cover bg-center"
                                 style={{ backgroundImage: `url(${item})` }}
                             ></div>
                         </div>
