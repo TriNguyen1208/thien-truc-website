@@ -37,13 +37,13 @@ const updateProductPage = {
 }
 const products = {
     getList: async (req, res) => {
-        const {query ='', filter = '', page, is_featured, limit} = req.query;
-        const data = await productServices.products.getList(query, filter, parseInt(page), is_featured, parseInt(limit));
+        const {query = '', filter = '', page, is_featured, is_sale, limit} = req.query;
+        const data = await productServices.products.getList(query, filter, parseInt(page), is_featured, is_sale, parseInt(limit));
         res.status(200).json(data);
     },
     getListByCategory: async (req, res) => {
-        const {id = '', query ='', filter = '', is_featured, limit} = req.query;
-        const data = await productServices.products.getListByCategory(id, query, filter, is_featured, parseInt(limit));
+        const {id = '', query ='', filter = '', is_featured, is_sale, limit} = req.query;
+        const data = await productServices.products.getListByCategory(id, query, filter, is_featured, is_sale, parseInt(limit));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
@@ -55,9 +55,30 @@ const products = {
         const query = req.query.query || '';
         const filter = req.query.filter || '';
         const is_featured = req.query.is_featured;
+        const is_sale = req.query.is_sale;
 
-        const data = await productServices.products.getSearchSuggestions(query, filter, is_featured);
+        const data = await productServices.products.getSearchSuggestions(query, filter, is_featured, is_sale);
         res.status(200).json(data);
+    },
+    createOne: async (req, res) => {
+        try {
+            const { status, message, action = null, id } = await productServices.products.createOne(req.body, req.file);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message, id });
+        } catch (error) {
+            console.error('Lỗi tạo sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    activateSale: async (req, res) => {
+        try {
+            const { status, message, action = null} = await productServices.products.activateSale(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi kích hoạt Sale giảm giá: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
     },
     updateFeatureOne: async (req, res) => {
         try {
@@ -81,16 +102,6 @@ const products = {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
-    createOne: async (req, res) => {
-        try {
-            const { status, message, action = null, id } = await productServices.products.createOne(req.body, req.file);
-            if (status == 200) logActivity(req.user.username, action);
-            return res.status(status).json({ message, id });
-        } catch (error) {
-            console.error('Lỗi tạo sản phẩm: ', error);
-            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
-        }
-    },
     updateOne: async (req, res) => {
         try {
             const id = req.params.id;
@@ -99,6 +110,17 @@ const products = {
             return res.status(status).json({ message });
         } catch (error) {
             console.error('Lỗi cập nhật sản phẩm: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
+    updateSale: async (req, res) => {
+        try {
+            const { data } = req.body
+            const { status, message, action = null } = await productServices.products.updateSale(data);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi cập nhật Sale giảm giá: ', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },

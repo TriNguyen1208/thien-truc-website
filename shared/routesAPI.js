@@ -27,11 +27,11 @@ const API_ROUTES = {
         base: (query = '', filter = '') => `${PRODUCT_BASE}?query=${uri(query)}&filter=${uri(filter)}`,
         product_page: `${PRODUCT_BASE}/product_page`,
         products: {
-            getList: (query, filter, is_featured, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&page=${uri(page)}&limit=${uri(limit)}`,
-            getListByCategory: (id, query, filter, is_featured, limit) => `${PRODUCT_BASE}/products/get_by_category?id=${uri(id)}&query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&limit=${uri(limit)}`,
+            getList: (query, filter, is_featured, is_sale, page, limit) => `${PRODUCT_BASE}/products?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&is_sale=${uri(is_sale)}&page=${uri(page)}&limit=${uri(limit)}`,
+            getListByCategory: (id, query, filter, is_featured, is_sale, limit) => `${PRODUCT_BASE}/products/get_by_category?id=${uri(id)}&query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&is_sale=${uri(is_sale)}&limit=${uri(limit)}`,
             getAllFeatured: `${PRODUCT_BASE}/products?is_featured=true`,
             getOne: (id) => `${PRODUCT_BASE}/products/${id}`,
-            getSearchSuggestions: (query='', filter='', is_featured) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}`
+            getSearchSuggestions: (query='', filter='', is_featured, is_sale) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&is_sale=${uri(is_sale)}`
         },
         product_categories: {
             getAll: `${PRODUCT_BASE}/product_categories`,
