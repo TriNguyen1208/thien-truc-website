@@ -564,8 +564,8 @@ const products = {
             INSERT INTO product.products (
             name, description, product_img, category_id,
             product_specifications, warranty_period,
-            product_features, highlight_features, is_featured
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            product_features, highlight_features, is_featured, is_sale, discount_percent, final_price
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, false, null, null)
             RETURNING id;
         `;
 
@@ -606,8 +606,15 @@ const products = {
         const { 
             product_img: old_avatar_img,
             name: old_name,
-            category_id: old_category_id
-        } = (await pool.query('SELECT product_img, name, category_id FROM product.products WHERE id = $1', [id])).rows?.[0];
+            category_id: old_category_id,
+            discount_percent: old_discount_percent,
+            final_price,
+            is_sale: old_is_sale
+        } = (await pool.query(`
+            SELECT product_img, name, category_id, discount_percent, final_price, is_sale
+            FROM product.products
+            WHERE id = $1
+        `, [id])).rows?.[0];
 
         if (!old_name) return {
             status: 404,
@@ -626,6 +633,9 @@ const products = {
             technicalDetails,
             warranty
         } = data;
+        let is_sale = old_is_sale;
+        let discount_percent = old_discount_percent;
+
         const final_avatar_img = await updateImage(
             old_avatar_img,
             local_avatar_img,
@@ -633,7 +643,13 @@ const products = {
             'product'
         );
 
-        if (price == "") price = null;
+        if (price == "") {
+            price = null;
+            is_sale = false;
+        } else {
+            discount_percent = parseInt(100 * (1 - parseInt(final_price) / parseInt(price)));
+        }
+
         warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
 
         // 1. Get category_id
@@ -666,8 +682,11 @@ const products = {
                 warranty_period = $6,
                 product_features = $7,
                 highlight_features = $8,
-                is_featured = $9
-            WHERE id = $10
+                is_featured = $9,
+                is_sale = $10,
+                discount_percent = $11,
+                final_price = $12
+            WHERE id = $13
         `;
         const insertValues = [
             productName,
@@ -679,6 +698,9 @@ const products = {
             product_features,
             highlight_feature_ids,
             isDisplayHomePage,
+            is_sale,
+            discount_percent,
+            final_price,
             id
         ];
         promises.push(pool.query(insertSql, insertValues));
