@@ -37,13 +37,13 @@ const updateProductPage = {
 }
 const products = {
     getList: async (req, res) => {
-        const {query ='', filter = '', page, is_featured, limit} = req.query;
-        const data = await productServices.products.getList(query, filter, parseInt(page), is_featured, parseInt(limit));
+        const {query = '', filter = '', page, is_featured, is_sale, limit} = req.query;
+        const data = await productServices.products.getList(query, filter, parseInt(page), is_featured, is_sale, parseInt(limit));
         res.status(200).json(data);
     },
     getListByCategory: async (req, res) => {
-        const {id = '', query ='', filter = '', is_featured, limit} = req.query;
-        const data = await productServices.products.getListByCategory(id, query, filter, is_featured, parseInt(limit));
+        const {id = '', query ='', filter = '', is_featured, is_sale, limit} = req.query;
+        const data = await productServices.products.getListByCategory(id, query, filter, is_featured, is_sale, parseInt(limit));
         res.status(200).json(data);
     },
     getOne: async (req, res) => {
@@ -55,8 +55,9 @@ const products = {
         const query = req.query.query || '';
         const filter = req.query.filter || '';
         const is_featured = req.query.is_featured;
+        const is_sale = req.query.is_sale;
 
-        const data = await productServices.products.getSearchSuggestions(query, filter, is_featured);
+        const data = await productServices.products.getSearchSuggestions(query, filter, is_featured, is_sale);
         res.status(200).json(data);
     },
     updateFeatureOne: async (req, res) => {

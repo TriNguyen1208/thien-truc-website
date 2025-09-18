@@ -90,7 +90,7 @@ const updateProductPage = {
 }
 
 const products = {
-    getList: async (query = '', filter = '', page, is_featured, item_limit) => {
+    getList: async (query = '', filter = '', page, is_featured, is_sale, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
         const pageSize = parseInt(item_limit) || 12;
@@ -121,6 +121,14 @@ const products = {
             where.push(`prd.is_featured = ${is_featured}`);
         }
 
+        if (is_sale == 'true' || is_sale == 'false') {
+            where.push(`prd.is_sale = ${is_sale}`);
+
+            order.push(
+                `similarity(unaccent(prd.name), unaccent('${query}')) DESC`
+            );
+        }
+
         if (page) {
             const offset = (page - 1) * pageSize;
             limit = `${pageSize} OFFSET ${offset}`;
@@ -146,6 +154,9 @@ const products = {
                 prd.product_features,
                 prd.highlight_features,
                 prd.is_featured,
+                prd.is_sale,
+                prd.discount_percent,
+                prd.final_price,
             
                 pp.price AS price,
                 pc.id AS category_id,
@@ -166,6 +177,9 @@ const products = {
             description: row.description || "",
             product_img: row.product_img || "",
             price: (row.price == null) ? "" : row.price,
+            is_sale: row.is_sale,
+            discount_percent: row.discount_percent,
+            final_price: row.final_price,
             product_specifications: JSON.parse(row.product_specifications || '{}'),
             warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
             product_features: row.product_features || [],
@@ -187,7 +201,7 @@ const products = {
             };
         else return [...results];
     },
-    getListByCategory: async (id = '', query = '', filter = '', is_featured, item_limit) => {
+    getListByCategory: async (id = '', query = '', filter = '', is_featured, is_sale, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
         id = id.trim().replace(/^['"]|['"]$/g, '');
@@ -220,6 +234,14 @@ const products = {
             where.push(`prd.is_featured = ${is_featured}`);
         }
 
+        if (is_sale == 'true' || is_sale == 'false') {
+            where.push(`prd.is_sale = ${is_sale}`);
+
+            order.push(
+                `similarity(unaccent(prd.name), unaccent('${query}')) DESC`
+            );
+        }
+
         // Chuẩn hóa từng thành phần truy vấn
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
@@ -236,6 +258,9 @@ const products = {
                 prd.product_features,
                 prd.highlight_features,
                 prd.is_featured,
+                prd.is_sale,
+                prd.discount_percent,
+                prd.final_price,
 
                 pp.price AS price,
                 pc.id AS category_id,
@@ -273,6 +298,9 @@ const products = {
                 description: row.description || "",
                 product_img: row.product_img || "",
                 price: (row.price == null) ? "" : row.price,
+                is_sale: row.is_sale,
+                discount_percent: row.discount_percent,
+                final_price: row.final_price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
                 warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
@@ -300,6 +328,9 @@ const products = {
                 prd.product_features,
                 prd.highlight_features,
                 prd.is_featured,
+                prd.is_sale,
+                prd.discount_percent,
+                prd.final_price,
 
                 pp.price as price,
                 prd_cate.id as category_id,
@@ -317,6 +348,9 @@ const products = {
                 description: row.description || "",
                 product_img: row.product_img || "",
                 price: (row.price == null) ? "" : row.price,
+                is_sale: row.is_sale,
+                discount_percent: row.discount_percent,
+                final_price: row.final_price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
                 warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
@@ -333,7 +367,7 @@ const products = {
             };
         return product
     },
-    getSearchSuggestions: async (query, filter, is_featured) => {
+    getSearchSuggestions: async (query, filter, is_featured, is_sale) => {
         query = query.trim().replaceAll(`'`, ``);
         filter = filter.trim().replaceAll(`'`, ``);
         const suggestions_limit = 5;
@@ -359,6 +393,14 @@ const products = {
 
         if (is_featured == 'false' || is_featured == 'true') {
             where.push(`P.is_featured = ${is_featured}`);
+        }
+
+        if (is_sale == 'true' || is_sale == 'false') {
+            where.push(`P.is_sale = ${is_sale}`);
+
+            order.push(
+                `similarity(unaccent(P.name), unaccent('${query}')) DESC`
+            );
         }
 
         // Chuẩn hóa các thành phần query
