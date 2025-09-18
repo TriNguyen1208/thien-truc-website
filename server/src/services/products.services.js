@@ -427,6 +427,21 @@ const products = {
             throw new Error(`DB error: ${err.message}`);
         }
     },
+    activateSale: async (data) => {
+        const { status } = data;
+
+        await pool.query(`
+            UPDATE product.product_page
+            SET on_sale = $1
+        `, [status]);
+        
+        const activity = (status == 'true') ? 'Bật' : 'Tắt'
+        return {
+            status: 200,
+            message: `${activity} chương trình Sale giảm giá thành công`,
+            action: `${activity} chương trình Sale giảm giá`
+        }
+    },
     updateFeatureOne: async (id, product_status) => {
         const query = `
             UPDATE product.products

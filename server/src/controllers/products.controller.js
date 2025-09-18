@@ -70,6 +70,16 @@ const products = {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     },
+    activateSale: async (req, res) => {
+        try {
+            const { status, message, action = null} = await productServices.products.activateSale(req.body);
+            if (status == 200) logActivity(req.user.username, action);
+            return res.status(status).json({ message });
+        } catch (error) {
+            console.error('Lỗi kích hoạt Sale giảm giá: ', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    },
     updateFeatureOne: async (req, res) => {
         try {
             const { id, status: product_status } = req.params;

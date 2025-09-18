@@ -68,6 +68,7 @@ const API_ROUTES = {
             getSearchSuggestions: (query='', filter='', is_featured, is_sale) => `${PRODUCT_BASE}/search_suggestions?query=${uri(query)}&filter=${uri(filter)}&is_featured=${uri(is_featured)}&is_sale=${uri(is_sale)}`,        
             // post
             createOne: `${PRODUCT_BASE}/products`,
+            activateSale: `${PRODUCT_BASE}/activate-sale`,
             // patch
             updateOne: (id) => `${PRODUCT_BASE}/products/${id}`,
             updateFeatureOne: (id, status) => `${PRODUCT_BASE}/products/is_featured/${id}/${status}`,
