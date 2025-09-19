@@ -174,7 +174,7 @@ const FlashSale = () => {
 
     }
 
-    if(isLoadingProductSale  || isPendingUpdateProductSale || isLoadingProductData || isLoadingProductPage || isPendingUpdateVisibility
+    if(isLoadingProductSale   || isLoadingProductData || isLoadingProductPage
     ) 
         return <Loading/>
    
@@ -204,12 +204,18 @@ const FlashSale = () => {
                     <Table columns={configProductSale.table.columns} data={configProductSale.table.data} isSetting={false} width={configProductSale.table.width} />
                 </div>
                 <div className='flex justify-between'>
-                    <form onSubmit={configProductSale.handleSubmit}>
-                    
+                    <form    onSubmit={configProductSale.handleSubmit}>
                     <div className='h-[45px] mt-3'>
+                       
+                       {
+                           isPendingUpdateProductSale ?<Loading/> :
                         <button type='submit' className='h-full'> <Button {...configProductSale.propsSaveButton} /></button>
+                        }
                     </div>
                 </form>
+
+                {
+                    isPendingUpdateVisibility?<Loading/>:
                   <div className="flex flex-row gap-5 items-center">
                                 <div className="flex flex-col">
                                     <span className="font-bold text-gray-900">Hiển thị bảng Sale và cập nhật giá</span>
@@ -220,6 +226,7 @@ const FlashSale = () => {
                                     currentState={isVisible}
                                 />
                 </div>
+                }
                 </div>
             </div>
            
