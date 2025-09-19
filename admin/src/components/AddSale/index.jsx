@@ -55,11 +55,12 @@ const AddSale = ({
     // Xử lý khi có data từ getOne (tìm kiếm cụ thể)
     useEffect(() => {
         if (!data) return;
-
+        if(data.price === null || data.price === "") return
         const dataFetch = {
             id: data.id,
             name: data.name || data.title,
-            category: data.region?.name || data.category?.name
+            category: data.region?.name || data.category?.name,
+            price: data.price
         };
 
         setFiltered([dataFetch]);
@@ -74,7 +75,8 @@ const AddSale = ({
         const datasFetch = datas.filter(item => item.price !== null && item.price !== "").map((item) => ({
             id: item.id,
             name: item.name || item.title,
-            category: item.region?.name || item.category?.name
+            category: item.region?.name || item.category?.name,
+            price: item.price 
         }));
        
 
@@ -166,7 +168,8 @@ const AddSale = ({
         [
             { type: "text", content: "Chọn" },
             { type: "text", content: header[1] },
-            { type: "text", content: header[2] }
+            { type: "text", content: header[2] },
+            { type: "text", content: header[3] }
         ],
         ...filtered.map((data) => [
             {
@@ -176,7 +179,8 @@ const AddSale = ({
                 onChange: () => handleToggle(data.id)
             },
             { type: "text", content: data.name },
-            { type: "text", content: data.category }
+            { type: "text", content: data.category },
+            { type: "text", content: Number(data.price).toLocaleString('vi-VN') + ' đ' }
         ])
     ];
 
@@ -233,7 +237,7 @@ const AddSale = ({
                         <button
                             className='px-4 py-2 bg-[#18181b] text-white rounded-md cursor-pointer'
                             onClick={handleSave}
-                        >Lưu thay đổi</button>
+                        >Thêm</button>
                     </div>
                 </div>
             </div>
