@@ -7,6 +7,7 @@ import FeaturedNews from "./components/FeaturedNews";
 import AboutSection from "./components/AboutSection";
 import FeaturedProjects from "./components/FeaturedProjects";
 import FeaturedProducts from "./components/FeaturedProducts";
+import SaleProducts from "./components/SaleProducts";
 
 // Tách SEO
 const PageSEO = ({ seoData }) => (
@@ -64,6 +65,7 @@ export default function Home() {
             {homePageData.is_visible ? (
                 <main>
                     <FeaturedNews />
+                    <SaleProducts/>
                     <FeaturedProjects />
                     <FeaturedProducts />
                     <AboutSection

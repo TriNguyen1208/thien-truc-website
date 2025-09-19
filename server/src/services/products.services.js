@@ -14,7 +14,7 @@ const getAllTables = async (query = '', filter = '') => {
     };
 }
 
-const getNumPage = async (query = '', filter = '') => {
+const getNumPage = async (query = '', filter = '', is_sale = '') => {
     query = query.trim().replaceAll(`'`, ``); // clean
     filter = filter.trim().replaceAll(`'`, ``); // clean
     let where = [];
@@ -31,7 +31,9 @@ const getNumPage = async (query = '', filter = '') => {
             `unaccent(pc.name) ILIKE unaccent('${filter}')`
         );
     }
-
+    if(is_sale != ''){
+        where.push(`prd.is_sale = ${is_sale}`);
+    }
     if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
 
     const totalCount = parseInt((await pool.query(`
@@ -94,8 +96,7 @@ const products = {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
         const pageSize = parseInt(item_limit) || 12;
-        const totalCount = await getNumPage(query, filter);
-
+        const totalCount = await getNumPage(query, filter, is_sale);
         let where = [];
         let order = [];
         let limit = '';
@@ -168,7 +169,6 @@ const products = {
             ${order}
             ${limit}
         `;
-
         const { rows } = await pool.query(sql);
 
         const results = rows.map(row => ({
@@ -191,7 +191,6 @@ const products = {
             },
             is_featured: row.is_featured || false
         }));
-
         if (page)
             return {
                 totalCount,
