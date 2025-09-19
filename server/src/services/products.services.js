@@ -622,7 +622,7 @@ const products = {
             name: old_name,
             category_id: old_category_id,
             discount_percent: old_discount_percent,
-            final_price,
+            final_price: old_final_price,
             is_sale: old_is_sale
         } = (await pool.query(`
             SELECT product_img, name, category_id, discount_percent, final_price, is_sale
@@ -649,6 +649,7 @@ const products = {
         } = data;
         let is_sale = old_is_sale;
         let discount_percent = old_discount_percent;
+        let final_price = old_final_price;
 
         const final_avatar_img = await updateImage(
             old_avatar_img,
@@ -660,6 +661,12 @@ const products = {
         if (price == "") {
             price = null;
             is_sale = false;
+            discount_percent = null;
+            final_price = null;
+        } else if (parseInt(price) <= parseInt(old_final_price)) {
+            is_sale = false;
+            discount_percent = null;
+            final_price = null;
         } else {
             discount_percent = parseInt(100 * (1 - parseInt(final_price) / parseInt(price)));
         }

@@ -143,15 +143,11 @@ const FlashSale = () => {
                 {
                     type: "component", 
                     component: 
-                    
-                     
-                         <button 
-                            className="px-2 py-1 border  border-gray-300 rounded-md cursor-pointer" 
+                        <button 
+                            className="px-2 py-1 ml-5 border border-gray-300 rounded-md cursor-pointer" 
                             onClick={() => handleDeleteProductSale(item)}>      
                             <SubtractIcon />    
-                        </button>,
-                  
-                    
+                        </button>
                 }
             ]
         });
@@ -240,7 +236,7 @@ const FlashSale = () => {
                 onClose={() => setIsModalOpenSetting(false)}
                 content={contentSetting}
                 useData={useProduct.products}
-                pickedData={arrayProduct.map(item => item.id)}
+                pickedData={(arrayProduct || []).map(item => item.id)}
                 useDataCategories={useProduct.product_categories}
                 onSave={async (changedItems) => {
                     if (changedItems) {
