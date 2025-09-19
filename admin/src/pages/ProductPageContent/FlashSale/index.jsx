@@ -1,124 +1,72 @@
 import Button from '@/components/Button'
 import Table from '@/components/Table'
 import Loading from '@/components/Loading'
-import useHome from '@/hooks/useHome'
-import useNews from '@/hooks/useNews'
-import { useNavigate } from 'react-router-dom'
+import useProduct from '@/hooks/useProducts'
 import {useEffect, useState } from 'react';
 import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon } from '@/components/Icon';
 import ProductImageCell from '@/components/ProductImageCell'
-import AddHighlight from '@/components/AddHighlight';
+import AddSale from '@/components/AddSale';
+import SwitchButton from "@/components/SwitchButton";
 
 const FlashSale = () => {
     //========================= API ====================
-    const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
-    const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.news.getAllFeatured();
-    const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
-    const listProduct = [
-  {
-    id: "SP001",
-    price: 100000,
-    discount: 10, // 10%
-    finalPrice: 90000,
-  },
-  {
-    id: "SP002",
-    price: 250000,
-    discount: 0,
-    finalPrice: 25000,
-  },
-  {
-    id: "SP003",
-    price: 500000,
-    discount: 15,
-    finalPrice: 425000,
-  },
-  {
-    id: "SP004",
-    price: 10,
-    discount: 5,
-    finalPrice: 71250,
-  },
-  {
-    id: "SP005",
-    price: 320000,
-    discount: 25,
-    finalPrice: 240000,
-  },
-];
-    //Thao tác cập nhật tin tức nổi bật
-    const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.news.updateFeaturedNews();
-    
-    const navigate = useNavigate();
-    const [arrayHighlightNews, setArrayHighlightNews] = useState([]); // Xoa
+
+    const { data: productSale, isLoading: isLoadingProductSale } = useProduct.products.getList('','','',true,'','');
+    const { data: productData, isLoading: isLoadingProductData } = useProduct.products.getList();
+    const {data: productPage, isLoading: isLoadingProductPage} = useProduct.getProductPage()
+    const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProduct.products.updateActivateSale();
+
+     //--------------Nút isVisibility--------------
+    //Check isVisible
+    const [isVisible, setIsVisible] = useState(null);
+    useEffect(() => {
+        if(productPage) 
+        setIsVisible(productPage.on_sale);
+    }, [productPage]);
+    //Xu ly nut isVisible
+    function handleToggle(checked){
+        setIsVisible(checked);
+        updateVisibility({"status": checked});
+    }
+   
+    const { mutate: updateProductSale, isPending: isPendingUpdateProductSale } = useProduct.products.updateSale();
     const [arrayProduct, setArrayProduct] =useState([]);
-    const [switchTime, setSwitchTime] = useState(0);
+   
     const contentSetting = {
-        title: `Quản lý danh sách tin tức`,
-        description: `Chọn các tin tức muốn thêm hoặc xóa  khỏi loại tin tức`,
-        type: "tin tức",
+        title: `Quản lý danh sách sản phẩm`,
+        description: `Chọn các sản phẩm muốn thêm hoặc xóa  khỏi trưng bày sale`,
+        type: "sản phẩm",
         header: [
-            "Mã tin tức",
-            "Tên tin tức",
-            "Loại tin tức",
+            "Mã sản phẩm",
+            "Tên sản phẩm",
+            "Loại sản phẩm",
         ]
     }
     const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
 
     useEffect(() => {
-        setArrayHighlightNews(highlightNewsData?.featured_news ?? []);
-        setSwitchTime(highlightNewsData?.switch_time ?? 0);
-        setArrayProduct(listProduct)
-    }, [highlightNewsData, homePageData])
+        
+        setArrayProduct(productSale)
+    }, [ productSale])
 
-    // Thêm function để xử lý việc di chuyển phần tử trong mảng
-    const moveArrayElement = (array, fromIndex, toIndex) => {
-        const newArray = [...array];
-        const element = newArray.splice(fromIndex, 1)[0];
-        newArray.splice(toIndex, 0, element);
-        return newArray;
-    };
-
-    // Xử lý khi click nút ArrowUp
-    const handleMoveUp = (currentIndex) => {
-        if (currentIndex > 0) {
-            const newArray = moveArrayElement(arrayHighlightNews, currentIndex, currentIndex - 1);
-            setArrayHighlightNews(newArray);
-        }
-    };
-    // Xử lý khi click nút ArrowDown
-    const handleMoveDown = (currentIndex) => {
-        if (currentIndex < arrayHighlightNews.length - 1) {
-            const newArray = moveArrayElement(arrayHighlightNews, currentIndex, currentIndex + 1);
-            setArrayHighlightNews(newArray);
-        }
-    };
-    const handleChangeSwitchTime = (e) => {
-        const value = e.target.value;
-
-        if (value === '') {
-            setSwitchTime('');
-            return;
-        }
-
-        const numberRegex = /^\d+(\.\d{0,2})?$/;
-
-        // Kiểm tra nếu giá trị hợp lệ
-        if (numberRegex.test(value)) {
-            setSwitchTime(value);
-        }
-    };
-    const handleDeleteFeatureNews = (item) => {
-        const newArr = arrayHighlightNews.filter(data => data.id != item.id);
-        setArrayHighlightNews(newArr);
+     
+   
+    
+    const handleDeleteProductSale = (item) => {
+        const newArr = arrayProduct.filter(data => data.id != item.id);
+        setArrayProduct(newArr);
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        const object = {
-            switch_time: switchTime,
-            news_ids: arrayHighlightNews.map(item => item.id),
-        };
-        updateFeatureNews(object);
+        const object =  {
+            "data": arrayProduct.map(item => ({
+                "id": item.id,
+                "discount_percent": item.discount_percent,
+                "final_price": item.final_price
+            }))
+        }
+      
+        updateProductSale( object)
     }
     const handleChangePrice = (e,id, type)=>{ // Type : discount || finalPrice 
         const value = e.target.value === "" ? "0" :  e.target.value
@@ -129,44 +77,44 @@ const FlashSale = () => {
         if(type === "discount")
         {
             if(valueNum > 100) valueNum = 100
-            product.discount = valueNum;
-            product.finalPrice = Math.round(product.price - product.price *product.discount/100)
+            product.discount_percent = valueNum;
+            product.final_price = Math.round(product.price - product.price *product.discount_percent/100)
 
         }else if(type === "finalPrice")
         {
             if(valueNum > product.price) valueNum = product.price
-            product.finalPrice = valueNum;
-            product.discount = 100 - (product.finalPrice / product.price) * 100
+            product.final_price = valueNum;
+            product.discount_percent = Math.round(100 - (product.final_price / product.price) * 100)
 
         }
+       
         setArrayProduct(prev => prev.map((item)=>(item.id === id ? product: item)))
 
     }
-    const convertHighlightNewsListToTableData = (arrayProduct) => {
+    const convertProductSaleListToTableData = (arrayProduct) => {
         return (arrayProduct || []).map((item, index) => {
             return [
                 {
                     type: "text", 
                     content:item.id
-              
                         
                 },
                 {
-                    type: "text",
-                    content: item.id
-                },
-                {
                     type: "component",
-                    component: <ProductImageCell imageUrl={item.img} productName={item.name}></ProductImageCell>
+                    component: <ProductImageCell imageUrl={item.product_img} productName={item.name}></ProductImageCell>
                 },
                 {
                     type: "text",
-                    content: item.price
+                    content: item.name
+                },
+                {
+                    type: "text",
+                    content: Number(item.price).toLocaleString('vi-VN') + ' đ' 
                 },
                 {
                     type: "component",
                     component: <input type='number' 
-                    value={item.discount} 
+                    value={item.discount_percent || 0} 
                     onChange={(e)=>handleChangePrice(e,item.id,"discount")}
                     min = {0} max= {100} 
                     className=' text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]' />
@@ -176,7 +124,7 @@ const FlashSale = () => {
                     component: <input 
                     type='number' 
                     onChange={(e)=>handleChangePrice(e,item.id,"finalPrice")}
-                    value={item.finalPrice} min = {0} 
+                    value={!item.final_price?(item.discount_percent === null? item.price:Math.round(item.price - item.price *item.discount_percent/100) ):item.final_price} min = {0} 
                     className='text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]' />
                 },
                 {
@@ -186,7 +134,7 @@ const FlashSale = () => {
                      
                          <button 
                             className="px-2 py-1 border  border-gray-300 rounded-md cursor-pointer" 
-                            onClick={() => handleDeleteFeatureNews(item)}>      
+                            onClick={() => handleDeleteProductSale(item)}>      
                             <SubtractIcon />    
                         </button>,
                   
@@ -195,12 +143,12 @@ const FlashSale = () => {
             ]
         });
     };
-    
 
-    const dataTable = convertHighlightNewsListToTableData(arrayProduct);
-    const configHighlightNews = {
+
+    const dataTable = convertProductSaleListToTableData(arrayProduct);
+    const configProductSale = {
         title: "Sale giảm giá",
-        description: `${arrayHighlightNews.length} sản phẩm`,
+        description: `${(arrayProduct || []).length} sản phẩm`,
         propsAddButton: {
             Icon: AddIcon,
             text: "Thêm sản phẩm",
@@ -222,13 +170,13 @@ const FlashSale = () => {
         },
         setIsModalOpenSetting: setIsModalOpenSetting,
         handleSubmit: handleSubmit,
-        switchTime: switchTime,
-        handleChangeSwitchTime: handleChangeSwitchTime
+
     }
 
-    if(isLoadingHighlightNews || isLoadingHomePageData || isLoadingNewsData || isPendingUpdateFeatureNews
+    if(isLoadingProductSale  || isPendingUpdateProductSale || isLoadingProductData || isLoadingProductPage || isPendingUpdateVisibility
     ) 
         return <Loading/>
+    console.log(isVisible)
     return (
         <div>
             <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
@@ -236,64 +184,60 @@ const FlashSale = () => {
                     <div>
                         <div className="mb-[4px]">
                             <h1 className="text-[24px] text-black font-semibold">
-                                {configHighlightNews.title}
+                                {configProductSale.title}
                             </h1>
                         </div>
                         <div className="mb-[24px]">
                             <p className="text-[14px] text-[#71717A] font-regular">
-                                {configHighlightNews.description}
+                                {configProductSale.description}
                             </p>
                         </div>
                     </div>
                     <div className='h-[40px]'>
-                        <button type="submit" className='' onClick={() => configHighlightNews.setIsModalOpenSetting(true)}> 
-                            <Button {...configHighlightNews.propsAddButton} />
+                        <button type="submit" className='' onClick={() => configProductSale.setIsModalOpenSetting(true)}> 
+                            <Button {...configProductSale.propsAddButton} />
                         </button>
                     </div>
                 </div>
                 <div className='mb-[30px]'>
-                    <Table columns={configHighlightNews.table.columns} data={configHighlightNews.table.data} isSetting={false} width={configHighlightNews.table.width} />
+                    <Table columns={configProductSale.table.columns} data={configProductSale.table.data} isSetting={false} width={configProductSale.table.width} />
                 </div>
-                <form onSubmit={configHighlightNews.handleSubmit}>
+                <div className='flex justify-between'>
+                    <form onSubmit={configProductSale.handleSubmit}>
                     
                     <div className='h-[45px] mt-3'>
-                        <button type='submit' className='h-full'> <Button {...configHighlightNews.propsSaveButton} /></button>
+                        <button type='submit' className='h-full'> <Button {...configProductSale.propsSaveButton} /></button>
                     </div>
                 </form>
+                  <div className="flex flex-row gap-5 items-center">
+                                <div className="flex flex-col">
+                                    <span className="font-bold text-gray-900">Hiển thị bảng Sale và cập nhật giá</span>
+                                    <span className="text-gray-500 ">Bật khi áp dụng chế độ giảm giá</span>
+                                </div>
+                                <SwitchButton 
+                                    handleToggle={handleToggle}
+                                    currentState={isVisible}
+                                />
+                </div>
+                </div>
             </div>
-            <AddHighlight
+           
+            <AddSale
                 isOpen={isModalOpenSetting}
                 onClose={() => setIsModalOpenSetting(false)}
                 content={contentSetting}
-                useData={useNews.news}
-                useDataCategories={useNews.news_categories}
+                useData={useProduct.products}
+                useDataCategories={useProduct.product_categories}
                 onSave={async (changedItems) => {
                     if (changedItems) {
 
-                        const { data, isCheckbox } = changedItems;
+                        const { data } = changedItems;
 
-                        const matchedNews = newsData.find(item => item.id === data.id);
-                        if (!matchedNews) return arrayHighlightNews; // Không tìm thấy thì không làm gì
-
-                        const newHighlightItem = {
-                            id: matchedNews.id,
-                            img: matchedNews.main_img,
-                            name: matchedNews.category.name,
-                            title: matchedNews.title,
-                            date: matchedNews.public_date,
-                        }
-                        const filtered = arrayHighlightNews.filter(item => item.id !== data.id);
-
-                        let newArray;
-                        if (isCheckbox) {
-                            newArray = [newHighlightItem, ...filtered];
-                        } else {
-                            newArray = [...filtered, newHighlightItem];
-                        }
-                        setArrayHighlightNews(newArray.map((item, index) => ({
-                            ...item,
-                            sort: index + 1,
-                        })))
+                        const matchedProduct = productData.find(item => item.id === data.id);
+                        if(arrayProduct.some( p=>p.id === data.id )) return
+                        if (!matchedProduct) return arrayProduct; // Không tìm thấy thì không làm gì
+                                               
+                        setArrayProduct(prev =>[...prev, matchedProduct])
                     }
                 }}
             />

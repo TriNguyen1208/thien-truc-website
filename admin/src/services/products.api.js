@@ -17,8 +17,8 @@ const updateProductPage = {
     }
 }
 const products = {
-    getList: async (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
-        const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured, page, limit));
+    getList: async (query = '', filter = '', is_featured = undefined,is_sale = undefined, page = undefined, limit = undefined) => {
+        const res = await axios.get(API_ROUTES.product.products.getList(query, filter, is_featured,is_sale, page, limit));
         return res.data;
     },
     getOne: async (id) => {
@@ -42,7 +42,12 @@ const products = {
         });
         return res.data;
     },
-
+    activateSale: async (data) =>
+    {
+        const res = await axios.post(API_ROUTES.product.products.activateSale,data);
+        return res.data;
+        
+    },
     updateOne: async (id, data) => {
         const res = await axios.patch(API_ROUTES.product.products.updateOne(id), data, {
             headers: {
@@ -59,6 +64,10 @@ const products = {
     },
     updateCategory: async (changedItems) => {
         const res = await axios.patch(API_ROUTES.product.products.updateCategory, changedItems);
+        return res.data;
+    },
+    updateSale: async (data) => {
+        const res = await axios.patch(API_ROUTES.product.products.updateSale, data);
         return res.data;
     },
     deleteOne: async (id) => {

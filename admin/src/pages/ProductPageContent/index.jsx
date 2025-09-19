@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState,useRef } from 'react'
 import {useLayout} from '@/layouts/LayoutContext'
 import EditBanner from '@/components/EditBanner'
 import useProducts from '@/hooks/useProducts'
 import Loading from '@/components/Loading'
 import Notification from '@/components/Notification'
 import FlashSale from './FlashSale'
+import {useLocation} from 'react-router-dom'
 const ProductPageContent = () => {
     //------------------API------------------
     const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage()
     const { mutate: updateBanner, isPending: isLoadingUpdateProductPage } = useProducts.updateProductPage.banner();
     const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProducts.updateProductPage.visibility();
-
+    const location = useLocation();
+    const saleRef = useRef(null);
     //--------------Nút isVisibility--------------
     //Check isVisible
     const [isVisible, setIsVisible] = useState(null);
@@ -23,6 +25,13 @@ const ProductPageContent = () => {
         setIsVisible(checked);
         updateVisibility({visibility: checked});
     }
+     useEffect(() => {
+        
+          if (location.state?.scrollToForm) {
+            saleRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+        
+    }, [location]);
     
     //----------------Banner-------------
     //Use state luu trang thai cua form Banner
@@ -98,10 +107,14 @@ const ProductPageContent = () => {
     if(isLoadingProductPage || isLoadingUpdateProductPage || isPendingUpdateVisibility){
         return(<Loading/>)
     }
+    console.log(productPage)
     return (
         <div>
         <EditBanner {...bannerProps}/>
-        <FlashSale/>
+        <div ref={saleRef}>
+            <FlashSale/>
+        </div>
+        
         <Notification {...notificationProps}/>
         </div>
     )
