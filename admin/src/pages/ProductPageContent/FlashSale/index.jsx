@@ -58,6 +58,16 @@ const FlashSale = () => {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const hasEmpty = arrayProduct.some(
+            (item) => item.discount_percent === null || item.discount_percent === "" || isNaN(item.discount_percent)
+        );
+
+        if (hasEmpty) {
+            alert("Vui lòng nhập đủ thông tin giảm giá cho tất cả sản phẩm!");
+            return;
+        }
+
         const object =  {
             "data": arrayProduct.map(item => ({
                 "id": item.id,
@@ -69,7 +79,7 @@ const FlashSale = () => {
         updateProductSale( object)
     }
     const handleChangePrice = (e,id, type)=>{ // Type : discount || finalPrice 
-        const value = e.target.value === "" ? "0" :  e.target.value
+        const value = e.target.value === "" ? "0" :  e.target.value.replace(/[\s.]/g, "")
         if(!/^\d*$/.test(value)) return
         var valueNum =  parseInt(value, 10)
         const product = arrayProduct.find(p=> p.id == id)
@@ -113,18 +123,20 @@ const FlashSale = () => {
                 },
                 {
                     type: "component",
-                    component: <input type='number' 
-                    value={item.discount_percent || 0} 
-                    onChange={(e)=>handleChangePrice(e,item.id,"discount")}
-                    min = {0} max= {100} 
-                    className=' text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]' />
+                    component: <input 
+                    type="text" 
+                    value={item.discount_percent ?? ""} 
+                    onChange={(e) => handleChangePrice(e, item.id, "discount")} 
+                    placeholder="0 - 100" 
+                    className="text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]" 
+                    />
                 },
                 {
                     type: "component",
                     component: <input 
-                    type='number' 
+                    type="text" 
                     onChange={(e)=>handleChangePrice(e,item.id,"finalPrice")}
-                    value={!item.final_price?(item.discount_percent === null? item.price:Math.round(item.price - item.price *item.discount_percent/100) ):item.final_price} min = {0} 
+                    value={(!item.final_price?(item.discount_percent === null? item.price:Math.round(item.price - item.price *item.discount_percent/100) ):item.final_price).toLocaleString("vi-VN")} min = {0} 
                     className='text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]' />
                 },
                 {
