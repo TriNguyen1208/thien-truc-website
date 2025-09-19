@@ -33,13 +33,14 @@ const FlashSale = () => {
     const [arrayProduct, setArrayProduct] =useState([]);
    
     const contentSetting = {
-        title: `Quản lý danh sách sản phẩm`,
+        title: `Thêm sản phẩm giảm giá`,
         description: `Chọn các sản phẩm muốn thêm hoặc xóa  khỏi trưng bày sale`,
         type: "sản phẩm",
         header: [
             "Mã sản phẩm",
             "Tên sản phẩm",
             "Loại sản phẩm",
+            "Giá"
         ]
     }
     const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
