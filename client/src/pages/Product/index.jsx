@@ -109,7 +109,6 @@ export default function Product() {
     if (isLoadingPage || isLoadingCategories) {
         return <Loading />;
     }
-    console.log(filteredProducts)
     const isAllCategoriesView = params.filter === ALL_CATEGORIES && !params.query && params.is_sale == "";
     return (
         <> 

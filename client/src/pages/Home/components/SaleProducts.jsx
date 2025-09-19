@@ -1,7 +1,7 @@
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import useProducts from "../../../hooks/useProducts"
+import useProducts from "@/hooks/useProducts"
 import PostCategory from "@/components/PostCategory";
 import ItemProduct from "@/components/ItemProduct";
 import CustomSlider from "./CustomSlider";

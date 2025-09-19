@@ -1,8 +1,8 @@
-import { FeatureDotIcon } from "../Icon";
+import { FeatureDotIcon } from "@/components/Icon";
 import { ProductOutlined } from '@ant-design/icons';
 import LazyLoad from '@/components/LazyLoad';
-import TagDiscount from "../TagDiscount";
-
+import TagDiscount from "@/components/TagDiscount";
+import useProduct from '@/hooks/useProducts'
 function handleDisplayHighlights(product) {
     const numberOfHighlights = Math.min(product.highlight_features.length, 3);
     const clampClass =
@@ -31,6 +31,10 @@ function handleDisplayHighlights(product) {
     )
 }
 function ItemProduct({product, handleClick , width = "w-full", height = "h-full"}) {
+    const {data: product_page, isLoading} = useProduct.getProductPage();
+    if(isLoading){
+        return <></>
+    }
     return (
         <div
             className="flex flex-col overflow-hidden h-full border border-[#E5E7EB] rounded-[8px]  bg-white hover:shadow-2xl transform hover:-translate-y-[2px] transition-all duration-300 ease-in-out leading-none"
@@ -56,7 +60,7 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
                     <ProductOutlined style={{ fontSize: '48px', color: '#9CA3AF' }} />
                 </div>)}
                 <div className="absolute top-0 right-0">
-                    <TagDiscount percent={product.discount_percent}/>
+                    <TagDiscount percent={product.discount_percent} on_sale={product_page?.on_sale ?? false}/>
                 </div>
             </div>
             <div className="flex flex-col w-full gap-2 sm:gap-0.5 md:gap-1 xl:gap-1.5 p-[8px] lg:px-4 lg:pt-4 ">
@@ -65,13 +69,32 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
                         {product.name}   
                     </h2>
                 </div>
-                <div className="flex flex-row gap-3">
-                    <span className="line-clamp-1 text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,15px)] md:text-[clamp(14px,1.9vw,18px)] xl:text-[clamp(16px,2vw,18px)] text-[#ff0000] font-semibold">{product.is_sale === true ? <span className="">{product.final_price.toLocaleString("vi-VN") + " ₫"}</span>: typeof product.price === "number" ? <span>{product.price.toLocaleString("vi-VN") + " ₫"}</span> : "Chưa có giá"}</span>
+                {product_page?.on_sale && (
+                    <div className="flex flex-row gap-3">
+                        <span className="line-clamp-1 text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,15px)] md:text-[clamp(14px,1.9vw,18px)] xl:text-[clamp(16px,2vw,18px)] text-[#ff0000] font-semibold">
+                        {product.is_sale === true ? (
+                            <span>{product.final_price.toLocaleString("vi-VN") + " ₫"}</span>
+                        ) : typeof product.price === "number" ? (
+                            <span>{product.price.toLocaleString("vi-VN") + " ₫"}</span>
+                        ) : (
+                            "Chưa có giá"
+                        )}
+                        </span>
 
+                        {product.is_sale === true && (
+                        <span className="line-through text-[#9e9e9e]">
+                            {product.price.toLocaleString("vi-VN") + " ₫"}
+                        </span>
+                        )}
+                    </div>
+                )}
 
-                    {product.is_sale == true ? <span className="line-through text-[#9e9e9e] ">{product.price.toLocaleString("vi-VN") + " ₫"}</span> : <></>}
-                </div>
-
+                    
+                {!product_page?.on_sale && (
+                    <div className="line-clamp-1 text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,15px)] md:text-[clamp(14px,1.9vw,18px)] xl:text-[clamp(16px,2vw,18px)] text-[#ff0000] font-semibold">
+                        {typeof product.price === "number" ? product.price.toLocaleString("vi-VN") + " ₫" : "Chưa có giá"}
+                    </div>
+                )}
                 {handleDisplayHighlights(product)}
             </div>
     

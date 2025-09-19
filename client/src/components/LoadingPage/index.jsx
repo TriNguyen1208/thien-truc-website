@@ -67,6 +67,21 @@ export const LoadingHome = async () => {
           queryFn: projectsServices.project_regions.getAllFeatured,
           staleTime: 10 * 60 * 1000,
       }),
+      queryClient.prefetchQuery({ 
+        queryKey: ["products", "general", "get_product_page"],
+        queryFn: productsServices.general.getProductPage,
+        staleTime: 10 * 60 * 1000,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ["products", "products", "get_list", '', '', '', true, '', ''],
+        queryFn: () => productsServices.products.getList('', '', '', true, '', ''),
+        staleTime: 10 * 60 * 1000,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ["products", "products", "get_list", undefined, undefined, undefined, true, 1, 12],
+        queryFn: () => productsServices.products.getList(undefined, undefined, undefined, true, 1, 12),
+        staleTime: 10 * 60 * 1000,
+      })
   ]);
   return null;
 }
@@ -129,6 +144,11 @@ export const LoadingPrice = async () => {
           queryFn: () => productsServices.products.getListByCategory(undefined, '', '', undefined, undefined),
           staleTime: 10 * 60 * 1000,
       }),
+      queryClient.prefetchQuery({ 
+        queryKey: ["products", "general", "get_product_page"],
+        queryFn: productsServices.general.getProductPage,
+        staleTime: 10 * 60 * 1000,
+      }),
     ]);
   return null;
 }
@@ -145,8 +165,8 @@ export const LoadingProduct = async () => {
       staleTime: 10 * 60 * 1000,
     }),
     queryClient.prefetchQuery({
-      queryKey: ["products", "products", "get_list", undefined, undefined, undefined, 1, 12],
-      queryFn: () => productsServices.products.getList(undefined, undefined, undefined, 1, 12),
+      queryKey: ["products", "products", "get_list", undefined, undefined, undefined, '', 1, 12],
+      queryFn: () => productsServices.products.getList(undefined, undefined, undefined, '', 1, 12),
       staleTime: 10 * 60 * 1000,
     })
   ]);
@@ -157,11 +177,19 @@ export const LoadingProductDetail = async ({params}) => {
   if(!id){
     throw new Error("Product ID is not existed");
   }
-  await queryClient.prefetchQuery({
-    queryKey: ["products", "products", "get_one", id],
-    queryFn: () => productsServices.products.getOne(id),
-    staleTime: 10 * 60 * 1000,
-  })
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["products", "products", "get_one", id],
+      queryFn: () => productsServices.products.getOne(id),
+      staleTime: 10 * 60 * 1000,
+    }),
+    queryClient.prefetchQuery({ 
+      queryKey: ["products", "general", "get_product_page"],
+      queryFn: productsServices.general.getProductPage,
+      staleTime: 10 * 60 * 1000,
+    }),
+  ])
+  return null;
 }
 
 export const LoadingProject = async () => {

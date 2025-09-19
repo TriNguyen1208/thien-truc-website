@@ -1,7 +1,7 @@
 import React from 'react'
 
-const TagDiscount = ({percent = null}) => {
-    if(percent == null){
+const TagDiscount = ({on_sale = false, percent = null}) => {
+    if(percent == null || on_sale == false){
         return <></>
     }
     return (

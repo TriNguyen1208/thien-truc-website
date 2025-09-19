@@ -5,7 +5,7 @@ import useProducts from "@/hooks/useProducts";
 import ComingSoon from "@/pages/ComingSoon";
 import Loading from "@/components/Loading";
 import BackButton from "@/components/BackButton";
-import TagDiscount from "../../components/TagDiscount";
+import TagDiscount from "@/components/TagDiscount";
 function Picture({ url }) {
   return (
     <div className="flex flex-col">
@@ -87,12 +87,12 @@ export default function ProductDetail() {
     const navigation = useNavigation();
 
     const {data: product, isLoading: isLoadingProduct} = useProducts.products.getOne(id);
-
+    const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage(); 
     if (!id) {
         return <div>Không có sản phẩm</div>;
     }
 
-    if (isLoadingProduct) {
+    if (isLoadingProduct || isLoadingProductPage) {
         return <Loading />;
     }
 
@@ -117,7 +117,7 @@ export default function ProductDetail() {
                 </div>
                 )}
                 <div className="absolute top-0 right-0">
-                    <TagDiscount percent={product.discount_percent}/>
+                    <TagDiscount percent={product.discount_percent} on_sale={productPage?.on_sale ?? false}/>
                 </div>
             </div>
 
@@ -126,10 +126,17 @@ export default function ProductDetail() {
                 <h1 className="pb-[10px] font-bold text-[20px] sm:text-[24px] leading-none">
                 {product.name}
                 </h1>
-                  <div className="flex flex-row gap-3 border-y border-[#E5E7EB] py-[15px] my-[15px] text-[23px]">
-                      <span className="text-[#ff0000] font-semibold">{product.is_sale === true ? <span className="">{product.final_price.toLocaleString("vi-VN") + " ₫"}</span>: typeof product.price === "number" ? <span>{product.price.toLocaleString("vi-VN") + " ₫"}</span> : "Chưa có giá"}</span>
-                      {product.is_sale == true ? <span className="line-through text-[#9e9e9e] ">{product.price.toLocaleString("vi-VN") + " ₫"}</span> : <></>}
-                  </div>
+
+                {productPage?.on_sale && <div className="flex flex-row gap-3 border-y border-[#E5E7EB] py-[15px] my-[15px] text-[23px]">
+                    <span className="text-[#ff0000] font-semibold">{product.is_sale === true ? <span className="">{product.final_price.toLocaleString("vi-VN") + " ₫"}</span>: typeof product.price === "number" ? <span>{product.price.toLocaleString("vi-VN") + " ₫"}</span> : "Chưa có giá"}</span>
+                    {product.is_sale == true ? <span className="line-through text-[#9e9e9e] ">{product.price.toLocaleString("vi-VN") + " ₫"}</span> : <></>}
+                </div>}
+
+                {!productPage?.on_sale && <div className="border-y border-[#E5E7EB] py-[15px] my-[15px] text-[23px] text-[#ff0000] font-semibold">
+                {Number(product.price)
+                    ? Number(product.price).toLocaleString("vi-VN") + " ₫"
+                    : "Chưa có giá"}
+                </div>}
                 <p className="py-[10px] text-[16px] whitespace-pre-wrap">
                 {product.description}
                 </p>
