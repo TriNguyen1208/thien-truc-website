@@ -14,7 +14,7 @@ const getAllTables = async (query = '', filter = '') => {
     };
 }
 
-const getNumPage = async (query = '', filter = '') => {
+const getNumPage = async (query = '', filter = '', is_sale = '') => {
     query = query.trim().replaceAll(`'`, ``); // clean
     filter = filter.trim().replaceAll(`'`, ``); // clean
     let where = [];
@@ -31,7 +31,9 @@ const getNumPage = async (query = '', filter = '') => {
             `unaccent(pc.name) ILIKE unaccent('${filter}')`
         );
     }
-
+    if(is_sale != ''){
+        where.push(`prd.is_sale = ${is_sale}`);
+    }
     if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
 
     const totalCount = parseInt((await pool.query(`
@@ -90,12 +92,11 @@ const updateProductPage = {
 }
 
 const products = {
-    getList: async (query = '', filter = '', page, is_featured, item_limit) => {
+    getList: async (query = '', filter = '', page, is_featured, is_sale, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
         const pageSize = parseInt(item_limit) || 12;
-        const totalCount = await getNumPage(query, filter);
-
+        const totalCount = await getNumPage(query, filter, is_sale);
         let where = [];
         let order = [];
         let limit = '';
@@ -119,6 +120,14 @@ const products = {
 
         if (is_featured == 'true' || is_featured == 'false') {
             where.push(`prd.is_featured = ${is_featured}`);
+        }
+
+        if (is_sale == 'true' || is_sale == 'false') {
+            where.push(`prd.is_sale = ${is_sale}`);
+
+            order.push(
+                `similarity(unaccent(prd.name), unaccent('${query}')) DESC`
+            );
         }
 
         if (page) {
@@ -146,6 +155,9 @@ const products = {
                 prd.product_features,
                 prd.highlight_features,
                 prd.is_featured,
+                prd.is_sale,
+                prd.discount_percent,
+                prd.final_price,
             
                 pp.price AS price,
                 pc.id AS category_id,
@@ -157,7 +169,6 @@ const products = {
             ${order}
             ${limit}
         `;
-
         const { rows } = await pool.query(sql);
 
         const results = rows.map(row => ({
@@ -166,6 +177,9 @@ const products = {
             description: row.description || "",
             product_img: row.product_img || "",
             price: (row.price == null) ? "" : row.price,
+            is_sale: row.is_sale,
+            discount_percent: row.discount_percent,
+            final_price: row.final_price,
             product_specifications: JSON.parse(row.product_specifications || '{}'),
             warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
             product_features: row.product_features || [],
@@ -177,7 +191,6 @@ const products = {
             },
             is_featured: row.is_featured || false
         }));
-
         if (page)
             return {
                 totalCount,
@@ -187,7 +200,7 @@ const products = {
             };
         else return [...results];
     },
-    getListByCategory: async (id = '', query = '', filter = '', is_featured, item_limit) => {
+    getListByCategory: async (id = '', query = '', filter = '', is_featured, is_sale, item_limit) => {
         query = query.trim().replaceAll(`'`, ``); // clean
         filter = filter.trim().replaceAll(`'`, ``); // clean
         id = id.trim().replace(/^['"]|['"]$/g, '');
@@ -220,6 +233,14 @@ const products = {
             where.push(`prd.is_featured = ${is_featured}`);
         }
 
+        if (is_sale == 'true' || is_sale == 'false') {
+            where.push(`prd.is_sale = ${is_sale}`);
+
+            order.push(
+                `similarity(unaccent(prd.name), unaccent('${query}')) DESC`
+            );
+        }
+
         // Chuẩn hóa từng thành phần truy vấn
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
@@ -236,6 +257,9 @@ const products = {
                 prd.product_features,
                 prd.highlight_features,
                 prd.is_featured,
+                prd.is_sale,
+                prd.discount_percent,
+                prd.final_price,
 
                 pp.price AS price,
                 pc.id AS category_id,
@@ -273,6 +297,9 @@ const products = {
                 description: row.description || "",
                 product_img: row.product_img || "",
                 price: (row.price == null) ? "" : row.price,
+                is_sale: row.is_sale,
+                discount_percent: row.discount_percent,
+                final_price: row.final_price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
                 warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
@@ -300,6 +327,9 @@ const products = {
                 prd.product_features,
                 prd.highlight_features,
                 prd.is_featured,
+                prd.is_sale,
+                prd.discount_percent,
+                prd.final_price,
 
                 pp.price as price,
                 prd_cate.id as category_id,
@@ -317,6 +347,9 @@ const products = {
                 description: row.description || "",
                 product_img: row.product_img || "",
                 price: (row.price == null) ? "" : row.price,
+                is_sale: row.is_sale,
+                discount_percent: row.discount_percent,
+                final_price: row.final_price,
                 product_specifications: JSON.parse(row.product_specifications || '{}'),
                 warranty_period: (row.warranty_period == null) ? "" : row.warranty_period,
                 product_features: row.product_features || [],
@@ -333,7 +366,7 @@ const products = {
             };
         return product
     },
-    getSearchSuggestions: async (query, filter, is_featured) => {
+    getSearchSuggestions: async (query, filter, is_featured, is_sale) => {
         query = query.trim().replaceAll(`'`, ``);
         filter = filter.trim().replaceAll(`'`, ``);
         const suggestions_limit = 5;
@@ -361,6 +394,14 @@ const products = {
             where.push(`P.is_featured = ${is_featured}`);
         }
 
+        if (is_sale == 'true' || is_sale == 'false') {
+            where.push(`P.is_sale = ${is_sale}`);
+
+            order.push(
+                `similarity(unaccent(P.name), unaccent('${query}')) DESC`
+            );
+        }
+
         // Chuẩn hóa các thành phần query
         if (where.length != 0) where = 'WHERE ' + where.join(' AND '); else where = '';
         if (order.length != 0) order = 'ORDER BY ' + order.join(', '); else order = '';
@@ -383,6 +424,21 @@ const products = {
             }));
         } catch (err) {
             throw new Error(`DB error: ${err.message}`);
+        }
+    },
+    activateSale: async (data) => {
+        const { status } = data;
+
+        await pool.query(`
+            UPDATE product.product_page
+            SET on_sale = $1
+        `, [status]);
+        
+        const activity = (status == 'true') ? 'Bật' : 'Tắt'
+        return {
+            status: 200,
+            message: `${activity} chương trình Sale giảm giá thành công`,
+            action: `${activity} chương trình Sale giảm giá`
         }
     },
     updateFeatureOne: async (id, product_status) => {
@@ -522,8 +578,8 @@ const products = {
             INSERT INTO product.products (
             name, description, product_img, category_id,
             product_specifications, warranty_period,
-            product_features, highlight_features, is_featured
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            product_features, highlight_features, is_featured, is_sale, discount_percent, final_price
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, false, null, null)
             RETURNING id;
         `;
 
@@ -564,8 +620,15 @@ const products = {
         const { 
             product_img: old_avatar_img,
             name: old_name,
-            category_id: old_category_id
-        } = (await pool.query('SELECT product_img, name, category_id FROM product.products WHERE id = $1', [id])).rows?.[0];
+            category_id: old_category_id,
+            discount_percent: old_discount_percent,
+            final_price: old_final_price,
+            is_sale: old_is_sale
+        } = (await pool.query(`
+            SELECT product_img, name, category_id, discount_percent, final_price, is_sale
+            FROM product.products
+            WHERE id = $1
+        `, [id])).rows?.[0];
 
         if (!old_name) return {
             status: 404,
@@ -584,6 +647,10 @@ const products = {
             technicalDetails,
             warranty
         } = data;
+        let is_sale = old_is_sale;
+        let discount_percent = old_discount_percent;
+        let final_price = old_final_price;
+
         const final_avatar_img = await updateImage(
             old_avatar_img,
             local_avatar_img,
@@ -591,7 +658,19 @@ const products = {
             'product'
         );
 
-        if (price == "") price = null;
+        if (price == "") {
+            price = null;
+            is_sale = false;
+            discount_percent = null;
+            final_price = null;
+        } else if (parseInt(price) <= parseInt(old_final_price)) {
+            is_sale = false;
+            discount_percent = null;
+            final_price = null;
+        } else {
+            discount_percent = parseInt(100 * (1 - parseInt(final_price) / parseInt(price)));
+        }
+
         warranty = isNaN(parseInt(warranty)) ? null : parseInt(warranty);
 
         // 1. Get category_id
@@ -624,8 +703,11 @@ const products = {
                 warranty_period = $6,
                 product_features = $7,
                 highlight_features = $8,
-                is_featured = $9
-            WHERE id = $10
+                is_featured = $9,
+                is_sale = $10,
+                discount_percent = $11,
+                final_price = $12
+            WHERE id = $13
         `;
         const insertValues = [
             productName,
@@ -637,6 +719,9 @@ const products = {
             product_features,
             highlight_feature_ids,
             isDisplayHomePage,
+            is_sale,
+            discount_percent,
+            final_price,
             id
         ];
         promises.push(pool.query(insertSql, insertValues));
@@ -673,6 +758,46 @@ const products = {
             status: 200,
             message: "Cập nhật sản phẩm thành công",
             action: `Cập nhật sản phẩm${note}: ${id} - ${productName}`
+        }
+    },
+    updateSale: async (data) => {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            await client.query(`
+                UPDATE product.products
+                SET is_sale = false
+                WHERE is_sale = true
+            `);
+
+            const promises = data.map(item => {
+                const { id, discount_percent, final_price } = item
+                return client.query(`
+                    UPDATE product.products
+                    SET
+                        is_sale = true,
+                        discount_percent = $1,
+                        final_price = $2
+                    WHERE
+                        id = $3
+                `, [discount_percent, final_price, id]);
+            });
+            
+            await Promise.all(promises);
+
+            await client.query('COMMIT');
+
+            return {
+                status: 200,
+                message: "Cập nhật Sale giảm giá thành công",
+                action: "Cập nhật Sale giảm giá"
+            }
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw err;
+        } finally {
+            client.release();
         }
     },
     deleteOne: async (id) => {

@@ -43,10 +43,10 @@ const updateProductPage = {
 
 // ==== Products ====
 const products = {
-    useGetList: (query = '', filter = '', is_featured = undefined, page = undefined, limit = undefined) => {
+    useGetList: (query = '', filter = '', is_featured = undefined,is_sale = undefined, page = undefined, limit = undefined) => {
         return useQuery({
             queryKey: ["product_list", query, filter, is_featured, page, limit],
-            queryFn: () => productsServices.products.getList(query, filter, is_featured, page, limit),
+            queryFn: () => productsServices.products.getList(query, filter, is_featured,is_sale, page, limit),
             staleTime: 10 * 60 * 1000,
         });
     },
@@ -95,7 +95,19 @@ const products = {
             }
         });
     },
-
+    useActivateSale:()=>{
+         const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (data) => productsServices.products.activateSale(data),
+            onSuccess: (success) => {
+                toast.success(success?.message ?? "Cập nhật hiển thị thành công");
+                queryClient.invalidateQueries(['product_by_category']);
+            },
+            onError: (error) => {
+                toast.error(error?.message ?? "Cập nhật hiển thị không thành công");
+            }
+        });
+    },
     useUpdateOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -141,7 +153,19 @@ const products = {
             }
         });
     },
-
+    useUpdateSale: ()=>{
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: (data) => productsServices.products.updateSale(data),
+            onSuccess: (success) => {
+                toast.success(success?.message ?? "Cập nhật thành công");
+                queryClient.invalidateQueries(['product_sale']);
+            },
+            onError: (error) => {
+                toast.error(error?.message ?? "Cập nhật  không thành công");
+            }
+        });
+    },
     useDeleteOne: () => {
         const queryClient = useQueryClient();
         return useMutation({
@@ -295,9 +319,11 @@ export default {
         getListByCategory: products.useGetListByCategory,//
         getSearchSuggestions: products.useGetSearchSuggestions,//
         createOne: products.useCreateOne,//
+        updateActivateSale: products.useActivateSale,//
         updateOne: products.useUpdateOne,//
         updateFeatureOne: products.useUpdateFeatureOne,//
         updateCategory: products.useUpdateCategory,//
+        updateSale: products.useUpdateSale,//
         deleteOne: products.useDeleteOne,//
     },
     product_categories: {

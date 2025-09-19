@@ -7,6 +7,8 @@ import FeaturedNews from "./components/FeaturedNews";
 import AboutSection from "./components/AboutSection";
 import FeaturedProjects from "./components/FeaturedProjects";
 import FeaturedProducts from "./components/FeaturedProducts";
+import SaleProducts from "./components/SaleProducts";
+import useProducts from "@/hooks/useProducts";
 
 // Tách SEO
 const PageSEO = ({ seoData }) => (
@@ -33,7 +35,7 @@ const PageSEO = ({ seoData }) => (
 
 export default function Home() {
     const { data: allData, isLoading: loadingAll } = useHome.getAll();
-
+    const {data: productPage, isLoading: isLoadingProductPage} = useProducts.getProductPage();
     const SEO = {
         title: "Trang chủ",
         description: "Trang chủ của công ty Thiên Trúc, nơi cung cấp các giải pháp chiếu sáng LED cao cấp.",
@@ -46,7 +48,7 @@ export default function Home() {
         }
     };
 
-    if (loadingAll)
+    if (loadingAll || isLoadingProductPage)
         return <Loading />;
 
     const homePageData = allData.home_page;
@@ -64,6 +66,7 @@ export default function Home() {
             {homePageData.is_visible ? (
                 <main>
                     <FeaturedNews />
+                    {productPage?.on_sale && <SaleProducts/>}
                     <FeaturedProjects />
                     <FeaturedProducts />
                     <AboutSection

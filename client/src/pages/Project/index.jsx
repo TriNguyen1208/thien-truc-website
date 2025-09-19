@@ -123,7 +123,6 @@ export default function Project() {
         contentButton: "Liên hệ tư vấn",
         handleButton: handleButton
     };
-
     return (
         <>
             {navigation.state === 'loading' && <Loading />}

@@ -9,7 +9,7 @@ import CustomSlider from "./CustomSlider";
 // Component hiển thị một dự án
 // Tạo dữ liệu cho một dự án
 const ProjectItem = (item) => {
-    const complete_time = String(new Date(item.complete_time).toLocaleDateString('vi-VN'))
+    const complete_time = item.complete_time ? String(new Date(item.complete_time).toLocaleDateString('vi-VN')) : null
     const dataProject = {
         type: 'project',
         title: item?.title ?? "",
@@ -23,7 +23,7 @@ const ProjectItem = (item) => {
 
     return (
         <Link to={`/du-an/${item.id}`} className="flex w-full justify-center md:w-1/2 lg:w-1/3 flex-shrink-0 px-2">
-            <div>
+            <div className="w-full">
                 <ItemPost data={dataProject} />
             </div>
         </Link>
@@ -59,7 +59,7 @@ export default function FeaturedProjects() {
 
     // Tạo danh sách các dự án nổi bật
     return (
-        <section className="bg-[var(--light-green-banner)] text-center py-[45px] px-[10px] sm:px-[25px]">
+        <section className="text-center py-[45px] px-[10px] sm:px-[25px]">
             <h2 className="font-[600] text-[35px] text-[var(--dark-green)] mb-[20px]">
                 Dự án tiêu biểu
             </h2>

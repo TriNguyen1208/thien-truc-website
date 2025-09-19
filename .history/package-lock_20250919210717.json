@@ -4,12 +4,7 @@
   "requires": true,
   "packages": {
     "": {
-      "name": "thien-truc-website",
-      "workspaces": [
-        "client",
-        "admin",
-        "server"
-      ],
+      "hasInstallScript": true,
       "dependencies": {
         "dotenv": "^17.2.1",
         "nodemon": "^3.1.10",

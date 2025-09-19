@@ -18,10 +18,10 @@ function useSearchSuggest(query, filter){
 }
 
 const products = {
-    useGetList: (query = '', filter = '', is_featured = '', page = 1, limit='') => 
-        useCustomQuery(["products", "products", "get_list", query, filter, is_featured, page, limit], () => productsServices.products.getList(query, filter, is_featured, page, limit)),
-    useGetListByCategory: (id, query ='', filter ='', is_featured, limit) =>
-        useCustomQuery(["products", "products", "get_list_by_category", id, query, filter, is_featured, limit], () => productsServices.products.getListByCategory(id, query, filter, is_featured, limit)),
+    useGetList: (query = '', filter = '', is_featured = '', is_sale = '', page = 1, limit='') => 
+        useCustomQuery(["products", "products", "get_list", query, filter, is_featured, is_sale, page, limit], () => productsServices.products.getList(query, filter, is_featured, is_sale, page, limit)),
+    useGetListByCategory: (id, query ='', filter ='', is_featured, is_sale = '', limit) =>
+        useCustomQuery(["products", "products", "get_list_by_category", id, query, filter, is_featured, is_sale, limit], () => productsServices.products.getListByCategory(id, query, filter, is_featured, is_sale, limit)),
     useGetOne: (id) => 
         useCustomQuery(["products", "products", "get_one", id], () => productsServices.products.getOne(id))
    

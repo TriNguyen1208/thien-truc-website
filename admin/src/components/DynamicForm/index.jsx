@@ -123,6 +123,13 @@ const DynamicForm = ({ data, config }) => {
         } else if (type === 'file') {
             newValue = files[0];
         }
+        // ✅ Nếu field là price thì chỉ cho nhập số
+        if (name === "price") {
+            // bỏ dấu chấm ngăn cách ra nếu có
+            const raw = newValue.replace(/\./g, "");
+            if (!/^\d*$/.test(raw)) return; // chỉ nhận số
+            newValue = raw;
+        }
         // ✅ Nếu trường chỉ cho nhập số
         if (field?.isOnlyNumber && !/^\d*$/.test(newValue)) {
             return; // không setState nếu nhập không phải số
@@ -491,14 +498,24 @@ const DynamicForm = ({ data, config }) => {
                 );
             }
             default:
-                return <input
-                    {...commonProps}
-                    type={type}
-                    value={value}
-                    placeholder={item.placeholder || defaultField.placeholder}
-                    maxLength={item.maxLength || undefined}
-                    className="cursor-pointer px-3 py-2"
-                />;
+                if (nameColumn == 'price')
+                    return <input
+                        {...commonProps}
+                        type='text'
+                        value={value ? Number(value).toLocaleString("vi-VN") : ""}
+                        placeholder={item.placeholder || defaultField.placeholder}
+                        maxLength={item.maxLength || undefined}
+                        className="cursor-pointer px-3 py-2"
+                    />;
+                else 
+                    return <input
+                        {...commonProps}
+                        type={type}
+                        value={value}
+                        placeholder={item.placeholder || defaultField.placeholder}
+                        maxLength={item.maxLength || undefined}
+                        className="cursor-pointer px-3 py-2"
+                    />;
         }
     }
     return (

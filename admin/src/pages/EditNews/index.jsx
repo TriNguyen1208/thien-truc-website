@@ -7,7 +7,7 @@ import ContentManagement from '@/components/ContentManagement';
 import PostSettings from '@/components/PostSettings';
 import useNews from '@/hooks/useNews';
 import { addDeleteImage, extractBlogImages } from '@/utils/handleImage';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Notification from '@/components/Notification'
 import Loading from '@/components/Loading';
 import changeToFormData from '@/utils/changeToFormData';
@@ -27,11 +27,17 @@ const EditNews = () => {
     const [initialForm, setInitialForm] = useState(null);
     //set layout 
     const {setLayoutProps} = useLayout();
+    //navigate
+    const navigate = useNavigate();
+    const buttonBackAction = () => {
+        navigate('/quan-ly-tin-tuc', {state: { createId: news_id }});
+    }
     useEffect(() => {
         setLayoutProps({
             title: "Cập nhật tin tức",
             description: "Chỉnh sửa nội dung tin tức",
             hasButtonBack: true,
+            buttonBackAction: buttonBackAction
         })
     }, [])
 

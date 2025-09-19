@@ -1,12 +1,21 @@
 // src/pages/Price/components/PriceRow.jsx
 import { Button } from 'antd';
+import useProduct from '@/hooks/useProducts'
 
 export default function PriceRow({ product, index, isLast, navigate }) {
-    const formatPrice = (price) => {
-        if (price === '') {
-            return <span className="text-red-400 italic font-normal">Cập nhật sau</span>;
+    const {data, isLoading} = useProduct.getProductPage();
+    const formatPrice = (on_sale, price, final_price, is_sale) => {
+        if(on_sale){
+            return <div className="flex flex-col">
+                <span className="text-[#ff0000] font-semibold">{is_sale === true ? <span className="">{final_price.toLocaleString("vi-VN") + " ₫"}</span>: typeof price === "number" ? <span>{price.toLocaleString("vi-VN") + " ₫"}</span> : <span className='text-red-400 italic font-normal'>Cập nhật sau</span>}</span>
+                {is_sale == true ? <span className="line-through text-[#9e9e9e] text-xs">{price.toLocaleString("vi-VN") + " ₫"}</span> : <></>}
+            </div>
+        }else{
+            if (price === '') {
+                return <span className="text-red-400 italic font-normal">Cập nhật sau</span>;
+            }
+            return <span className="text-[#ff0000] font-semibold">{Number(price).toLocaleString('vi-VN')} đ</span>;
         }
-        return <span className="text-[#ff0000] font-semibold">{Number(price).toLocaleString('vi-VN')} đ</span>;
     };
 
     const formatWarranty = (warranty) => {
@@ -18,7 +27,9 @@ export default function PriceRow({ product, index, isLast, navigate }) {
         }
         return `${warranty} tháng`;
     };
-
+    if(isLoading){
+        return <></>
+    }
     return (
         <tr
             className={`${
@@ -31,13 +42,13 @@ export default function PriceRow({ product, index, isLast, navigate }) {
                     <span>
                         <span>#</span> {index + 1}
                     </span>
-                    {formatPrice(product.price)}
+                    {formatPrice(data?.on_sale ?? undefined, product.price, product.final_price, product.is_sale)}
                 </div>
             </td>
             <td className="hidden md:table-cell md:w-[8%] md:p-[12px] md:text-center">{index + 1}</td>
             <td className="md:w-[40%] md:p-[12px]">{product.name}</td>
             <td className=" hidden md:table-cell md:w-[15%] md:p-[12px] md:text-center">
-                {formatPrice(product.price)}
+                {formatPrice(data?.on_sale ?? undefined, product.price, product.final_price, product.is_sale)}
             </td>
             <td className="hidden md:table-cell md:w-[17%] md:p-[12px] text-center">
                 {formatWarranty(product.warranty_period)}

@@ -24,8 +24,9 @@ const useProductParams = (validCategories) => {
         const filter = validCategories.includes(rawFilter) ? rawFilter : ALL_CATEGORIES;
         const rawPage = parseInt(searchParams.get("page"), 10);
         const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
-        
-        return { query, filter, page };
+        const rawIsSale = searchParams.get("is_sale") || "";
+        const is_sale = rawIsSale == 'true' ? true : "";
+        return { query, filter, is_sale, page };
     }, [searchParams, validCategories]);
 
     const updateParams = (newValues, scrollTargetRef) => {
@@ -74,10 +75,10 @@ export default function Product() {
         params.query,
         params.filter === ALL_CATEGORIES ? undefined : params.filter,
         undefined,
+        params.is_sale,
         params.page,
         ITEMS_PER_PAGE
     );
-    
     // Fetch data cho chế độ "Tất cả sản phẩm" (theo category)
     const { data: productsByCat, isLoading: isLoadingProductsByCat } = useProducts.products.getListByCategory('', '', '', '', ITEMS_PER_CATEGORY_SLIDER);
 
@@ -108,9 +109,7 @@ export default function Product() {
     if (isLoadingPage || isLoadingCategories) {
         return <Loading />;
     }
-
-    const isAllCategoriesView = params.filter === ALL_CATEGORIES && !params.query;
-
+    const isAllCategoriesView = params.filter === ALL_CATEGORIES && !params.query && params.is_sale == "";
     return (
         <> 
             {navigation.state === 'loading' && <Loading />}

@@ -11,6 +11,7 @@ import Notification from '@/components/Notification'
 import ProductImageCell from '@/components/ProductImageCell'
 import changeToFormData from '@/utils/changeToFormData'
 import Loading from '@/components/Loading'
+import {  ArrowRight } from 'lucide-react';
 const Product = () => {
     //Config display và searchParams
     const displays = ["Tất cả trạng thái", "Trưng bày", "Không trưng bày"];
@@ -388,6 +389,11 @@ const Product = () => {
             <div className="bg-white px-6 py-6 rounded-lg shadow-sm border border-gray-200  mb-[25px]">
                 <SearchBar data={dataSearch} />
             </div>
+            <div className="flex my-4 text-[16px] text-[#2563EB] cursor-pointer" 
+                onClick={()=>{
+                    navigate('/noi-dung-trang/san-pham', { state: { scrollToForm: true } });
+            }
+            }>Đi tới Quản lý Sale giảm giá   <ArrowRight/> </div>
             {
                 Object.entries(configProduct.dataProduct).map(([categoryName, productList]) => {
                     const dataTable = convertProductListToTableData(productList);

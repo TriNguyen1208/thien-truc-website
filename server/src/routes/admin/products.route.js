@@ -22,7 +22,9 @@ router.get('/featured_product_categories', productController.product_categories.
 
 router.post('/products', authenticateToken, upload.single('local_image'), productController.products.createOne);
 router.post('/product_categories', authenticateToken, productController.product_categories.createOne);
+router.post('/activate-sale', authenticateToken, productController.products.activateSale);
 
+router.patch('/sale', authenticateToken, productController.products.updateSale);
 router.patch('/product_page/banner', authenticateToken, productController.updateProductPage.banner);
 router.patch('/product_page/visibility', authenticateToken, productController.updateProductPage.visibility);
 router.patch('/price_page/banner', authenticateToken, productController.updatePricePage.banner);
