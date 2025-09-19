@@ -11,6 +11,7 @@ const AddSale = ({
     content,
     onSave,
     useData,
+    pickedData,
     useDataCategories
 }) => {
     const {
@@ -79,7 +80,6 @@ const AddSale = ({
             price: item.price 
         }));
        
-
         setFiltered(datasFetch);
         setSelectedId(null);
       
@@ -128,14 +128,12 @@ const AddSale = ({
     };
 
     const handleSave = () => {
-    
         if (!selectedId) {
             onSave(null); // Không tick checkbox thì trả về null
         } else {
             // Tìm item được chọn
             const selectedItem = filtered.find(item => item.id === selectedId);
             if (selectedItem) {
-                console.log(selectedItem)
                 onSave({
                     data: selectedItem,
                     
@@ -171,7 +169,7 @@ const AddSale = ({
             { type: "text", content: header[2] },
             { type: "text", content: header[3] }
         ],
-        ...filtered.map((data) => [
+        ...filtered.filter(data => !pickedData.includes(data.id)).map((data) => [
             {
                 type: "checkbox",
                 content: data.id,

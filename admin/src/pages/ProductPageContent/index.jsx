@@ -107,7 +107,6 @@ const ProductPageContent = () => {
     if(isLoadingProductPage || isLoadingUpdateProductPage || isPendingUpdateVisibility){
         return(<Loading/>)
     }
-    console.log(productPage)
     return (
         <div>
         <EditBanner {...bannerProps}/>

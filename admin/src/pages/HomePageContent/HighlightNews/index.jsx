@@ -85,7 +85,6 @@ const HighlightNews = () => {
             switch_time: switchTime,
             news_ids: arrayHighlightNews.map(item => item.id),
         };
-        console.log(object)
         updateFeatureNews(object);
     }
     const convertHighlightNewsListToTableData = (highlightNewsList) => {

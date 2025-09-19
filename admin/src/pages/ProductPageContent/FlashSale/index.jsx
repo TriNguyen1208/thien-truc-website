@@ -240,6 +240,7 @@ const FlashSale = () => {
                 onClose={() => setIsModalOpenSetting(false)}
                 content={contentSetting}
                 useData={useProduct.products}
+                pickedData={arrayProduct.map(item => item.id)}
                 useDataCategories={useProduct.product_categories}
                 onSave={async (changedItems) => {
                     if (changedItems) {
