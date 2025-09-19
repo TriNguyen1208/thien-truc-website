@@ -21,12 +21,12 @@ const FlashSale = () => {
     const [isVisible, setIsVisible] = useState(null);
     useEffect(() => {
         if(productPage) 
-        setIsVisible(productPage.on_sale);
+        setIsVisible(productPage.on_sale || false);
     }, [productPage]);
     //Xu ly nut isVisible
     function handleToggle(checked){
         setIsVisible(checked);
-        updateVisibility({"status": checked});
+        updateVisibility({"status": String(checked)});
     }
    
     const { mutate: updateProductSale, isPending: isPendingUpdateProductSale } = useProduct.products.updateSale();
@@ -176,7 +176,7 @@ const FlashSale = () => {
     if(isLoadingProductSale  || isPendingUpdateProductSale || isLoadingProductData || isLoadingProductPage || isPendingUpdateVisibility
     ) 
         return <Loading/>
-    console.log(isVisible)
+   
     return (
         <div>
             <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
