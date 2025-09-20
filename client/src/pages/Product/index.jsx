@@ -140,6 +140,7 @@ export default function Product() {
                             goBack={goBack}
                             updateParams={updateParams}
                             scrollTargetRef={scrollTargetRef}
+                            isSale={params.is_sale}
                         />
                     )}
                 </div>
