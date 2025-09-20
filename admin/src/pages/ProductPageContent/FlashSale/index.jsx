@@ -179,10 +179,10 @@ const FlashSale = () => {
 
     }
 
-    if (isLoadingProductSale || isPendingUpdateProductSale || isLoadingProductData || isLoadingProductPage || isPendingUpdateVisibility
-    )
-        return <Loading />
-
+    if(isLoadingProductSale   || isLoadingProductData || isLoadingProductPage
+    ) 
+        return <Loading/>
+   
     return (
         <div>
             <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
@@ -209,22 +209,29 @@ const FlashSale = () => {
                     <Table columns={configProductSale.table.columns} data={configProductSale.table.data} isSetting={false} width={configProductSale.table.width} />
                 </div>
                 <div className='flex justify-between'>
-                    <form onSubmit={configProductSale.handleSubmit}>
-
-                        <div className='h-[45px] mt-3'>
-                            <button type='submit' className='h-full'> <Button {...configProductSale.propsSaveButton} /></button>
-                        </div>
-                    </form>
-                    <div className="flex flex-row gap-5 items-center">
-                        <div className="flex flex-col">
-                            <span className="font-bold text-gray-900">Hiển thị bảng Sale và cập nhật giá</span>
-                            <span className="text-gray-500 ">Bật khi áp dụng chế độ giảm giá</span>
-                        </div>
-                        <SwitchButton
-                            handleToggle={handleToggle}
-                            currentState={isVisible}
-                        />
+                    <form    onSubmit={configProductSale.handleSubmit}>
+                    <div className='h-[45px] mt-3'>
+                       
+                       {
+                           isPendingUpdateProductSale ?<Loading/> :
+                        <button type='submit' className='h-full'> <Button {...configProductSale.propsSaveButton} /></button>
+                        }
                     </div>
+                </form>
+
+                {
+                    isPendingUpdateVisibility?<Loading/>:
+                  <div className="flex flex-row gap-5 items-center">
+                                <div className="flex flex-col">
+                                    <span className="font-bold text-gray-900">Hiển thị bảng Sale và cập nhật giá</span>
+                                    <span className="text-gray-500 ">Bật khi áp dụng chế độ giảm giá</span>
+                                </div>
+                                <SwitchButton 
+                                    handleToggle={handleToggle}
+                                    currentState={isVisible}
+                                />
+                </div>
+                }
                 </div>
             </div>
 
