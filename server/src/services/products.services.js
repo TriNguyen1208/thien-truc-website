@@ -767,8 +767,12 @@ const products = {
 
             await client.query(`
                 UPDATE product.products
-                SET is_sale = false
-                WHERE is_sale = true
+                SET
+                    is_sale = false,
+                    discount_percent = null,
+                    finaL_price = null
+                WHERE 
+                    is_sale = true
             `);
 
             const promises = data.map(item => {
