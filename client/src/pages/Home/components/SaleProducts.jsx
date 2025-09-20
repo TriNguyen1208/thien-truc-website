@@ -22,19 +22,21 @@ export default function SaleProducts() {
     if (isLoading) return <div className="text-center p-10">Đang tải sản phẩm...</div>;
     
     return (
-        <section className="container-fluid py-10 bg-[var(--light-green-banner)]">
-            <div className="flex flex-row justify-center items-center gap-3 mb-10">
-                <span className="text-3xl sm:text-5xl font-bold text-[#ef4444]">SALE</span>
-                <span className="text-3xl sm:text-5xl font-extrabold text-[#10b981]">GIẢM GIÁ %</span>
-            </div>
-            <CustomSlider
-                data={saleProducts}
-                renderItem={(item) => <ProductItem key={item.id} {...item} />}
-                itemsPerView={{ mobile: 1, sm: 2, md: 3, lg: 4 }}
-            />
-            <div className='flex justify-center pt-10'>
-                <div className="h-fit w-fit">
-                    <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore()} />
+        <section className="container-fluid bg-white pt-3 md:pt-6 lg:pt-10">
+            <div className=" bg-[var(--light-green-banner)] rounded-2xl py-10">
+                <div className="flex flex-row justify-center items-center gap-3 mb-10">
+                    <span className="text-3xl sm:text-5xl font-bold text-[#ef4444]">SALE</span>
+                    <span className="text-3xl sm:text-5xl font-extrabold text-[#10b981]">GIẢM GIÁ %</span>
+                </div>
+                <CustomSlider
+                    data={saleProducts}
+                    renderItem={(item) => <ProductItem key={item.id} {...item} />}
+                    itemsPerView={{ mobile: 1, sm: 2, md: 3, lg: 4 }}
+                />
+                <div className='flex justify-center pt-10'>
+                    <div className="h-fit w-fit">
+                        <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore()} />
+                    </div>
                 </div>
             </div>
         </section>

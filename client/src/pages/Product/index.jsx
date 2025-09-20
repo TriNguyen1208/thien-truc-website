@@ -88,8 +88,13 @@ export default function Product() {
     }
     const handleEnterSearch = (idProduct) => navigate(`${location.pathname}/${idProduct}`);
     const handleViewMore = (categoryName) => updateParams({ filter: categoryName, query: '' }, scrollTargetRef);
-    const goBack = () => updateParams({ filter: ALL_CATEGORIES, query: '' }, scrollTargetRef);
-
+    // const goBack = () => updateParams({ filter: ALL_CATEGORIES, query: '' }, scrollTargetRef);
+    const goBack = () => {
+        navigate(-1);
+        setTimeout(() => {
+            scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
+        }, 0)
+    }
     // Data
     const bannerMainData = useMemo(() => ({
         title: productPage?.banner_title,

@@ -23,7 +23,7 @@ export default function ProductToolbar({ products, isLoading, categoryName, quer
                 </div>
             )}
             <div className='flex flex-col border-[1px] border-[#E5E7EB] rounded-[8px] mb-[20px]'>
-                <div className='border-b-[1px] border-[#E5E7EB] py-[12px] shadow-sm'>
+                <div className='py-[12px]'>
                     {query === '' && (
                         <div className='border-l-[5px] border-[#1E2A38] px-[8px] ml-[12px]'>
                             <h1 className='text-[20px] lg:text-[30px] leading-none text-[#1E2A38]'>
