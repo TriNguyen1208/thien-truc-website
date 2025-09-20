@@ -25,7 +25,7 @@ const AddSale = ({
     const navigate = useNavigate();
     const location = useLocation();
     const [filtered, setFiltered] = useState([]);
-    const [selectedId, setSelectedId] = useState(null); // Chỉ chọn 1 item
+    const [selectedId, setSelectedId] = useState([]);
     const [id, setId] = useState(null);
 
     const queryParam = searchParams.get('query') || "";
@@ -48,7 +48,7 @@ const AddSale = ({
     // Reset state khi modal được mở
     useEffect(() => {
         if (isOpen) {
-            setSelectedId(null);
+            setSelectedId([]);
             setId(null);
         }
     }, [isOpen]);
@@ -56,7 +56,7 @@ const AddSale = ({
     // Xử lý khi có data từ getOne (tìm kiếm cụ thể)
     useEffect(() => {
         if (!data) return;
-        if(data.price === null || data.price === "") return
+        if (data.price === null || data.price === "") return
         const dataFetch = {
             id: data.id,
             name: data.name || data.title,
@@ -65,24 +65,24 @@ const AddSale = ({
         };
 
         setFiltered([dataFetch]);
-        setSelectedId(null);
-      
+        setSelectedId([]);
+
     }, [data]);
 
     // Xử lý khi có data từ getList (tìm kiếm danh sách)
     useEffect(() => {
         if (!datas) return;
-        
+
         const datasFetch = datas.filter(item => item.price !== null && item.price !== "").map((item) => ({
             id: item.id,
             name: item.name || item.title,
             category: item.region?.name || item.category?.name,
-            price: item.price 
+            price: item.price
         }));
-       
+
         setFiltered(datasFetch);
-        setSelectedId(null);
-      
+        setSelectedId([]);
+
     }, [datas]);
 
     // Các hàm handler
@@ -116,31 +116,23 @@ const AddSale = ({
     };
 
     const handleToggle = (id) => {
-        // Chỉ cho chọn 1 item, nếu click vào item đã chọn thì bỏ chọn
-        setSelectedId(prev => prev === id ? null : id);
-      
+        setSelectedId(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+        );
     };
 
-
-
     const handleClear = () => {
-        setSelectedId(null);
+        setSelectedId([]);
     };
 
     const handleSave = () => {
-        if (!selectedId) {
-            onSave(null); // Không tick checkbox thì trả về null
+        if (!selectedId.length) {
+            onSave(null);
         } else {
-            // Tìm item được chọn
-            const selectedItem = filtered.find(item => item.id === selectedId);
-            if (selectedItem) {
-                onSave({
-                    data: selectedItem,
-                    
-                });
-            } else {
-                onSave(null);
-            }
+            // Lấy tất cả item được chọn
+            const selectedItems = filtered.filter(item => selectedId.includes(item.id));
+            onSave({
+                data: selectedItems,
+            });
         }
         onClose();
     };
@@ -173,7 +165,7 @@ const AddSale = ({
             {
                 type: "checkbox",
                 content: data.id,
-                checked: selectedId === data.id,
+                checked: selectedId.includes(data.id),
                 onChange: () => handleToggle(data.id)
             },
             { type: "text", content: data.name },
@@ -205,10 +197,10 @@ const AddSale = ({
                 </div>
 
                 <div className="relative">
-                    {selectedId && (
+                    {selectedId.length > 0 && (
                         <div className="px-5 py-3 w-full rounded-md bg-[#EFF6FF] border border-[#EFF6FF] z-20 flex items-center gap-4 mb-5">
                             <span className="text-[#1E4DE8] font-medium">
-                                Đã chọn 1 {type}
+                                Đã chọn {selectedId.length} {type}
                             </span>
                             <button onClick={handleClear} className="px-3 cursor-pointer hover:bg-gray-100">
                                 Bỏ chọn
@@ -226,7 +218,7 @@ const AddSale = ({
                 </div>
 
                 <div className='pt-5 flex flex-row justify-end'>
-                    
+
                     <div className='flex flex-row gap-2'>
                         <button
                             className='px-4 py-2 bg-white text-black rounded-md cursor-pointer'

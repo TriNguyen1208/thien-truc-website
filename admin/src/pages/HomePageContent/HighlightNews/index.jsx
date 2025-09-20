@@ -4,7 +4,7 @@ import Loading from '@/components/Loading'
 import useHome from '@/hooks/useHome'
 import useNews from '@/hooks/useNews'
 import { useNavigate } from 'react-router-dom'
-import {useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon } from '@/components/Icon';
 import ProductImageCell from '@/components/ProductImageCell'
 import AddHighlight from '@/components/AddHighlight';
@@ -14,10 +14,10 @@ const HighlightNews = () => {
     const { data: homePageData, isLoading: isLoadingHomePageData } = useHome.getHomePage();
     const { data: highlightNewsData, isLoading: isLoadingHighlightNews } = useNews.news.getAllFeatured();
     const { data: newsData, isLoading: isLoadingNewsData } = useNews.news.getList();
-    
+
     //Thao tác cập nhật tin tức nổi bật
     const { mutate: updateFeatureNews, isPending: isPendingUpdateFeatureNews } = useNews.news.updateFeaturedNews();
-    
+
     const navigate = useNavigate();
     const [arrayHighlightNews, setArrayHighlightNews] = useState([]);
     const [switchTime, setSwitchTime] = useState(0);
@@ -85,14 +85,15 @@ const HighlightNews = () => {
             switch_time: switchTime,
             news_ids: arrayHighlightNews.map(item => item.id),
         };
+        console.log(object)
         updateFeatureNews(object);
     }
     const convertHighlightNewsListToTableData = (highlightNewsList) => {
         return (highlightNewsList || []).map((item, index) => {
             return [
                 {
-                    type: "component", 
-                    component: 
+                    type: "component",
+                    component:
                         <div className='flex flex-col gap-2'>
                             <button
                                 className={`px-3 border border-gray-300 rounded-sm w-[50px] cursor-pointer`}
@@ -131,21 +132,21 @@ const HighlightNews = () => {
                     content: item.date
                 },
                 {
-                    type: "array-components", 
-                    components: 
-                    [
-                        <button 
-                            className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer" 
-                            onClick={() => navigate(`/quan-ly-tin-tuc/chinh-sua-tin-tuc/${item.id}`)}    
-                        >      
-                            <EditIcon />    
-                        </button>,
-                        <button 
-                            className="px-2 py-1 border  border-gray-300 rounded-md cursor-pointer" 
-                            onClick={() => handleDeleteFeatureNews(item)}>      
-                            <SubtractIcon />    
-                        </button>,
-                    ]
+                    type: "array-components",
+                    components:
+                        [
+                            <button
+                                className="px-3 py-2 border  border-gray-300 rounded-md cursor-pointer"
+                                onClick={() => navigate(`/quan-ly-tin-tuc/chinh-sua-tin-tuc/${item.id}`)}
+                            >
+                                <EditIcon />
+                            </button>,
+                            <button
+                                className="px-2 py-1 border  border-gray-300 rounded-md cursor-pointer"
+                                onClick={() => handleDeleteFeatureNews(item)}>
+                                <SubtractIcon />
+                            </button>,
+                        ]
                 }
             ]
         });
@@ -178,9 +179,9 @@ const HighlightNews = () => {
         switchTime: switchTime,
         handleChangeSwitchTime: handleChangeSwitchTime
     }
-    if(isLoadingHighlightNews || isLoadingHomePageData || isLoadingNewsData || isPendingUpdateFeatureNews
-    ) 
-        return <Loading/>
+    if (isLoadingHighlightNews || isLoadingHomePageData || isLoadingNewsData || isPendingUpdateFeatureNews
+    )
+        return <Loading />
     return (
         <div>
             <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
@@ -198,7 +199,7 @@ const HighlightNews = () => {
                         </div>
                     </div>
                     <div className='h-[40px]'>
-                        <button type="submit" className='' onClick={() => configHighlightNews.setIsModalOpenSetting(true)}> 
+                        <button type="submit" className='' onClick={() => configHighlightNews.setIsModalOpenSetting(true)}>
                             <Button {...configHighlightNews.propsAddButton} />
                         </button>
                     </div>
@@ -230,38 +231,43 @@ const HighlightNews = () => {
                 content={contentSetting}
                 useData={useNews.news}
                 useDataCategories={useNews.news_categories}
-                onSave={async (changedItems) => {
-                    if (changedItems) {
+                onSave={async (selectedItems) => {
+                    if (!selectedItems || selectedItems.length === 0) return;
 
-                        const { data, isCheckbox } = changedItems;
+                    // Tạo danh sách tin nổi bật mới từ các tin được chọn
+                    const newHighlightItems = selectedItems
+                        .map(data => {
+                            const matchedNews = newsData.find(item => item.id === data.id);
+                            if (!matchedNews) return null;
 
-                        const matchedNews = newsData.find(item => item.id === data.id);
-                        if (!matchedNews) return arrayHighlightNews; // Không tìm thấy thì không làm gì
+                            return {
+                                id: matchedNews.id,
+                                img: matchedNews.main_img,
+                                name: matchedNews.category.name,
+                                title: matchedNews.title,
+                                date: matchedNews.public_date,
+                            };
+                        })
+                        .filter(Boolean); // loại bỏ null nếu có
 
-                        const newHighlightItem = {
-                            id: matchedNews.id,
-                            img: matchedNews.main_img,
-                            name: matchedNews.category.name,
-                            title: matchedNews.title,
-                            date: matchedNews.public_date,
-                        }
-                        const filtered = arrayHighlightNews.filter(item => item.id !== data.id);
+                    // Lọc bỏ các tin đã có trong danh sách cũ
+                    const existingIds = newHighlightItems.map(item => item.id);
+                    const filtered = arrayHighlightNews.filter(item => !existingIds.includes(item.id));
 
-                        let newArray;
-                        if (isCheckbox) {
-                            newArray = [newHighlightItem, ...filtered];
-                        } else {
-                            newArray = [...filtered, newHighlightItem];
-                        }
-                        setArrayHighlightNews(newArray.map((item, index) => ({
+                    // Gộp tin cũ + tin mới
+                    const newArray = [...newHighlightItems, ...filtered];
+
+                    // Đánh lại sort theo thứ tự
+                    setArrayHighlightNews(
+                        newArray.map((item, index) => ({
                             ...item,
                             sort: index + 1,
-                        })))
-                    }
+                        }))
+                    );
                 }}
             />
         </div>
-        
+
     )
 }
 

@@ -24,7 +24,7 @@ const AddHighlight = ({
     const navigate = useNavigate();
     const location = useLocation();
     const [filtered, setFiltered] = useState([]);
-    const [selectedId, setSelectedId] = useState(null); // Chỉ chọn 1 item
+    const [selectedId, setSelectedId] = useState([]); // Chỉ chọn 1 item
     const [isHighlightChecked, setIsHighlightChecked] = useState(false); // Checkbox "Đặt lên đầu"
     const [id, setId] = useState(null);
 
@@ -48,7 +48,7 @@ const AddHighlight = ({
     // Reset state khi modal được mở
     useEffect(() => {
         if (isOpen) {
-            setSelectedId(null);
+            setSelectedId([]);
             setIsHighlightChecked(false);
             setId(null);
         }
@@ -65,7 +65,7 @@ const AddHighlight = ({
         };
 
         setFiltered([dataFetch]);
-        setSelectedId(null);
+        setSelectedId([]);
         setIsHighlightChecked(false);
     }, [data]);
 
@@ -80,7 +80,7 @@ const AddHighlight = ({
         }));
 
         setFiltered(datasFetch);
-        setSelectedId(null);
+        setSelectedId([]);
         setIsHighlightChecked(false);
     }, [datas]);
 
@@ -115,33 +115,22 @@ const AddHighlight = ({
     };
 
     const handleToggle = (id) => {
-        // Chỉ cho chọn 1 item, nếu click vào item đã chọn thì bỏ chọn
-        setSelectedId(prev => prev === id ? null : id);
-        setIsHighlightChecked(false); // Reset checkbox khi thay đổi selection
+        setSelectedId((prev) =>
+            prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+        );
     };
 
-
-
     const handleClear = () => {
-        setSelectedId(null);
+        setSelectedId([]);
         setIsHighlightChecked(false);
     };
 
     const handleSave = () => {
-
-        if (!selectedId) {
-            onSave(null); // Không tick checkbox thì trả về null
+        if (selectedId.length === 0) {
+            onSave([]);
         } else {
-            // Tìm item được chọn
-            const selectedItem = filtered.find(item => item.id === selectedId);
-            if (selectedItem) {
-                onSave({
-                    data: selectedItem,
-                    isCheckbox: isHighlightChecked
-                });
-            } else {
-                onSave(null);
-            }
+            const selectedItems = filtered.filter(item => selectedId.includes(item.id));
+            onSave(selectedItems);
         }
         onClose();
     };
@@ -173,7 +162,7 @@ const AddHighlight = ({
             {
                 type: "checkbox",
                 content: data.id,
-                checked: selectedId === data.id,
+                checked: selectedId.includes(data.id),
                 onChange: () => handleToggle(data.id)
             },
             { type: "text", content: data.name },
@@ -204,10 +193,10 @@ const AddHighlight = ({
                 </div>
 
                 <div className="relative">
-                    {selectedId && (
+                    {selectedId.length > 0 && (
                         <div className="px-5 py-3 w-full rounded-md bg-[#EFF6FF] border border-[#EFF6FF] z-20 flex items-center gap-4 mb-5">
                             <span className="text-[#1E4DE8] font-medium">
-                                Đã chọn 1 {type}
+                                Đã chọn {selectedId.length} {type}
                             </span>
                             <button onClick={handleClear} className="px-3 cursor-pointer hover:bg-gray-100">
                                 Bỏ chọn

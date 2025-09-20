@@ -2,7 +2,7 @@ import Button from '@/components/Button'
 import Table from '@/components/Table'
 import Loading from '@/components/Loading'
 import useProduct from '@/hooks/useProducts'
-import {useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddIcon, EditIcon, SubtractIcon, ArrowDownIcon, ArrowUpIcon, SaveIcon } from '@/components/Icon';
 import ProductImageCell from '@/components/ProductImageCell'
 import AddSale from '@/components/AddSale';
@@ -11,27 +11,27 @@ import SwitchButton from "@/components/SwitchButton";
 const FlashSale = () => {
     //========================= API ====================
 
-    const { data: productSale, isLoading: isLoadingProductSale } = useProduct.products.getList('','','',true,'','');
+    const { data: productSale, isLoading: isLoadingProductSale } = useProduct.products.getList('', '', '', true, '', '');
     const { data: productData, isLoading: isLoadingProductData } = useProduct.products.getList();
-    const {data: productPage, isLoading: isLoadingProductPage} = useProduct.getProductPage()
-    const { mutate: updateVisibility, isPending: isPendingUpdateVisibility} = useProduct.products.updateActivateSale();
+    const { data: productPage, isLoading: isLoadingProductPage } = useProduct.getProductPage()
+    const { mutate: updateVisibility, isPending: isPendingUpdateVisibility } = useProduct.products.updateActivateSale();
 
-     //--------------Nút isVisibility--------------
+    //--------------Nút isVisibility--------------
     //Check isVisible
     const [isVisible, setIsVisible] = useState(null);
     useEffect(() => {
-        if(productPage) 
-        setIsVisible(productPage.on_sale || false);
+        if (productPage)
+            setIsVisible(productPage.on_sale || false);
     }, [productPage]);
     //Xu ly nut isVisible
-    function handleToggle(checked){
+    function handleToggle(checked) {
         setIsVisible(checked);
-        updateVisibility({"status": String(checked)});
+        updateVisibility({ "status": String(checked) });
     }
-   
+
     const { mutate: updateProductSale, isPending: isPendingUpdateProductSale } = useProduct.products.updateSale();
-    const [arrayProduct, setArrayProduct] =useState([]);
-   
+    const [arrayProduct, setArrayProduct] = useState([]);
+
     const contentSetting = {
         title: `Thêm sản phẩm giảm giá`,
         description: `Chọn các sản phẩm muốn thêm hoặc xóa  khỏi trưng bày sale`,
@@ -46,17 +46,16 @@ const FlashSale = () => {
     const [isModalOpenSetting, setIsModalOpenSetting] = useState(false);
 
     useEffect(() => {
-        
-        setArrayProduct(productSale)
-    }, [ productSale])
 
-     
-   
-    
+        setArrayProduct(productSale)
+    }, [productSale])
+
+
     const handleDeleteProductSale = (item) => {
         const newArr = arrayProduct.filter(data => data.id != item.id);
         setArrayProduct(newArr);
     }
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -69,46 +68,44 @@ const FlashSale = () => {
             return;
         }
 
-        const object =  {
+        const object = {
             "data": arrayProduct.map(item => ({
                 "id": item.id,
                 "discount_percent": item.discount_percent,
                 "final_price": item.final_price
             }))
         }
-      
-        updateProductSale( object)
-    }
-    const handleChangePrice = (e,id, type)=>{ // Type : discount || finalPrice 
-        const value = e.target.value === "" ? "0" :  e.target.value.replace(/[\s.]/g, "")
-        if(!/^\d*$/.test(value)) return
-        var valueNum =  parseInt(value, 10)
-        const product = arrayProduct.find(p=> p.id == id)
-        if(valueNum < 0 ) valueNum = 0
-        if(type === "discount")
-        {
-            if(valueNum > 100) valueNum = 100
-            product.discount_percent = valueNum;
-            product.final_price = Math.round(product.price - product.price *product.discount_percent/100)
 
-        }else if(type === "finalPrice")
-        {
-            if(valueNum > product.price) valueNum = product.price
-            product.final_price = valueNum;
+        updateProductSale(object)
+    }
+    const handleChangePrice = (e, id, type) => { // Type : discount || finalPrice 
+        const value = e.target.value === "" ? "0" : e.target.value.replace(/[\s.]/g, "")
+        if (!/^\d*$/.test(value)) return
+        var valueNum = parseInt(value, 10)
+        const product = arrayProduct.find(p => p.id == id)
+        if (valueNum < 0) valueNum = 0
+        if (type === "discount") {
+            if (valueNum > 100) valueNum = 100
+            product.discount_percent = valueNum;
+            product.final_price = Math.round(product.price - product.price * product.discount_percent / 100)
+
+        } else if (type === "finalPrice") {
+            if (valueNum > product.price) valueNum = product.price
+            product.final_price = valueNum; 
             product.discount_percent = Math.round(100 - (product.final_price / product.price) * 100)
 
         }
-       
-        setArrayProduct(prev => prev.map((item)=>(item.id === id ? product: item)))
+
+        setArrayProduct(prev => prev.map((item) => (item.id === id ? product : item)))
 
     }
     const convertProductSaleListToTableData = (arrayProduct) => {
         return (arrayProduct || []).map((item, index) => {
             return [
                 {
-                    type: "text", 
-                    content:item.id
-                        
+                    type: "text",
+                    content: item.id
+
                 },
                 {
                     type: "component",
@@ -120,33 +117,33 @@ const FlashSale = () => {
                 },
                 {
                     type: "text",
-                    content: Number(item.price).toLocaleString('vi-VN') + ' đ' 
+                    content: Number(item.price).toLocaleString('vi-VN') + ' đ'
                 },
                 {
                     type: "component",
-                    component: <input 
-                    type="text" 
-                    value={item.discount_percent ?? ""} 
-                    onChange={(e) => handleChangePrice(e, item.id, "discount")} 
-                    placeholder="0 - 100" 
-                    className="text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]" 
+                    component: <input
+                        type="text"
+                        value={item.discount_percent ?? ""}
+                        onChange={(e) => handleChangePrice(e, item.id, "discount")}
+                        placeholder="0 - 100"
+                        className="text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]"
                     />
                 },
                 {
                     type: "component",
-                    component: <input 
-                    type="text" 
-                    onChange={(e)=>handleChangePrice(e,item.id,"finalPrice")}
-                    value={(!item.final_price?(item.discount_percent === null? item.price:Math.round(item.price - item.price *item.discount_percent/100) ):item.final_price).toLocaleString("vi-VN")} min = {0} 
-                    className='text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]' />
+                    component: <input
+                        type="text"
+                        onChange={(e) => handleChangePrice(e, item.id, "finalPrice")}
+                        value={(!item.final_price ? (item.discount_percent === null ? item.price : Math.round(item.price - item.price * item.discount_percent / 100)) : item.final_price).toLocaleString("vi-VN")} min={0}
+                        className='text-right p-2 w-4/5 border border-[#E5E5E5] rounded-[6px]' />
                 },
                 {
-                    type: "component", 
-                    component: 
-                        <button 
-                            className="px-2 py-1 ml-5 border border-gray-300 rounded-md cursor-pointer" 
-                            onClick={() => handleDeleteProductSale(item)}>      
-                            <SubtractIcon />    
+                    type: "component",
+                    component:
+                        <button
+                            className="px-2 py-1 ml-5 border border-gray-300 rounded-md cursor-pointer"
+                            onClick={() => handleDeleteProductSale(item)}>
+                            <SubtractIcon />
                         </button>
                 }
             ]
@@ -182,10 +179,10 @@ const FlashSale = () => {
 
     }
 
-    if(isLoadingProductSale  || isPendingUpdateProductSale || isLoadingProductData || isLoadingProductPage || isPendingUpdateVisibility
-    ) 
-        return <Loading/>
-   
+    if (isLoadingProductSale || isPendingUpdateProductSale || isLoadingProductData || isLoadingProductPage || isPendingUpdateVisibility
+    )
+        return <Loading />
+
     return (
         <div>
             <div className="flex flex-col p-[24px] bg-white w-full h-full border border-[#E5E7EB] rounded-[8px] mt-[40px]">
@@ -203,7 +200,7 @@ const FlashSale = () => {
                         </div>
                     </div>
                     <div className='h-[40px]'>
-                        <button type="submit" className='' onClick={() => configProductSale.setIsModalOpenSetting(true)}> 
+                        <button type="submit" className='' onClick={() => configProductSale.setIsModalOpenSetting(true)}>
                             <Button {...configProductSale.propsAddButton} />
                         </button>
                     </div>
@@ -213,24 +210,24 @@ const FlashSale = () => {
                 </div>
                 <div className='flex justify-between'>
                     <form onSubmit={configProductSale.handleSubmit}>
-                    
-                    <div className='h-[45px] mt-3'>
-                        <button type='submit' className='h-full'> <Button {...configProductSale.propsSaveButton} /></button>
+
+                        <div className='h-[45px] mt-3'>
+                            <button type='submit' className='h-full'> <Button {...configProductSale.propsSaveButton} /></button>
+                        </div>
+                    </form>
+                    <div className="flex flex-row gap-5 items-center">
+                        <div className="flex flex-col">
+                            <span className="font-bold text-gray-900">Hiển thị bảng Sale và cập nhật giá</span>
+                            <span className="text-gray-500 ">Bật khi áp dụng chế độ giảm giá</span>
+                        </div>
+                        <SwitchButton
+                            handleToggle={handleToggle}
+                            currentState={isVisible}
+                        />
                     </div>
-                </form>
-                  <div className="flex flex-row gap-5 items-center">
-                                <div className="flex flex-col">
-                                    <span className="font-bold text-gray-900">Hiển thị bảng Sale và cập nhật giá</span>
-                                    <span className="text-gray-500 ">Bật khi áp dụng chế độ giảm giá</span>
-                                </div>
-                                <SwitchButton 
-                                    handleToggle={handleToggle}
-                                    currentState={isVisible}
-                                />
-                </div>
                 </div>
             </div>
-           
+
             <AddSale
                 isOpen={isModalOpenSetting}
                 onClose={() => setIsModalOpenSetting(false)}
@@ -239,20 +236,23 @@ const FlashSale = () => {
                 pickedData={(arrayProduct || []).map(item => item.id)}
                 useDataCategories={useProduct.product_categories}
                 onSave={async (changedItems) => {
-                    if (changedItems) {
+                    if (!changedItems || !changedItems.data || changedItems.data.length === 0) return;
 
-                        const { data } = changedItems;
+                    const newProducts = [];
+                    changedItems.data.forEach(selected => {
+                        const matchedProduct = productData.find(p => p.id === selected.id);
+                        if (matchedProduct && !arrayProduct.some(p => p.id === matchedProduct.id)) {
+                            newProducts.push(matchedProduct);
+                        }
+                    });
 
-                        const matchedProduct = productData.find(item => item.id === data.id);
-                        if(arrayProduct.some( p=>p.id === data.id )) return
-                        if (!matchedProduct) return arrayProduct; // Không tìm thấy thì không làm gì
-                                               
-                        setArrayProduct(prev =>[...prev, matchedProduct])
+                    if (newProducts.length > 0) {
+                        setArrayProduct(prev => [...prev, ...newProducts]);
                     }
                 }}
             />
         </div>
-        
+
     )
 }
 
