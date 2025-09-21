@@ -35,7 +35,7 @@ export default function SaleProducts() {
                 />
                 <div className='flex justify-center pt-10'>
                     <div className="h-fit w-fit">
-                        <ViewMoreButton content={'Xem Tất Cả Sản Phẩm'} handleClick={() => handleViewMore()} />
+                        <ViewMoreButton content={'Xem tất cả sản phẩm'} handleClick={() => handleViewMore()} />
                     </div>
                 </div>
             </div>

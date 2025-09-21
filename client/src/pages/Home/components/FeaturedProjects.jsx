@@ -1,10 +1,11 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import useProjects from "@/hooks/useProjects";
 import PostCategory from "@/components/PostCategory";
 import ItemPost from "@/components/ItemPost";
 import CustomSlider from "./CustomSlider";
+import ViewMoreButton from '@/components/ViewMoreButton'
 
 // Component hiển thị một dự án
 // Tạo dữ liệu cho một dự án
@@ -57,6 +58,12 @@ export default function FeaturedProjects() {
 
     if (isLoading) return <div className="text-center p-10">Đang tải dự án...</div>;
 
+    // Xử lý sự kiện khi bấm Xem tất cả dự án
+    const navigate = useNavigate();
+    const handleViewMore = () => {
+        navigate('du-an')
+    }
+
     // Tạo danh sách các dự án nổi bật
     return (
         <section className="text-center py-[45px] px-[10px] sm:px-[25px]">
@@ -75,6 +82,11 @@ export default function FeaturedProjects() {
                 renderItem={(item) => <ProjectItem key={item.id} {...item} />}
                 itemsPerView={{ mobile: 1, md: 2, lg: 3 }}
             />
+            <div className='flex justify-center pt-5'>
+                <div className="h-fit w-fit">
+                    <ViewMoreButton content={'Xem tất cả dự án'} handleClick={() => handleViewMore()} />
+                </div>
+            </div>
         </section>
     );
 }

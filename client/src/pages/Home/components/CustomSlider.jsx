@@ -67,14 +67,14 @@ export default function CustomSlider ({data = [], renderItem, itemsPerView}) {
     }
 
     return (
-        <div className="mx-[25px] md:px-[45px] relative ">
+        <div className="mx-[25px] md:px-[45px] relative">
             {maxIndex > 0 && (
                 <>
                     <SliderButton onClick={handlePrev} direction="left" />
                     <SliderButton onClick={handleNext} direction="right" />
                 </>
             )}
-            <div className="overflow-hidden relative">
+            <div className="overflow-hidden relative pt-2 pb-3">
                 <div
                     className="flex transition-transform duration-500 ease-in-out"
                     style={sliderStyle}
