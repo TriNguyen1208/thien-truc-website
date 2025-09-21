@@ -65,13 +65,13 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
             </div>
             <div className="flex flex-col w-full gap-2 sm:gap-0.5 md:gap-1 xl:gap-1.5 p-[8px] lg:px-4 lg:pt-4 ">
                 <div >
-                    <h2 className="line-clamp-2  text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,16px)] md:text-[clamp(14px,1.9vw,16px)] xl:text-[clamp(16px,2vw,18px)] text-black ">
+                    <h2 className="line-clamp-2 text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,16px)] md:text-[clamp(14px,1.9vw,16px)] xl:text-[clamp(16px,2vw,18px)] text-black ">
                         {product.name}   
                     </h2>
                 </div>
                 {product_page?.on_sale && (
-                    <div className="flex flex-row gap-3">
-                        <span className="line-clamp-1 text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,15px)] md:text-[clamp(14px,1.9vw,18px)] xl:text-[clamp(16px,2vw,18px)] text-[#ff0000] font-semibold">
+                    <div className="flex flex-col [@media(min-width:1200px)]:flex-row items-baseline [@media(min-width:1200px)]:gap-3">
+                        <span className="text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,15px)] md:text-[clamp(14px,1.9vw,18px)] xl:text-[clamp(16px,2vw,18px)] text-[#ff0000] font-semibold">
                         {product.is_sale === true ? (
                             <span>{product.final_price.toLocaleString("vi-VN") + " ₫"}</span>
                         ) : typeof product.price === "number" ? (
@@ -82,7 +82,7 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
                         </span>
 
                         {product.is_sale === true && (
-                        <span className="line-through text-[#9e9e9e]">
+                        <span className="line-through text-xs md:text-base text-[#9e9e9e]">
                             {product.price.toLocaleString("vi-VN") + " ₫"}
                         </span>
                         )}
@@ -91,8 +91,10 @@ function ItemProduct({product, handleClick , width = "w-full", height = "h-full"
 
                     
                 {!product_page?.on_sale && (
-                    <div className="line-clamp-1 text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,15px)] md:text-[clamp(14px,1.9vw,18px)] xl:text-[clamp(16px,2vw,18px)] text-[#ff0000] font-semibold">
-                        {typeof product.price === "number" ? product.price.toLocaleString("vi-VN") + " ₫" : "Chưa có giá"}
+                    <div className="flex flex-col">
+                        <div className="text-[clamp(14px,3vw,18px)] sm:text-[clamp(13px,1.7vw,15px)] md:text-[clamp(14px,1.9vw,18px)] xl:text-[clamp(16px,2vw,18px)] text-[#ff0000] font-semibold">
+                            {typeof product.price === "number" ? product.price.toLocaleString("vi-VN") + " ₫" : "Chưa có giá"}
+                        </div>
                     </div>
                 )}
                 {handleDisplayHighlights(product)}

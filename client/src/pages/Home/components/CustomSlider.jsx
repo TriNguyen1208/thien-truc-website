@@ -67,7 +67,7 @@ export default function CustomSlider ({data = [], renderItem, itemsPerView}) {
     }
 
     return (
-        <div className="mx-[25px] md:px-[45px] relative">
+        <div className="mx-[25px] md:px-[25px] relative">
             {maxIndex > 0 && (
                 <>
                     <SliderButton onClick={handlePrev} direction="left" />
