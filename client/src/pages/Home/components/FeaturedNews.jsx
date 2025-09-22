@@ -35,25 +35,22 @@ export default function FeaturedNews() {
 
     if (isLoading) {
         return (
-            <section className="flex items-center justify-center w-full min-h-[250px] mx-auto border-2 border-[#16A34A]">
-                <div className="text-center text-gray-600">Đang tải tin nổi bật...</div>
-            </section>
+            <>
+            </>
         );
     }
 
     if (error) {
         return (
-            <section className="flex items-center justify-center w-full min-h-[250px] mx-auto border-2 border-[#16A34A]">
-                <div className="text-center text-red-600">Không thể tải tin tức. Vui lòng thử lại sau.</div>
-            </section>
+           <>
+           </>
         );
     }
 
     if (!topNews || !topNews.featured_news || topNews.featured_news.length === 0) {
         return (
-            <section className="flex items-center justify-center w-full min-h-[250px] mx-auto border-2 border-[#16A34A]">
-                <div className="text-center text-gray-600">Không có tin nổi bật.</div>
-            </section>
+            <>
+            </>
         );
     }
     return (

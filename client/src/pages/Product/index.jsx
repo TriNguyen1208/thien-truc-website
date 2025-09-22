@@ -80,7 +80,7 @@ export default function Product() {
         ITEMS_PER_PAGE
     );
     // Fetch data cho chế độ "Tất cả sản phẩm" (theo category)
-    const { data: productsByCat, isLoading: isLoadingProductsByCat } = useProducts.products.getListByCategory('', '', '', '', ITEMS_PER_CATEGORY_SLIDER);
+    const { data: productsByCat, isLoading: isLoadingProductsByCat } = useProducts.products.getListByCategory('', '', '', '', '', ITEMS_PER_CATEGORY_SLIDER);
 
     // Handlers
     const handleSearch = (category, query) => {
