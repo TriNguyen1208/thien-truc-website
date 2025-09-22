@@ -1,7 +1,7 @@
 // src/pages/Price/components/PriceTable.jsx
 import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '@/components/Loading';
 import PriceRow from './PriceRow';
 
