@@ -1,5 +1,5 @@
 // src/pages/Price/components/ContactBanner.jsx
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import Banner from '@/components/Banner';
 
 export default function ContactBanner({ navigate }) {

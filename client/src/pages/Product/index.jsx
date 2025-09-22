@@ -1,5 +1,5 @@
 // src/pages/Product.jsx
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useLocation, useNavigate, useNavigation, useSearchParams } from 'react-router-dom';
 import useProducts from '@/hooks/useProducts';
 import Banner from '@/components/Banner';

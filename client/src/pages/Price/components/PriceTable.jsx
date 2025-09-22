@@ -1,11 +1,11 @@
 // src/pages/Price/components/PriceTable.jsx
 import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import Loading from '@/components/Loading';
 import PriceRow from './PriceRow';
 
-export default function PriceTable({ productPrices, isLoading, navigate, query, filter }) {
+export default function PriceTable({ productPrices, isLoading, navigate}) {
     const [openCategories, setOpenCategories] = useState({});
     // Group products by category
     const groupedData = useMemo(() => {

@@ -1,7 +1,6 @@
 // src/pages/components/ProductGrid.jsx
 import { Link } from 'react-router-dom';
 import ItemProduct from '@/components/ItemProduct';
-import React from 'react';
 
 export default function ProductGrid({ products }) {
     if (!products || products.length === 0) {

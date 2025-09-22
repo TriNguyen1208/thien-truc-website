@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo } from "react";
 import useNews from "@/hooks/useNews";
 import Banner from "@/components/Banner";
 import Loading from "@/components/Loading";

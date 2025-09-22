@@ -1,8 +1,6 @@
 // components/ProjectsGrid.jsx
 import { Link } from 'react-router-dom';
 import ItemPost from "@/components/ItemPost";
-import Loading from "@/components/Loading";
-import React from 'react';
 
 const ProjectsGrid = ({ projects}) => {
 

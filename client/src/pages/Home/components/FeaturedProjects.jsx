@@ -32,6 +32,10 @@ const ProjectItem = (item) => {
 }
 
 export default function FeaturedProjects() {
+    const navigate = useNavigate();
+    const handleViewMore = () => {
+        navigate('du-an')
+    }
 
     // Khởi tạo state cho các tham số tìm kiếm
     const [searchParams, setSearchParams] = useSearchParams();
@@ -59,10 +63,7 @@ export default function FeaturedProjects() {
     if (isLoading) return <div className="text-center p-10">Đang tải dự án...</div>;
 
     // Xử lý sự kiện khi bấm Xem tất cả dự án
-    const navigate = useNavigate();
-    const handleViewMore = () => {
-        navigate('du-an')
-    }
+
 
     // Tạo danh sách các dự án nổi bật
     return (

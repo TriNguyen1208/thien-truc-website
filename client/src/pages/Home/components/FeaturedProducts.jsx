@@ -1,9 +1,5 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import useProducts from "@/hooks/useProducts";
-import PostCategory from "@/components/PostCategory";
-import ItemProduct from "@/components/ItemProduct";
 import CustomSlider from "./CustomSlider";
 import ProductItem from "./ProductItem";
 import ViewMoreButton from '@/components/ViewMoreButton';
@@ -16,13 +12,15 @@ export default function FeaturedProducts() {
     // Lấy danh sách sản phẩm nổi bật
     const { data: highlightProduct, isLoading } = useProducts.getHighlightProducts();
 
-    if (isLoading) return <div className="text-center p-10">Đang tải sản phẩm...</div>;
-
-    // Xử lý sự kiện khi bấm vào Xem tất cả
     const navigate = useNavigate();
     const handleViewMore = () => {
         navigate('san-pham')
     }
+
+    if (isLoading) return <div className="text-center p-10">Đang tải sản phẩm...</div>;
+
+    // Xử lý sự kiện khi bấm vào Xem tất cả
+
 
     return (
         <section className="container-fluid py-[70px] bg-[var(--light-green-banner)]">
