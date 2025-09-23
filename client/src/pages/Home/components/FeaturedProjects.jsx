@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import useProjects from "@/hooks/useProjects";
 import PostCategory from "@/components/PostCategory";
 import ItemPost from "@/components/ItemPost";
@@ -32,6 +32,7 @@ const ProjectItem = (item) => {
 }
 
 export default function FeaturedProjects() {
+    const regionDefault = "Miền Nam";
     const navigate = useNavigate();
     const handleViewMore = () => {
         navigate('du-an')
@@ -42,19 +43,29 @@ export default function FeaturedProjects() {
     const filter = searchParams.get('filter') || '';
 
     // Lấy danh sách dự án nổi bật
-    const { data: highlightProject, isLoading } = useProjects.getHighlightProjects(filter === "Tất cả dự án" ? '' : filter);
+
     const { data: highlightProjectRegion } = useProjects.project_regions.getAllFeatured();
 
     // Tạo danh sách các danh mục
     const categoriesData = useMemo(() => {
         const regionNames = (highlightProjectRegion ?? []).map(item => item.name);
+
         return ["Tất cả dự án", ...regionNames];
     }, [highlightProjectRegion]);
 
+    const finalFilter = useMemo(() => {
+        if (filter) {
+            return filter === "Tất cả dự án" ? '' : filter;
+        }
+        return categoriesData.includes(regionDefault) ? regionDefault : '';
+    }, [filter, categoriesData]);
+
+    const { data: highlightProject, isLoading } = useProjects.getHighlightProjects(finalFilter);
+
     // ID của danh mục được chọn
-    const idSelectedCategories = filter ? 
-    categoriesData.findIndex((name) => name === filter) : 
-     (categoriesData.findIndex((name) => name === "Miền Nam") === -1 ? 0: categoriesData.findIndex((name) => name === "Miền Nam"));
+    const idSelectedCategories = filter ?
+        categoriesData.findIndex((name) => name === filter) :
+        (categoriesData.findIndex((name) => name === regionDefault) === -1 ? 0 : categoriesData.findIndex((name) => name === regionDefault));
 
     // Xử lý sự kiện khi người dùng chọn một danh mục
     const handleClickPostCategory = (idCategory) => {
