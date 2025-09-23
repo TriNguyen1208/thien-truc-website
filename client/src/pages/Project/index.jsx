@@ -43,7 +43,9 @@ export default function Project() {
     const totalProjects = Number(projectData?.totalCount || 0);
     const pageSizes = 9;
     const numberPages = Math.ceil(totalProjects / pageSizes);
-    const idSelectedCategories = filter ? categoriesData.findIndex((name) => name === filter) : 0;
+    const idSelectedCategories = filter ? 
+    categoriesData.findIndex((name) => name === filter) 
+    : (categoriesData.findIndex((name) => name === "Miền Nam") === -1 ? 0: categoriesData.findIndex((name) => name === "Miền Nam"));
     const dataPagination = {
         numberPagination: numberPages,
     };
