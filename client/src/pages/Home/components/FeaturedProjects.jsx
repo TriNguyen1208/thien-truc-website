@@ -52,7 +52,9 @@ export default function FeaturedProjects() {
     }, [highlightProjectRegion]);
 
     // ID của danh mục được chọn
-    const idSelectedCategories = filter ? categoriesData.findIndex((name) => name === filter) : 0;
+    const idSelectedCategories = filter ? 
+    categoriesData.findIndex((name) => name === filter) : 
+     (categoriesData.findIndex((name) => name === "Miền Nam") === -1 ? 0: categoriesData.findIndex((name) => name === "Miền Nam"));
 
     // Xử lý sự kiện khi người dùng chọn một danh mục
     const handleClickPostCategory = (idCategory) => {
