@@ -17,6 +17,7 @@ const allowedOrigins = [
     'http://171.244.139.18:3002',
     // thêm domain khi deploy như:
     'https://thientruc.vn',
+    'https://www.thientruc.vn',
     'https://admin.thientruc.vn',
     'https://api.thientruc.vn',
     'http://115.73.3.162:3001',
