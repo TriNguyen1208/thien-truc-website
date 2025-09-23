@@ -19,7 +19,7 @@ const updateContactPage = {
                 queryClient.invalidateQueries({ queryKey: ['contact_page'] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -32,7 +32,7 @@ const updateContactPage = {
                 queryClient.invalidateQueries({ queryKey: ['contact_page'] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },

@@ -21,7 +21,7 @@ const updateAboutUsPage = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -34,7 +34,7 @@ const updateAboutUsPage = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -47,7 +47,7 @@ const updateAboutUsPage = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     }
@@ -72,7 +72,7 @@ const company_services = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -86,7 +86,7 @@ const company_services = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -100,7 +100,7 @@ const company_services = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -125,7 +125,7 @@ const why_choose_us = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -139,7 +139,7 @@ const why_choose_us = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },
@@ -153,7 +153,7 @@ const why_choose_us = {
                 queryClient.invalidateQueries({ queryKey: ["about_us_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         });
     },

@@ -21,7 +21,7 @@ const updateNewsPage = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -34,7 +34,7 @@ const updateNewsPage = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     }
@@ -90,7 +90,7 @@ const news = {
                 navigate('/quan-ly-tin-tuc', {state: { createId: success.id }});
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -112,7 +112,7 @@ const news = {
                 queryClient.invalidateQueries({ queryKey: ['news_categories_suggestions'] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -139,7 +139,7 @@ const news = {
                 queryClient.invalidateQueries({ queryKey: ["feature_news"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             },
         })
     },
@@ -195,7 +195,7 @@ const news_categories = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -210,7 +210,7 @@ const news_categories = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -225,7 +225,7 @@ const news_categories = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     }

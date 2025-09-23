@@ -35,7 +35,7 @@ const updateProductPage = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -91,7 +91,7 @@ const products = {
                 navigate(location.pathname, { state: {createId: success.id} });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -121,7 +121,7 @@ const products = {
                 queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -180,7 +180,7 @@ const products = {
                 queryClient.invalidateQueries({ queryKey: ["product_categories_suggestions"], exact: false });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -221,7 +221,7 @@ const product_categories = {
                 queryClient.invalidateQueries({ queryKey: ["product_by_category"], exact: false });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -239,7 +239,7 @@ const product_categories = {
                 queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -256,7 +256,7 @@ const product_categories = {
                 queryClient.invalidateQueries({ queryKey: ["product_list"], exact: false });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -279,7 +279,7 @@ const updatePricePage = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -292,7 +292,7 @@ const updatePricePage = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     }

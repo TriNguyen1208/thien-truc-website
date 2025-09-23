@@ -20,7 +20,7 @@ const updateHomePage = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -33,7 +33,7 @@ const updateHomePage = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -46,7 +46,7 @@ const updateHomePage = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -59,7 +59,7 @@ const updateHomePage = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -72,7 +72,7 @@ const updateHomePage = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -100,7 +100,7 @@ const highlight_stats_about_us = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -117,7 +117,7 @@ const highlight_stats_about_us = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -134,7 +134,7 @@ const highlight_stats_about_us = {
                 queryClient.invalidateQueries({ queryKey: ["home_page"] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },

@@ -21,7 +21,7 @@ const updateProjectPage = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -34,7 +34,7 @@ const updateProjectPage = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     }
@@ -82,7 +82,7 @@ const projects = {
                 navigate('/quan-ly-du-an', {state: { createId: success.id }});
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -103,7 +103,7 @@ const projects = {
                 queryClient.invalidateQueries({ queryKey: ['project_categories_suggestions'], exact: false });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -131,7 +131,7 @@ const projects = {
                 queryClient.invalidateQueries({ queryKey: ["project_regions"], exact: false });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -189,7 +189,7 @@ const project_regions = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -204,7 +204,7 @@ const project_regions = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -219,7 +219,7 @@ const project_regions = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     }

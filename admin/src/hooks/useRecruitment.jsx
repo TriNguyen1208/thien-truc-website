@@ -19,7 +19,7 @@ const updateRecruitmentPage = {
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -32,7 +32,7 @@ const updateRecruitmentPage = {
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -45,7 +45,7 @@ const updateRecruitmentPage = {
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     },
@@ -58,7 +58,7 @@ const updateRecruitmentPage = {
                 queryClient.invalidateQueries({ queryKey: ['recruitment_page'] });
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         })
     }

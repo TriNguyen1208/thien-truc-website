@@ -37,7 +37,7 @@ const manager = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -50,7 +50,7 @@ const manager = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
@@ -64,7 +64,7 @@ const manager = {
                 toast.success(success.message);
             },
             onError: (error) => {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
             }
         });
     },
